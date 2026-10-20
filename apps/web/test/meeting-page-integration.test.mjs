@@ -1,0 +1,94 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import test from 'node:test';
+import { fileURLToPath } from 'node:url';
+import { JSDOM } from 'jsdom';
+
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
+const topicRank = new Map(data.topics.map((topic, index) => [topic.id, index]));
+
+function routeId(id) {
+  return encodeURIComponent(id).replaceAll('%3A', ':');
+}
+
+async function meetingDocument(meeting) {
+  const html = await readFile(resolve(root, 'dist', 'meetings', routeId(meeting.id), 'index.html'), 'utf8');
+  return new JSDOM(html).window.document;
+}
+
+test('timed listings offer a calendar download while date-only listings explain why one is unavailable', async () => {
+  const timed = data.meetings.find((meeting) => meeting.startsAt && meeting.updatedAt);
+  const dateOnly = data.meetings.find((meeting) => !meeting.startsAt && meeting.date);
+  assert.ok(timed, 'export should include a meeting with a verified start time');
+  assert.ok(dateOnly, 'export should include a date-only meeting');
+
+  const timedDocument = await meetingDocument(timed);
+  const download = timedDocument.querySelector('.calendar-download-group a.calendar-download');
+  assert.ok(download);
+  assert.equal(download.getAttribute('href'), `/calendar/${timed.agencyId}/${timed.sourceId}.ics`);
+  assert.match(download.textContent, /Download calendar event/);
+  assert.match(timedDocument.querySelector('.calendar-download-group small')?.textContent ?? '', /will not update automatically/);
+
+  const dateOnlyDocument = await meetingDocument(dateOnly);
+  assert.equal(dateOnlyDocument.querySelector('.calendar-download-group a.calendar-download'), null);
+  assert.match(dateOnlyDocument.querySelector('.calendar-unavailable')?.textContent ?? '', /date but not a confirmed start time/);
+});
+
+test('agenda item topic tags follow the shared catalog order', async () => {
+  const meeting = data.meetings.find((candidate) => candidate.items.some((item) => item.topics.length > 1 &&
+    JSON.stringify(item.topics) !== JSON.stringify([...item.topics].sort((a, b) => (topicRank.get(a) ?? Number.MAX_SAFE_INTEGER) - (topicRank.get(b) ?? Number.MAX_SAFE_INTEGER) || a.localeCompare(b)))));
+  assert.ok(meeting, 'export should include an item whose topic order can verify catalog sorting');
+  const document = await meetingDocument(meeting);
+  const item = meeting.items.find((candidate) => candidate.topics.length > 1 &&
+    JSON.stringify(candidate.topics) !== JSON.stringify([...candidate.topics].sort((a, b) => (topicRank.get(a) ?? Number.MAX_SAFE_INTEGER) - (topicRank.get(b) ?? Number.MAX_SAFE_INTEGER) || a.localeCompare(b))));
+  const row = document.querySelector(`[data-item-id="${item.id}"]`);
+  const expected = [...item.topics].sort((a, b) => (topicRank.get(a) ?? Number.MAX_SAFE_INTEGER) - (topicRank.get(b) ?? Number.MAX_SAFE_INTEGER) || a.localeCompare(b));
+  assert.deepEqual(JSON.parse(row.dataset.topicIds), expected);
+  assert.deepEqual([...row.querySelectorAll('.agenda-summary-topics .tag')].map((tag) => tag.textContent), expected.map((id) => data.topics.find((topic) => topic.id === id)?.name ?? id));
+});
+
+test('a meeting without listed items explains whether its agenda is posted, pending, or only on the agency site', async () => {
+  const listed = (meeting) => meeting.items.some((item) => !item.suppressed);
+  const stored = data.meetings.filter((meeting) => meeting.kind !== 'forecast' && !listed(meeting) && meeting.status !== 'canceled');
+  const today = new Date().toISOString().slice(0, 10);
+  const isAgenda = (document) => /agenda|packet/i.test(document.title) && !/supplement/i.test(document.title);
+  const posted = stored.find((meeting) => meeting.documents.some(isAgenda));
+  const synopsisOnly = stored.find((meeting) => meeting.documents.length && !meeting.documents.some(isAgenda));
+  if (synopsisOnly) {
+    // Minutes or a synopsis are not an agenda; the page must not say one was posted.
+    const panel = (await meetingDocument(synopsisOnly)).querySelector('.empty-panel');
+    assert.equal(panel.dataset.agendaAvailability, 'elsewhere');
+    assert.equal(panel.querySelector('a').getAttribute('href'), synopsisOnly.documents[0].url);
+  }
+  if (posted) {
+    const panel = (await meetingDocument(posted)).querySelector('.empty-panel');
+    assert.equal(panel.dataset.agendaAvailability, 'posted');
+    assert.match(panel.textContent, /Open the official agenda/);
+    assert.ok(posted.documents.some((document) => document.url === panel.querySelector('a').getAttribute('href')));
+  }
+  const pending = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date > today &&
+    meeting.warnings.some((warning) => /no agenda document is linked|did not link an agenda|not posted/i.test(warning)));
+  const blocked = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date > today &&
+    meeting.warnings.some((warning) => /includes the agenda|agenda PDF was verified/i.test(warning)));
+  if (blocked) {
+    // The agency has an agenda that could not be captured, so the page must not claim it is unpublished.
+    const document = await meetingDocument(blocked);
+    assert.equal(document.querySelector('.empty-panel').dataset.agendaAvailability, 'elsewhere');
+    assert.doesNotMatch(document.querySelector('.detail-main').textContent, /not posted yet/);
+  }
+  if (pending) {
+    const document = await meetingDocument(pending);
+    assert.equal(document.querySelector('.empty-panel').dataset.agendaAvailability, 'not-posted');
+    assert.match(document.querySelector('.detail-main h2').textContent, /Agenda not posted yet/);
+  }
+  const past = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date < today &&
+    !meeting.warnings.some((warning) => /Municode/.test(warning)));
+  if (past) {
+    const panel = (await meetingDocument(past)).querySelector('.empty-panel');
+    assert.equal(panel.dataset.agendaAvailability, 'elsewhere');
+    assert.equal(panel.querySelector('a').getAttribute('href'), past.officialUrl);
+  }
+  assert.ok(posted || pending || past, 'export should include at least one meeting without listed items');
+});

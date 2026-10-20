@@ -1,0 +1,113 @@
+{
+  "captured_at": "2026-10-20T15:28:31.123596+00:00",
+  "candidates": [
+    {
+      "agency": "trpa-governing",
+      "source_id": "2026-09-23",
+      "title": "Tahoe Regional Planning Agency Governing Board Meeting",
+      "official_url": "https://www.trpa.gov/governing-board-documents-september-23-2026-hybrid-meeting/",
+      "date": "2026-09-23",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trpa-governing-agenda-2026-09-23",
+          "title": "Official meeting agenda",
+          "url": "https://www.trpa.gov/wp-content/uploads/September-23-Governing-Board-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official TRPA archive page lists the Governing Board meeting agenda, packet, and action summary. The date/body are verified; status remains unknown because the database has no held state."
+      ]
+    },
+    {
+      "agency": "trpa-governing",
+      "source_id": "2026-08-26",
+      "title": "Tahoe Regional Planning Agency Governing Board Meeting",
+      "official_url": "https://www.trpa.gov/governing-board-documents-august-26-2026-hybrid-meeting/",
+      "date": "2026-08-26",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trpa-governing-agenda-2026-08-26",
+          "title": "Official meeting agenda",
+          "url": "https://www.trpa.gov/wp-content/uploads/August-26-Governing-Board-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official TRPA archive page lists the Governing Board agenda, packet, and final minutes. The date/body are verified; status remains unknown because the database has no held state."
+      ]
+    },
+    {
+      "agency": "trpa-governing",
+      "source_id": "2026-07-22",
+      "title": "Tahoe Regional Planning Agency Governing Board Meeting",
+      "official_url": "https://www.trpa.gov/governing-board-meeting-materials-july-22-2026-hybrid-meeting/",
+      "date": "2026-07-22",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trpa-governing-agenda-2026-07-22",
+          "title": "Official meeting agenda",
+          "url": "https://www.trpa.gov/wp-content/uploads/July-22-Governing-Board-Agenda-1.pdf"
+        }
+      ],
+      "warnings": [
+        "Official TRPA archive page lists the Governing Board agenda, packet, action summary, and final committee minutes. The date/body are verified; status remains unknown because the database has no held state."
+      ]
+    },
+    {
+      "agency": "trpa-advisory",
+      "source_id": "2026-07-08",
+      "title": "Tahoe Regional Planning Agency Advisory Planning Commission Meeting",
+      "official_url": "https://www.trpa.gov/advisory-planning-commission-meeting-july-8-2026-hybrid-meeting/",
+      "date": "2026-07-08",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trpa-advisory-agenda-2026-07-08",
+          "title": "Official meeting agenda",
+          "url": "https://www.trpa.gov/wp-content/uploads/DRAFT-July-8-2026-APC-Meeting-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official TRPA archive page lists the Advisory Planning Commission agenda and packet. The date/body are verified; status remains unknown because the database has no held state."
+      ]
+    },
+    {
+      "agency": "trpa-advisory",
+      "source_id": "2026-05-13",
+      "title": "Tahoe Regional Planning Agency Advisory Planning Commission Meeting",
+      "official_url": "https://www.trpa.gov/advisory-planning-commission-meeting-may-13-2026-hybrid-meeting/",
+      "date": "2026-05-13",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trpa-advisory-agenda-2026-05-13",
+          "title": "Official meeting agenda",
+          "url": "https://www.trpa.gov/wp-content/uploads/DRAFT-May-13-2026-APC-Meeting-Agenda-V2.pdf"
+        }
+      ],
+      "warnings": [
+        "Official TRPA archive page lists the Advisory Planning Commission agenda and packet. The date/body are verified; status remains unknown because the database has no held state."
+      ]
+    },
+    {
+      "agency": "trpa-advisory",
+      "source_id": "2026-03-11",
+      "title": "Tahoe Regional Planning Agency Advisory Planning Commission Meeting",
+      "official_url": "https://www.trpa.gov/advisory-planning-commission-meeting-march-11-2026-hybrid-meeting/",
+      "date": "2026-03-11",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trpa-advisory-agenda-2026-03-11",
+          "title": "Official meeting agenda",
+          "url": "https://www.trpa.gov/wp-content/uploads/March-11-2026-APC-Meeting-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official TRPA archive page lists the Advisory Planning Commission agenda and packet. This is the latest prior official archive record located after May 13; freshness gap since March 11 remains explicit."
+      ]
+    }
+  ]
+}

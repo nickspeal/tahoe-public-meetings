@@ -1,0 +1,42 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+.vercel/
+.gcloud/
+.aws/
+
+# Dependencies and generated output
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.next/
+.astro/
+dist/
+build/
+coverage/
+apps/web/src/data/public.json
+apps/web/public/data/
+
+# Runtime archives, databases, logs, and temporary files
+/data/
+/tmp/
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.log
+
+# macOS
+.DS_Store
+
+# Maintainer-only notes, feedback, and agent instructions (never published)
+/private/
+CLAUDE.local.md
+AGENTS.local.md

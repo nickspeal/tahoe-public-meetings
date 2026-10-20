@@ -1,0 +1,12 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import MeetingTimeline from '../../components/MeetingTimeline.astro';
+import { topics } from '../../lib/data';
+export function getStaticPaths() {
+  return topics.map((topic) => ({ params: { topic: topic.id }, props: { topic } }));
+}
+const { topic } = Astro.props;
+---
+<SiteLayout title={`${topic.name} meetings`} description={`Meetings and agenda items related to ${topic.name} around Lake Tahoe.`}>
+  <MeetingTimeline initialTopic={topic.id} />
+</SiteLayout>

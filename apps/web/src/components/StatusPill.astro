@@ -1,0 +1,5 @@
+---
+const { label, tone = 'muted' } = Astro.props;
+const toneClass = tone === 'green' ? 'pill-green' : tone === 'amber' ? 'pill-amber' : tone === 'red' ? 'pill-red' : tone === 'outline' ? 'pill-outline' : 'pill-muted';
+---
+<span class={`status-pill ${toneClass}`}><slot />{label}</span>

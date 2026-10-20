@@ -1,0 +1,6 @@
+---
+import type { Meeting } from '../../../../packages/domain/public';
+import { allItems, meetingHref, topics } from '../lib/data';
+const { meeting, initialTopic = '' } = Astro.props as { meeting: Meeting; initialTopic?: string };
+---
+{topics.map((topic) => <div class="timeline-topic-items" data-topic-items={topic.id} hidden={topic.id !== initialTopic}>{allItems(meeting).filter((item) => item.topics.includes(topic.id)).map((item) => <a href={`${meetingHref(meeting)}#item-${encodeURIComponent(item.id)}`}><span>{item.number ? `Item ${item.number}` : 'Agenda item'}</span><strong>{item.title}</strong></a>)}</div>)}

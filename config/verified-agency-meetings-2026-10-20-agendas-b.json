@@ -1,0 +1,201 @@
+{
+  "captured_at": "2026-10-20T00:00:00Z",
+  "candidates": [
+    {
+      "agency": "slt-planning",
+      "source_id": "2922",
+      "title": "South Lake Tahoe Planning Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/Calendar.aspx?EID=2922&calType=0&day=1&month=8&year=2026",
+      "date": "2026-08-20",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-6-clip_id-2299",
+          "title": "Official agenda",
+          "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2299"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "slt-planning",
+      "source_id": "2906",
+      "title": "South Lake Tahoe Planning Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/Calendar.aspx?EID=2906&calType=0&day=15&month=9&year=2026",
+      "date": "2026-09-17",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-6-clip_id-2320",
+          "title": "Official agenda",
+          "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2320"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "slt-planning",
+      "source_id": "2926",
+      "title": "South Lake Tahoe Planning Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/Calendar.aspx?EID=2926&calType=0&day=1&month=10&year=2026",
+      "date": "2026-10-15",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-6-clip_id-2352",
+          "title": "Official agenda",
+          "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2352"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "tcpud",
+      "source_id": "2026-08-21",
+      "title": "Tahoe City Public Utility District Board of Directors Meeting",
+      "official_url": "https://www.tcpud.org/index.php/meetings",
+      "date": "2026-08-21",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-2-clip_id-1723",
+          "title": "Official agenda",
+          "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1723"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "tcpud",
+      "source_id": "2026-09-18",
+      "title": "Tahoe City Public Utility District Board of Directors Meeting",
+      "official_url": "https://www.tcpud.org/index.php/meetings",
+      "date": "2026-09-18",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-2-clip_id-1735",
+          "title": "Official agenda",
+          "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1735"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "truckee",
+      "source_id": "1770",
+      "title": "Truckee Town Council, Redevelopment Successor Agency, and Financing Authority Meeting",
+      "official_url": "https://townoftruckee.gov/Calendar.aspx?EID=1770&calType=0&day=8&month=9&year=2026",
+      "date": "2026-09-08",
+      "status": "scheduled",
+      "documents": [
+        {
+          "id": "agenda-cc-TRUCKEECA-me-f8da3eee4f5a47b787c1f497760158f0-ip-true",
+          "title": "Official agenda",
+          "url": "https://meetings.municode.com/adaHtmlDocument/index?cc=TRUCKEECA&me=f8da3eee4f5a47b787c1f497760158f0&ip=true"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-09-08",
+      "title": "Washoe County Board of County Commissioners Meeting",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-34/",
+      "date": "2026-09-08",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-2140_A_Board_of_County_Commissioners_26-09-08_Notice_of_Meet",
+          "title": "Official agenda",
+          "url": "https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/9/2140_A_Board_of_County_Commissioners_26-09-08_Notice_of_Meeting_and_Agenda.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-09-15",
+      "title": "Washoe County Board of County Commissioners Meeting",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-35/",
+      "date": "2026-09-15",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-1807_A_Board_of_County_Commissioners_26-09-15_Notice_of_Meet",
+          "title": "Official agenda",
+          "url": "https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/9/1807_A_Board_of_County_Commissioners_26-09-15_Notice_of_Meeting_and_Agenda.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-10-13",
+      "title": "Washoe County Board of County Commissioners Meeting",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-36/",
+      "date": "2026-10-13",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-1809_A_Board_of_County_Commissioners_26-10-13_Notice_of_Meet",
+          "title": "Official agenda",
+          "url": "https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/10/1809_A_Board_of_County_Commissioners_26-10-13_Notice_of_Meeting_and_Agenda.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "washoe-planning",
+      "source_id": "2026-04-07",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+      "date": "2026-04-07",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-040726_pcag",
+          "title": "Official agenda",
+          "url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/2026/Files/040726_pcag.pdf"
+        }
+      ],
+      "warnings": [
+        "No agenda PDF is linked; agenda items require review."
+      ]
+    },
+    {
+      "agency": "washoe-planning",
+      "source_id": "2026-05-05",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+      "date": "2026-05-05",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-050526_pcag",
+          "title": "Official agenda",
+          "url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/2026/Files/050526_pcag.pdf"
+        }
+      ],
+      "warnings": [
+        "No agenda PDF is linked; agenda items require review."
+      ]
+    },
+    {
+      "agency": "washoe-planning",
+      "source_id": "2026-07-07",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+      "date": "2026-07-07",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-2095_A_Washoe_County_Planning_Commission_26-07-07_Boards_and",
+          "title": "Official agenda",
+          "url": "https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/7/2095_A_Washoe_County_Planning_Commission_26-07-07_Boards_and_Commissions.pdf"
+        }
+      ],
+      "warnings": []
+    }
+  ]
+}

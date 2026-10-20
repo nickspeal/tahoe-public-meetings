@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: tahoe
+      POSTGRES_PASSWORD: tahoe-local
+      POSTGRES_DB: tahoe
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - tahoe_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tahoe -d tahoe"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  tahoe_postgres:

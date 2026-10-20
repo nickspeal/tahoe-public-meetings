@@ -1,0 +1,286 @@
+{
+  "description": "Human topic labels for agenda items, for scoring `worker evaluate-topics --gold`. These are mostly hard cases where methods disagreed, so scores on this file understate overall accuracy and are biased toward cases the prompt was tuned on.",
+  "items": [
+    {
+      "id": "slt:2295:15",
+      "title": "Appeal of the Planning Commission decision approving File #DR25-007 (Tahoe Keys Marina Redevelopment Project), Granting Major Design Review, Special Use Permit, and a variance for a",
+      "gold": [
+        "hot-topics"
+      ],
+      "notes": "Major development.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2295:18",
+      "title": "Emerald Bay Resort Economic and Fiscal Impacts Report",
+      "gold": [],
+      "notes": "Small development; not a hot topic.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2307:15",
+      "title": "Mid-Town Area/Specific Plan and Initial Study/Negative Declaration",
+      "gold": [
+        "hot-topics"
+      ],
+      "notes": "Affects many people; borderline because residents often care less about technical zoning.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2307:17",
+      "title": "Request for Interest - Re-Use of Former Recreation and Swim Complex",
+      "gold": [
+        "hot-topics"
+      ],
+      "notes": "Many residents use the rec center.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2295:17",
+      "title": "South Lake Tahoe City Code Chapter 6.60 Time-Share Amendments Discussion",
+      "gold": [
+        "housing",
+        "short-term-rentals"
+      ],
+      "notes": "Housing and STR related; borderline, but technical classifications are not hot topics.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2339:11",
+      "title": "TRPA Housing Amendments and Water Quality and Mobility Fees Summary",
+      "gold": [
+        "housing",
+        "environment"
+      ],
+      "notes": "Technical, so not a hot topic.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2351:3",
+      "title": "Resolution in Opposition to The El Dorado County Emergency Preparedness, Healthcare Access, and Wildfire Prevention Initiative (Measure S)",
+      "gold": [
+        "environment",
+        "elections"
+      ],
+      "notes": "Wildfire prevention is environment; this measure is not especially controversial.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "truckee:1795:6.2",
+      "title": "Consideration of Town Council Support of November 2026 Tahoe Truckee Unified School District Measure P.",
+      "gold": [
+        "elections"
+      ],
+      "notes": "Ballot measure; not especially controversial.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2351:4",
+      "title": "Informational Report Regarding the City’s Regulatory Authority Regarding the use of Glyphosate; Adoption of Resolution Regarding use of Glyphosate",
+      "gold": [
+        "environment",
+        "hot-topics"
+      ],
+      "notes": "Glyphosate watchlist.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "ttd:6941:IX.A",
+      "title": "Informational Only: Presentation –Transportation Study of 771 Southwood Tahoe Boulevard",
+      "gold": [
+        "transit",
+        "hot-topics"
+      ],
+      "notes": "771 Southwood watchlist; this excerpt does not mention the housing proposal, so no Housing.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2307:11",
+      "title": "Award of Construction Contract for the Upper Truckee River Bridge Scour Protection Contract for $522,980.00 to Meyers Earthwork, Inc. and Approve Amendment No.1 to Eastern Sierra Engineering PSA (C-221-2025) for $23,500 and Authorize Total Funding Transfer of $373,730.69 from Various Accounts to Upper Truckee River Bridge Scour Protection Account 301-60088-48030",
+      "gold": [
+        "biking",
+        "environment"
+      ],
+      "notes": "CEQA notice: scour approaching the Class 1 bicycle bridge pier.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2295:10",
+      "title": "Acceptance of FAA Grant and Caltrans AIP Grants in the amount not to exceed $561,749.00.00 for Airport Runway 18/36 Pavement Maintenance and Award of Contract for Airport Pavement Maintenance to American Road Maintenance, Inc. in Amount of $433,140",
+      "gold": [],
+      "notes": "Airport pavement is not road or path pavement.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2307:12",
+      "title": "Acceptance of FAA Grant and Caltrans AIP Grants in the amount not to exceed $561,749.00.00 for Airport Runway 18/36 Pavement Maintenance and Award of Contract for Airport Pavement Maintenance to American Road Maintenance, Inc. in Amount of $433,140.00",
+      "gold": [],
+      "notes": "Airport pavement is not road or path pavement.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "truckee:1795:6.5",
+      "title": "Adopt Revised Resolution 2026-36 for Implementation of Measure K Road Maintenance Sales Tax.",
+      "gold": [
+        "biking"
+      ],
+      "notes": "Road-maintenance tax counts as road pavement.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "lahontan-board:2026-10-01:6",
+      "title": "Revised Waste Discharge Requirements for Tahoe-Truckee Sanitation Agency (T- TSA)",
+      "gold": [
+        "environment"
+      ],
+      "notes": "",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2303:3",
+      "title": "Memorandum of Understanding between the California Tahoe Conservancy and the City of South Lake Tahoe",
+      "gold": [
+        "environment"
+      ],
+      "notes": "Hazardous fuels reduction.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "ttd:6941:VIII.F",
+      "title": "Approve the Tahoe Transportation District Title VI Plans of the Civil Rights Act of 1964 for the Federal Highway Administration and Federal Transit Administration as Required as a Subrecipient of the Nevada Department of Transportation",
+      "gold": [
+        "transit"
+      ],
+      "notes": "",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "ttd:6941:VIII.G",
+      "title": "Adopt Resolution 2026-005 Approving the Updated Title VI Plan of the Civil Rights Act of 1964, Public Participation Plan, and Limited English Proficiency Plan for the Tahoe Transportation District for the Federal Transportation Administration",
+      "gold": [
+        "transit"
+      ],
+      "notes": "TTD is a transit agency; its Title VI and participation plans are transit.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "truckee:1895:5.1",
+      "title": "Tahoe Truckee Homeless Action Coalition recommendations for continuation of the Pilot Navigation Center and Year-Two funding recommendation",
+      "gold": [
+        "housing"
+      ],
+      "notes": "",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "lahontan-board:2026-05-06:4",
+      "title": "Amended Waste Discharge Requirements for Mountain Pass Mine and Mill",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-05-06:5",
+      "title": "Adoption of Waste Discharge Requirements for the Death Valley National Park Cow Creek Reverse Osmosis Water Treatment Plant, Inyo County",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-05-06:11",
+      "title": "Former Hinkley Dairy Cleanup and Abatement Order Informational Update",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-05-06:12",
+      "title": "Former George Air Force Base, Victorville",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-08-06:4",
+      "title": "Revised Waste Discharge Requirements for the Dutch Dairy, San Bernardino County",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-08-06:5",
+      "title": "Closure and Post-Closure Waste Discharge Requirements for Terra-Gen, Solar Energy Generating Systems (SEGS) VIII and IX, Three Surface Impoundments, One Land Treatment Unit, and SEGS IX Landfill",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-08-06:7",
+      "title": "Status Report on Cleanup Activities Concerning Chromium Contamination from Pacific Gas and Electric Company’s (PG&E’s) Hinkley Compressor Station",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-10-01:4",
+      "title": "Recission of Waste Discharge Requirements for Multiple Facilities",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "lahontan-board:2026-10-01:5",
+      "title": "Change of Name and/or Ownership of Facilities with Waste Discharge Requirements",
+      "gold": [],
+      "notes": "Specific place outside the Tahoe area.",
+      "source": "Maintainer's Tahoe-only rule, 2026-10-20"
+    },
+    {
+      "id": "slt:2303:2",
+      "title": "Construction Agreement Award for El Dorado Beach Revetment Phase 2 with Globe Engineering Development in the amount of $697,600 and Amendment to Agreement No. 2 with Stantec Consulting Services, Inc. for El Dorado Beach Revetment and Improvements Project",
+      "gold": [
+        "environment"
+      ],
+      "notes": "",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2303:4",
+      "title": "Acceptance and Appropriation of TRPA Mitigation Funding and Transfer of Funding for the Upper Bijou Park Creek Watershed Restoration Project and Construction Agreement Award for Tamarack Culvert Replacement Project with Tinkers in the amount of $290,711.40",
+      "gold": [
+        "biking",
+        "environment"
+      ],
+      "notes": "Watershed restoration and a road culvert replacement.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2307:18",
+      "title": "Discussion and Direction on General Plan 2027 - 2035 Housing Element Update",
+      "gold": [
+        "housing"
+      ],
+      "notes": "Technical, so not a hot topic.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2330:6",
+      "title": "Amendment No. 3 to Agreement with Trella Tahoe, Inc. for Snow Removal Operations",
+      "gold": [
+        "biking"
+      ],
+      "notes": "Sidewalk snow removal is pedestrian access.",
+      "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "slt:2339:12",
+      "title": "Update on Geothermal Feasibility Study and Recreation & Aquatics Center Hydronic Snowmelt System",
+      "gold": [
+        "biking",
+        "environment"
+      ],
+      "notes": "Energy is environment; the snowmelt system clears sidewalks.",
+      "source": "Maintainer, 2026-10-20 review"
+    }
+  ]
+}

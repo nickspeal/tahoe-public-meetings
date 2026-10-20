@@ -1,0 +1,38 @@
+{
+ "agency": "stpud",
+ "source": "https://www.stpud.us/files/673a26874/2026.09.23%2BSpecial%2BBoard%2BMeeting%2BAgenda.pdf",
+ "note": "loose numbers and a skipped number",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "SOUTH TAHOE PUBLIC UTILITY DISTRICT\n                                        SPECIAL BOARD MEETING AGENDA\n                              Wednesday, September 23, 2026 - 12:30 p.m.\n                                         District Board Room\n                         1275 Meadow Crest Drive, South Lake Tahoe, California\n\n     Joel Henderson, Director                               BOARD MEMBERS                                  Kelly Sheehan, Director\n     Nick Haven, Vice President                          Shane Romsos, President                              Nick Exline, Director\n\n     Ryan Lee, Acting General Manager                                                  Andrea Salazar, Chief Financial Officer\n\n\n1.        CALL TO ORDER SPECIAL MEETING – PLEDGE OF ALLEGIANCE (At this time, please silence phones and\n          other electronic devices so as not to disrupt the business of the meeting.)\n\n2         COMMENTS FROM THE PUBLIC (Public Comment in a Special Meeting is limited to only those items described\n          in the agenda (Government Code § 54954.3(a)). Each member of the public who wishes to comment shall be\n          allotted five minutes, and no more than four individuals shall address the same subject.)\n\n3.        CORRECTIONS TO THE AGENDA (For purposes of the Brown Act, all Action and Consent items listed give a\n          brief description of each item of business to be transacted or discussed. Recommendations of the staff, as shown,\n          do not prevent the Board from taking other action.)\n\n4.        ITEMS FOR CLOSED SESSION (The Board will adjourn to Closed Session to discuss items identified below. Closed\n          Session is not open to the public; however, an opportunity will be provided at this time if members of the public\n          would like to comment on any item listed – three-minute limit, subject to modification by the Board President.)\n\n          a. Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public\n             employee – Interim General Manager.\n\n6.        ADJOURNMENT\n\n\nThe South Tahoe Public Utility District Board of Directors regularly meets the first and third Thursday of each month. A complete Agenda\npacket is available for review at the meeting and at the District office during the hours of 8:00 a.m. and 5:00 p.m., Monday through Friday.\nA recording of the meeting is retained for 30 days after Minutes of the meeting have been approved. Items on the Agenda are numbered\nfor identification purposes only and will not necessarily be considered in the order in which they appear. Designated times are for particular\nitems only. Public Hearings will not be called to order prior to the time specified, but may occur slightly later than the specified time.\n\nPublic participation is encouraged. Public comments on items appearing on the Agenda will be taken at the same time the Agenda items\nare heard; comments should be brief and directed to the specifics of the item being considered. Please provide the Clerk of the Board with\na copy of all written materials presented at the meeting. Comments on items not on the Agenda can be heard during “Comments from\nthe Audience;” however, action cannot be taken on items not on the Agenda.\n\nBackup materials relating to an open session item on this Agenda, which are not included with the Board packet, will be made available\nfor public inspection at the same time they are distributed or made available to the Board, and can be viewed at the District office, at the\nBoard meeting and upon request to the Clerk of the Board.\n\nThe meeting location is accessible to people with disabilities. Every reasonable effort will be made to accommodate participation of the\ndisabled in all of the District’s public meetings. If particular accommodations are needed, please contact the Clerk of the Board at (530)\n544-6474, extension 6203. All inquiries must be made at least 48 hours in advance of the meeting."
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   null,
+   "CALL TO ORDER SPECIAL MEETING – PLEDGE OF ALLEGIANCE"
+  ],
+  [
+   "2",
+   null,
+   "COMMENTS FROM THE PUBLIC"
+  ],
+  [
+   "3",
+   null,
+   "CORRECTIONS TO THE AGENDA"
+  ],
+  [
+   "4.a",
+   "Items For Closed Session",
+   "Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public employee – Interim General Manager."
+  ],
+  [
+   "6",
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
+}

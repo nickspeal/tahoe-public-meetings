@@ -1,0 +1,160 @@
+"""Bounded discovery of official meeting pages and linked PDFs.
+
+Discovery returns candidates for capture/review. It does not infer agenda items,
+votes, or exact meeting logistics from arbitrary page text.
+"""
+from __future__ import annotations
+
+import html
+import hashlib
+import json
+import re
+import time
+import urllib.parse
+from datetime import datetime
+from html.parser import HTMLParser
+
+from .http import fetch_bytes
+
+TTD_API = "https://tahoetransportation.org/wp-json/wp/v2"
+SLT_INDEX = "https://slt.granicus.com/ViewPublisher.php?view_id=6"
+TRUCKEE_INDEX = "https://townoftruckee.gov/Calendar.aspx?CID=0&month={month}&view=list&year={year}"
+MAX_HTML = 6 * 1024 * 1024
+
+
+def fetch_text(url: str, *, max_bytes=MAX_HTML) -> str:
+    data, _ = fetch_bytes(url, max_bytes=max_bytes, accept="text/html, application/xml, application/json")
+    return data.decode("utf-8-sig", "replace")
+
+
+class Anchors(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.rows = []
+        self.href = None
+        self.text = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "a":
+            self.href = dict(attrs).get("href")
+            self.text = []
+
+    def handle_data(self, data):
+        if self.href is not None:
+            self.text.append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.href is not None:
+            self.rows.append((self.href, " ".join(" ".join(self.text).split())))
+            self.href = None
+
+
+def anchors(markup: str, base: str) -> list[tuple[str, str]]:
+    parser = Anchors()
+    parser.feed(markup)
+    return [(urllib.parse.urljoin(base, href), label) for href, label in parser.rows]
+
+
+def _pdf_links(markup: str, base: str, agency: str) -> list[dict]:
+    found = []
+    seen = set()
+    for url, label in anchors(markup, base):
+        parsed = urllib.parse.urlparse(url)
+        inner = urllib.parse.parse_qs(parsed.query).get("u", [""])[0]
+        if parsed.scheme != "https" or not (parsed.path.lower().endswith(".pdf") or inner.lower().endswith(".pdf")):
+            continue
+        if url not in seen:
+            lower = (label + " " + urllib.parse.unquote(url)).lower()
+            role = ("agenda-packet" if "agenda packet" in lower or "packet" in lower else
+                    "agenda" if "agenda" in lower else "minutes" if "minutes" in lower else "attachment")
+            found.append({"id": f"{agency}-{role}", "title": label or "Official PDF", "url": url})
+            seen.add(url)
+    counts = {role: sum(d["id"] == role for d in found) for role in {d["id"] for d in found}}
+    for document in found:
+        if document["id"].endswith("-attachment") or counts[document["id"]] > 1:
+            suffix = hashlib.sha256(document["url"].encode()).hexdigest()[:12]
+            document["id"] += f"-{suffix}"
+    return found
+
+
+def discover_ttd(*, limit: int = 5, fetch=fetch_text, delay: float = 2.0) -> list[dict]:
+    if not 1 <= limit <= 20:
+        raise ValueError("TTD discovery limit must be 1..20")
+    raw = fetch(f"{TTD_API}/meeting?per_page={min(40, max(10, limit * 4))}&page=1&_fields=id,link,title,modified")
+    records = json.loads(raw)
+    found = []
+    for record in records:
+        title = html.unescape(record["title"]["rendered"])
+        if "board" not in title.lower():
+            continue
+        time.sleep(delay)
+        page_url = record["link"]
+        page = fetch(page_url)
+        docs = [d for d in _pdf_links(page, page_url, "ttd") if "/wp-content/uploads/" in d["url"]]
+        found.append({"agency": "ttd", "source_id": str(record["id"]),
+                      "title": title, "official_url": page_url,
+                      "documents": docs, "source_modified": record.get("modified"),
+                      "warnings": ["Meeting date and agenda items require source review."]})
+        if len(found) >= limit:
+            break
+    return found
+
+
+def discover_slt(*, limit: int = 5, fetch=fetch_text) -> list[dict]:
+    if not 1 <= limit <= 20:
+        raise ValueError("SLT discovery limit must be 1..20")
+    markup = fetch(SLT_INDEX)
+    found = []
+    # Granicus publisher rows have IDs such as 10-06-2026-City-Council.
+    for match in re.finditer(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', markup, re.I):
+        if "City-Council" not in match.group("key"):
+            continue
+        row_end = markup.find("</tr>", match.start())
+        if row_end < 0:
+            continue
+        row = markup[match.start():row_end]
+        links = anchors(row, SLT_INDEX)
+        clip = next((re.search(r"[?&]clip_id=(\d+)", url) for url, _ in links if "AgendaViewer.php" in url), None)
+        if not clip:
+            continue
+        title = match.group("key").replace("-", " ")
+        found.append({"agency": "slt", "source_id": clip.group(1), "title": title,
+                      "official_url": next(url for url, _ in links if "AgendaViewer.php" in url),
+                      "date": datetime.strptime(match.group("key")[:10], "%m-%d-%Y").date().isoformat(),
+                      "documents": _pdf_links(row, SLT_INDEX, "slt"),
+                      "warnings": ["Publisher row date/time and agenda items require source review."]})
+        if len(found) >= limit:
+            break
+    return found
+
+
+def discover_truckee(*, year: int, month: int, limit: int = 5, fetch=fetch_text) -> list[dict]:
+    if not 1 <= month <= 12 or not 2020 <= year <= 2100 or not 1 <= limit <= 20:
+        raise ValueError("Truckee year/month/limit are outside bounds")
+    index_url = TRUCKEE_INDEX.format(year=year, month=month)
+    markup = fetch(index_url)
+    event_links = []
+    seen = set()
+    for match in re.finditer(r'<a\b(?=[^>]*\bid="eventTitle_(\d+)")[^>]*>(.*?)</a>', markup, re.I | re.S):
+        eid = match.group(1)
+        label = html.unescape(re.sub(r"<[^>]+>", " ", match.group(2))).strip()
+        if eid in seen or "town council" not in label.lower():
+            continue
+        href = re.search(r'\bhref="([^"]+)"', match.group(0), re.I)
+        if not href:
+            continue
+        event_links.append((eid, label, urllib.parse.urljoin(index_url, html.unescape(href.group(1)))))
+        seen.add(eid)
+        if len(event_links) >= limit:
+            break
+    found = []
+    for eid, label, event_url in event_links:
+        page = fetch(event_url)
+        start_match = re.search(r'itemprop="startDate"[^>]*>\s*(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})', page, re.I)
+        found.append({"agency": "truckee", "source_id": eid, "title": label,
+                      "official_url": event_url, "documents": _pdf_links(page, event_url, "truckee"),
+                      "date": start_match.group(1) if start_match else None,
+                      "start_time": start_match.group(2) if start_match else None,
+                      "status": "canceled" if re.search(r"cancel(l)?ation|canceled|cancelled", label, re.I) else "scheduled",
+                      "warnings": ["Calendar event date/time and agenda items require source review."]})
+    return found

@@ -1,0 +1,91 @@
+{
+  "captured_at": "2026-10-20T16:52:59+00:00",
+  "candidates": [
+    {
+      "agency": "tcpud",
+      "source_id": "event-1187",
+      "title": "Tahoe City Public Utility District Board of Directors Meeting",
+      "official_url": "https://www.tcpud.org/meetings",
+      "date": "2026-10-23",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "tcpud-board-agenda-2026-10-23",
+          "title": "Official Board of Directors agenda",
+          "url": "https://tahoecitypud.granicus.com/GeneratedAgendaViewer.php?view_id=2&event_id=1187"
+        }
+      ],
+      "warnings": [
+        "Official TCPUD Granicus Board agenda identifies Friday October 23, 2026 at 08:30 and was posted October 16. This is agenda notice evidence; status remains unknown."
+      ]
+    },
+    {
+      "agency": "tcpud-parks-recreation-committee",
+      "source_id": "clip-1714",
+      "title": "TCPUD Parks and Recreation Committee Meeting",
+      "official_url": "https://www.tcpud.org/meetings",
+      "date": "2026-08-11",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "tcpud-prc-agenda-2026-08-11",
+          "title": "Official Parks and Recreation Committee agenda",
+          "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1714"
+        },
+        {
+          "id": "tcpud-prc-minutes-2026-08-11",
+          "title": "Official Parks and Recreation Committee minutes",
+          "url": "https://tahoecitypud.granicus.com/MinutesViewer.php?view_id=2&clip_id=1714"
+        }
+      ],
+      "warnings": [
+        "Official Granicus agenda identifies the Parks and Recreation Committee, Tuesday August 11 2026 at 08:30; posted August 7. Publisher archive includes meeting duration and a Minutes link."
+      ]
+    },
+    {
+      "agency": "tcpud-parks-recreation-committee",
+      "source_id": "clip-1727",
+      "title": "TCPUD Parks and Recreation Committee Meeting",
+      "official_url": "https://www.tcpud.org/meetings",
+      "date": "2026-09-08",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "tcpud-prc-agenda-2026-09-08",
+          "title": "Official Parks and Recreation Committee agenda",
+          "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1727"
+        },
+        {
+          "id": "tcpud-prc-minutes-2026-09-08",
+          "title": "Official Parks and Recreation Committee minutes",
+          "url": "https://tahoecitypud.granicus.com/MinutesViewer.php?view_id=2&clip_id=1727"
+        }
+      ],
+      "warnings": [
+        "Official Granicus agenda identifies the Parks and Recreation Committee, Tuesday September 8 2026 at 08:30; posted September 4. Publisher archive includes meeting duration and a Minutes link."
+      ]
+    },
+    {
+      "agency": "tcpud-parks-recreation-committee",
+      "source_id": "clip-1738",
+      "title": "TCPUD Parks and Recreation Committee Meeting",
+      "official_url": "https://www.tcpud.org/meetings",
+      "date": "2026-10-13",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "tcpud-prc-agenda-2026-10-13",
+          "title": "Official Parks and Recreation Committee agenda",
+          "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1738"
+        }
+      ],
+      "warnings": [
+        "Official Granicus agenda identifies the Parks and Recreation Committee, Tuesday October 13 2026 at 08:30; page posted October 9. Publisher archive lists recorded 1h24m duration; this record is not labeled as minutes in the archive."
+      ]
+    }
+  ]
+}

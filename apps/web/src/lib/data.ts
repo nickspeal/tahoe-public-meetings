@@ -1,0 +1,224 @@
+import type { AgendaItem, Meeting, PublicData } from '../../../../packages/domain/public';
+import topicCatalog from '../../../../packages/domain/topics.json';
+
+const publicDataModules = import.meta.glob('../data/public.json', { eager: true, import: 'default' }) as Record<string, PublicData>;
+const loadedData = publicDataModules['../data/public.json'];
+
+const emptyData: PublicData = {
+  schemaVersion: 2,
+  generatedAt: new Date().toISOString(),
+  mode: 'fixture',
+  coverageNote: 'No published meeting records are available yet.',
+  agencies: [],
+  topics: topicCatalog.map(({ id, name, description }) => ({ id, name, description })),
+  meetings: [],
+};
+
+export const data: PublicData = loadedData ?? emptyData;
+
+export const commentPeriods = data.commentPeriods ?? [];
+export const topics = data.topics;
+export const agencies = data.agencies;
+/** Stored agency records. Only these get meeting pages, calendar files, and coverage counts. */
+export const meetings = data.meetings.filter((meeting) => !isForecast(meeting));
+/** Expected dates derived from agency schedules at export time; shown on the timeline only when opted in. */
+export const forecastMeetings = data.meetings.filter(isForecast);
+
+export function isForecast(meeting: Meeting) {
+  return meeting.kind === 'forecast';
+}
+
+export function agencyFor(meeting: Meeting) {
+  return agencies.find((agency) => agency.id === meeting.agencyId);
+}
+
+export function allItems(meeting: Meeting): AgendaItem[] {
+  return meeting.items.filter((item) => !item.suppressed).sort((a, b) => a.order - b.order);
+}
+
+export function meetingDate(meeting: Meeting) {
+  return meeting.startsAt ? new Date(meeting.startsAt) : null;
+}
+
+export function formatDate(value: string | Date | null, options: Intl.DateTimeFormatOptions = {}) {
+  if (!value) return 'Date not yet published';
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.valueOf())) return 'Date not yet published';
+  const fields = ['weekday', 'era', 'year', 'month', 'day', 'hour', 'minute', 'second', 'timeZoneName', 'dateStyle', 'timeStyle'];
+  const hasRequestedFields = fields.some((field) => field in options);
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    ...(hasRequestedFields ? {} : { month: 'long', day: 'numeric', year: 'numeric' }),
+    ...options,
+  }).format(date);
+}
+
+export function meetingDateValue(meeting: Meeting) {
+  return meeting.startsAt ?? meeting.date ?? null;
+}
+
+export function meetingDateLabel(meeting: Meeting, options: Intl.DateTimeFormatOptions = {}) {
+  const value = meetingDateValue(meeting);
+  if (!value) return 'Date not yet published';
+  const date = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(`${value}T12:00:00-08:00`) : value;
+  return formatDate(date, options);
+}
+
+export function meetingHref(meeting: Meeting) {
+  // Astro's static route params use the literal colon. Encoding it into %3A
+  // creates a path that the dev/preview server does not resolve consistently.
+  const encodedId = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
+  return `/meetings/${encodedId}/`;
+}
+
+export function topicHref(topicId: string) {
+  return `/topics/${encodeURIComponent(topicId)}/`;
+}
+
+export function topicName(topicId: string) {
+  return topics.find((topic) => topic.id === topicId)?.name ?? topicId.replaceAll('-', ' ');
+}
+
+export function sourceDoc(meeting: Meeting, documentId: string) {
+  return meeting.documents.find((document) => document.id === documentId);
+}
+
+export { citationHref, isPdfDocument, itemSourceLink } from './source-links';
+
+export function residentWarning(value: string) {
+  if (/playback timestamps/i.test(value)) return 'A recording start time may differ from the scheduled meeting time; check the official agenda.';
+  if (/CivicClerk.*wall.clock/i.test(value)) return 'The scheduled start time has not been verified; check the official agenda.';
+  if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
+  // Parser outcomes are explained by the agenda section itself (see agendaAvailability).
+  if (/No parser exists|review required|agenda items require review|No complete .* agenda recognized/i.test(value)) return '';
+  if (/A source PDF changed/i.test(value)) return 'Source documents changed; some agenda details still need to be refreshed.';
+
+  const retainedPages = value.match(/Text retained for (\d+) of (\d+) source pages/i);
+  if (retainedPages) return `Agenda text covers ${retainedPages[1]} of ${retainedPages[2]} source pages; open the official document for full context.`;
+  if (/only selected source pages are available as text/i.test(value)) return 'Agenda text only; open the packet for supporting reports.';
+  if (/original fetch time is unknown/i.test(value)) return 'Original source capture time is unknown.';
+  if (/links a Municode HTML agenda/i.test(value)) return 'Agenda is available on the official meeting page; agenda items are not listed here yet.';
+  if (/marks this regular meeting canceled/i.test(value)) return 'Canceled; the official event page lists replacement meetings at 4:00 p.m. and 5:30 p.m.';
+  const noAgenda = value.match(/No agenda document is linked.*?as of (\d{4}-\d{2}-\d{2})/i);
+  if (noAgenda) return `No agenda document was linked on the official event page as of ${noAgenda[1]}.`;
+  if (/did not link an agenda or state a start time/i.test(value)) return 'The agency listing did not include an agenda or start time.';
+  if (/extract|scanned page|ocr|text.*(?:failed|unavailable)/i.test(value)) return 'Some pages could not be read; open the official document.';
+  return value.replace(/\bfixture\b/gi, 'source record').replace(/\bsample\b/gi, 'source record');
+}
+
+export type AgendaAvailability = {
+  /** items: listed here; posted: official agenda captured but items not listed; not-posted: no agenda yet;
+   *  elsewhere: past meeting whose agenda lives only on the agency site; canceled. */
+  kind: 'items' | 'posted' | 'not-posted' | 'elsewhere' | 'canceled';
+  label: string;
+  heading: string;
+  body: string;
+  href?: string;
+  linkText?: string;
+};
+
+export function agendaAvailability(meeting: Meeting): AgendaAvailability {
+  const count = allItems(meeting).length;
+  if (count) {
+    const label = `${count} agenda ${count === 1 ? 'item' : 'items'}`;
+    return { kind: 'items', label, heading: label, body: '' };
+  }
+  if (meeting.status === 'canceled') {
+    return { kind: 'canceled', label: 'Meeting canceled', heading: 'This meeting was canceled',
+      body: 'No agenda items are listed for a canceled meeting. The official meeting page lists any replacement meeting.',
+      href: meeting.officialUrl, linkText: 'Official meeting page' };
+  }
+  const agenda = meeting.documents.find((document) => /agenda|packet/i.test(document.title) && !/supplement/i.test(document.title));
+  if (agenda) {
+    return { kind: 'posted', label: 'Agenda posted · items not listed here', heading: 'Agenda posted; items aren’t listed here yet',
+      body: 'The agency has published an agenda, but its items haven’t been extracted for this page. Open the official agenda to see what’s on it.',
+      href: agenda.url, linkText: 'Open the official agenda' };
+  }
+  const other = meeting.documents[0];
+  if (other) {
+    // Only minutes, a synopsis, or supplemental material were captured.
+    return { kind: 'elsewhere', label: 'Agenda on agency website', heading: 'Agenda not available here',
+      body: 'This meeting’s agenda wasn’t captured for this page. The official document below and the meeting page have more detail.',
+      href: other.url, linkText: other.title.replace(/^Official\s+/i, 'Open the official ') };
+  }
+  const value = meetingDateValue(meeting);
+  const upcoming = !value || localDateKey(value) >= localDateKey(new Date().toISOString());
+  // Source notes record when the agency page has an agenda that could not be captured (blocked or not yet parsed).
+  const agendaElsewhere = meeting.warnings.some((warning) => !/\bno agenda|not posted|did not link/i.test(warning) &&
+    /\b(?:includes|links|lists|verified)\b[^.]*\bagenda\b|\bagenda\b[^.]*\b(?:is linked|was verified)\b/i.test(warning));
+  if (agendaElsewhere) {
+    return { kind: 'elsewhere', label: 'Agenda on agency website', heading: 'Agenda available on the agency website',
+      body: 'Open the official meeting page for the agenda.', href: meeting.officialUrl, linkText: 'Official meeting page' };
+  }
+  if (upcoming) {
+    return { kind: 'not-posted', label: 'Agenda not posted yet', heading: 'Agenda not posted yet',
+      body: 'Agencies usually publish agendas a few days before a meeting. Check back closer to the meeting date, or follow the official meeting page.',
+      href: meeting.officialUrl, linkText: 'Official meeting page' };
+  }
+  return { kind: 'elsewhere', label: 'Agenda on agency website', heading: 'Agenda not available here',
+    body: 'This meeting’s agenda couldn’t be retrieved for this page. The official meeting page has the agenda and any minutes.',
+    href: meeting.officialUrl, linkText: 'Official meeting page' };
+}
+
+export function meetingAgendaLabel(meeting: Meeting) {
+  return agendaAvailability(meeting).label;
+}
+
+function localDateKey(value: string) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(value));
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((item) => item.type === type)?.value ?? '';
+  return `${part('year')}-${part('month')}-${part('day')}`;
+}
+
+export function meetingStateLabel(meeting: Meeting) {
+  if (meeting.status === 'canceled') return 'Canceled';
+  if (meeting.status === 'rescheduled') return 'Rescheduled';
+  const value = meetingDateValue(meeting);
+  const today = localDateKey(new Date().toISOString());
+  const localDay = value ? localDateKey(value) : null;
+  if (meeting.status === 'scheduled' && localDay && localDay < today) return 'Past meeting · outcome not verified';
+  if (meeting.status === 'scheduled') return 'Scheduled';
+  return 'Status not confirmed';
+}
+
+export function sourceCheckLabel(value: string | null) {
+  if (!value) return 'Not checked live';
+  return data.mode === 'fixture' ? `Source capture: ${formatDate(value)}` : `Last checked ${formatDate(value)}`;
+}
+
+export function documentFetchLabel(value: string) {
+  if (!value) return 'Capture date unknown';
+  return data.mode === 'fixture' ? `source captured ${formatDate(value)}` : `checked ${formatDate(value)}`;
+}
+
+export function documentStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    extracted: 'Text available',
+    complete: 'Text available',
+    fetched: 'Source available',
+    pending: 'Agenda text not yet available',
+    failed: 'Document text unavailable',
+    extraction_failed: 'Document text unavailable',
+    error: 'Source could not be read',
+    unavailable: 'Source unavailable',
+  };
+  return labels[status.toLowerCase()] ?? 'Source status unavailable';
+}
+
+export function agencySourceLabel(agency: PublicData['agencies'][number]) {
+  if (agency.status === 'error') return 'Could not verify latest source';
+  if (agency.status === 'never_checked') return data.mode === 'fixture' ? 'Not checked live' : 'Not checked yet';
+  if (agency.status === 'ok' && agency.lastCheckedAt) {
+    return data.mode === 'fixture'
+      ? `Source capture: ${formatDate(agency.lastCheckedAt)}`
+      : `Checked ${formatDate(agency.lastCheckedAt)}`;
+  }
+  return agency.status === 'ok' ? 'Source check complete' : 'Source status unavailable';
+}
+
+
+/** Meeting notice tags also apply before an agenda has been posted. */
+export function meetingTopicIds(meeting: Meeting): string[] {
+  return [...new Set([...(meeting.topics ?? []), ...allItems(meeting).flatMap((item) => item.topics)])];
+}

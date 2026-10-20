@@ -1,0 +1,224 @@
+{
+  "captured_at": "2026-10-20T15:24:14.297539+00:00",
+  "candidates": [
+    {
+      "agency": "slt-planning",
+      "source_id": "2926",
+      "title": "South Lake Tahoe Planning Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/Calendar.aspx?EID=2926&calType=0&day=1&month=10&year=2026",
+      "date": "2026-10-15",
+      "documents": [],
+      "warnings": [
+        "Official 2026 Planning Commission schedule lists this date; agenda text is not captured in this record."
+      ],
+      "start_time": "15:00"
+    },
+    {
+      "agency": "slt-planning",
+      "source_id": "2906",
+      "title": "South Lake Tahoe Planning Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/Calendar.aspx?EID=2906&calType=0&day=15&month=9&year=2026",
+      "date": "2026-09-17",
+      "start_time": "15:00",
+      "documents": [],
+      "warnings": [
+        "Official meeting calendar notice; agenda text is not captured in this record."
+      ]
+    },
+    {
+      "agency": "slt-planning",
+      "source_id": "2922",
+      "title": "South Lake Tahoe Planning Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/Calendar.aspx?EID=2922&calType=0&day=1&month=8&year=2026",
+      "date": "2026-08-20",
+      "start_time": "15:00",
+      "documents": [],
+      "warnings": [
+        "Official meeting calendar notice; agenda text is not captured in this record."
+      ]
+    },
+    {
+      "agency": "placer-supervisors",
+      "source_id": "2026-10-06",
+      "title": "Placer County Board of Supervisors Meeting",
+      "official_url": "https://www.placer.ca.gov/DocumentCenter/View/117996/2026-100626-FINAL-Agenda",
+      "date": "2026-10-06",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF was verified but worker download returned HTTP 403; this is a notice-only record and agenda text needs capture/review."
+      ]
+    },
+    {
+      "agency": "placer-supervisors",
+      "source_id": "2026-09-22",
+      "title": "Placer County Board of Supervisors Meeting",
+      "official_url": "https://www.placer.ca.gov/DocumentCenter/View/117485/2026-092226-FINAL-Agenda",
+      "date": "2026-09-22",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF was verified but worker download returned HTTP 403; this is a notice-only record and agenda text needs capture/review."
+      ]
+    },
+    {
+      "agency": "placer-supervisors",
+      "source_id": "2026-09-08",
+      "title": "Placer County Board of Supervisors Meeting",
+      "official_url": "https://www.placer.ca.gov/10616/_2026",
+      "date": "2026-09-08",
+      "documents": [],
+      "warnings": [
+        "Official 2026 Board of Supervisors agenda archive lists this meeting; agenda text is not captured in this record."
+      ]
+    },
+    {
+      "agency": "placer-planning",
+      "source_id": "2026-10-15",
+      "title": "Placer County Planning Commission Meeting",
+      "official_url": "https://www.placer.ca.gov/DocumentCenter/View/118212/2026-101526-FINAL-Agenda",
+      "date": "2026-10-15",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF was verified but worker download returned HTTP 403; this is a notice-only record and agenda text needs capture/review."
+      ]
+    },
+    {
+      "agency": "placer-planning",
+      "source_id": "2026-09-24",
+      "title": "Placer County Planning Commission Meeting",
+      "official_url": "https://www.placer.ca.gov/DocumentCenter/View/117363/2026-092426-FINAL-Agenda",
+      "date": "2026-09-24",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF was verified but worker download returned HTTP 403; this is a notice-only record and agenda text needs capture/review."
+      ]
+    },
+    {
+      "agency": "placer-planning",
+      "source_id": "2026-09-10",
+      "title": "Placer County Planning Commission Meeting",
+      "official_url": "https://www.placer.ca.gov/DocumentCenter/View/115995/2026-091026-FINAL-Agenda",
+      "date": "2026-09-10",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF was verified but worker download returned HTTP 403; this is a notice-only record and agenda text needs capture/review."
+      ]
+    },
+    {
+      "agency": "stpud",
+      "source_id": "2026-10-15",
+      "title": "South Tahoe Public Utility District Board Meeting",
+      "official_url": "https://www.stpud.us/2026-10-15-board-meeting",
+      "date": "2026-10-15",
+      "documents": [
+        {
+          "id": "stpud-agenda-2026-10-15",
+          "title": "Official board agenda packet",
+          "url": "https://www.stpud.us/files/11d99329b/2026.10.15%2BDistrict%2BBoard%2BAgenda%2BPacket.pdf"
+        }
+      ],
+      "warnings": [
+        "Agenda layout requires item review before agenda items can be published."
+      ]
+    },
+    {
+      "agency": "stpud",
+      "source_id": "2026-10-01",
+      "title": "South Tahoe Public Utility District Board Meeting",
+      "official_url": "https://www.stpud.us/2026-10-01-board-meeting",
+      "date": "2026-10-01",
+      "documents": [
+        {
+          "id": "stpud-agenda-2026-10-01",
+          "title": "Official board agenda packet",
+          "url": "https://www.stpud.us/files/f1f1ffdda/2026.10.01%2BDistrict%2BBoard%2BAgenda%2BPacket.pdf"
+        }
+      ],
+      "warnings": [
+        "Agenda PDF exceeds browser preview size; worker capture may still extract it within configured limits."
+      ]
+    },
+    {
+      "agency": "stpud",
+      "source_id": "2026-09-23",
+      "title": "South Tahoe Public Utility District Special Board Meeting",
+      "official_url": "https://www.stpud.us/2026-09-23-board-special-board-meeting",
+      "date": "2026-09-23",
+      "documents": [
+        {
+          "id": "stpud-agenda-2026-09-23",
+          "title": "Official special meeting agenda",
+          "url": "https://www.stpud.us/files/673a26874/2026.09.23%2BSpecial%2BBoard%2BMeeting%2BAgenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Agenda layout requires item review before agenda items can be published."
+      ]
+    },
+    {
+      "agency": "tcpud",
+      "source_id": "2026-10-16",
+      "title": "Tahoe City Public Utility District Board of Directors Meeting",
+      "official_url": "https://www.tcpud.org/index.php/meetings",
+      "date": "2026-10-16",
+      "documents": [],
+      "warnings": [
+        "Official 2026 TCPUD meeting calendar lists this meeting date; agenda text is not captured in this record."
+      ]
+    },
+    {
+      "agency": "tcpud",
+      "source_id": "2026-09-18",
+      "title": "Tahoe City Public Utility District Board of Directors Meeting",
+      "official_url": "https://www.tcpud.org/index.php/meetings",
+      "date": "2026-09-18",
+      "documents": [],
+      "warnings": [
+        "Official 2026 TCPUD meeting calendar lists this meeting date; agenda text is not captured in this record."
+      ]
+    },
+    {
+      "agency": "tcpud",
+      "source_id": "2026-08-21",
+      "title": "Tahoe City Public Utility District Board of Directors Meeting",
+      "official_url": "https://www.tcpud.org/index.php/meetings",
+      "date": "2026-08-21",
+      "documents": [],
+      "warnings": [
+        "Official 2026 TCPUD meeting calendar lists this meeting date; agenda text is not captured in this record."
+      ]
+    },
+    {
+      "agency": "lahontan-board",
+      "source_id": "2026-10-01",
+      "title": "Lahontan Regional Water Quality Control Board Meeting",
+      "official_url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/oct2026agenda_eng.pdf",
+      "date": "2026-10-01",
+      "documents": [],
+      "warnings": [
+        "Official agenda announcement was verified but worker PDF download failed certificate validation; notice-only record. The agenda notice also identifies September 30 special meetings; this record represents October 1 regular meeting only."
+      ]
+    },
+    {
+      "agency": "lahontan-board",
+      "source_id": "2026-08-06",
+      "title": "Lahontan Regional Water Quality Control Board Meeting",
+      "official_url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/aug/aug2026agenda_eng.pdf",
+      "date": "2026-08-06",
+      "documents": [],
+      "warnings": [
+        "Official agenda announcement was verified but worker PDF download failed certificate validation; notice-only record. September 23-24 meeting was cancelled per the official 2026 board calendar."
+      ]
+    },
+    {
+      "agency": "lahontan-board",
+      "source_id": "2026-05-06",
+      "title": "Lahontan Regional Water Quality Control Board Meeting",
+      "official_url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/may/may2026agenda_eng.pdf",
+      "date": "2026-05-06",
+      "documents": [],
+      "warnings": [
+        "Official agenda announcement was verified but worker PDF download failed certificate validation; notice-only record. This is the latest earlier meeting identified on the official 2026 board calendar; June 10-11 was cancelled."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "captured_at": "2026-10-20T16:52:59+00:00",
+  "candidates": [
+    {
+      "agency": "ntcd",
+      "source_id": "2026-09-28",
+      "title": "Nevada Tahoe Conservation District Board of Supervisors Meeting",
+      "official_url": "https://ntcd.org/board-of-supervisors/",
+      "date": "2026-09-28",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "ntcd-agenda-2026-09-28",
+          "title": "Official NTCD Board Meeting agenda",
+          "url": "https://ntcd.org/wp-content/uploads/About/BoardOfSupervisors/2026Meetings/2026.09.28-NTCD-Board-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official published Board Meeting Library lists 2026-09-28; linked agenda was downloaded and explicitly states Agenda 09.28.2026 at 13:00. Official agenda/notice evidence only; no minutes/completion record was checked, so status remains unknown."
+      ],
+      "start_time": "13:00"
+    },
+    {
+      "agency": "ntcd",
+      "source_id": "2026-08-12",
+      "title": "Nevada Tahoe Conservation District Board of Supervisors Meeting",
+      "official_url": "https://ntcd.org/board-of-supervisors/",
+      "date": "2026-08-12",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "ntcd-agenda-2026-08-12",
+          "title": "Official NTCD Board Meeting agenda",
+          "url": "https://ntcd.org/wp-content/uploads/About/BoardOfSupervisors/2026Meetings/2026.08.12-NTCD-Board-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official published Board Meeting Library lists 2026-08-12; linked agenda was downloaded and explicitly states Agenda 08.12.2026 at 10:00. Official agenda/notice evidence only; no minutes/completion record was checked, so status remains unknown."
+      ],
+      "start_time": "10:00"
+    },
+    {
+      "agency": "ntcd",
+      "source_id": "2026-04-27",
+      "title": "Nevada Tahoe Conservation District Board of Supervisors Meeting",
+      "official_url": "https://ntcd.org/board-of-supervisors/",
+      "date": "2026-04-27",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "ntcd-agenda-2026-04-27",
+          "title": "Official NTCD Board Meeting agenda",
+          "url": "https://ntcd.org/wp-content/uploads/About/BoardOfSupervisors/2026Meetings/2026.04.27-NTCD-Board-Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official published Board Meeting Library lists 2026-04-27; linked agenda was downloaded and explicitly states Agenda 4.27.2026 at 13:00. Official agenda/notice evidence only; no minutes/completion record was checked, so status remains unknown."
+      ],
+      "start_time": "13:00"
+    }
+  ]
+}

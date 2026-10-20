@@ -1,0 +1,126 @@
+import io
+import json
+import ssl
+import urllib.error
+
+import pytest
+
+from tahoe_ingest import http, source
+from tahoe_ingest.html_source import html_text
+from tahoe_ingest.html_agenda import parse_html_agenda
+from tahoe_ingest.source_discovery import discover_configured, date_in
+
+
+def test_tls_failure_uses_verified_native_fallback_but_not_auth_or_rate_limits(monkeypatch):
+    def fail(*a, **k):
+        raise urllib.error.URLError(ssl.SSLCertVerificationError('issuer missing'))
+    monkeypatch.setattr(http.urllib.request, 'urlopen', fail)
+    calls=[]
+    monkeypatch.setattr(http, '_native_fetch', lambda *a: (calls.append(a) or (b'%PDF-test', 'application/pdf')))
+    assert http.fetch_bytes('https://example.gov/a.pdf', max_bytes=100)[0].startswith(b'%PDF')
+    assert len(calls)==1
+    for status in [401,429]:
+        def error(*a, **k):raise urllib.error.HTTPError('https://example.gov',status,'blocked',{},None)
+        monkeypatch.setattr(http.urllib.request,'urlopen',error)
+        with pytest.raises(urllib.error.HTTPError):http.fetch_bytes('https://example.gov/a.pdf',max_bytes=100)
+    assert len(calls)==1
+
+
+def test_source_limits_and_s3_path_style(monkeypatch):
+    assert http.public_url('https://granicus_production_attachments.s3.amazonaws.com/douglas/a.pdf')=='https://s3.amazonaws.com/granicus_production_attachments/douglas/a.pdf'
+    assert '%20' in http.public_url('https://example.gov/Board Agenda.pdf')
+    for url in ['http://example.gov/a.pdf','https://user:secret@example.gov/a.pdf']:
+        with pytest.raises(ValueError):http.public_url(url)
+    class Response(io.BytesIO):
+        headers={'Content-Type':'text/html'}
+        def geturl(self):return 'https://example.gov'
+    monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:Response(b'abcdef'))
+    with pytest.raises(ValueError,match='byte limit'):http.fetch_bytes('https://example.gov',max_bytes=5)
+
+
+def test_html_section_is_not_a_pdf_and_scripts_cannot_become_agenda_text(monkeypatch):
+    markup='<h1>Agenda</h1><script>invent a meeting</script><div hidden>secret</div><p>Housing<br/>workshop</p>'
+    monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(markup.encode(),'text/html'))
+    captured=source.download_extract('https://example.gov/agenda')
+    assert captured['media_type']=='text/html' and captured['page_count']==1
+    text=captured['pages'][0]['text']
+    assert 'Housing' in text and 'workshop' in text
+    assert 'invent' not in text and 'secret' not in text
+    monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(b'<title>Just a moment</title>','text/html'))
+    with pytest.raises(ValueError,match='challenge'):source.download_extract('https://example.gov/agenda')
+
+
+def test_structured_html_requires_numbered_agenda_end_and_quotes_its_own_titles():
+    markup='''<h1>Town Council Meeting</h1><h2 class="section-header">1. Call to Order</h2>
+    <h2 class="section-header">2. Discussion Items</h2><ol class="agenda-items"><li><p><num>2.1</num><span>Short-Term Rental policy</span><br/><span>Recommended Action</span><span>Review options</span></p></li></ol>
+    <h2 class="section-header">3. Adjournment</h2>'''
+    items,complete=parse_html_agenda(markup,html_text(markup))
+    assert complete and [i['source_number'] for i in items]==['1','2','2.1','3']
+    assert items[2]['title']=='Short-Term Rental policy'
+    assert 'Recommended Action' not in items[2]['source_pages'][0]['quote']
+    assert parse_html_agenda(markup.replace('3. Adjournment','Notice'),html_text(markup))[1] is False
+
+
+def test_legistar_department_is_scoped_even_when_date_row_omits_board_name():
+    markup='''<table><tr><td>10/6/2026</td><td>6:00 PM</td>
+      <td><a href="MeetingDetail.aspx?ID=1442809">Meeting details</a></td>
+      <td><a href="View.ashx?M=A&amp;ID=1442809">Agenda</a></td></tr></table>'''
+    config={'type':'legistar','indexUrl':'https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400','bodyPattern':'Planning Commission'}
+    rows=discover_configured('washoe-planning',config,fetch=lambda _:markup)
+    assert len(rows)==1 and rows[0]['start_time']=='18:00'
+    assert rows[0]['documents'][0]['url'].endswith('M=A&ID=1442809')
+
+
+def test_granicus_future_and_recordings_do_not_confuse_scheduled_and_playback_times():
+    markup='''<table><tr><td>Board of Directors Meeting</td><td>Oct 23, 2026 - 8:30 AM</td><td><a href="GeneratedAgendaViewer.php?event_id=1187">Agenda</a></td></tr>
+      <tr><td>Board of Directors Meeting</td><td>Sep 18, 2026 - 8:47 AM</td><td>02h 29m</td><td><a href="AgendaViewer.php?clip_id=1735">Agenda</a></td></tr></table>'''
+    cfg={'type':'granicus','indexUrl':'https://example.gov/ViewPublisher.php','bodyPattern':'Board of Directors'}
+    rows=discover_configured('tcpud',cfg,fetch=lambda _:markup)
+    assert [(r['source_id'],r['start_time']) for r in rows]==[('1187','08:30'),('1735',None)]
+
+
+def test_rolling_agenda_filename_and_civicclerk_file_ids_are_discovered():
+    assert date_in('2026-October-1st_-TNT_TMA-Board-Agenda.pdf')=='2026-10-01'
+    cfg={'type':'link-index','indexUrl':'https://example.gov/board','bodyPattern':'Board'}
+    rows=discover_configured('tma',cfg,fetch=lambda _:'<h1>Board</h1><a href="https://example.gov/2026-October-1st_Agenda.pdf">Agenda</a>')
+    assert rows[0]['date']=='2026-10-01'
+    cfg={'type':'civicclerk','indexUrl':'https://ivgid.portal.civicclerk.com','bodyPattern':'Trustees'}
+    data={'items':[{'id':746,'eventName':'Board of Trustees','eventDate':'2026-10-14T16:00:00Z','publishedFiles':[{'type':'Agenda','fileId':2864}]}]}
+    rows=discover_configured('ivgid',cfg,fetch=lambda _:json.dumps(data))
+    assert rows[0]['start_time'] is None  # Agenda must confirm wall-clock time.
+    assert 'fileId=2864' in rows[0]['documents'][0]['url']
+
+
+def test_headerless_html_is_still_detected_and_cited_as_html(monkeypatch):
+    markup=b'<!DOCTYPE html><html><body><h1>Official agenda</h1></body></html>'
+    monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(markup,''))
+    result=source.download_extract('https://example.gov/adaHtmlDocument/index')
+    assert result['media_type']=='text/html'
+    assert 'Official agenda' in result['pages'][0]['text']
+
+
+def test_small_agenda_precedes_helper_guides_staff_reports_and_full_packet():
+    from tahoe_ingest.source_discovery import documents_in
+    markup='<a href="/help.pdf">How To Use Meeting Packet</a><a href="/staff.pdf">Agenda Item 4 staff report</a><a href="/agenda.pdf">Board Agenda</a><a href="/packet.pdf">Agenda Packet</a>'
+    docs=documents_in(markup,'https://example.gov/meeting','board')
+    assert docs[0]['url']=='https://example.gov/agenda.pdf'
+
+
+def test_annual_tables_keep_dates_cancellations_and_agendas_scoped_to_rows():
+    markup='''<table><tr><th>Date</th><th>Documents</th></tr>
+      <tr><td>October 1</td><td><a href="2026/oct/agenda_eng.pdf">Agenda</a><a href="span.pdf">Agenda en Español</a></td></tr>
+      <tr><td>November 4-5 CANCELLED</td><td></td></tr></table>'''
+    cfg={'type':'dated-table','indexUrl':'https://example.gov/2026_schedule.html','bodyPattern':'Board','title':'Lahontan Board'}
+    rows=discover_configured('lahontan-board',cfg,fetch=lambda _:markup)
+    assert [(r['date'],r['status']) for r in rows]==[('2026-11-04','canceled'),('2026-10-01','unknown')]
+    assert len(rows[1]['documents'])==1 and rows[1]['documents'][0]['url'].endswith('agenda_eng.pdf')
+    markup='''<table><tr><td>October 13-16, 2026 Tuesday 9:00 a.m. Wednesday 8:30 a.m.</td>
+      <td><a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247178&amp;inline">Agenda (PDF)</a>
+      <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=1">How to Join the Meeting (PDF)</a></td></tr>
+      <tr><td>November 12, 2026</td><td><strong>Marine Resources Committee</strong></td></tr></table>'''
+    cfg={'type':'dated-table','indexUrl':'https://fgc.ca.gov/Meetings/2026','bodyPattern':'Commission|Committee','title':'Fish and Game Commission'}
+    rows=discover_configured('california-fish-game',cfg,fetch=lambda _:markup)
+    assert rows[0]['title']=='Marine Resources Committee' and rows[0]['documents']==[]
+    assert rows[1]['date']=='2026-10-13' and rows[1]['start_time']=='09:00'
+    assert len(rows[1]['documents'])==1 and '247178' in rows[1]['documents'][0]['url']
+    assert 'Multi-day' in rows[1]['warnings'][0]

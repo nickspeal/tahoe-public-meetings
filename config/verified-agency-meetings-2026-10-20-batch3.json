@@ -1,0 +1,109 @@
+{
+  "captured_at": "2026-10-20T15:22:58.210143+00:00",
+  "candidates": [
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-10-13",
+      "title": "Washoe County Board of County Commissioners Meeting",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-36/",
+      "date": "2026-10-13",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official post-meeting highlights verify this Board meeting occurred; agenda/packet text was not captured."
+      ],
+      "start_time": "10:00"
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-09-15",
+      "title": "Washoe County Board of County Commissioners Meeting",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-35/",
+      "date": "2026-09-15",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official post-meeting highlights verify this Board meeting occurred; agenda/packet text was not captured."
+      ],
+      "start_time": "10:00"
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-09-08",
+      "title": "Washoe County Board of County Commissioners Meeting",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-34/",
+      "date": "2026-09-08",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official post-meeting highlights verify this Board meeting occurred; agenda/packet text was not captured."
+      ],
+      "start_time": "10:00"
+    },
+    {
+      "agency": "washoe-planning",
+      "source_id": "2026-07-07",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+      "date": "2026-07-07",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official archive lists the meeting date; agenda text not captured."
+      ],
+      "start_time": "18:00"
+    },
+    {
+      "agency": "washoe-planning",
+      "source_id": "2026-05-05",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+      "date": "2026-05-05",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF is linked from the county archive, but Python TLS validation failed for the county host; this record retains the official source page and needs document-text capture."
+      ],
+      "start_time": "18:00"
+    },
+    {
+      "agency": "washoe-planning",
+      "source_id": "2026-04-07",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+      "date": "2026-04-07",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official agenda PDF is linked from the county archive, but Python TLS validation failed for the county host; this record retains the official source page and needs document-text capture."
+      ],
+      "start_time": "18:00"
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-10-20",
+      "title": "Washoe County Board of County Commissioners Regular Meeting (2026-10-20; canceled)",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/board-of-county-commissioners/cancelled-board-of-county-commissioners-regular-meeting-for-october-20-2026/",
+      "date": "2026-10-20",
+      "start_time": "10:00",
+      "status": "canceled",
+      "documents": [],
+      "warnings": [
+        "Official Washoe County announcement explicitly says the scheduled Board meeting was canceled."
+      ]
+    },
+    {
+      "agency": "washoe-commissioners",
+      "source_id": "2026-09-22",
+      "title": "Washoe County Board of County Commissioners Regular Meeting (2026-09-22; canceled)",
+      "official_url": "https://washoelife.washoecounty.gov/washoe-county/board-of-county-commissioners/cancelled-board-of-county-commissioners-regular-meeting-for-september-22-2026/",
+      "date": "2026-09-22",
+      "start_time": "10:00",
+      "status": "canceled",
+      "documents": [],
+      "warnings": [
+        "Official Washoe County announcement explicitly says the scheduled Board meeting was canceled."
+      ]
+    }
+  ]
+}

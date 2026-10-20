@@ -1,0 +1,982 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-20",
+  "basis": "The maintainer-directed source resolutions and official-source checks on October 20, 2026; recovered links and deferred publication checks are recorded per entry.",
+  "reviews": [
+    {
+      "id": "SR-001",
+      "agencyId": "placer-tahoe-design-review",
+      "name": "Placer County — Design Review Committee - Tahoe Basin",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [
+        "body-identity-check"
+      ],
+      "issue": "The imported October 1 cancellation cites “OVDRC”, while the configured body is Tahoe Basin Design Review Committee. The cited PreviousVersions/6577 page currently identifies an August 25 TBDRC agenda. This suggests an attribution or source-link error, not proof that the configured committee is invalid. The September 22 notice also needs its body checked.",
+      "nextStep": "The intended body is Tahoe Basin Design Review Committee. Official archive confirms Aug25 agenda; official calendar confirms Sep22 special meeting at 16:00 and Oct27 regular meeting at 16:00. Quarantine/remove only the misattributed Oct1 OVDRC record while retaining its provenance; add the genuine Aug25 item and verify Sep22 against native IDs.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Committee profile and regular schedule",
+          "url": "https://www.placer.ca.gov/3636/Tahoe-Basin-Design-Review-Committee"
+        },
+        {
+          "label": "Official agenda archive",
+          "url": "https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13"
+        },
+        {
+          "label": "August 25 agenda",
+          "url": "https://www.placer.ca.gov/AgendaCenter/ViewFile/Agenda/_08252026-6577"
+        },
+        {
+          "label": "September 22 event",
+          "url": "https://www.placer.ca.gov/Calendar.aspx?EID=56852&calType=0&day=13&month=9&year=2026"
+        },
+        {
+          "label": "October 27 event",
+          "url": "https://www.placer.ca.gov/Calendar.aspx?EID=57006&calType=0&day=18&month=10&year=2026"
+        },
+        {
+          "label": "Official RSS index (access blocked; no category feed verified)",
+          "url": "https://www.placer.ca.gov/rss.aspx"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; correct source attribution",
+        "resolvedAt": "2026-10-20",
+        "note": "The intended body is Tahoe Basin Design Review Committee. Official archive confirms Aug25 agenda; official calendar confirms Sep22 special meeting at 16:00 and Oct27 regular meeting at 16:00. Quarantine/remove only the misattributed Oct1 OVDRC record while retaining its provenance; add the genuine Aug25 item and verify Sep22 against native IDs."
+      },
+      "discovery": {
+        "rssIndexUrl": "https://www.placer.ca.gov/rss.aspx",
+        "agendaCenterUrl": "https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13",
+        "categoryFeedUrl": null,
+        "finding": "The official category archive exposes an RSS control, but the linked county RSS index returned HTTP 403 during native TLS retrieval and the browser fetch was also forbidden. No board-specific feed URL was verified; do not configure or accept an inferred RSS URL."
+      },
+      "implementation": "Misattributed Oct1 record is now quarantined in the database and its original candidate is retained in config/quarantined-meeting-candidates.json. Genuine Aug25 and Sep22 notices are published. Agenda fetch still returns 403; see SOURCE-001."
+    },
+    {
+      "id": "SR-002",
+      "agencyId": "douglas-newsletter",
+      "name": "Douglas County — Newsletter",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "CSV entry is a newsletter channel (County Direction / Board Buzz), not a distinct meeting board. County board meetings are separately followed.",
+      "nextStep": "County newsletter is not a distinct meeting body; the maintainer directed disable.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.douglascountynv.gov/home"
+        }
+      ],
+      "resolution": {
+        "decision": "disable follow",
+        "resolvedAt": "2026-10-20",
+        "note": "County newsletter is not a distinct meeting body; the maintainer directed disable."
+      }
+    },
+    {
+      "id": "SR-003",
+      "agencyId": "fows",
+      "name": "FOWS — E-News",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "Imported entry is Friends of the West Shore E-News. No public FOWS meeting schedule was found; public pages point to other agencies’ meetings.",
+      "nextStep": "FOWS E-News is not a verified public meeting series; the maintainer directed disable.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.friendswestshore.org/newsletter"
+        }
+      ],
+      "resolution": {
+        "decision": "disable follow",
+        "resolvedAt": "2026-10-20",
+        "note": "FOWS E-News is not a verified public meeting series; the maintainer directed disable."
+      }
+    },
+    {
+      "id": "SR-004",
+      "agencyId": "lahontan-office",
+      "name": "Lahontan — Main office",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "Administrative office entry; Lahontan Board meetings already have a separate source. No distinct office-hosted meeting series was found.",
+      "nextStep": "Administrative office duplicates separate Lahontan Board source; the maintainer directed disable.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.waterboards.ca.gov/lahontan/"
+        }
+      ],
+      "resolution": {
+        "decision": "disable follow",
+        "resolvedAt": "2026-10-20",
+        "note": "Administrative office duplicates separate Lahontan Board source; the maintainer directed disable."
+      }
+    },
+    {
+      "id": "SR-005",
+      "agencyId": "tahoe-fund",
+      "name": "Tahoe Fund — E-news",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "Imported entry is an e-news channel. Public meeting notices were not located; the separate board-materials page requires a board login. This does not establish that the nonprofit holds no meetings.",
+      "nextStep": "E-news and board-login source do not establish a public meeting series; the maintainer directed disable.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "News archive",
+          "url": "https://www.tahoefund.org/latestnews/"
+        },
+        {
+          "label": "Board login",
+          "url": "https://www.tahoefund.org/board-login/"
+        }
+      ],
+      "resolution": {
+        "decision": "disable follow",
+        "resolvedAt": "2026-10-20",
+        "note": "E-news and board-login source do not establish a public meeting series; the maintainer directed disable."
+      }
+    },
+    {
+      "id": "SR-006",
+      "agencyId": "ltbmu",
+      "name": "LTBMU — Main office",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [
+        "freshness-gap"
+      ],
+      "issue": "Forest Service administrative unit with project notices and comment opportunities; no recent Tahoe-relevant public meeting notice was located in the prior pass. A comment period alone is not a meeting.",
+      "nextStep": "Keep LTBMU. No current public Tahoe-relevant meeting or active comment deadline was verified in this pass. Retain the unit newsroom/project notice source; model public comment periods separately from meetings.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "LTBMU newsroom",
+          "url": "https://www.fs.usda.gov/r05/laketahoebasin/newsroom"
+        },
+        {
+          "label": "Caldor Fire Restoration comment notice (closed)",
+          "url": "https://www.fs.usda.gov/r05/laketahoebasin/newsroom/releases/forest-service-seeks-feedback-caldor-fire-restoration"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; include public-comment-period discovery",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep LTBMU. No current public Tahoe-relevant meeting or active comment deadline was verified in this pass. Retain the unit newsroom/project notice source; model public comment periods separately from meetings."
+      }
+    },
+    {
+      "id": "SR-007",
+      "agencyId": "tahoe-usfs",
+      "name": "Tahoe USFS",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "“Tahoe USFS” was mapped to Tahoe National Forest. Confirm that this is distinct from the separately listed Lake Tahoe Basin Management Unit. No current public meeting notice was found.",
+      "nextStep": "Keep Tahoe National Forest distinct from LTBMU. Its official newsroom/project feed remains a source for Tahoe-relevant comment periods; no current active meeting or comment period verified in this pass.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Tahoe National Forest newsroom",
+          "url": "https://www.fs.usda.gov/r05/tahoe/newsroom"
+        },
+        {
+          "label": "Tahoe National Forest current projects",
+          "url": "https://www.fs.usda.gov/r05/tahoe/projects"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; include public-comment-period discovery",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Tahoe National Forest distinct from LTBMU. Its official newsroom/project feed remains a source for Tahoe-relevant comment periods; no current active meeting or comment period verified in this pass."
+      }
+    },
+    {
+      "id": "SR-008",
+      "agencyId": "cal-epa",
+      "name": "Cal EPA",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "CalEPA is an agency umbrella, not one meeting board. The prior pass did not import statewide committee meetings without an identified Tahoe connection. That scope choice is provisional, not the maintainer’s decision to exclude them.",
+      "nextStep": "CalEPA is too broad as one meeting body; the maintainer directed disable.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://calepa.ca.gov/"
+        }
+      ],
+      "resolution": {
+        "decision": "disable follow",
+        "resolvedAt": "2026-10-20",
+        "note": "CalEPA is too broad as one meeting body; the maintainer directed disable."
+      }
+    },
+    {
+      "id": "SR-009",
+      "agencyId": "usfws",
+      "name": "USFWS",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [
+        "freshness-gap"
+      ],
+      "issue": "No recent Tahoe-specific public meeting was located. General USFWS events and task-force meetings elsewhere were not imported; absence from the dataset does not prove absence of relevant meetings.",
+      "nextStep": "Keep USFWS. The Reno Fish and Wildlife Office is the relevant regional source identified; its official news archive includes Tahoe-related public notices. No current active Tahoe comment deadline or meeting was verified in this pass.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Reno Fish and Wildlife Office",
+          "url": "https://www.fws.gov/office/reno-fish-and-wildlife"
+        },
+        {
+          "label": "Reno office news",
+          "url": "https://www.fws.gov/office/reno-fish-and-wildlife/news"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; include public-comment-period discovery",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep USFWS. The Reno Fish and Wildlife Office is the relevant regional source identified; its official news archive includes Tahoe-related public notices. No current active Tahoe comment deadline or meeting was verified in this pass."
+      }
+    },
+    {
+      "id": "SR-010",
+      "agencyId": "usace",
+      "name": "USACE",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "Sacramento District has regulatory workshops, but the prior pass did not identify a recent Tahoe-specific meeting. Project public notices may describe comment periods rather than meetings.",
+      "nextStep": "The maintainer directed disable this source.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.spk.usace.army.mil/Missions/Regulatory/References/Regulatory-Program-Workshop/"
+        }
+      ],
+      "resolution": {
+        "decision": "disable follow",
+        "resolvedAt": "2026-10-20",
+        "note": "The maintainer directed disable this source."
+      }
+    },
+    {
+      "id": "SR-011",
+      "agencyId": "california-state-parks",
+      "name": "California State Parks",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "This single entry currently combines OHMVR Commission and State Park and Recreation Commission meetings, including statewide meetings. PDFs were captured successfully using native curl after Python certificate failures.",
+      "nextStep": "Keep California State Parks statewide, including the existing commission sources; the maintainer approved occasional Tahoe-related items within the statewide scope.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "OHMVR Commission",
+          "url": "https://ohv.parks.ca.gov/?page_id=27160"
+        },
+        {
+          "label": "State Park and Recreation Commission",
+          "url": "https://www.parks.ca.gov/?page_id=31042"
+        }
+      ],
+      "resolution": {
+        "decision": "keep statewide source",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep California State Parks statewide, including the existing commission sources; the maintainer approved occasional Tahoe-related items within the statewide scope."
+      }
+    },
+    {
+      "id": "SR-012",
+      "agencyId": "nevada-state-parks",
+      "name": "Nevada State Parks",
+      "status": "resolved",
+      "group": "Confirm source identity or purpose",
+      "flags": [],
+      "issue": "Only the October 28 statewide regulatory hearing in Carson City was imported. This is a genuine hearing notice but not a regular Tahoe-area board series.",
+      "nextStep": "Keep Nevada State Parks statewide; the maintainer approved occasional Tahoe-related items within the statewide scope.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks"
+        }
+      ],
+      "resolution": {
+        "decision": "keep statewide source",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Nevada State Parks statewide; the maintainer approved occasional Tahoe-related items within the statewide scope."
+      }
+    },
+    {
+      "id": "SR-013",
+      "agencyId": "placer-supervisors",
+      "name": "Placer County — Board of Supervisors",
+      "status": "deferred",
+      "group": "Unresolved download failures",
+      "flags": [
+        "download-blocked"
+      ],
+      "issue": "Prior worker downloads of several agenda PDFs returned HTTP 403. One document was captured, but other records remain notice-only; this is partial success, not a wholly inaccessible agency.",
+      "nextStep": "Keep Placer Board of Supervisors. The maintainer accepts blocked agenda ingestion for now because some official PDFs returned HTTP 403; retain URLs and retry later.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "2026 archive",
+          "url": "https://www.placer.ca.gov/10616/_2026"
+        },
+        {
+          "label": "October 6 PDF that failed",
+          "url": "https://www.placer.ca.gov/DocumentCenter/View/117996/2026-100626-FINAL-Agenda"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda acquisition blocked temporarily",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Placer Board of Supervisors. The maintainer accepts blocked agenda ingestion for now because some official PDFs returned HTTP 403; retain URLs and retry later."
+      }
+    },
+    {
+      "id": "SR-014",
+      "agencyId": "placer-planning",
+      "name": "Placer County — Planning Commission",
+      "status": "deferred",
+      "group": "Unresolved download failures",
+      "flags": [
+        "download-blocked"
+      ],
+      "issue": "Several agenda downloads returned HTTP 403 in the prior pass. One document was captured, but other meetings lack agenda text.",
+      "nextStep": "Keep Placer Planning Commission. The maintainer accepts blocked agenda ingestion for now because some official PDFs returned HTTP 403; retain URLs and retry later.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "2026 archive",
+          "url": "https://www.placer.ca.gov/10617/_2026"
+        },
+        {
+          "label": "October 15 PDF that failed",
+          "url": "https://www.placer.ca.gov/DocumentCenter/View/118212/2026-101526-FINAL-Agenda"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda acquisition blocked temporarily",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Placer Planning Commission. The maintainer accepts blocked agenda ingestion for now because some official PDFs returned HTTP 403; retain URLs and retry later."
+      }
+    },
+    {
+      "id": "SR-015",
+      "agencyId": "washoe-planning",
+      "name": "Washoe County — Planning Commission",
+      "status": "resolved",
+      "group": "Unresolved download failures",
+      "flags": [],
+      "issue": "Official Washoe Legistar department page now lists the Planning Commission. The Oct6 2026 agenda was retrieved with verified TLS and explicitly names the commission and 18:00 start.",
+      "nextStep": "Keep and capture the verified Oct6 agenda; current Legistar source is usable.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Washoe Planning Commission Legistar department",
+          "url": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC"
+        },
+        {
+          "label": "October 6 agenda",
+          "url": "https://washoe-nv.legistar.com/View.ashx?M=A&ID=1442809&GUID=B11883AA-5CA7-4FAF-ACA1-ABC69C5C7608"
+        },
+        {
+          "label": "October 6 agenda PDF",
+          "url": "https://washoe-nv.legistar.com/View.ashx?M=A&ID=1442809&GUID=B11883AA-5CA7-4FAF-ACA1-ABC69C5C7608"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; current Legistar source verified",
+        "resolvedAt": "2026-10-20",
+        "note": "Official Washoe Legistar department page now lists the Planning Commission. The Oct6 2026 agenda was retrieved with verified TLS and explicitly names the commission and 18:00 start."
+      },
+      "implementation": "The Oct6 agenda is ingested through the permanent verified-TLS download path; the configured Legistar department discovers the current native meeting ID."
+    },
+    {
+      "id": "SR-016",
+      "agencyId": "el-dorado-planning",
+      "name": "El Dorado County — Planning Commission",
+      "status": "resolved",
+      "group": "Unresolved download failures",
+      "flags": [],
+      "issue": "Official El Dorado Legistar Planning Commission page lists Oct22 at 09:00 (meeting ID1452289, GUID 94045196-802C-40EB-AF25-544045F059E0) and Oct8. The Oct22 public agenda was retrieved with verified TLS; agenda PDF explicitly identifies the date, time, and Planning Commission.",
+      "nextStep": "Keep and capture the Oct22 agenda; prefer the concise Agenda PDF and avoid the oversized packet.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Planning Commission department and current meetings",
+          "url": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415"
+        },
+        {
+          "label": "October 22 meeting details",
+          "url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=94045196-802C-40EB-AF25-544045F059E0&ID=1452289"
+        },
+        {
+          "label": "October 22 agenda PDF",
+          "url": "https://eldorado.legistar.com/View.ashx?GUID=94045196-802C-40EB-AF25-544045F059E0&ID=1452289&M=A"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; current Legistar source verified",
+        "resolvedAt": "2026-10-20",
+        "note": "Official El Dorado Legistar Planning Commission page lists Oct22 at 09:00 (meeting ID1452289, GUID 94045196-802C-40EB-AF25-544045F059E0) and Oct8. The Oct22 public agenda was retrieved with verified TLS; agenda PDF explicitly identifies the date, time, and Planning Commission."
+      },
+      "implementation": "The Oct22 small agenda PDF is ingested; structured Legistar discovery can find agenda/accessible-agenda links without downloading the full packet."
+    },
+    {
+      "id": "SR-017",
+      "agencyId": "slt-planning",
+      "name": "South Lake Tahoe — Planning Commission",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "The Planning Commission is a distinct body from the Parks and Recreation Commission. The official SLT Granicus publisher is now configured with bodyPattern “Planning Commission”; the former CivicPlus Agenda Center remains only a supporting legacy link.",
+      "nextStep": "Keep the Granicus source constrained to the exact Planning Commission body. The Oct 21, Sep 16, and Aug 19 at 08:00 candidates belong to the separately followed Parks and Recreation Commission, not this Planning Commission.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "City watch / agenda page",
+          "url": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+        },
+        {
+          "label": "Configured Granicus publisher (Planning Commission body filter)",
+          "url": "https://slt.granicus.com/ViewPublisher.php?view_id=6"
+        },
+        {
+          "label": "CivicPlus Agenda Center (legacy; broad all-category RSS only)",
+          "url": "https://www.cityofslt.gov/AgendaCenter"
+        },
+        {
+          "label": "Official RSS index",
+          "url": "https://www.cityofslt.gov/rss.aspx"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; configure Granicus with Planning Commission body filter",
+        "resolvedAt": "2026-10-20",
+        "note": "Planning Commission remains separate from Parks and Recreation Commission. Configured Granicus publisher view 6 with bodyPattern “Planning Commission”. SLT RSS index exposes only a broad Agenda Center All feed; no category-specific eligible RSS feed is listed."
+      },
+      "discovery": {
+        "rssIndexUrl": "https://www.cityofslt.gov/rss.aspx",
+        "broadFeedUrl": "https://www.cityofslt.gov/RSSFeed.aspx?ModID=65&CID=All-0",
+        "eligibleCategoryFeedUrls": [],
+        "finding": "The official RSS index offers only an Agenda Center All feed (ModID=65, CID=All-0); it is broad across categories and must not be auto-accepted as a Planning Commission feed. Granicus is the configured source, filtered by exact body name."
+      }
+    },
+    {
+      "id": "SR-018",
+      "agencyId": "tcpud",
+      "name": "TCPUD — Board",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Only dates from the 2026 board calendar were captured. No agenda or packet text was imported.",
+      "nextStep": "TCPUD meetings page links its Board and Committee agenda portal. Oct23 Board agenda (event 1187) confirms 08:30 and was posted Oct16. Add the Parks & Recreation Committee as a separate body using its Oct13 08:30 agenda (clip 1738), posted Oct9.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "TCPUD Board and Committee meetings",
+          "url": "https://www.tcpud.org/meetings"
+        },
+        {
+          "label": "October 23 Board agenda",
+          "url": "https://tahoecitypud.granicus.com/GeneratedAgendaViewer.php?view_id=2&event_id=1187"
+        },
+        {
+          "label": "October 13 Parks and Recreation Committee agenda",
+          "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1738"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; Board Granicus source verified",
+        "resolvedAt": "2026-10-20",
+        "note": "TCPUD meetings page links its Board and Committee agenda portal. Oct23 Board agenda (event 1187) confirms 08:30 and was posted Oct16. Add the Parks & Recreation Committee as a separate body using its Oct13 08:30 agenda (clip 1738), posted Oct9."
+      },
+      "implementation": "Oct23 Board notice/agenda and three separate Parks & Recreation Committee meetings are ingested. Configured Granicus discovery was exercised against the current publisher."
+    },
+    {
+      "id": "SR-019",
+      "agencyId": "ivgid",
+      "name": "IVGID — Board",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "IVGID CivicClerk event 746 and API agenda file 2864 verify the Oct14 Board of Trustees meeting at 16:00. The agenda was retrieved successfully; the prior stored synopsis is not a substitute for an agenda.",
+      "nextStep": "Keep CivicClerk as official source and capture agenda file 2864 alongside existing synopsis without losing the latter.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "IVGID Oct14 event",
+          "url": "https://ivgid.portal.civicclerk.com/event/746/overview"
+        },
+        {
+          "label": "Official agenda file 2864",
+          "url": "https://ivgid.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=2864,plainText=false)"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; CivicClerk source verified",
+        "resolvedAt": "2026-10-20",
+        "note": "IVGID CivicClerk event 746 and API agenda file 2864 verify the Oct14 Board of Trustees meeting at 16:00. The agenda was retrieved successfully; the prior stored synopsis is not a substitute for an agenda."
+      },
+      "implementation": "The Oct14 agenda is ingested alongside the previous synopsis. Future CivicClerk discovery reads public event file IDs and uses the agenda stream endpoint."
+    },
+    {
+      "id": "SR-020",
+      "agencyId": "ntcd",
+      "name": "NTCD — Board",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "The official embedded Board Meeting Library lists Sep28, Aug12, Apr27 2026, with Agenda/Packet/Minutes entries. The published sheet retains agenda hyperlinks; all three official agenda PDFs were retrieved and their meeting start times verified.",
+      "nextStep": "Capture all three agenda PDFs from the official sheet. Their individual agendas state 13:00, 10:00, and 13:00 respectively; status remains unknown absent completion evidence.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "NTCD Board page",
+          "url": "https://ntcd.org/board-of-supervisors/"
+        },
+        {
+          "label": "Official published Board Meeting Library preserving links",
+          "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4aTYmjstsH_N06j4NGelCESd-ONVcib4QUp2i4gUn_7nROGirLdlGbSI5WwMcNjHIxY0t-WCTeU7e/pubhtml/sheet?headers=false&gid=0"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; official board page and archive identified",
+        "resolvedAt": "2026-10-20",
+        "note": "The official embedded Board Meeting Library lists Sep28, Aug12, Apr27 2026, with Agenda/Packet/Minutes entries. The published sheet retains agenda hyperlinks; all three official agenda PDFs were retrieved and their meeting start times verified. Times are confirmed per individual agenda; candidate status stays unknown."
+      },
+      "implementation": "All three individual agenda PDFs are ingested with their stated times. Configured published-sheet discovery preserves direct links, rather than the link-less CSV export."
+    },
+    {
+      "id": "SR-021",
+      "agencyId": "truckee-north-shore-tma",
+      "name": "Truckee North Tahoe Transportation Management Association",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Official TNT/TMA page states a first-Thursday, 08:00 Board schedule. The October 1 agenda confirms the distinct Board meeting; July 9 official minutes identify a separate Board meeting and call to order at 08:02.",
+      "nextStep": "Keep board and transit-workshop records distinct; capture Oct1 agenda and July9 minutes.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "TNT/TMA Board agendas and minutes",
+          "url": "https://tnttma.com/tma-board-agenda/"
+        },
+        {
+          "label": "October 1 Board agenda PDF",
+          "url": "https://tnttma.com/wp-content/uploads/2026/09/2026-October-1st_-TNT_TMA-Board-Agenda.docx.pdf"
+        },
+        {
+          "label": "July 9 minutes PDF",
+          "url": "https://tnttma.com/wp-content/uploads/2026/09/TNT-TMA-Minutes-7.9.26-v2.docx-1.pdf"
+        },
+        {
+          "label": "October 1 Board agenda",
+          "url": "https://tnttma.com/wp-content/uploads/2026/09/2026-October-1st_-TNT_TMA-Board-Agenda.docx.pdf"
+        },
+        {
+          "label": "July 9 Board minutes",
+          "url": "https://tnttma.com/wp-content/uploads/2026/09/TNT-TMA-Minutes-7.9.26-v2.docx-1.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; correct board agenda source",
+        "resolvedAt": "2026-10-20",
+        "note": "Official TNT/TMA page states a first-Thursday, 08:00 Board schedule. The October 1 agenda confirms the distinct Board meeting; July 9 official minutes identify a separate Board meeting and call to order at 08:02."
+      },
+      "implementation": "The Oct1 Board agenda and Jul9 minutes are stored separately from the Oct1 transit-needs workshop. The rolling agenda index is configured; original links/hashes/text are retained without storing PDFs."
+    },
+    {
+      "id": "SR-022",
+      "agencyId": "douglas-transportation",
+      "name": "Douglas County — Regional Transportation Commission",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Official Granicus archive lists an RTC supplemental record on July13 at 10:01 and links clip1812. The linked PDF identifies a July13 RTC meeting but is supplemental Item 3 material, not a complete meeting agenda; the archive timestamp is not a verified start time.",
+      "nextStep": "Keep the RTC source. Capture the linked supplemental material with its true title and retry for a full meeting agenda or minutes; do not label this attachment as the complete agenda.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Douglas County official meeting publisher",
+          "url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1"
+        },
+        {
+          "label": "Official RTC supplemental Item 3 document",
+          "url": "https://granicus_production_attachments.s3.amazonaws.com/douglascountynv/8cb9bc9814907dde6836703d3ab4de750.pdf"
+        },
+        {
+          "label": "RTC supplemental archive agenda viewer",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1812"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; use current RTC publisher",
+        "resolvedAt": "2026-10-20",
+        "note": "Official Granicus archive lists an RTC supplemental record on July13 at 10:01 and links clip1812. The linked PDF identifies a July13 RTC meeting but is supplemental Item 3 material, not a complete meeting agenda; the archive timestamp is not a verified start time."
+      },
+      "implementation": "The July13 supplemental Item3 document is stored as supporting material, not misrepresented as a complete agenda. Publisher playback time is not used as a confirmed scheduled start."
+    },
+    {
+      "id": "SR-023",
+      "agencyId": "trcd",
+      "name": "TRCD — Board",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Official Oct15 TRCD Board agenda was retrieved and identifies the Board of Directors, date, and 13:00–16:00 meeting time; this closes the August freshness gap.",
+      "nextStep": "Capture the Oct15 agenda as text and retain unknown status unless completion evidence is added.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "TRCD Board meetings",
+          "url": "https://tahoercd.specialdistrict.org/board-meetings"
+        },
+        {
+          "label": "October 15 Board agenda PDF",
+          "url": "https://tahoercd.specialdistrict.org/files/e8777592e/10.15.26+Board+Meeting+Agenda.pdf"
+        },
+        {
+          "label": "October 15 agenda PDF",
+          "url": "https://tahoercd.specialdistrict.org/files/e8777592e/10.15.26+Board+Meeting+Agenda.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; current TRCD source verified",
+        "resolvedAt": "2026-10-20",
+        "note": "Official Oct15 TRCD Board agenda was retrieved and identifies the Board of Directors, date, and 13:00–16:00 meeting time; this closes the August freshness gap."
+      },
+      "implementation": "The Oct15 official agenda is ingested. Rolling link-index discovery finds the current posted agenda."
+    },
+    {
+      "id": "SR-024",
+      "agencyId": "trpa-advisory",
+      "name": "TRPA — Advisory Planning Committee",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Latest located APC archive entry is July 8. Native curl read the current official archive when browser/search access failed; three agenda PDFs were captured successfully.",
+      "nextStep": "Official TRPA archive identifies APC July8 2026 as the latest posted meeting in this review. Keep Sep/Oct notice futures distinct; check again on next source cycle.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "TRPA meeting materials archive",
+          "url": "https://www.trpa.gov/meeting-materials/"
+        },
+        {
+          "label": "July 8 APC meeting materials",
+          "url": "https://www.trpa.gov/advisory-planning-commission-meeting-july-8-2026-hybrid-meeting/"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; freshness gap closed against current archive",
+        "resolvedAt": "2026-10-20",
+        "note": "Official TRPA archive identifies APC July8 2026 as the latest posted meeting in this review. Keep Sep/Oct notice futures distinct; check again on next source cycle."
+      }
+    },
+    {
+      "id": "SR-025",
+      "agencyId": "douglas-commissioners",
+      "name": "Douglas County — Board of Commissioners",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Granicus notices were imported, but agenda/packet links were not captured. No specific download error is established by this gap.",
+      "nextStep": "Keep Douglas Board of Commissioners. Current Granicus records and meeting source are identified; ordinary future agenda publication can be checked closer to the meeting. No source-access blocker is established.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda check deferred until ordinary posting window",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Douglas Board of Commissioners. Current Granicus records and meeting source are identified; ordinary future agenda publication can be checked closer to the meeting. No source-access blocker is established."
+      }
+    },
+    {
+      "id": "SR-026",
+      "agencyId": "douglas-planning",
+      "name": "Douglas County — Planning Commission",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Granicus notices were imported, but agenda/packet links were not captured. No specific download error is established by this gap.",
+      "nextStep": "Keep Douglas Planning Commission. Current Granicus records and meeting source are identified; ordinary future agenda publication can be checked closer to the meeting. No source-access blocker is established.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda check deferred until ordinary posting window",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Douglas Planning Commission. Current Granicus records and meeting source are identified; ordinary future agenda publication can be checked closer to the meeting. No source-access blocker is established."
+      }
+    },
+    {
+      "id": "SR-027",
+      "agencyId": "el-dorado-supervisors",
+      "name": "El Dorado County — Board of Supervisors",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Legistar meeting details were imported, but agenda PDFs were not fetched. No specific download error is established by this gap.",
+      "nextStep": "Keep El Dorado Board of Supervisors. Official Legistar source is available; future agenda posting is a routine deferred check, not a blocked source.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://eldorado.legistar.com/Calendar.aspx"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda check deferred until ordinary posting window",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep El Dorado Board of Supervisors. Official Legistar source is available; future agenda posting is a routine deferred check, not a blocked source."
+      }
+    },
+    {
+      "id": "SR-028",
+      "agencyId": "washoe-commissioners",
+      "name": "Washoe County — Board of Commissioners",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Records came from meeting highlights and cancellation announcements, not captured agendas/packets. No specific download error is established by this gap.",
+      "nextStep": "Keep Washoe Board of Commissioners. Official county meeting highlights/cancellation source remains in scope; future agenda/packet publication is a routine deferred check, not a blocked source.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://washoelife.washoecounty.gov/category/washoe-county/board-of-county-commissioners/"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda check deferred until ordinary posting window",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep Washoe Board of Commissioners. Official county meeting highlights/cancellation source remains in scope; future agenda/packet publication is a routine deferred check, not a blocked source."
+      }
+    },
+    {
+      "id": "SR-029",
+      "agencyId": "ctc",
+      "name": "CTC — Board",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Official meeting pages were captured as notices, but agenda content was not extracted. No specific download error is established by this gap.",
+      "nextStep": "Keep CTC Board. Official page remains the source; future agenda publication is a routine deferred check, not a blocked source.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://tahoe.ca.gov/board-meetings-agendas/"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda check deferred until ordinary posting window",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep CTC Board. Official page remains the source; future agenda publication is a routine deferred check, not a blocked source."
+      }
+    },
+    {
+      "id": "SR-030",
+      "agencyId": "state-lands",
+      "name": "California State Lands Commission",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Official meeting pages and voting records were identified, but agenda content was not extracted. No specific download error is established by this gap.",
+      "nextStep": "Keep State Lands Commission. Official meeting page remains the source; future agenda publication is a routine deferred check, not a blocked source.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Commission meetings",
+          "url": "https://www.slc.ca.gov/meetings/"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda check deferred until ordinary posting window",
+        "resolvedAt": "2026-10-20",
+        "note": "Keep State Lands Commission. Official meeting page remains the source; future agenda publication is a routine deferred check, not a blocked source."
+      }
+    },
+    {
+      "id": "SR-031",
+      "agencyId": "truckee",
+      "name": "Town of Truckee",
+      "status": "resolved",
+      "group": "Need a better agenda or current archive link",
+      "flags": [],
+      "issue": "Town official archive links Municode; Sep22 HTML agenda identifies the Town Council meeting and 17:00 start. The linked official HTML is now a capture candidate.",
+      "nextStep": "Capture Sep22 Municode HTML agenda. Keep unknown status absent evidence the meeting occurred.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Town Council official page",
+          "url": "https://www.townoftruckee.gov/275/Town-Council"
+        },
+        {
+          "label": "Meeting agendas and minutes archive",
+          "url": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes"
+        },
+        {
+          "label": "September 22 Municode HTML agenda",
+          "url": "https://meetings.municode.com/adaHtmlDocument/index?cc=TRUCKEECA&me=365001dc14804044b4edd416938af109&ip=false"
+        },
+        {
+          "label": "September 22 Municode HTML agenda",
+          "url": "https://meetings.municode.com/adaHtmlDocument/index?cc=TRUCKEECA&me=365001dc14804044b4edd416938af109&ip=false"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; official Council archive verified",
+        "resolvedAt": "2026-10-20",
+        "note": "September22 Municode HTML agenda is now ingested under the existing calendar record via a persisted source alias: 26 exact-cited headings are published without fake PDF page numbers. Future discovery reads the public meeting index behind the official wrapper."
+      },
+      "implementation": "September22 Municode HTML agenda is now ingested under the existing calendar record via a persisted source alias: 26 exact-cited headings are published without fake PDF page numbers. Future discovery reads the public meeting index behind the official wrapper."
+    },
+    {
+      "id": "SR-032",
+      "agencyId": "lahontan-board",
+      "name": "Lahontan — Board",
+      "status": "resolved",
+      "group": "Recovered access issues; maintainer follow-up",
+      "flags": [
+        "access-workaround"
+      ],
+      "issue": "Python TLS validation failed, but native curl with normal certificate verification succeeded. All three selected agendas and 35 cited headings are stored.",
+      "nextStep": "Recheck through worker discover/capture as new agendas are posted.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html"
+        }
+      ],
+      "resolution": {
+        "decision": "keep source; access recovered",
+        "resolvedAt": "2026-10-20",
+        "note": "Python TLS validation failed, but native curl with normal certificate verification succeeded. All three selected agendas and 35 cited headings are stored."
+      },
+      "implementation": "The permanent worker fetcher and container now include the bounded verified-TLS native fallback. A live download of the October1 Lahontan agenda succeeded through source.download_extract. Configured annual-table discovery now resolves dates, first-day times, cancellation notices, and small agenda links; the year template follows the current annual index."
+    },
+    {
+      "id": "SR-033",
+      "agencyId": "california-fish-game",
+      "name": "California Fish and Game — Commission and Committees",
+      "status": "resolved",
+      "group": "Recovered access issues; maintainer follow-up",
+      "flags": [
+        "access-workaround"
+      ],
+      "issue": "Python PDF retrieval failed certificate validation; native curl succeeded for all three agendas. Text is stored; item parsing remains incomplete.",
+      "nextStep": "Recheck through worker discover/capture; PDF agenda item parsing remains separate work.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://fgc.ca.gov/Meetings/2026"
+        }
+      ],
+      "resolution": {
+        "decision": "keep source; access recovered",
+        "resolvedAt": "2026-10-20",
+        "note": "Python PDF retrieval failed certificate validation; native curl succeeded for all three agendas. Text is stored; item parsing remains incomplete."
+      },
+      "implementation": "The permanent worker fetcher successfully downloaded the 23-page October13–16 agenda through normal TLS verification; parser support remains separate work. Configured annual-table discovery now resolves dates, first-day times, cancellation notices, and small agenda links; the year template follows the current annual index."
+    },
+    {
+      "id": "SR-034",
+      "agencyId": "trpa-governing",
+      "name": "TRPA — Governing Board",
+      "status": "resolved",
+      "group": "Recovered access issues; maintainer follow-up",
+      "flags": [
+        "access-workaround"
+      ],
+      "issue": "Browser/search archive access failed, but direct native curl retrieved the current archive and three agenda PDFs were captured.",
+      "nextStep": "No source-removal decision needed. Use the working official archive path in acquisition tooling.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Meeting materials",
+          "url": "https://www.trpa.gov/meeting-materials/"
+        }
+      ],
+      "resolution": {
+        "decision": "keep source; access recovered",
+        "resolvedAt": "2026-10-20",
+        "note": "Browser/search archive access failed, but direct native curl retrieved the current archive and three agenda PDFs were captured."
+      },
+      "implementation": "The permanent fetcher successfully read the current TRPA archive as HTML; body-filtered configured discovery supports future agenda checks."
+    },
+    {
+      "id": "SR-035",
+      "agencyId": "slt-parks-recreation-commission",
+      "name": "South Lake Tahoe Parks and Recreation Commission",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "The maintainer requested this separate commission. Official City watch page links council/commission agendas and meeting recordings; no recent committee-specific meeting notice captured yet.",
+      "nextStep": "Keep the separate body and capture notices/documents using its official source.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-10-20",
+        "note": "Three Commission meetings are ingested: Aug19, Sep16, and upcoming Oct21, with verified 08:00 start times from the agendas."
+      },
+      "implementation": "Three Commission meetings are ingested: Aug19, Sep16, and upcoming Oct21, with verified 08:00 start times from the agendas."
+    },
+    {
+      "id": "SR-036",
+      "agencyId": "tcpud-parks-recreation-committee",
+      "name": "TCPUD Parks and Recreation Committee",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "The maintainer requested this separate committee. Official Oct13 2026 08:30 agenda (clip 1738) is verified; retain as a distinct body from TCPUD Board.",
+      "nextStep": "Keep the separate body and capture notices/documents using its official source.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://www.tcpud.org/meetings"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-10-20",
+        "note": "The maintainer requested this separate committee. Official Oct13 2026 08:30 agenda (clip 1738) is verified; retain as a distinct body from TCPUD Board."
+      },
+      "implementation": "Three committee agendas are ingested (Aug11, Sep8, Oct13) with verified 08:30 times; supported structured HTML headings publish where validated."
+    }
+  ]
+}

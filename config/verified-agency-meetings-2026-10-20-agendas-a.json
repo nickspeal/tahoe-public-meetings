@@ -1,0 +1,215 @@
+{
+  "captured_at": "2026-10-20T00:00:00Z",
+  "candidates": [
+    {
+      "agency": "douglas-commissioners",
+      "source_id": "2026-09-17",
+      "title": "Douglas County Board of County Commissioners Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-09-17",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1880",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1880"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "douglas-commissioners",
+      "source_id": "2026-10-01",
+      "title": "Douglas County Board of County Commissioners Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-10-01",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1892",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1892"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "douglas-commissioners",
+      "source_id": "2026-10-15",
+      "title": "Douglas County Board of County Commissioners Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-10-15",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1907",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1907"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "douglas-planning",
+      "source_id": "2026-07-14",
+      "title": "Douglas County Planning Commission Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-07-14",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1820",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1820"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "douglas-planning",
+      "source_id": "2026-08-11",
+      "title": "Douglas County Planning Commission Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-08-11",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1855",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1855"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "douglas-planning",
+      "source_id": "2026-10-13",
+      "title": "Douglas County Planning Commission Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-10-13",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1901",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1901"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "douglas-transportation",
+      "source_id": "2026-05-21-joint-bcc-rtc",
+      "title": "Douglas County Board of County Commissioners and Regional Transportation Commission Joint Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-05-21",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-view_id-1-clip_id-1750",
+          "title": "Official agenda",
+          "url": "https://douglascountynv.granicus.com/AgendaViewer.php?view_id=1&clip_id=1750"
+        }
+      ],
+      "warnings": [
+        "Official Granicus lists this 10:00 AM joint meeting with the Regional Transportation Commission and provides agenda, minutes, video, and packet. This is a joint BCC/RTC meeting, not evidence of a separate RTC meeting. The county's RTC board detail says standalone meetings are held as called; no newer standalone RTC record was found."
+      ]
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "2026-09-10",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=151667CF-2842-466D-B900-AE0BD005FB39&ID=1439704&Options=&Search=",
+      "date": "2026-09-10",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-5286_A_Planning_Commission_26-09-10_MEETING_AGENDA-pdf",
+          "title": "Official agenda",
+          "url": "https://eldorado.legistar1.com/eldorado/meetings/2026/9/5286_A_Planning_Commission_26-09-10_MEETING_AGENDA.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "2026-09-24",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=4A58A8CE-0C25-4B23-950F-11B36BCB2D0A&ID=1438897&Options=&Search=",
+      "date": "2026-09-24",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-5302_A_Planning_Commission_26-09-24_MEETING_AGENDA-pdf",
+          "title": "Official agenda",
+          "url": "https://eldorado.legistar1.com/eldorado/meetings/2026/9/5302_A_Planning_Commission_26-09-24_MEETING_AGENDA.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "2026-10-08",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=75218C7A-C00F-4BDF-9A71-984033ECD8F3&ID=1449098&Options=&Search=",
+      "date": "2026-10-08",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-5311_A_Planning_Commission_26-10-08_MEETING_AGENDA-pdf",
+          "title": "Official agenda",
+          "url": "https://eldorado.legistar1.com/eldorado/meetings/2026/10/5311_A_Planning_Commission_26-10-08_MEETING_AGENDA.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "el-dorado-supervisors",
+      "source_id": "2026-09-22",
+      "title": "El Dorado County Board of Supervisors Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=55B70C3A-46AC-43E4-A5AC-7B3E3DD890F4&ID=1411218&Options=info%7C&Search=",
+      "date": "2026-09-22",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-5207_A_Board_of_Supervisors_26-09-22_MEETING_AGENDA-pdf",
+          "title": "Official agenda",
+          "url": "https://eldorado.legistar1.com/eldorado/meetings/2026/9/5207_A_Board_of_Supervisors_26-09-22_MEETING_AGENDA.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "el-dorado-supervisors",
+      "source_id": "2026-09-29",
+      "title": "El Dorado County Board of Supervisors Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?G=1B73DE4C-938C-4A3A-92A4-CDDFE91781FE&GUID=BEC45173-9B06-4567-878A-11A1DD8B8194&ID=1438922&Options=&Search=",
+      "date": "2026-09-29",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "agenda-5285_A_Board_of_Supervisors_26-09-29_MEETING_AGENDA-pdf",
+          "title": "Official agenda",
+          "url": "https://eldorado.legistar1.com/eldorado/meetings/2026/9/5285_A_Board_of_Supervisors_26-09-29_MEETING_AGENDA.pdf"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "agency": "el-dorado-supervisors",
+      "source_id": "2026-10-20",
+      "title": "El Dorado County Board of Supervisors Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?G=1B73DE4C-938C-4A3A-92A4-CDDFE91781FE&GUID=EDAD4A77-1439-447F-A596-6CC84778E9E7&ID=1440017&Options=info%7C&Search=",
+      "date": "2026-10-20",
+      "status": "scheduled",
+      "documents": [
+        {
+          "id": "agenda-5287_A_Board_of_Supervisors_26-10-20_MEETING_AGENDA-pdf",
+          "title": "Official agenda",
+          "url": "https://eldorado.legistar1.com/eldorado/meetings/2026/10/5287_A_Board_of_Supervisors_26-10-20_MEETING_AGENDA.pdf"
+        }
+      ],
+      "warnings": []
+    }
+  ]
+}

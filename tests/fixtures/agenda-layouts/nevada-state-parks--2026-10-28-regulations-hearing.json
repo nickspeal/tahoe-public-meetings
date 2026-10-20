@@ -1,0 +1,42 @@
+{
+ "agency": "nevada-state-parks",
+ "source": "https://parks.nv.gov/uploads/NAC_Hearing_Notice_2026-_updated.pdf",
+ "note": "short hearing notice",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "STATE OF NEVADA\n                                               Dept. of Conservation & Natural Resources\n                                                                 Joe Lombardo, Governor\n                                                               Vinson Guthreau, Director\n                                                          Jonathan Brunjes, Administrator\n\n\n\n    NOTICE OF STAKEHOLDER MEETING TO REVIEW REGULATIONS OF THE NEVADA\n            DIVISION OF STATE PARKS PER EXECUTIVE ORDER 2026-003\n\n\nThe Nevada Division of State Parks (NDSP) is organizing a stakeholder meeting to gather\nrecommendations on regulations that could be streamlined, clarified, amended, or\nrepealed. The meeting will also provide an opportunity for stakeholders to share feedback\non current regulations and identify areas where further improvements may be needed.\n\n\nDate:            October 28, 2026\nTime:            10:00am\nLocation:        Nevada Division of State Parks Headquarters, Richard Bryan Building\n                 901 S. Stewart Street, Tahoe Conference Room (2nd Floor)\n                 Carson City, NV 89701\nVirtual:         https://teams.microsoft.com/meet/246293112573215?p=N8FCXZE0SmOrYDFwEG\nMeeting ID:      246 293 112 573 215\nPasscode:        Mv267Ga9\nOr call in (audio only) +1 775-321-6111,, 272171094#\n\n\nNDSP has regulatory authority over the following Nevada Administrative Code (NAC)\nChapter 407. Links to the current regulations are provided below. Please note that Chapter\n407 has not yet been updated on the Legislative Counsel Bureau website to reflect\namendments approved in April 2024; however, the approved regulation is included here for\nreference.\n    •      Chapter 407 – State Parks and Monuments\n    •      Approved regulation LCB File No. R123-23\n\nPersons wishing to make verbal comment on the proposed regulation of the Division are\nencouraged to participate in the scheduled workshop, either in person or via Microsoft\nTeams. Persons wishing to submit written testimony or documentary evidence may\nsubmit the material by emailing stparks@.nv.gov or by mailing to the following address:\nNevada Division of State Parks, 901 S. Stewart Street Ste. 5005, Carson City, NV 89701."
+  },
+  {
+   "page_number": 2,
+   "text": "Reasonable efforts will be made for members of the public who have disabilities and\nrequire special accommodations for assistance at the meeting. Please contact the\nDivision at 775-684-2770 or stparks@nv.gov prior to the meeting.\nNotice of this meeting has been posted to the following locations: Division website at\nhttps://parks.nv.gov/, Nevada Public Notice website at https://notice.nv.gov/, and physical\nnotice at 901 S. Stewart Street, Carson City, NV 89701.\n\n\n\n\n                                              AGENDA\n   1. CALL MEETING TO ORDER\n\n   2. PUBLIC COMMENT\n       All public comments should be as brief and concise as possible so that all who wish to speak may do\n       so (3 minutes for individuals and 5 minutes for group representatives). Comment will not be\n       restricted based on viewpoint.\n\n   3. REVIEW OF REGULATIONS UNDER THE AUTHORITY OF THE DIVISION OF STATE\n      PARKS\n       *Public comment will be accepted during this item.*\n       Pursuant to Executive Order 2026-003, the Division will solicit input on regulations under its\n       authority, including Nevada Administrative Code (NAC) Chapters 407. Comments should\n       pertain specifically to regulatory content. Feedback received will inform the Division’s\n       comprehensive review of regulations subject to its authority.\n\n   4. Public Comment\n       All public comments should be as brief and concise as possible so that all who wish to speak may do\n       so (3 minutes for individuals and 5 minutes for group representatives). Comment will not be\n       restricted based on viewpoint.\n\n   5. Adjourn"
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   null,
+   "CALL MEETING TO ORDER"
+  ],
+  [
+   "2",
+   null,
+   "PUBLIC COMMENT"
+  ],
+  [
+   "3",
+   null,
+   "REVIEW OF REGULATIONS UNDER THE AUTHORITY OF THE DIVISION OF STATE PARKS"
+  ],
+  [
+   "4",
+   null,
+   "Public Comment"
+  ],
+  [
+   "5",
+   null,
+   "Adjourn"
+  ]
+ ]
+}

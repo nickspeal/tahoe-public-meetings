@@ -1,0 +1,62 @@
+{
+  "captured_at": "2026-10-20T16:56:49+00:00",
+  "candidates": [
+    {
+      "agency": "washoe-planning",
+      "source_id": "1442809",
+      "title": "Washoe County Planning Commission Meeting",
+      "official_url": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
+      "date": "2026-10-06",
+      "status": "unknown",
+      "start_time": "18:00",
+      "documents": [
+        {
+          "id": "washoe-planning-agenda-1442809",
+          "title": "Official Planning Commission agenda",
+          "url": "https://washoe-nv.legistar.com/View.ashx?M=A&ID=1442809&GUID=B11883AA-5CA7-4FAF-ACA1-ABC69C5C7608"
+        }
+      ],
+      "warnings": [
+        "Official Legistar listing identifies Planning Commission meeting ID 1442809; downloaded official six-page agenda explicitly identifies October 6, 2026 at 6:00 PM. Agenda/notice evidence only; status remains unknown."
+      ]
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "1452289",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=94045196-802C-40EB-AF25-544045F059E0&ID=1452289",
+      "date": "2026-10-22",
+      "status": "scheduled",
+      "start_time": "09:00",
+      "documents": [
+        {
+          "id": "el-dorado-planning-agenda-1452289",
+          "title": "Official Planning Commission agenda",
+          "url": "https://eldorado.legistar.com/View.ashx?GUID=94045196-802C-40EB-AF25-544045F059E0&ID=1452289&M=A"
+        }
+      ],
+      "warnings": [
+        "Official Legistar detail lists October 22, 2026 at 09:00, meeting ID 1452289. Downloaded official agenda confirms the date, time, and Planning Commission body. Future meeting; status is scheduled. Agenda packet omitted because the separate official agenda is available."
+      ]
+    },
+    {
+      "agency": "ivgid",
+      "source_id": "2026-10-14",
+      "title": "Incline Village General Improvement District Board of Trustees Meeting",
+      "official_url": "https://ivgid.portal.civicclerk.com/event/746/overview",
+      "date": "2026-10-14",
+      "status": "unknown",
+      "start_time": "16:00",
+      "documents": [
+        {
+          "id": "ivgid-agenda-2026-10-14",
+          "title": "Official Board of Trustees agenda",
+          "url": "https://ivgid.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=2864,plainText=false)"
+        }
+      ],
+      "warnings": [
+        "Official CivicClerk event 746 and agenda file 2864 verify the Board of Trustees meeting on October 14, 2026 at 16:00. Agenda and an existing synopsis are both available; keep documents distinct and status unknown unless completion is verified."
+      ]
+    }
+  ]
+}

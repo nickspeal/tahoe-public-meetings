@@ -1,0 +1,1214 @@
+[
+  {
+    "id": "ttd",
+    "name": "Tahoe Transportation District",
+    "shortName": "TTD",
+    "follow": true,
+    "discoveryAdapter": "ttd",
+    "officialUrl": "https://tahoetransportation.org/",
+    "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
+    "schedule": {
+      "source": "configured",
+      "note": "Operator-configured 2026-10-20: TTD board meetings are on the first Wednesday of each month at 3 PM. learn-schedules independently matched 4 of 4 regular timed 2026 records.",
+      "rules": [
+        {
+          "ordinal": 1,
+          "weekday": "wednesday",
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "TTD Board of Directors Meeting"
+        }
+      ]
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 3,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "TTD",
+      "body": "Board of Directors, committees",
+      "meetingSchedule": "1st Wednesday",
+      "agendaPublishingSchedule": "About a week before",
+      "notification": "",
+      "website": "https://tahoetransportation.org/meetings-and-agendas/"
+    }
+  },
+  {
+    "id": "slt",
+    "name": "City of South Lake Tahoe",
+    "shortName": "South Lake Tahoe",
+    "follow": true,
+    "discoveryAdapter": "slt",
+    "officialUrl": "https://www.cityofslt.gov/",
+    "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 4,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "South Lake Tahoe",
+      "body": "City Council",
+      "meetingSchedule": "1st and 3rd Tuesdays",
+      "agendaPublishingSchedule": "2nd and 4th Thursdays",
+      "notification": "https://www.cityofslt.us/list.aspx",
+      "website": "https://cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+    }
+  },
+  {
+    "id": "slt-planning",
+    "name": "South Lake Tahoe — Planning Commission",
+    "shortName": "South Lake Tahoe",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.cityofslt.gov/114/Planning-Commission",
+    "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+      "bodyPattern": "Planning Commission"
+    },
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "thursday",
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "South Lake Tahoe Planning Commission Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-08-20",
+        "lastDate": "2026-10-15",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 5,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "South Lake Tahoe",
+      "body": "Planning Commission",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "https://www.cityofslt.us/list.aspx",
+      "website": "https://cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+    }
+  },
+  {
+    "id": "trpa-advisory",
+    "name": "TRPA — Advisory Planning Committee",
+    "shortName": "TRPA",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.trpa.gov/",
+    "sourceUrl": "https://www.trpa.gov/meeting-materials/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 6,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "TRPA",
+      "body": "Advisory Planning Committee",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "No",
+      "website": ""
+    },
+    "discovery": {
+      "type": "trpa",
+      "indexUrl": "https://www.trpa.gov/meeting-materials/",
+      "bodyPattern": "Advisory Planning Commission"
+    }
+  },
+  {
+    "id": "trpa-governing",
+    "name": "TRPA — Governing Board",
+    "shortName": "TRPA",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.trpa.gov/",
+    "sourceUrl": "https://www.trpa.gov/meeting-materials/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 7,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "TRPA",
+      "body": "Governing Board",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "No",
+      "website": ""
+    },
+    "discovery": {
+      "type": "trpa",
+      "indexUrl": "https://www.trpa.gov/meeting-materials/",
+      "bodyPattern": "Governing Board"
+    }
+  },
+  {
+    "id": "douglas-commissioners",
+    "name": "Douglas County — Board of Commissioners",
+    "shortName": "Douglas County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.douglascountynv.gov/government/board-of-county-commissioners",
+    "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 1,
+          "weekday": "thursday",
+          "time": "10:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Douglas County Board of County Commissioners Meeting"
+        },
+        {
+          "ordinal": 3,
+          "weekday": "thursday",
+          "time": "10:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Douglas County Board of County Commissioners Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-09-17",
+        "lastDate": "2026-10-15",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 8,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Douglas County",
+      "body": "Board of Commissioners",
+      "meetingSchedule": "1st and 3rd Thursdays",
+      "agendaPublishingSchedule": "5 days before",
+      "notification": "Website isn't working: https://www.douglascountynv.gov/cms/One.aspx?portalId=12493103&pageId=12557332",
+      "website": "https://www.douglascountynv.gov/cms/one.aspx?portalid=12493103&pageid=12553208"
+    }
+  },
+  {
+    "id": "douglas-planning",
+    "name": "Douglas County — Planning Commission",
+    "shortName": "Douglas County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.douglascountynv.gov/government/county_boards_and_commissions",
+    "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "tuesday",
+          "time": "13:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Douglas County Planning Commission Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-07-14",
+        "lastDate": "2026-10-13",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 9,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Douglas County",
+      "body": "Planning Commission",
+      "meetingSchedule": "2nd Tuesdays",
+      "agendaPublishingSchedule": "5 days before",
+      "notification": "Website isn't working: https://www.douglascountynv.gov/cms/One.aspx?portalId=12493103&pageId=12557332",
+      "website": "https://www.douglascountynv.gov/cms/one.aspx?pageId=12553412"
+    }
+  },
+  {
+    "id": "douglas-newsletter",
+    "name": "Douglas County — Newsletter",
+    "shortName": "Douglas County",
+    "follow": false,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.douglascountynv.gov/",
+    "sourceUrl": "https://www.douglascountynv.gov/home",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 10,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Douglas County",
+      "body": "Newsletter",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "Website isn't working",
+      "website": "https://www.douglascountynv.gov/cms/One.aspx?portalId=12493103&pageId=12557332"
+    }
+  },
+  {
+    "id": "douglas-transportation",
+    "name": "Douglas County — Regional Transportation Commission",
+    "shortName": "Douglas County",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://douglascountynv.gov/",
+    "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 11,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Douglas County",
+      "body": "Regional Transportation Committee",
+      "meetingSchedule": "No",
+      "agendaPublishingSchedule": "5 days before",
+      "notification": "Website isn't working: https://www.douglascountynv.gov/cms/One.aspx?portalId=12493103&pageId=12557332",
+      "website": "https://www.douglascountynv.gov/cms/one.aspx?portalid=12493103&pageid=12553418"
+    },
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "bodyPattern": "Regional Transportation Commission"
+    }
+  },
+  {
+    "id": "el-dorado-supervisors",
+    "name": "El Dorado County — Board of Supervisors",
+    "shortName": "El Dorado County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.eldoradocounty.ca.gov/County-Government/Board-of-Supervisors",
+    "sourceUrl": "https://eldorado.legistar.com/Calendar.aspx",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 12,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "El Dorado County",
+      "body": "Board of Supervisors",
+      "meetingSchedule": "2-3 Tuesday per month",
+      "agendaPublishingSchedule": "",
+      "notification": "https://service.govdelivery.com/accounts/CAELDOR/subscriber/new?topic_id=CAELDOR_2",
+      "website": "https://www.edcgov.us/Government/BOS"
+    }
+  },
+  {
+    "id": "el-dorado-planning",
+    "name": "El Dorado County — Planning Commission",
+    "shortName": "El Dorado County",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
+    "sourceUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "thursday",
+          "time": "09:00",
+          "timezone": "America/Los_Angeles",
+          "label": "El Dorado County Planning Commission Meeting"
+        },
+        {
+          "ordinal": 4,
+          "weekday": "thursday",
+          "time": "09:00",
+          "timezone": "America/Los_Angeles",
+          "label": "El Dorado County Planning Commission Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-09-10",
+        "lastDate": "2026-10-08",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 13,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "El Dorado County",
+      "body": "Planning Commission",
+      "meetingSchedule": "2nd and 4th Tuesdays 8:30am",
+      "agendaPublishingSchedule": "",
+      "notification": "https://service.govdelivery.com/accounts/CAELDOR/subscriber/new?topic_id=CAELDOR_25",
+      "website": "https://www.edcgov.us/Government/planning/Pages/planning_commission.aspx"
+    },
+    "discovery": {
+      "type": "legistar",
+      "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
+      "bodyPattern": "Planning Commission"
+    }
+  },
+  {
+    "id": "washoe-commissioners",
+    "name": "Washoe County — Board of Commissioners",
+    "shortName": "Washoe County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.washoecounty.gov/bcc/board_committees/",
+    "sourceUrl": "https://washoelife.washoecounty.gov/category/washoe-county/board-of-county-commissioners/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 14,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Washoe County",
+      "body": "Board of Commissioners",
+      "meetingSchedule": "2nd, 3rd, and 4th Tuesdays at 10am",
+      "agendaPublishingSchedule": "",
+      "notification": "https://www.washoecounty.us/county_news_update_subscription.php",
+      "website": "https://www.washoecounty.us/bcc/index.php"
+    }
+  },
+  {
+    "id": "washoe-planning",
+    "name": "Washoe County — Planning Commission",
+    "shortName": "Washoe County",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
+    "sourceUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 1,
+          "weekday": "tuesday",
+          "time": "18:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Washoe County Planning Commission Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-04-07",
+        "lastDate": "2026-07-07",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 15,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Washoe County",
+      "body": "Planning Commission",
+      "meetingSchedule": "1st Tuesday of each month 6:30pm",
+      "agendaPublishingSchedule": "",
+      "notification": "https://www.washoecounty.us/county_news_update_subscription.php",
+      "website": "https://www.washoecounty.us/csd/planning_and_development/board_commission/planning_commission/index.php"
+    },
+    "discovery": {
+      "type": "legistar",
+      "indexUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
+      "bodyPattern": "Planning Commission"
+    }
+  },
+  {
+    "id": "placer-supervisors",
+    "name": "Placer County — Board of Supervisors",
+    "shortName": "Placer County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.placer.ca.gov/bos",
+    "sourceUrl": "https://www.placer.ca.gov/10616/_2026",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 16,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Placer County",
+      "body": "Board of Supervisors",
+      "meetingSchedule": "2nd and 4th Tuesdays 9am",
+      "agendaPublishingSchedule": "72 hours before",
+      "notification": "",
+      "website": "https://www.placer.ca.gov/2231/Board-of-Supervisors"
+    }
+  },
+  {
+    "id": "placer-planning",
+    "name": "Placer County — Planning Commission",
+    "shortName": "Placer County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.placer.ca.gov/2403/Planning-Commission",
+    "sourceUrl": "https://www.placer.ca.gov/10617/_2026",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 17,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Placer County",
+      "body": "Planning Commission",
+      "meetingSchedule": "2nd and 4th Thursdays 10am",
+      "agendaPublishingSchedule": "72 hours before",
+      "notification": "",
+      "website": "https://www.placer.ca.gov/2403/Planning-Commission"
+    }
+  },
+  {
+    "id": "placer-transportation",
+    "name": "Placer County — Transportation Planning Agency",
+    "shortName": "Placer County",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": null,
+    "sourceUrl": null,
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 4,
+          "weekday": "wednesday",
+          "time": "09:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Placer County Transportation Planning Agency Board of Directors Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-08-26",
+        "lastDate": "2026-10-28",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 18,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Placer County",
+      "body": "Transportation Planning Agency",
+      "meetingSchedule": "4th Wednesdays 9am",
+      "agendaPublishingSchedule": "72 hours before",
+      "notification": "",
+      "website": "https://www.placer.ca.gov/2393/Placer-County-Transportation-Planning-Ag"
+    }
+  },
+  {
+    "id": "placer-tahoe-design-review",
+    "name": "Placer County — Design Review Committee - Tahoe Basin",
+    "shortName": "Placer County",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.placer.ca.gov/3636/Tahoe-Basin-Design-Review-Committee",
+    "sourceUrl": "https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 19,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Placer County",
+      "body": "Design Review Committee - Tahoe Basin",
+      "meetingSchedule": "As called",
+      "agendaPublishingSchedule": "72 hours before",
+      "notification": "",
+      "website": "https://www.placer.ca.gov/3636/Tahoe-Basin-Design-Review-Committee"
+    },
+    "discovery": {
+      "type": "civicplus",
+      "indexUrl": "https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13",
+      "bodyPattern": "Tahoe Basin Design Review Committee"
+    }
+  },
+  {
+    "id": "south-shore-tma",
+    "name": "South Shore Transportation Management Association — Board",
+    "shortName": "South Shore TMA",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://ss-tma.org/",
+    "sourceUrl": "https://ss-tma.org/board-meetings/",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "friday",
+          "time": "08:30",
+          "timezone": "America/Los_Angeles",
+          "label": "South Shore Transportation Management Association Board of Directors Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-07-17",
+        "lastDate": "2026-09-18",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 20,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "South Shore TMA",
+      "body": "Board/general",
+      "meetingSchedule": "3rd Friday 8:30am",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    }
+  },
+  {
+    "id": "truckee-north-shore-tma",
+    "name": "Truckee North Tahoe Transportation Management Association",
+    "shortName": "Truckee North Shore TMA",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://tnttma.com/",
+    "sourceUrl": "https://tnttma.com/tma-board-agenda/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 21,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Truckee North Shore TMA",
+      "body": "Membership",
+      "meetingSchedule": "1st Thursday 8am",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": "https://chamber.truckee.com/list/member/truckee-north-tahoe-transportation-management-association-tnt-tma-truckee-2428"
+    },
+    "discovery": {
+      "type": "link-index",
+      "indexUrl": "https://tnttma.com/tma-board-agenda/",
+      "bodyPattern": "Board Meeting|TNT.?TMA",
+      "idPrefix": "board-"
+    }
+  },
+  {
+    "id": "ntpud",
+    "name": "NTPUD — Board",
+    "shortName": "NTPUD",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://ntpud.org/",
+    "sourceUrl": "https://ntpud.org/category/meetings/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 22,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "NTPUD",
+      "body": "Board",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    }
+  },
+  {
+    "id": "tcpud",
+    "name": "TCPUD — Board",
+    "shortName": "TCPUD",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.tcpud.org/",
+    "sourceUrl": "https://www.tcpud.org/meetings",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 23,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "TCPUD",
+      "body": "Board",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    },
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2",
+      "bodyPattern": "Board of Directors"
+    }
+  },
+  {
+    "id": "ivgid",
+    "name": "IVGID — Board",
+    "shortName": "IVGID",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.yourtahoeplace.com/about-ivgid",
+    "sourceUrl": "https://ivgid.portal.civicclerk.com/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 24,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "IVGID",
+      "body": "Board",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    },
+    "discovery": {
+      "type": "civicclerk",
+      "indexUrl": "https://ivgid.portal.civicclerk.com/",
+      "bodyPattern": "Trustees",
+      "apiUrl": "https://ivgid.api.civicclerk.com/v1",
+      "portalUrl": "https://ivgid.portal.civicclerk.com"
+    }
+  },
+  {
+    "id": "fows",
+    "name": "FOWS — E-News",
+    "shortName": "FOWS",
+    "follow": false,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.friendswestshore.org/",
+    "sourceUrl": "https://www.friendswestshore.org/newsletter",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 25,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "FOWS",
+      "body": "E-News",
+      "meetingSchedule": "N/A",
+      "agendaPublishingSchedule": "N/A",
+      "notification": "https://www.friendswestshore.org/newsletter",
+      "website": "https://www.friendswestshore.org/"
+    }
+  },
+  {
+    "id": "lahontan-board",
+    "name": "Lahontan — Board",
+    "shortName": "Lahontan",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.waterboards.ca.gov/lahontan/",
+    "sourceUrl": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 26,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Lahontan ",
+      "body": "Board",
+      "meetingSchedule": "Monthly, dates vary ",
+      "agendaPublishingSchedule": "",
+      "notification": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2020_schedule.html",
+      "website": "https://www.waterboards.ca.gov/resources/email_subscriptions/reg6_subscribe.html"
+    },
+    "discovery": {
+      "type": "dated-table",
+      "indexUrl": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html",
+      "indexUrlTemplate": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/{year}_schedule.html",
+      "bodyPattern": "Board",
+      "title": "Lahontan Board Meeting"
+    }
+  },
+  {
+    "id": "lahontan-office",
+    "name": "Lahontan — Main office",
+    "shortName": "Lahontan",
+    "follow": false,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.waterboards.ca.gov/lahontan/",
+    "sourceUrl": "https://www.waterboards.ca.gov/lahontan/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 27,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Lahontan",
+      "body": "Main office",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "Yes",
+      "website": "https://www.waterboards.ca.gov/resources/email_subscriptions/reg6_subscribe.html"
+    }
+  },
+  {
+    "id": "ltbmu",
+    "name": "LTBMU — Main office",
+    "shortName": "LTBMU",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.fs.usda.gov/r05/laketahoebasin",
+    "sourceUrl": "https://www.fs.usda.gov/r05/laketahoebasin/newsroom",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 28,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "LTBMU",
+      "body": "Main office",
+      "meetingSchedule": "N/A",
+      "agendaPublishingSchedule": "N/A",
+      "notification": "Not sure",
+      "website": "https://www.fs.usda.gov/detail/ltbmu/news-events/?cid=stelprdb5262366"
+    },
+    "participationTypes": [
+      "public-comment-period",
+      "meeting"
+    ]
+  },
+  {
+    "id": "ctc",
+    "name": "CTC — Board",
+    "shortName": "CTC",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://tahoe.ca.gov/",
+    "sourceUrl": "https://tahoe.ca.gov/board-meetings-agendas/",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "thursday",
+          "months": [
+            3,
+            6,
+            9,
+            12
+          ],
+          "time": "09:30",
+          "timezone": "America/Los_Angeles",
+          "label": "California Tahoe Conservancy Board Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 3,
+        "matched": 3,
+        "firstDate": "2026-03-19",
+        "lastDate": "2026-09-17",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 29,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "CTC",
+      "body": "Board",
+      "meetingSchedule": "Second Tuesday 10am",
+      "agendaPublishingSchedule": "https://tahoe.ca.gov/board-meetings-agendas/",
+      "notification": "yes",
+      "website": ""
+    }
+  },
+  {
+    "id": "trcd",
+    "name": "TRCD — Board",
+    "shortName": "TRCD",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://tahoercd.org/",
+    "sourceUrl": "https://tahoercd.specialdistrict.org/board-meetings",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 30,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "TRCD",
+      "body": "Board",
+      "meetingSchedule": "Monthly",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    },
+    "discovery": {
+      "type": "link-index",
+      "indexUrl": "https://tahoercd.specialdistrict.org/board-meetings",
+      "bodyPattern": "Board Meeting"
+    }
+  },
+  {
+    "id": "ntcd",
+    "name": "NTCD — Board",
+    "shortName": "NTCD",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://ntcd.org/",
+    "sourceUrl": "https://ntcd.org/board-of-supervisors/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 31,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "NTCD",
+      "body": "Board",
+      "meetingSchedule": "third Tuesday of every month at 10:00 a.m",
+      "agendaPublishingSchedule": "https://ntcd.org/board-of-supervisors/",
+      "notification": "no",
+      "website": ""
+    },
+    "discovery": {
+      "type": "link-index",
+      "indexUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4aTYmjstsH_N06j4NGelCESd-ONVcib4QUp2i4gUn_7nROGirLdlGbSI5WwMcNjHIxY0t-WCTeU7e/pubhtml/sheet?headers=false&gid=0",
+      "bodyPattern": "Board Meeting Library"
+    }
+  },
+  {
+    "id": "ndep",
+    "name": "Nevada Board for Financing Water Projects",
+    "shortName": "NDEP",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": null,
+    "sourceUrl": null,
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 32,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "NDEP",
+      "body": "Board",
+      "meetingSchedule": "As called",
+      "agendaPublishingSchedule": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes",
+      "notification": "https://ndep.nv.gov/about",
+      "website": ""
+    }
+  },
+  {
+    "id": "state-lands",
+    "name": "California State Lands Commission",
+    "shortName": "State Lands Commissions",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": null,
+    "sourceUrl": null,
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 33,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "State Lands Commissions",
+      "body": "Board",
+      "meetingSchedule": "Bi-Monthly",
+      "agendaPublishingSchedule": "",
+      "notification": "https://www.slc.ca.gov/meetings/",
+      "website": ""
+    }
+  },
+  {
+    "id": "cal-epa",
+    "name": "Cal EPA",
+    "shortName": "Cal EPA",
+    "follow": false,
+    "discoveryAdapter": null,
+    "officialUrl": "https://calepa.ca.gov/",
+    "sourceUrl": "https://calepa.ca.gov/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 34,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Cal EPA",
+      "body": "",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    }
+  },
+  {
+    "id": "usfws",
+    "name": "USFWS",
+    "shortName": "USFWS",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.fws.gov/office/reno-fish-and-wildlife",
+    "sourceUrl": "https://www.fws.gov/office/reno-fish-and-wildlife/news",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 35,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "USFWS",
+      "body": "",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    },
+    "participationTypes": [
+      "public-comment-period",
+      "meeting"
+    ]
+  },
+  {
+    "id": "usace",
+    "name": "USACE",
+    "shortName": "USACE",
+    "follow": false,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.spk.usace.army.mil/",
+    "sourceUrl": "https://www.spk.usace.army.mil/Missions/Regulatory/References/Regulatory-Program-Workshop/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 36,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "USACE",
+      "body": "",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    }
+  },
+  {
+    "id": "stpud",
+    "name": "STPUD — Board",
+    "shortName": "STPUD",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.stpud.us/",
+    "sourceUrl": "https://www.stpud.us/board-meetings",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 37,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "STPUD",
+      "body": "Board",
+      "meetingSchedule": "2:00 p.m. the first and third Thursday of each month",
+      "agendaPublishingSchedule": "https://stpud.us/about/agendas-minutes/",
+      "notification": "",
+      "website": ""
+    }
+  },
+  {
+    "id": "tahoe-fund",
+    "name": "Tahoe Fund — E-news",
+    "shortName": "Tahoe Fund",
+    "follow": false,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.tahoefund.org/",
+    "sourceUrl": "https://www.tahoefund.org/latestnews/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 38,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Tahoe Fund",
+      "body": "E-news",
+      "meetingSchedule": "N/A",
+      "agendaPublishingSchedule": "N/A",
+      "notification": "https://www.tahoefund.org/latestnews/",
+      "website": ""
+    }
+  },
+  {
+    "id": "california-state-parks",
+    "name": "California State Parks",
+    "shortName": "California State Parks",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.parks.ca.gov/",
+    "sourceUrl": "https://ohv.parks.ca.gov/?page_id=27160",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 39,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "California State Parks",
+      "body": "",
+      "meetingSchedule": "n/a",
+      "agendaPublishingSchedule": "https://signup.e2ma.net/signup/1867760/1810553/",
+      "notification": "https://signup.e2ma.net/signup/1867760/1810553/",
+      "website": ""
+    }
+  },
+  {
+    "id": "nevada-state-parks",
+    "name": "Nevada State Parks",
+    "shortName": "Nevada State Parks",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://parks.nv.gov/",
+    "sourceUrl": "https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 40,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Nevada State Parks",
+      "body": "",
+      "meetingSchedule": "no",
+      "agendaPublishingSchedule": "no",
+      "notification": "no",
+      "website": "http://parks.nv.gov/about/public-notices"
+    }
+  },
+  {
+    "id": "tahoe-usfs",
+    "name": "Tahoe USFS",
+    "shortName": "Tahoe USFS",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://www.fs.usda.gov/r05/tahoe",
+    "sourceUrl": "https://www.fs.usda.gov/r05/tahoe/newsroom",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 41,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Tahoe USFS",
+      "body": "",
+      "meetingSchedule": "As called",
+      "agendaPublishingSchedule": "no",
+      "notification": "",
+      "website": "link not working for agenda sign up"
+    },
+    "participationTypes": [
+      "public-comment-period",
+      "meeting"
+    ]
+  },
+  {
+    "id": "california-fish-game",
+    "name": "California Fish and Game — Commission and Committees",
+    "shortName": "California Fish and Game",
+    "follow": true,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://fgc.ca.gov/",
+    "sourceUrl": "https://fgc.ca.gov/Meetings/2026",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 42,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "California Fish and Game",
+      "body": "Commission and Commitee ",
+      "meetingSchedule": "yes, Mothly commission and committee meetings",
+      "agendaPublishingSchedule": "yes",
+      "notification": "https://fgc.ca.gov/Meetings",
+      "website": ""
+    },
+    "discovery": {
+      "type": "dated-table",
+      "indexUrl": "https://fgc.ca.gov/Meetings/2026",
+      "indexUrlTemplate": "https://fgc.ca.gov/Meetings/{year}",
+      "bodyPattern": "Commission|Committee",
+      "title": "California Fish and Game Commission"
+    }
+  },
+  {
+    "id": "truckee-tahoe-airport",
+    "name": "Truckee Tahoe Airport",
+    "shortName": "Truckee Tahoe Airport",
+    "follow": true,
+    "discoveryAdapter": null,
+    "officialUrl": "https://truckeetahoeairport.com/",
+    "sourceUrl": "https://truckeetahoeairport.com/board_meetings/",
+    "legacy": {
+      "sourceFile": "agencies-to-follow.csv",
+      "sourceRow": 43,
+      "lastUpdated": "2023-02-01",
+      "verification": "unverified",
+      "jurisdiction": "Truckee Tahoe Airport",
+      "body": "",
+      "meetingSchedule": "",
+      "agendaPublishingSchedule": "",
+      "notification": "",
+      "website": ""
+    }
+  },
+  {
+    "id": "truckee",
+    "follow": true,
+    "name": "Town of Truckee",
+    "shortName": "Truckee",
+    "officialUrl": "https://www.townoftruckee.gov/275/Town-Council",
+    "sourceUrl": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes",
+    "discoveryAdapter": "configured",
+    "schedule": {
+      "source": "learned",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "tuesday",
+          "time": "17:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Truckee Town Council, Redevelopment Successor Agency, and Financing Authority Meeting"
+        },
+        {
+          "ordinal": 4,
+          "weekday": "tuesday",
+          "time": "17:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Truckee Town Council, Redevelopment Successor Agency, and Financing Authority Meeting"
+        }
+      ],
+      "confidence": 1.0,
+      "learnedFrom": {
+        "meetings": 5,
+        "matched": 5,
+        "firstDate": "2026-09-08",
+        "lastDate": "2026-11-24",
+        "learnedOn": "2026-10-20"
+      }
+    },
+    "discovery": {
+      "type": "civicplus",
+      "indexUrl": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes",
+      "bodyPattern": "Town Council"
+    }
+  },
+  {
+    "id": "slt-parks-recreation-commission",
+    "name": "City of South Lake Tahoe — Parks and Recreation Commission",
+    "shortName": "South Lake Tahoe",
+    "follow": true,
+    "officialUrl": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings",
+    "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+    "discoveryAdapter": "configured",
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+      "bodyPattern": "Parks and Recreation Commission"
+    }
+  },
+  {
+    "id": "tcpud-parks-recreation-committee",
+    "name": "TCPUD — Parks and Recreation Committee",
+    "shortName": "TCPUD",
+    "follow": true,
+    "officialUrl": "https://www.tcpud.org/",
+    "sourceUrl": "https://www.tcpud.org/meetings",
+    "discoveryAdapter": "configured",
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2",
+      "bodyPattern": "Parks and Recreation Committee"
+    }
+  }
+]

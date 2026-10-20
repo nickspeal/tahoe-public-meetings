@@ -1,0 +1,168 @@
+{
+  "captured_at": "2026-10-20T15:27:14.797104+00:00",
+  "candidates": [
+    {
+      "agency": "state-lands",
+      "source_id": "2026-10-21",
+      "title": "California State Lands Commission Regular Meeting",
+      "official_url": "https://www.slc.ca.gov/meeting/10-21-26-agenda/",
+      "date": "2026-10-21",
+      "status": "scheduled",
+      "documents": [],
+      "warnings": [
+        "Official commission agenda page lists the October 21 meeting at 1:00 PM and includes the agenda; its date is after the 2026-10-20 audit date."
+      ],
+      "start_time": "13:00"
+    },
+    {
+      "agency": "state-lands",
+      "source_id": "2026-08-25",
+      "title": "California State Lands Commission Regular Meeting",
+      "official_url": "https://www.slc.ca.gov/meeting/08-25-26-voting-record/",
+      "date": "2026-08-25",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official meeting page includes the agenda and voting record with commissioners present; meeting occurrence is evidenced by the voting record."
+      ],
+      "start_time": "13:00"
+    },
+    {
+      "agency": "state-lands",
+      "source_id": "2026-07-28",
+      "title": "California State Lands Commission Regular Meeting",
+      "official_url": "https://www.slc.ca.gov/meeting/july-28-2026-voting-record/",
+      "date": "2026-07-28",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official meeting page includes the agenda and voting record with commissioners present; meeting occurrence is evidenced by the voting record."
+      ],
+      "start_time": "10:00"
+    },
+    {
+      "agency": "state-lands",
+      "source_id": "2026-06-23",
+      "title": "California State Lands Commission Regular Meeting",
+      "official_url": "https://www.slc.ca.gov/meeting/june-23-2026-voting-record/",
+      "date": "2026-06-23",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official meeting page includes the agenda and voting record with commissioners present; meeting occurrence is evidenced by the voting record."
+      ],
+      "start_time": "12:00"
+    },
+    {
+      "agency": "ndep",
+      "source_id": "2026-08-19",
+      "title": "Nevada Board for Financing Water Projects Meeting",
+      "official_url": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes",
+      "date": "2026-08-19",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "bfwp-agenda-2026-08-19",
+          "title": "Official board agenda",
+          "url": "https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official archive lists the agenda and draft minutes; agenda identifies this as the State Board for Financing Water Projects. Draft minutes verify it was held."
+      ],
+      "start_time": "09:30"
+    },
+    {
+      "agency": "ndep",
+      "source_id": "2026-06-03",
+      "title": "Nevada Board for Financing Water Projects Meeting",
+      "official_url": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes",
+      "date": "2026-06-03",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "bfwp-agenda-2026-06-03",
+          "title": "Official board agenda",
+          "url": "https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/Agenda_06.03.2026.pdf"
+        }
+      ],
+      "warnings": [
+        "Official archive lists agenda and minutes for this meeting; agenda text will supply the start time if extracted."
+      ]
+    },
+    {
+      "agency": "ndep",
+      "source_id": "2026-05-20",
+      "title": "Nevada Board for Financing Water Projects Meeting",
+      "official_url": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes",
+      "date": "2026-05-20",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "bfwp-agenda-2026-05-20",
+          "title": "Official board agenda",
+          "url": "https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/01-Agenda_05.20.26.pdf"
+        }
+      ],
+      "warnings": [
+        "Official archive lists agenda and minutes for this meeting; agenda text will supply the start time if extracted."
+      ]
+    },
+    {
+      "agency": "trcd",
+      "source_id": "2026-08-04",
+      "title": "Tahoe Resource Conservation District Board Special Meeting",
+      "official_url": "https://www.tahoercd.org/board-meetings",
+      "date": "2026-08-04",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trcd-agenda-2026-08-04",
+          "title": "Official board special meeting agenda",
+          "url": "https://www.tahoercd.org/files/f61b1f2d5/8.4.26%2BSpecial%2BBoard%2BMeeting%2BAgenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official Board Meetings index lists this special meeting and agenda. Agenda document retrieval from the indexed PDF was unavailable to the web archive check; board index confirms the source date/body."
+      ]
+    },
+    {
+      "agency": "trcd",
+      "source_id": "2026-06-18",
+      "title": "Tahoe Resource Conservation District Board Meeting",
+      "official_url": "https://www.tahoercd.org/board-meetings",
+      "date": "2026-06-18",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trcd-agenda-2026-06-18",
+          "title": "Official board agenda",
+          "url": "https://www.tahoercd.org/files/0c32c99e4/6.18.26%2BBoard%2BMeeting%2BAgenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official agenda identifies the Board of Directors meeting, 1:00 PM\u20134:00 PM; archive has no newer regular board meeting located after this except the August special."
+      ],
+      "start_time": "13:00"
+    },
+    {
+      "agency": "trcd",
+      "source_id": "2026-05-21",
+      "title": "Tahoe Resource Conservation District Board Meeting",
+      "official_url": "https://www.tahoercd.org/board-meetings",
+      "date": "2026-05-21",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "trcd-agenda-2026-05-21",
+          "title": "Official board agenda",
+          "url": "https://www.tahoercd.org/files/b1a080d64/5.21.26%2BBoard%2BMeeting%2BAgenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official agenda identifies the Board of Directors meeting, 1:00 PM\u20134:00 PM."
+      ],
+      "start_time": "13:00"
+    }
+  ]
+}

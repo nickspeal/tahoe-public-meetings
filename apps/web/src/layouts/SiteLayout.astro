@@ -1,0 +1,36 @@
+---
+import '../styles/global.css';
+const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f4ed" />
+    <title>{title} · Tahoe Public Meetings</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="Tahoe Public Meetings home">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M4 29 15 12l7 10 5-7 9 14H4Z"/><path d="M8 33h24"/></svg></span>
+          <span class="brand-name">Tahoe <strong>Public Meetings</strong></span>
+        </a>
+        <nav aria-label="Main navigation" class="primary-nav">
+          <a href="/meetings/">Meetings</a>
+          <a href="/comment-periods/">Public comment</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M4 29 15 12l7 10 5-7 9 14H4Z"/><path d="M8 33h24"/></svg></span><span class="brand-name">Tahoe <strong>Public Meetings</strong></span></a></div>
+        <nav class="footer-links" aria-label="Site information"><a href="/about/">About</a><a href="/about/#coverage">Coverage</a></nav>
+      </div>
+    </footer>
+  </body>
+</html>

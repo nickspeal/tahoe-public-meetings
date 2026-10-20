@@ -1,0 +1,62 @@
+{
+  "captured_at": "2026-10-20T15:33:58.517081+00:00",
+  "candidates": [
+    {
+      "agency": "south-shore-tma",
+      "source_id": "2026-09-18",
+      "title": "South Shore Transportation Management Association Board of Directors Meeting",
+      "official_url": "https://ss-tma.org/board-meetings/",
+      "date": "2026-09-18",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "sstma-agenda-2026-09-18",
+          "title": "Official board agenda",
+          "url": "https://ss-tma.org/wp-content/uploads/2026/09/SSTMA-Board-Agenda-09.18.2026-Final.pdf"
+        }
+      ],
+      "warnings": [
+        "Official Board Meetings page lists the dated agenda; extracted agenda identifies 8:30\u201310:00 AM at Lake Tahoe Community College, South Lake Tahoe. Agenda is notice evidence; no completed-meeting record linked, so status remains unknown."
+      ]
+    },
+    {
+      "agency": "south-shore-tma",
+      "source_id": "2026-08-21",
+      "title": "South Shore Transportation Management Association Board of Directors Meeting",
+      "official_url": "https://ss-tma.org/board-meetings/",
+      "date": "2026-08-21",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "sstma-agenda-2026-08-21",
+          "title": "Official board agenda",
+          "url": "https://ss-tma.org/wp-content/uploads/2026/09/SSTMA-Board-Agenda-08.21.2026-FINAL.pdf"
+        }
+      ],
+      "warnings": [
+        "Official Board Meetings page lists the dated agenda; extracted agenda identifies 8:30\u201310:00 AM at Lake Tahoe Community College, South Lake Tahoe. Agenda is notice evidence; no completed-meeting record linked, so status remains unknown."
+      ]
+    },
+    {
+      "agency": "south-shore-tma",
+      "source_id": "2026-07-17",
+      "title": "South Shore Transportation Management Association Board of Directors Meeting",
+      "official_url": "https://ss-tma.org/board-meetings/",
+      "date": "2026-07-17",
+      "status": "unknown",
+      "start_time": "08:30",
+      "documents": [
+        {
+          "id": "sstma-agenda-2026-07-17",
+          "title": "Official board agenda",
+          "url": "https://ss-tma.org/wp-content/uploads/2026/07/SSTMA-Board-Agenda-07.17.2026-FINAL-2.pdf"
+        }
+      ],
+      "warnings": [
+        "Official Board Meetings page lists the dated agenda; extracted agenda identifies 8:30\u201310:00 AM at Lake Tahoe Community College, South Lake Tahoe. Agenda is notice evidence; no completed-meeting record linked, so status remains unknown."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,640 @@
+{
+  "schema_version": 1,
+  "topics": [
+    "biking",
+    "transit",
+    "housing",
+    "short-term-rentals",
+    "environment",
+    "hot-topics"
+  ],
+  "examples": [
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "8",
+      "expected_topics": [
+        "biking"
+      ],
+      "label": "positive",
+      "evidence": "Pine Boulevard/Park Avenue Complete Streets Project",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 4
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "11",
+      "expected_topics": [
+        "housing",
+        "environment"
+      ],
+      "label": "positive_multi",
+      "evidence": "Housing Amendments and Water Quality and Mobility Fees",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 5
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "12",
+      "expected_topics": [
+        "environment"
+      ],
+      "label": "positive",
+      "evidence": "Geothermal Feasibility Study and Hydronic Snowmelt System; alternatives include a gas-powered boiler",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 5
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "6",
+      "expected_topics": [
+        "environment"
+      ],
+      "label": "positive",
+      "evidence": "Air Quality Management District grant for emissions-saving vehicle replacements",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 3
+        }
+      ]
+    },
+    {
+      "meeting_id": "7110",
+      "agency": "ttd",
+      "source_number": "IV.D",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Low Carbon Transit Operations Program funds for the Fare Free Transit Program",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2
+        }
+      ]
+    },
+    {
+      "meeting_id": "7110",
+      "agency": "ttd",
+      "source_number": "V.A",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Funding request to support the Lake Link Microtransit Program",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2
+        }
+      ]
+    },
+    {
+      "meeting_id": "7110",
+      "agency": "ttd",
+      "source_number": "VI",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Standing report on TTD, TART, and Lake Link ridership numbers",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2
+        }
+      ]
+    },
+    {
+      "meeting_id": "1895",
+      "agency": "truckee",
+      "source_number": "5.1",
+      "expected_topics": [
+        "housing"
+      ],
+      "label": "positive",
+      "evidence": "Navigation Center continuation and year-two funding for interim and shelter housing",
+      "source_pages": [
+        {
+          "document_id": "truckee-agenda-packet",
+          "page_number": 1
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "3",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Fiscal Year 2026-2027 Appropriation Limit",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 3
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "13",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Ordinance expanding the timeframe in which a portable sign may be displayed",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 5
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "14",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Ordinance increasing City Council compensation",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 6
+        }
+      ]
+    },
+    {
+      "meeting_id": "7110",
+      "agency": "ttd",
+      "source_number": "IV.B",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "District financial statement of operations",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2
+        }
+      ]
+    },
+    {
+      "meeting_id": "1895",
+      "agency": "truckee",
+      "source_number": "1",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Call to Order",
+      "source_pages": [
+        {
+          "document_id": "truckee-agenda-packet",
+          "page_number": 1
+        }
+      ]
+    },
+    {
+      "meeting_id": "6049",
+      "agency": "ttd",
+      "source_number": "IV.B",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Award Contract for the Emerald Bay Seasonal Shuttle",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Award Contract for the Emerald Bay Seasonal               40\n            Shuttle"
+        }
+      ]
+    },
+    {
+      "meeting_id": "6049",
+      "agency": "ttd",
+      "source_number": "V.B",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Review, Discuss, and Possible Approval of the Proposed Fiscal Year 2027 Budget and Work Program",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Review, Discuss, and Possible Approval of the         342\n              Proposed Fiscal Year 2027 Budget and Work Program"
+        }
+      ]
+    },
+    {
+      "meeting_id": "7144",
+      "agency": "ttd",
+      "source_number": "IV.C",
+      "expected_topics": [
+        "biking"
+      ],
+      "label": "positive",
+      "evidence": "Award Contract for Laura Drive to Stateline Avenue Multi-Use Trail and Sidewalk Project",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Award Contract for Laura Drive to Stateline Avenue       47\n            Multi-Use Trail and Sidewalk Project"
+        }
+      ]
+    },
+    {
+      "meeting_id": "7144",
+      "agency": "ttd",
+      "source_number": "IV.D",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Review and Approval of Public Transit Agency Safety Plan (PTASP) Resolution",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Review and Approval of Public Transit Agency             90\n            Safety Plan (PTASP) Resolution"
+        }
+      ]
+    },
+    {
+      "meeting_id": "7144",
+      "agency": "ttd",
+      "source_number": "V.B",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Informational Only: Transit System Report for the Third Quarter of Fiscal Year 2026",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "Informational Only: Transit System Report for the Third Quarter of         144\n             Fiscal Year 2026"
+        }
+      ]
+    },
+    {
+      "meeting_id": "7144",
+      "agency": "ttd",
+      "source_number": "V.C",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Informational Only: Update Regarding Route 50 and 55 Transit Service Changes",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "Informational Only: Update Regarding Route 50 and 55 Transit Service       148\n             Changes"
+        }
+      ]
+    },
+    {
+      "meeting_id": "6941",
+      "agency": "ttd",
+      "source_number": "VI.A",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Public Hearing for the Tahoe Regional Planning Agency/Tahoe Metropolitan Planning Organization Draft 2027 Federal Transportation Improvement Program",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Public Hearing for the Tahoe Regional Planning Agency/Tahoe     9\n              Metropolitan Planning Organization Draft 2027 Federal Transportation Improvement\n              Program"
+        }
+      ]
+    },
+    {
+      "meeting_id": "6941",
+      "agency": "ttd",
+      "source_number": "VIII.C",
+      "expected_topics": [
+        "transit",
+        "biking"
+      ],
+      "label": "positive_multi",
+      "evidence": "Review and Approve Contract Amendment for Wood Rodgers Inc, Planning and Engineering Services Contract for the State Route 28 Central Corridor Chimney Beach to Secret Harbor Parking, Transit, Trail, and Safety Improvements Project",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Review and Approve Contract Amendment for Wood                   181\n            Rodgers Inc, Planning and Engineering Services Contract for the State Route\n            28 Central Corridor Chimney Beach to Secret Harbor Parking, Transit, Trail,\n            and Safety Improvement"
+        }
+      ]
+    },
+    {
+      "meeting_id": "6941",
+      "agency": "ttd",
+      "source_number": "VIII.D",
+      "expected_topics": [
+        "transit",
+        "environment"
+      ],
+      "label": "positive_multi",
+      "evidence": "Review and Approve Contract Amendment for Wood Rodgers, Inc. for Planning and Engineering Services for the Spooner Summit Aquatic Invasive Species and Mobility Hub Project",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 2,
+          "quote": "For Possible Action: Review and Approve Contract Amendment for Wood                   209\n            Rodgers, Inc. for Planning and Engineering Services for the Spooner Summit\n            Aquatic Invasive Species and Mobility Hub Project"
+        }
+      ]
+    },
+    {
+      "meeting_id": "6941",
+      "agency": "ttd",
+      "source_number": "IX.C",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Informational Only: Presentation - Tahoe Transit Study \u2013 Initial Governance Framework Findings & Recommendations",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 3,
+          "quote": "Informational Only: Presentation - Tahoe Transit Study \u2013 Initial Governance               440\n             Framework Findings & Recommendations"
+        }
+      ]
+    },
+    {
+      "meeting_id": "6941",
+      "agency": "ttd",
+      "source_number": "IX.D",
+      "expected_topics": [
+        "transit"
+      ],
+      "label": "positive",
+      "evidence": "Informational Only: Presentation \u2013 Lake Link Micro-Transit Program",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 3,
+          "quote": "Informational Only: Presentation \u2013 Lake Link Micro-Transit Program                        487"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2295",
+      "agency": "slt",
+      "source_number": "3",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Conflict of Interest Code Update",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 3,
+          "quote": "Conflict of Interest Code Update"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2295",
+      "agency": "slt",
+      "source_number": "8",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Agreement with Lake Tahoe Unified School District to Provide School Resource Officer for 2026/27 School Year",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 4,
+          "quote": "Agreement with Lake Tahoe Unified School District to Provide School Resource Officer for 2026/27\n     School Year"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2295",
+      "agency": "slt",
+      "source_number": "9",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Parks Foundation Scholarship Memorandum of Understanding",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 5,
+          "quote": "Parks Foundation Scholarship Memorandum of Understanding"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2295",
+      "agency": "slt",
+      "source_number": "12",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Award of Construction Contract for the James and Eloise Drainage Maintenance Project for $1,120,834.40 to Alcon Construction & Engineering, Inc. and Approval of Amendment 3 to Lumos PSA (C-172-2024) for $9,680 and Authorize Funding Transfer of $355,000 from Drainage",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 5,
+          "quote": "Award of Construction Contract for the James and Eloise Drainage Maintenance Project for\n    $1,120,834.40 to Alcon Construction & Engineering, Inc. and Approval of Amendment 3 to Lumos\n    PSA (C-172-2024) for $9,680 and Authorize Funding Transfer of $355,000 from Drainage"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2303",
+      "agency": "slt",
+      "source_number": "5",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Discussion and Direction to Staff Regarding Budgeting For Playfields Consortium/ LTCC Pickleball and Tennis Project, and Approval of Waiver of Permit Fees up to $36,000",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 4,
+          "quote": "Discussion and Direction to Staff Regarding Budgeting For Playfields Consortium/ LTCC Pickleball\n     and Tennis Project, and Approval of Waiver of Permit Fees up to $36,000"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2307",
+      "agency": "slt",
+      "source_number": "1",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Proclamation Recognizing September 2026, as \"Suicide Prevention and Recovery Month\"",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 2,
+          "quote": "Proclamation Recognizing September 2026, as \"Suicide Prevention and Recovery Month\""
+        }
+      ]
+    },
+    {
+      "meeting_id": "2307",
+      "agency": "slt",
+      "source_number": "15",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Mid-Town Area/Specific Plan and Initial Study/Negative Declaration",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 6,
+          "quote": "Mid-Town Area/Specific Plan and Initial Study/Negative Declaration"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2307",
+      "agency": "slt",
+      "source_number": "18",
+      "expected_topics": [
+        "housing"
+      ],
+      "label": "positive",
+      "evidence": "Discussion and Direction on General Plan 2027 - 2035 Housing Element Update",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 7,
+          "quote": "Discussion and Direction on General Plan 2027 - 2035 Housing Element Update"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2330",
+      "agency": "slt",
+      "source_number": "5",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Agreement and Donation from Public Health Institute for the CivicSpark Program for 2026 \u2013 2027,",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 3,
+          "quote": "Agreement and Donation from Public Health Institute for the CivicSpark Program for 2026 \u2013 2027,"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2330",
+      "agency": "slt",
+      "source_number": "9",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Consider Approval of Lease Agreement with the Tahoe Basin Senior Citizens Center, Inc. to operate the Senior Center for a three-year term.",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 4,
+          "quote": "Consider Approval of Lease Agreement with the Tahoe Basin Senior Citizens Center, Inc. to\n     operate the Senior Center for a three-year term."
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "2",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "City Council Meeting Minutes",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 3
+        }
+      ]
+    },
+    {
+      "meeting_id": "2339",
+      "agency": "slt",
+      "source_number": "7",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Resolution of intent to abandon the easterly 30-foot portion of Paradise Avenue right-of-way",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 4
+        }
+      ]
+    },
+    {
+      "meeting_id": "2351",
+      "agency": "slt",
+      "source_number": "2",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Medical Insurance Side Letters with Police Officers' Association, Police Employees\u2019 Association, Police Supervisors' Committee, Firefighters\u2019 Association, and Unrepresented Employees",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 2,
+          "quote": "Medical Insurance Side Letters with Police Officers' Association, Police Employees\u2019 Association,\n     Police Supervisors' Committee, Firefighters\u2019 Association, and Unrepresented Employees"
+        }
+      ]
+    },
+    {
+      "meeting_id": "7110",
+      "agency": "ttd",
+      "source_number": "I.B",
+      "expected_topics": [],
+      "label": "negative",
+      "evidence": "Approval of Agenda for October 7, 2026",
+      "source_pages": [
+        {
+          "document_id": "ttd-agenda-packet",
+          "page_number": 1
+        }
+      ]
+    },
+    {
+      "meeting_id": "2303",
+      "agency": "slt",
+      "source_number": "4",
+      "expected_topics": [
+        "environment"
+      ],
+      "label": "positive",
+      "evidence": "Acceptance and Appropriation of TRPA Mitigation Funding and Transfer of Funding for the Upper Bijou Park Creek Watershed Restoration Project and Construction Agreement Award for Tamarack Culvert Replacement Project with Tinkers in the amount of $290,711.40",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 3,
+          "quote": "Acceptance and Appropriation of TRPA Mitigation Funding and Transfer of Funding for the Upper\n     Bijou Park Creek Watershed Restoration Project and Construction Agreement Award for Tamarack\n     Culvert Replacement Project with Tinkers in the amount of $290,711.40"
+        }
+      ]
+    },
+    {
+      "meeting_id": "2307",
+      "agency": "slt",
+      "source_number": "16",
+      "expected_topics": [
+        "environment"
+      ],
+      "label": "positive",
+      "evidence": "Approval of Resolution Authorizing Exchange and Bargain Sale Agreement and Joint Escrow Instructions with the California Tahoe Conservancy, to exchange 180.5 acres of City-owned property adjacent to Trout Creek and Cold Creek and on Link Road (APNs 025-061-037, 025-081- 013, 025-091-012, 080-010-013, 080020-008, 031-030-020, and 031-030-039) for 7.1 acres of Conservancy-owned property near El Dorado Beach, various City water quality projects, Al Tahoe Pioneer Cemetery, Lake Tahoe Airport, and Tahoe Island Drive (APNs 027-010-016, -024, and - 029, 027-073-005, 027-074-006, 027-112013, -014, -015, -016, -017, and -024, 027-134-022, 027- 053-014, 031-173-002, and -004, 026-065016, 032-090-013, and 023-686-016).",
+      "source_pages": [
+        {
+          "document_id": "slt-agenda",
+          "page_number": 6,
+          "quote": "Approval of Resolution Authorizing Exchange and Bargain Sale Agreement and Joint Escrow\n    Instructions with the California Tahoe Conservancy, to exchange 180.5 acres of City-owned\n    property adjacent to Trout Creek and Cold Creek and on Link Road (APNs 025-061-037, 025-081-\n    013, 025-091-012,"
+        }
+      ]
+    }
+  ]
+}

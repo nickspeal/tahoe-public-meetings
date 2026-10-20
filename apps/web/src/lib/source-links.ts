@@ -1,0 +1,40 @@
+import type { AgendaItem, Meeting, PublicDocument } from '../../../../packages/domain/public';
+
+/** Add a PDF open parameter, keeping any fragment the official URL already has. */
+export function citationHref(url: string, page: number, mediaType = "application/pdf") {
+  if (mediaType !== "application/pdf") return url;
+  const splitAt = url.indexOf('#');
+  if (splitAt < 0) return `${url}#page=${page}`;
+  const base = url.slice(0, splitAt);
+  const fragment = url.slice(splitAt + 1);
+  const delimiter = fragment ? '&' : '';
+  return `${base}#${fragment}${delimiter}page=${page}`;
+}
+
+const HTML_PATH = /\.(?:html?|aspx?|php)$/i;
+
+/** Browser PDF viewers honor #page=N; an HTML page has no page to jump to. */
+export function isPdfDocument(document: Pick<PublicDocument, 'url' | 'pageCount' | 'mediaType'>) {
+  if (document.mediaType) return document.mediaType === "application/pdf";
+  let url: URL;
+  try {
+    url = new URL(document.url);
+  } catch {
+    return false;
+  }
+  if (HTML_PATH.test(url.pathname)) return false;
+  if (/\.pdf$/i.test(url.pathname) || /\.pdf(?:$|&)/i.test(url.search)) return true;
+  // Stored page counts come from PDF text extraction, e.g. document-center links without an extension.
+  return document.pageCount > 0;
+}
+
+/** Direct link to the official document at an agenda item's cited page. */
+export function itemSourceLink(meeting: Pick<Meeting, 'documents'>, item: Pick<AgendaItem, 'citations'>) {
+  const citation = item.citations[0];
+  const document = citation && meeting.documents.find((candidate) => candidate.id === citation.documentId);
+  if (!citation || !document) return null;
+  const kind = /packet/i.test(document.title) ? 'agenda packet' : 'agenda';
+  return isPdfDocument(document)
+    ? { href: citationHref(document.url, citation.page), label: `Read in ${kind} (page ${citation.page})` }
+    : { href: document.url, label: `Read in ${kind}` };
+}

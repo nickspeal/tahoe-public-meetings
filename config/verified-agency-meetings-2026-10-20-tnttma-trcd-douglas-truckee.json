@@ -1,0 +1,98 @@
+{
+  "captured_at": "2026-10-20T16:56:49+00:00",
+  "candidates": [
+    {
+      "agency": "truckee-north-shore-tma",
+      "source_id": "2026-10-01-board",
+      "title": "Truckee North Tahoe Transportation Management Association Board of Directors Meeting",
+      "official_url": "https://tnttma.com/tma-board-agenda/",
+      "date": "2026-10-01",
+      "status": "unknown",
+      "start_time": "08:00",
+      "documents": [
+        {
+          "id": "tnttma-board-agenda-2026-10-01",
+          "title": "Official Board meeting agenda",
+          "url": "https://tnttma.com/wp-content/uploads/2026/09/2026-October-1st_-TNT_TMA-Board-Agenda.docx.pdf"
+        }
+      ],
+      "warnings": [
+        "Official board agenda explicitly identifies October 1, 2026, 08:00–10:00, and board body. This is distinct from the October 1 transit-needs public workshop stored under a different source ID. Agenda evidence only; status remains unknown."
+      ]
+    },
+    {
+      "agency": "truckee-north-shore-tma",
+      "source_id": "2026-07-09-board",
+      "title": "Truckee North Tahoe Transportation Management Association Board of Directors Meeting",
+      "official_url": "https://tnttma.com/tma-board-agenda/",
+      "date": "2026-07-09",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "tnttma-board-minutes-2026-07-09",
+          "title": "Official Board meeting minutes",
+          "url": "https://tnttma.com/wp-content/uploads/2026/09/TNT-TMA-Minutes-7.9.26-v2.docx-1.pdf"
+        }
+      ],
+      "warnings": [
+        "Official minutes identify a July 9, 2026 Board of Directors meeting and record call to order at 08:02. This documents meeting activity; advertised start time was not stated in these minutes and is left unknown."
+      ]
+    },
+    {
+      "agency": "douglas-transportation",
+      "source_id": "clip-1812",
+      "title": "Douglas County Regional Transportation Commission Meeting — July 13, 2026 (supplemental material)",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-07-13",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "douglas-rtc-supplement-2026-07-13-item-3",
+          "title": "Official supplemental material for RTC Item 3 (not the full agenda)",
+          "url": "https://granicus_production_attachments.s3.amazonaws.com/douglascountynv/8cb9bc9814907dde6836703d3ab4de750.pdf"
+        }
+      ],
+      "warnings": [
+        "Official Granicus archive lists Regional Transportation Commission - Supplemental on July 13, 2026 and links clip 1812. The PDF says it is supplemental material for Item 3 of the July 13 RTC meeting, not the complete agenda. Archive time 10:01 may be recording/upload time; meeting start is unknown."
+      ]
+    },
+    {
+      "agency": "trcd",
+      "source_id": "2026-10-15",
+      "title": "Tahoe Resource Conservation District Board of Directors Meeting",
+      "official_url": "https://tahoercd.specialdistrict.org/board-meetings",
+      "date": "2026-10-15",
+      "status": "unknown",
+      "start_time": "13:00",
+      "documents": [
+        {
+          "id": "trcd-board-agenda-2026-10-15",
+          "title": "Official Board of Directors meeting agenda",
+          "url": "https://tahoercd.specialdistrict.org/files/e8777592e/10.15.26+Board+Meeting+Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "Official three-page agenda identifies Tahoe Resource Conservation District Board of Directors, Thursday October 15, 2026, 13:00–16:00. Agenda evidence only; status remains unknown."
+      ]
+    },
+    {
+      "agency": "truckee",
+      "source_id": "municode-365001dc14804044b4edd416938af109",
+      "title": "Town of Truckee Town Council Meeting",
+      "official_url": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes",
+      "date": "2026-09-22",
+      "status": "unknown",
+      "start_time": "17:00",
+      "documents": [
+        {
+          "id": "truckee-town-council-agenda-2026-09-22",
+          "title": "Official Municode HTML agenda",
+          "url": "https://meetings.municode.com/adaHtmlDocument/index?cc=TRUCKEECA&me=365001dc14804044b4edd416938af109&ip=false"
+        }
+      ],
+      "warnings": [
+        "Official Municode HTML title and agenda text identify Town Council Meeting, Tuesday September 22, 2026 at 17:00. Agenda evidence only; status remains unknown."
+      ]
+    }
+  ]
+}

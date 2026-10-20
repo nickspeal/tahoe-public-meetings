@@ -1,0 +1,132 @@
+{
+  "captured_at": "2026-10-20T15:30:30+00:00",
+  "candidates": [
+    {
+      "agency": "douglas-transportation",
+      "source_id": "2026-05-21-joint-bcc-rtc",
+      "title": "Douglas County Board of County Commissioners and Regional Transportation Commission Joint Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-05-21",
+      "status": "unknown",
+      "start_time": "10:00",
+      "documents": [],
+      "warnings": [
+        "Official Granicus lists this 10:00 AM joint meeting with the Regional Transportation Commission and provides agenda, minutes, video, and packet. This is a joint BCC/RTC meeting, not evidence of a separate RTC meeting. The county's RTC board detail says standalone meetings are held as called; no newer standalone RTC record was found."
+      ]
+    },
+    {
+      "agency": "truckee-north-shore-tma",
+      "source_id": "2026-01-08",
+      "title": "Truckee North Tahoe Transportation Management Association Board Meeting",
+      "official_url": "https://tnttma.com/tma-board-staff/",
+      "date": "2026-01-08",
+      "status": "unknown",
+      "start_time": "08:00",
+      "documents": [
+        {
+          "id": "tnttma-agenda-2026-01-08",
+          "title": "Official board meeting agenda",
+          "url": "https://tnttma.com/wp-content/uploads/2026/01/1.8.26-TNT_TMA-Board-Agenda.docx.docx-4-2.pdf"
+        }
+      ],
+      "warnings": [
+        "Official agenda verifies the board date, 8:00 AM start, location, and public comment. No more recent 2026 board agenda or minutes were located in the checked official pages; the board's agenda calls February 5 the next meeting, but a later dated notice was not located."
+      ]
+    },
+    {
+      "agency": "california-state-parks",
+      "source_id": "ohmvr-2026-08-06",
+      "title": "California Off-Highway Motor Vehicle Recreation Commission Meeting",
+      "official_url": "https://ohv.parks.ca.gov/?page_id=27160",
+      "date": "2026-08-06",
+      "status": "unknown",
+      "start_time": "09:00",
+      "documents": [
+        {
+          "id": "ohmvr-agenda-2026-08-06",
+          "title": "Official commission meeting agenda",
+          "url": "https://ohv.parks.ca.gov/pages/1140/files/OHVC%20Meeting%20Agenda%200826Final.pdf"
+        }
+      ],
+      "warnings": [
+        "This is the Off-Highway Motor Vehicle Recreation Commission, a distinct California State Parks commission. The official agenda identifies the August 6 meeting at Kings Beach, Tahoe, and begins at 9:00 AM."
+      ]
+    },
+    {
+      "agency": "california-state-parks",
+      "source_id": "ohmvr-2026-06-17",
+      "title": "California Off-Highway Motor Vehicle Recreation Commission Meeting",
+      "official_url": "https://ohv.parks.ca.gov/?page_id=27160",
+      "date": "2026-06-17",
+      "status": "unknown",
+      "start_time": "09:00",
+      "documents": [
+        {
+          "id": "ohmvr-agenda-2026-06-17",
+          "title": "Official commission meeting agenda",
+          "url": "https://ohv.parks.ca.gov/pages/1140/files/02-OHVC-Meeting-Agenda-20260617.pdf"
+        }
+      ],
+      "warnings": [
+        "This is the Off-Highway Motor Vehicle Recreation Commission, a distinct California State Parks commission. The official agenda lists the meeting date, 9:00 AM start, and location in Bakersfield."
+      ]
+    },
+    {
+      "agency": "california-state-parks",
+      "source_id": "ohmvr-2026-02-26",
+      "title": "California Off-Highway Motor Vehicle Recreation Commission Meeting",
+      "official_url": "https://ohv.parks.ca.gov/?page_id=27160",
+      "date": "2026-02-26",
+      "status": "unknown",
+      "start_time": "09:00",
+      "documents": [
+        {
+          "id": "ohmvr-agenda-2026-02-26",
+          "title": "Official commission meeting agenda",
+          "url": "https://ohv.parks.ca.gov/pages/1140/files/02-OHVC%20Meeting%20Agenda%20February%202026.pdf"
+        }
+      ],
+      "warnings": [
+        "This is the Off-Highway Motor Vehicle Recreation Commission, a distinct California State Parks commission. The official agenda lists February 26 at 9:00 AM in Santa Clarita."
+      ]
+    },
+    {
+      "agency": "california-state-parks",
+      "source_id": "sprc-2026-03-05",
+      "title": "California State Park and Recreation Commission Meeting",
+      "official_url": "https://www.parks.ca.gov/?page_id=31042",
+      "date": "2026-03-05",
+      "status": "unknown",
+      "start_time": "09:00",
+      "documents": [
+        {
+          "id": "sprc-agenda-2026-03-05",
+          "title": "Official commission meeting agenda",
+          "url": "https://www.parks.ca.gov/pages/29247/files/SPRC%20March%20Meeting%20Agenda.pdf"
+        }
+      ],
+      "warnings": [
+        "This is the State Park and Recreation Commission, separate from the Off-Highway Motor Vehicle Recreation Commission. The current 2026 commission page lists March 5 as its only meeting; no newer commission agenda was listed as of October 20."
+      ]
+    },
+    {
+      "agency": "nevada-state-parks",
+      "source_id": "2026-10-28-regulations-hearing",
+      "title": "Nevada Division of State Parks Public Hearing on Regulations",
+      "official_url": "https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks",
+      "date": "2026-10-28",
+      "status": "scheduled",
+      "start_time": "10:00",
+      "documents": [
+        {
+          "id": "nvparks-hearing-notice-2026-10-28",
+          "title": "Official public hearing notice and agenda",
+          "url": "https://parks.nv.gov/uploads/NAC_Hearing_Notice_2026-_updated.pdf"
+        }
+      ],
+      "warnings": [
+        "The official Division of State Parks notice lists the October 28, 2026, 10:00 AM workshop and the agenda. It is a statewide regulatory hearing in Carson City, not a Tahoe-specific board meeting."
+      ]
+    }
+  ]
+}

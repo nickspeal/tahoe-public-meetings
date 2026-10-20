@@ -1,0 +1,62 @@
+{
+  "captured_at": "2026-10-20T16:52:59+00:00",
+  "candidates": [
+    {
+      "agency": "slt-parks-recreation-commission",
+      "source_id": "event-1396",
+      "title": "South Lake Tahoe Parks and Recreation Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings",
+      "date": "2026-10-21",
+      "status": "unknown",
+      "start_time": "08:00",
+      "documents": [
+        {
+          "id": "slt-prc-agenda-2026-10-21",
+          "title": "Official Parks and Recreation Commission agenda",
+          "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1396"
+        }
+      ],
+      "warnings": [
+        "Official City Granicus upcoming-events list and agenda verify a meeting notice for Wednesday October 21, 2026 at 08:00 in City Hall Council Chamber. Notice evidence only; attendance/status unknown."
+      ]
+    },
+    {
+      "agency": "slt-parks-recreation-commission",
+      "source_id": "clip-2357",
+      "title": "South Lake Tahoe Parks and Recreation Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings",
+      "date": "2026-09-16",
+      "status": "unknown",
+      "start_time": "08:00",
+      "documents": [
+        {
+          "id": "slt-prc-agenda-2026-09-16",
+          "title": "Official Parks and Recreation Commission agenda",
+          "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2357"
+        }
+      ],
+      "warnings": [
+        "Official archived Granicus agenda identifies Wednesday September 16, 2026 at 08:00 in City Hall Council Chamber. Agenda/recording archive evidence only; status remains unknown."
+      ]
+    },
+    {
+      "agency": "slt-parks-recreation-commission",
+      "source_id": "clip-2297",
+      "title": "South Lake Tahoe Parks and Recreation Commission Meeting",
+      "official_url": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings",
+      "date": "2026-08-19",
+      "status": "unknown",
+      "start_time": "08:00",
+      "documents": [
+        {
+          "id": "slt-prc-agenda-2026-08-19",
+          "title": "Official Parks and Recreation Commission agenda",
+          "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2297"
+        }
+      ],
+      "warnings": [
+        "Official archived Granicus agenda identifies Wednesday August 19, 2026 at 08:00 in City Hall Council Chamber. Agenda/recording archive evidence only; status remains unknown."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "records": [
+    {
+      "reviewId": "SR-001",
+      "quarantinedAt": "2026-10-20",
+      "reason": "Official source item is an OVDRC cancellation, not Tahoe Basin Design Review Committee. Do not ingest under placer-tahoe-design-review; retain source identity and URLs for provenance while root removes/quarantines the misattributed database row.",
+      "candidate": {
+        "agency": "placer-tahoe-design-review",
+        "source_id": "2026-10-01",
+        "title": "Tahoe Basin Design Review Committee Meeting — canceled",
+        "official_url": "https://www.placer.ca.gov/AgendaCenter/PreviousVersions/6577",
+        "date": "2026-10-01",
+        "status": "canceled",
+        "documents": [],
+        "warnings": [
+          "Official Placer AgendaCenter lists the October 1 agenda as “10.01.26 OVDRC Agenda Cancelled”; this is a cancellation notice, not a held meeting."
+        ]
+      }
+    }
+  ]
+}

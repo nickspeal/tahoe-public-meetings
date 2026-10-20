@@ -1,0 +1,145 @@
+{
+  "captured_at": "2026-10-20T15:25:52.340292+00:00",
+  "candidates": [
+    {
+      "agency": "placer-transportation",
+      "source_id": "2026-10-28",
+      "title": "Placer County Transportation Planning Agency Board of Directors Meeting",
+      "official_url": "https://www.pctpa.net/pctpa-board",
+      "date": "2026-10-28",
+      "status": "scheduled",
+      "documents": [],
+      "warnings": [
+        "Official PCTPA 2026 board calendar lists October 28; the agency states meetings are typically at 9:00 AM. Agenda was not posted on the checked page as of 2026-10-20."
+      ],
+      "start_time": "09:00"
+    },
+    {
+      "agency": "placer-transportation",
+      "source_id": "2026-09-23",
+      "title": "Placer County Transportation Planning Agency Board of Directors Meeting",
+      "official_url": "https://www.pctpa.net/pctpa-board",
+      "date": "2026-09-23",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "pctpa-agenda-2026-09-23",
+          "title": "Official board agenda",
+          "url": "https://www.pctpa.net/files/b1386b0a7/A.%2BPCTPA%2BAgenda%2B-%2BSeptember%2B23%2C%2B2026.pdf"
+        }
+      ],
+      "warnings": [
+        "Official board page lists this meeting and agenda; occurrence not separately verified."
+      ],
+      "start_time": "09:00"
+    },
+    {
+      "agency": "placer-transportation",
+      "source_id": "2026-08-26",
+      "title": "Placer County Transportation Planning Agency Board of Directors Meeting",
+      "official_url": "https://www.pctpa.net/pctpa-board",
+      "date": "2026-08-26",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "pctpa-agenda-2026-08-26",
+          "title": "Official board agenda",
+          "url": "https://www.pctpa.net/files/d2d2f721d/A.%2BPCTPA%2BAgenda%2B-%2BAugust%2B26%2C%2B2026.pdf"
+        }
+      ],
+      "warnings": [
+        "Official board page lists this meeting and agenda; occurrence not separately verified."
+      ],
+      "start_time": "09:00"
+    },
+    {
+      "agency": "placer-tahoe-design-review",
+      "source_id": "2026-09-22",
+      "title": "Tahoe Basin Design Review Committee Special Meeting",
+      "official_url": "https://www.placer.ca.gov/Calendar.aspx?EID=56852&calType=0&day=13&month=9&year=2026",
+      "date": "2026-09-22",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official county calendar gives 4:00 PM at North Tahoe Event Center and identifies the 39 Degrees North project; agenda packet is linked from the event page. Occurrence not independently verified."
+      ],
+      "start_time": "16:00"
+    },
+    {
+      "agency": "placer-tahoe-design-review",
+      "source_id": "2026-08-25",
+      "title": "Tahoe Basin Design Review Committee Meeting",
+      "official_url": "https://www.placer.ca.gov/AgendaCenter/PreviousVersions/6577",
+      "date": "2026-08-25",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "placer-tbdrc-agenda-2026-08-25",
+          "title": "Official committee agenda",
+          "url": "https://www.placer.ca.gov/AgendaCenter/ViewFile/Agenda/_08252026-6577"
+        }
+      ],
+      "warnings": [
+        "Official AgendaCenter lists the August 25 committee agenda; occurrence not independently verified."
+      ],
+      "start_time": "16:00"
+    },
+    {
+      "agency": "california-fish-game",
+      "source_id": "2026-10-13",
+      "title": "California Fish and Game Commission Meeting (October 13–16, 2026)",
+      "official_url": "https://fgc.ca.gov/Meetings/2026",
+      "date": "2026-10-13",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "fgc-agenda-2026-10-13",
+          "title": "Revised official meeting agenda",
+          "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247178&inline="
+        }
+      ],
+      "warnings": [
+        "Official agenda identifies October 13–16 and says Oct 13 begins at 9:00 AM; status remains unknown without a completed-meeting record."
+      ],
+      "start_time": "09:00"
+    },
+    {
+      "agency": "california-fish-game",
+      "source_id": "2026-08-12",
+      "title": "California Fish and Game Commission Meeting (August 12–13, 2026)",
+      "official_url": "https://fgc.ca.gov/Meetings/2026",
+      "date": "2026-08-12",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "fgc-agenda-2026-08-12",
+          "title": "Revised official meeting agenda",
+          "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=245610&inline="
+        }
+      ],
+      "warnings": [
+        "Official schedule lists August 12–13; first-day start time is 9:00 AM. Occurrence not independently verified."
+      ],
+      "start_time": "09:00"
+    },
+    {
+      "agency": "california-fish-game",
+      "source_id": "2026-06-17",
+      "title": "California Fish and Game Commission Meeting (June 17–18, 2026)",
+      "official_url": "https://fgc.ca.gov/Meetings/2026",
+      "date": "2026-06-17",
+      "status": "unknown",
+      "documents": [
+        {
+          "id": "fgc-agenda-2026-06-17",
+          "title": "Revised official meeting agenda",
+          "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=244025&inline="
+        }
+      ],
+      "warnings": [
+        "Official schedule lists June 17–18; first-day start time is 9:00 AM. Occurrence not independently verified."
+      ],
+      "start_time": "09:00"
+    }
+  ]
+}

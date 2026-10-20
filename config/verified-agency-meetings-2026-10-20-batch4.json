@@ -1,0 +1,161 @@
+{
+  "captured_at": "2026-10-20T15:23:56.440270+00:00",
+  "candidates": [
+    {
+      "agency": "douglas-commissioners",
+      "source_id": "2026-10-15",
+      "title": "Douglas County Board of County Commissioners Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-10-15",
+      "start_time": "10:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official portal lists agenda and action summary/video for this date; agenda text not captured."
+      ]
+    },
+    {
+      "agency": "douglas-commissioners",
+      "source_id": "2026-10-01",
+      "title": "Douglas County Board of County Commissioners Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-10-01",
+      "start_time": "10:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official portal lists agenda and action summary/video for this date; agenda text not captured."
+      ]
+    },
+    {
+      "agency": "douglas-commissioners",
+      "source_id": "2026-09-17",
+      "title": "Douglas County Board of County Commissioners Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-09-17",
+      "start_time": "10:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official portal lists agenda and action summary/video for this date; agenda text not captured."
+      ]
+    },
+    {
+      "agency": "douglas-planning",
+      "source_id": "2026-10-13",
+      "title": "Douglas County Planning Commission Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-10-13",
+      "start_time": "13:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official portal lists agenda and action summary/minutes for this date; agenda text not captured."
+      ]
+    },
+    {
+      "agency": "douglas-planning",
+      "source_id": "2026-08-11",
+      "title": "Douglas County Planning Commission Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-08-11",
+      "start_time": "13:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official portal lists agenda and action summary/minutes for this date; agenda text not captured."
+      ]
+    },
+    {
+      "agency": "douglas-planning",
+      "source_id": "2026-07-14",
+      "title": "Douglas County Planning Commission Meeting",
+      "official_url": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "date": "2026-07-14",
+      "start_time": "13:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official portal lists agenda and action summary/minutes for this date; agenda text not captured."
+      ]
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "2026-10-08",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=75218C7A-C00F-4BDF-9A71-984033ECD8F3&ID=1449098&Options=&Search=",
+      "date": "2026-10-08",
+      "start_time": "09:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official Legistar detail verifies date, time, board, and agenda; agenda PDF link returned cache miss/410 in browser capture, so agenda text is not captured."
+      ]
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "2026-09-24",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=4A58A8CE-0C25-4B23-950F-11B36BCB2D0A&ID=1438897&Options=&Search=",
+      "date": "2026-09-24",
+      "start_time": "09:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official Legistar detail verifies date, time, board, and agenda; agenda PDF link returned cache miss/410 in browser capture, so agenda text is not captured."
+      ]
+    },
+    {
+      "agency": "el-dorado-planning",
+      "source_id": "2026-09-10",
+      "title": "El Dorado County Planning Commission Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=151667CF-2842-466D-B900-AE0BD005FB39&ID=1439704&Options=&Search=",
+      "date": "2026-09-10",
+      "start_time": "09:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official Legistar detail verifies date, time, board, and agenda; agenda PDF link returned cache miss/410 in browser capture, so agenda text is not captured."
+      ]
+    },
+    {
+      "agency": "el-dorado-supervisors",
+      "source_id": "2026-10-20",
+      "title": "El Dorado County Board of Supervisors Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?G=1B73DE4C-938C-4A3A-92A4-CDDFE91781FE&GUID=EDAD4A77-1439-447F-A596-6CC84778E9E7&ID=1440017&Options=info%7C&Search=",
+      "date": "2026-10-20",
+      "start_time": "09:00",
+      "status": "scheduled",
+      "documents": [],
+      "warnings": [
+        "Official Legistar detail verifies date, time, body, and agenda; agenda PDF is not fetched as text in this capture."
+      ]
+    },
+    {
+      "agency": "el-dorado-supervisors",
+      "source_id": "2026-09-29",
+      "title": "El Dorado County Board of Supervisors Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?G=1B73DE4C-938C-4A3A-92A4-CDDFE91781FE&GUID=BEC45173-9B06-4567-878A-11A1DD8B8194&ID=1438922&Options=&Search=",
+      "date": "2026-09-29",
+      "start_time": "09:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official Legistar detail verifies date, time, body, and agenda; agenda PDF is not fetched as text in this capture."
+      ]
+    },
+    {
+      "agency": "el-dorado-supervisors",
+      "source_id": "2026-09-22",
+      "title": "El Dorado County Board of Supervisors Meeting",
+      "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?GUID=55B70C3A-46AC-43E4-A5AC-7B3E3DD890F4&ID=1411218&Options=info%7C&Search=",
+      "date": "2026-09-22",
+      "start_time": "09:00",
+      "status": "unknown",
+      "documents": [],
+      "warnings": [
+        "Official Legistar detail verifies date, time, body, and agenda; agenda PDF is not fetched as text in this capture."
+      ]
+    }
+  ]
+}

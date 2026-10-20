@@ -1,0 +1,11 @@
+---
+import type { Meeting } from '../../../../packages/domain/public';
+import MeetingCard from './MeetingCard.astro';
+import TopicAgendaLinks from './TopicAgendaLinks.astro';
+import { isForecast, meetingTopicIds } from '../lib/data';
+interface Props { meeting: Meeting; bucket: 'earlier' | 'today' | 'upcoming' | 'undated'; initialTopic?: string; hidden: boolean }
+const { meeting, bucket, initialTopic = '', hidden } = Astro.props;
+const canceled = meeting.status === 'canceled' || meeting.change === 'canceled';
+const forecast = isForecast(meeting);
+---
+<div class="timeline-row" data-meeting-row data-meeting-id={meeting.id} data-agency={meeting.agencyId} data-topics={JSON.stringify(meetingTopicIds(meeting))} data-bucket={bucket} data-canceled={String(canceled)} data-forecast={String(forecast)} hidden={hidden}><MeetingCard meeting={meeting} />{!forecast && <TopicAgendaLinks meeting={meeting} initialTopic={initialTopic} />}</div>

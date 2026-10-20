@@ -1,0 +1,177 @@
+[
+  {
+    "id": "biking",
+    "name": "Biking",
+    "description": "Bicycling, pedestrian access and safety, and road repair",
+    "examples": [
+      "bike routes",
+      "sidewalks",
+      "multi-use trails",
+      "pedestrian crossings",
+      "road repairs",
+      "street resurfacing"
+    ],
+    "titlePatterns": [
+      {
+        "id": "bike-or-active-transport",
+        "pattern": "\\b(?:bicycl(?:e|es|ing|ist|ists)|bik(?:e|es|ing|eway|eways)|cycling|cyclists?|cycle track|active transportation|complete streets|pedestrians?|sidewalks?|crosswalks?|traffic calming|street safety|road safety|intersection safety|shared[- ]use (?:path|trail)|multi[- ]use (?:path|trail))\\b"
+      },
+      {
+        "id": "road-repair",
+        "pattern": "\\b(?:(?:roads?|streets?|pavement|potholes?)\\s+(?:repair\\w*|maintenance|resurfac\\w*|rehabilitat\\w*|repav\\w*)|potholes?|repaving|resurfacing)\\b"
+      }
+    ]
+  },
+  {
+    "id": "transit",
+    "name": "Transit",
+    "description": "Public transportation services, operations, and access",
+    "examples": [
+      "bus service",
+      "ridership",
+      "microtransit"
+    ],
+    "titlePatterns": [
+      {
+        "id": "transit-service",
+        "pattern": "\\b(?:public transit|transit|micro[- ]?transit|paratransit|bus(?:es)?|shuttle|ridership|TART|Lake Link|fare[- ]?free|fare (?:program|policy|change)|mobility hub|public transportation)\\b"
+      }
+    ]
+  },
+  {
+    "id": "housing",
+    "name": "Housing",
+    "description": "Housing supply, affordability, and shelter",
+    "examples": [
+      "housing plans",
+      "affordable homes",
+      "navigation centers"
+    ],
+    "titlePatterns": [
+      {
+        "id": "housing",
+        "pattern": "\\b(?:housing|affordable homes?|residential development|tenant|dwelling|homeless(?:ness)?|shelter housing|navigation center|workforce homes?)\\b"
+      }
+    ]
+  },
+  {
+    "id": "short-term-rentals",
+    "name": "Short Term Rentals",
+    "description": "Short term rentals, vacation home rentals, and their policies",
+    "examples": [
+      "STRs",
+      "VHRs",
+      "vacation rentals"
+    ],
+    "includes": [
+      "housing"
+    ],
+    "titlePatterns": [
+      {
+        "id": "str-or-vhr",
+        "pattern": "\\b(?:short[ -]term rentals?|vacation (?:home )?rentals?|STRs?|VHRs?)\\b"
+      }
+    ]
+  },
+  {
+    "id": "environment",
+    "name": "Environment",
+    "description": "Conservation, emissions, watersheds, and ecosystem health",
+    "examples": [
+      "water quality",
+      "forest health",
+      "habitat restoration"
+    ],
+    "titlePatterns": [
+      {
+        "id": "environment",
+        "pattern": "\\b(?:environment(?:al)?|conservation|watershed|stormwater|forest health|wildfire|lake clarity|emissions?|habitat|climate|water quality|air quality|geothermal|hydronic|snowmelt|aquatic invasive species|zero[- ]emission|hazardous fuels?|fuel hazard reduction|glyphosate)\\b"
+      }
+    ]
+  },
+  {
+    "id": "elections",
+    "name": "Elections",
+    "description": "Elections, ballot measures, and agency positions on them",
+    "examples": [
+      "ballot measures",
+      "local tax measures on the ballot",
+      "resolutions supporting or opposing a measure",
+      "candidate filing and election consolidation"
+    ],
+    "titlePatterns": [
+      {
+        "id": "election-or-ballot",
+        "pattern": "\\b(?:elections?|electoral|ballot|referend(?:um|a)|voters?|polling places?)\\b"
+      },
+      {
+        "id": "position-on-measure",
+        "pattern": "\\b(?:support\\w*|oppos\\w*|endors\\w*)\\b.{0,120}\\b(?:measure|initiative|proposition)\\b"
+      }
+    ]
+  },
+  {
+    "id": "hot-topics",
+    "name": "Hot Topics",
+    "description": "Evolving watchlist of subjects likely to attract substantial public interest; turnout is not verified",
+    "examples": [
+      "Glyphosate",
+      "Incline Village Mobility Hub / 771 Southwood Blvd",
+      "Vacancy Tax",
+      "Palisades redevelopment"
+    ],
+    "titlePatterns": [
+      {
+        "id": "public-interest-watchlist",
+        "pattern": "\\b(?:glyphosate|Incline Village Mobility Hub|771\\s+Southwood(?:\\s+(?:Blvd\\.?|Boulevard))?|vacancy tax|Palisades\\s+(?:Tahoe\\s+)?redevelopment)\\b"
+      }
+    ],
+    "judgmentExamples": [
+      {
+        "item": "Appeal of the Tahoe Keys Marina Redevelopment Project approval",
+        "tag": true,
+        "why": "major development"
+      },
+      {
+        "item": "Request for interest in re-using the former Recreation and Swim Complex",
+        "tag": true,
+        "why": "many residents use the rec center"
+      },
+      {
+        "item": "Mid-Town Area Specific Plan",
+        "tag": true,
+        "why": "affects many people; borderline, because residents often care less about technical zoning"
+      },
+      {
+        "item": "Emerald Bay Resort economic and fiscal impacts report",
+        "tag": false,
+        "why": "small development"
+      },
+      {
+        "item": "Time-share and condo-hotel code amendments",
+        "tag": false,
+        "why": "technical classification change"
+      },
+      {
+        "item": "TRPA housing amendments and water quality and mobility fees",
+        "tag": false,
+        "why": "technical"
+      },
+      {
+        "item": "General Plan Housing Element update",
+        "tag": false,
+        "why": "technical"
+      },
+      {
+        "item": "Resolution opposing a county wildfire prevention ballot measure",
+        "tag": false,
+        "why": "ballot measure that is not especially controversial"
+      },
+      {
+        "item": "Council support for a school district ballot measure",
+        "tag": false,
+        "why": "ballot measure that is not especially controversial"
+      }
+    ]
+  }
+]

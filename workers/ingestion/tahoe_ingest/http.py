@@ -10,7 +10,7 @@ import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse, quote
 
-USER_AGENT = 'TahoePublicMeetings/0.1 (+local research prototype)'
+USER_AGENT = 'TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)'
 
 
 def public_url(url: str) -> str:

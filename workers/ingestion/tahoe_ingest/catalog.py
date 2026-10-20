@@ -65,7 +65,7 @@ def agency_catalog() -> tuple[dict, ...]:
             raise ValueError(f"unknown discovery adapter: {agency['id']}")
         if agency.get("discoveryAdapter") == "configured":
             config = agency.get("discovery", {})
-            if config.get("type") not in {"civicplus", "legistar", "granicus", "link-index", "civicclerk", "trpa", "rss", "dated-table"} or not config.get("indexUrl", "").startswith("https://"):
+            if config.get("type") not in {"civicplus", "legistar", "granicus", "link-index", "civicclerk", "trpa", "rss", "dated-table", "meeting-files"} or not config.get("indexUrl", "").startswith("https://"):
                 raise ValueError(f"invalid source configuration: {agency['id']}")
             re.compile(config.get("bodyPattern", "."), re.I)
         if "schedule" in agency:

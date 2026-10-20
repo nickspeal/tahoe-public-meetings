@@ -156,3 +156,52 @@ def test_county_legistar_departments_are_scoped_and_keep_cancellations():
     assert ed[0]['title']=='El Dorado County Board of Supervisors Meeting'
     wa=discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),fetch=lambda _:_fixture('washoe-board-of-county-commissioners.html'))
     assert [(r['source_id'],r['status']) for r in wa]==[('1347923','canceled'),('1347922','unknown')]
+
+
+def test_wordpress_feed_keeps_special_meeting_apart_from_the_regular_meeting_on_the_same_day():
+    feed=_fixture('ntpud-meetings-feed.xml')
+    agenda='<a href="https://ntpud.org/wp-content/uploads/2026/10/agenda.pdf">Agenda</a>'
+    rows=discover_configured('ntpud',_live_config('ntpud'),limit=10,fetch=lambda u:feed if u.endswith('/feed/') else agenda)
+    assert [(r['source_id'],r['title'],r['start_time']) for r in rows]==[
+        ('2026-10-13-special','North Tahoe Public Utility District Board of Directors’ Special Meeting','14:00'),
+        ('2026-10-13','North Tahoe Public Utility District Board of Directors’ Regular Meeting','14:00')]  # committees are excluded
+
+
+def test_special_district_indexes_use_the_agenda_link_and_file_name_date():
+    stpud=discover_configured('stpud',_live_config('stpud'),fetch=lambda _:_fixture('stpud-board-meetings.html'))
+    assert [(r['source_id'],r['title']) for r in stpud]==[
+        ('2026-10-15','South Tahoe Public Utility District Board Meeting'),
+        ('2026-09-23-special','South Tahoe Public Utility District Special Board Meeting'),
+        ('2026-09-17','South Tahoe Public Utility District Board Meeting')]  # a notice of quorum has no agenda
+    pctpa=discover_configured('placer-transportation',_live_config('placer-transportation'),fetch=lambda _:_fixture('pctpa-board.html'))
+    assert [r['source_id'] for r in pctpa]==['2026-10-28','2026-09-23']  # canceled and agenda-less rows are not invented
+    sstma=discover_configured('south-shore-tma',_live_config('south-shore-tma'),fetch=lambda _:_fixture('south-shore-tma-board-meetings.html'))
+    assert [r['source_id'] for r in sstma]==['2026-09-18','2026-08-21','2026-07-17']
+    assert sstma[0]['title'].endswith('Board of Directors Meeting')
+
+
+def test_ndep_table_reads_two_digit_years_ignores_workshops_and_far_future_placeholders(monkeypatch):
+    from datetime import datetime as real
+    from tahoe_ingest import source_discovery
+    class Clock(real):
+        @classmethod
+        def now(cls,tz=None):return real(2026,10,20,12,tzinfo=tz)
+    monkeypatch.setattr(source_discovery,'datetime',Clock)
+    rows=discover_configured('ndep',_live_config('ndep'),limit=3,fetch=lambda _:_fixture('ndep-board-meetings.html'))
+    assert [r['source_id'] for r in rows]==['2026-12-02','2026-08-19','2026-06-03']
+    assert rows[1]['documents'][0]['url'].startswith('https://ndep.nv.gov/uploads/')
+    assert rows[0]['documents']==[]  # dated before the agenda is posted
+
+
+def test_airport_meeting_files_pages_supply_the_agenda_and_special_label():
+    pages={'/administration/board/meetings':_fixture('truckee-tahoe-airport-board-meetings.html'),
+           '/board_meetings/417/attachments':_fixture('truckee-tahoe-airport-meeting-417-files.html')}
+    plain='<h1>TTAD Board Meeting 2026-10-21</h1>'
+    rows=discover_configured('truckee-tahoe-airport',_live_config('truckee-tahoe-airport'),limit=10,
+        fetch=lambda u:next((v for k,v in pages.items() if u.endswith(k)),plain))
+    by_id={r['source_id']:r for r in rows}
+    assert set(by_id)=={'412','418','409','417','416'}
+    assert by_id['412']['date']=='2026-10-21' and by_id['412']['start_time']=='16:30'  # "Next meeting" block
+    assert by_id['417']['title'].endswith('Special Board Meeting') and by_id['409']['title'].endswith('Regular Board Meeting')
+    assert by_id['417']['documents'][0]['url'].endswith('file=agenda+september+23+2026+s.pdf')
+    assert by_id['412']['documents']==[] and by_id['412']['warnings']

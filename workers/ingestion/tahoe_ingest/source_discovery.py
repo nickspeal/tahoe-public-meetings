@@ -19,7 +19,7 @@ from .html_dom import document
 
 
 def date_in(text):
-    text = text.replace('_', ' ')
+    text = text.replace('_', ' ').replace('+', ' ')
     text = re.sub(r'(\d)(?:st|nd|rd|th)\b', r'\1', text, flags=re.I)
     for pattern, fmt in [(r'\b\d{4}-\d{2}-\d{2}(?!\d)','%Y-%m-%d'),
                          (r'\b\d{1,2}/\d{1,2}/\d{4}\b','%m/%d/%Y'),
@@ -108,7 +108,10 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             cells=[n for n in tr.children if getattr(n,'tag',None)=='td']
             if not cells:continue
             date_text=cells[0].text()
+            # Optional: a page can hold several tables (for example workshops) with other date styles.
+            if config.get('datePattern') and not re.search(config['datePattern'],date_text):continue
             first_day=re.sub(r'(\d{1,2})\s*[-–]\s*\d{1,2}',r'\1',date_text)
+            first_day=re.sub(r'\b(\d{1,2}/\d{1,2})/(\d{2})\b',r'\1/20\2',first_day)
             if not re.search(r'\b20\d{2}\b',first_day) and year:
                 found=re.search(r'\b([A-Za-z]+\s+\d{1,2})\b',first_day)
                 first_day=(found[1]+' '+year[1]) if found else first_day
@@ -182,7 +185,26 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
                 docs=documents_in(f'<a href="{html.escape(target,quote=True)}">{html.escape(label)}</a>',url,agency)
                 title=config.get('title') or label
             if not docs and kind!='trpa':continue
-            rows.append(candidate(agency,config.get('idPrefix','')+day,title,day,target,docs,label))
+            sid=config.get('idPrefix','')+day
+            if kind=='link-index' and config.get('qualifySpecial'):
+                # Opt-in: a special meeting or workshop shares the index with regular
+                # meetings and may fall on the same date, so give it its own ID and title.
+                found=re.search(r'\b(special|workshop|joint)\b',urllib.parse.unquote_plus(target),re.I)
+                if found:
+                    sid+='-'+found[1].lower();title=title.replace(' Board ',f' {found[1].title()} Board ',1)
+            rows.append(candidate(agency,sid,title,day,target,docs,label))
+    elif kind=='meeting-files':
+        # Dated meetings (table rows or a "next meeting" paragraph), each with a link to a
+        # page listing that meeting's files. Documents are read from those pages below.
+        label=re.compile(config.get('filesLabel','View Files'),re.I)
+        for node in [*tree.find('tr'),*tree.find('p')]:
+            if any(node.find('tr')):continue
+            files=[urllib.parse.urljoin(url,a.attrs.get('href','')) for a in node.find('a') if label.search(a.text())]
+            day=date_in(node.text())
+            if len(files)!=1 or not day:continue
+            sid=urllib.parse.urlparse(files[0]).path.strip('/').split('/')
+            row=candidate(agency,sid[1] if len(sid)>1 and sid[1].isdigit() else day,config.get('title') or agency.replace('-',' ').title()+' Meeting',day,files[0],[],node.text())
+            rows.append(row)
     elif kind=='rss':
         # Use a category-specific feed; do not silently accept unrelated bodies.
         root=ET.fromstring(markup)
@@ -193,12 +215,42 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             day=date_in(title+' '+description+' '+target)
             if not day:continue
             detail=fetch(target)
-            rows.append(candidate(agency,day,title,day,target,documents_in(detail,target,agency),title+' '+description))
+            # Special meetings and workshops can share a date with the regular
+            # meeting; keep them distinct, matching the manual ID convention.
+            qualifier=re.search(r'\b(special|workshop|joint)\b',title,re.I)
+            sid=day+('-'+qualifier[1].lower() if qualifier else '')
+            # Drop the trailing "(Tuesday, October 13, 2026, 2:00 p.m. @ ...)" from the display title.
+            shown=config.get('titlePrefix','')+re.sub(r'\s*(?:[-–]\s*)?\((?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,[^)]*\)\s*$','',title)
+            rows.append(candidate(agency,sid,shown,day,target,documents_in(detail,target,agency),title+' '+description))
     else:raise ValueError(f'unsupported source type: {kind}')
+    if config.get('horizonDays'):
+        # Placeholder calendars list dates far ahead that would crowd out the near-term meetings below.
+        cutoff=(datetime.now(ZoneInfo('America/Los_Angeles')).date()+timedelta(days=config['horizonDays'])).isoformat()
+        rows=[r for r in rows if not r['date'] or r['date']<=cutoff]
     unique={}
     for row in rows:
         unique.setdefault(row['source_id'],row)
-    return sorted(unique.values(),key=lambda r:r['date'] or '',reverse=True)[:limit]
+    result=sorted(unique.values(),key=lambda r:r['date'] or '',reverse=True)[:limit]
+    if kind=='meeting-files':
+        for row in result:
+            row['documents']=meeting_files(agency,row,fetch)
+    return result
+
+
+def meeting_files(agency, row, fetch):
+    """Read the agenda from a meeting's file-list page; staff-report tabs and minutes stay on the official page."""
+    page=fetch(row['official_url'])
+    qualifier=re.search(r'\((Special|Workshop|Joint)\)',page)
+    if qualifier:row['title']=row['title'].replace('Regular',qualifier[1])
+    docs=[]
+    for node in document(page).find('a'):
+        target=urllib.parse.urljoin(row['official_url'],node.attrs.get('href',''))
+        name=urllib.parse.parse_qs(urllib.parse.urlparse(target).query).get('file',[''])[0]
+        if urllib.parse.urlparse(target).scheme=='https' and re.match(r'agenda\b',name,re.I) and name.lower().endswith('.pdf'):
+            docs.append({'id':agency+'-agenda','title':node.text() or 'Official agenda','url':target})
+            break
+    if not docs:row['warnings'].append('No agenda file is listed on the official meeting page yet.')
+    return docs
 
 
 def civicclerk(agency, config, markup, limit, fetch):

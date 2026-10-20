@@ -500,9 +500,9 @@
     "name": "Placer County — Transportation Planning Agency",
     "shortName": "Placer County",
     "follow": true,
-    "discoveryAdapter": null,
-    "officialUrl": null,
-    "sourceUrl": null,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://www.pctpa.net/",
+    "sourceUrl": "https://www.pctpa.net/pctpa-board",
     "schedule": {
       "source": "learned",
       "rules": [
@@ -534,6 +534,12 @@
       "agendaPublishingSchedule": "72 hours before",
       "notification": "",
       "website": "https://www.placer.ca.gov/2393/Placer-County-Transportation-Planning-Ag"
+    },
+    "discovery": {
+      "type": "link-index",
+      "indexUrl": "https://www.pctpa.net/pctpa-board",
+      "bodyPattern": "PCTPA",
+      "title": "Placer County Transportation Planning Agency Board of Directors Meeting"
     }
   },
   {
@@ -567,7 +573,7 @@
     "name": "South Shore Transportation Management Association — Board",
     "shortName": "South Shore TMA",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://ss-tma.org/",
     "sourceUrl": "https://ss-tma.org/board-meetings/",
     "schedule": {
@@ -601,6 +607,12 @@
       "agendaPublishingSchedule": "",
       "notification": "",
       "website": ""
+    },
+    "discovery": {
+      "type": "link-index",
+      "indexUrl": "https://ss-tma.org/board-meetings/",
+      "bodyPattern": "Board",
+      "title": "South Shore Transportation Management Association Board of Directors Meeting"
     }
   },
   {
@@ -635,7 +647,7 @@
     "name": "NTPUD — Board",
     "shortName": "NTPUD",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://ntpud.org/",
     "sourceUrl": "https://ntpud.org/category/meetings/",
     "legacy": {
@@ -649,6 +661,12 @@
       "agendaPublishingSchedule": "",
       "notification": "",
       "website": ""
+    },
+    "discovery": {
+      "type": "rss",
+      "indexUrl": "https://ntpud.org/category/meetings/feed/",
+      "bodyPattern": "Board of Directors",
+      "titlePrefix": "North Tahoe Public Utility District "
     }
   },
   {
@@ -904,9 +922,9 @@
     "name": "Nevada Board for Financing Water Projects",
     "shortName": "NDEP",
     "follow": true,
-    "discoveryAdapter": null,
-    "officialUrl": null,
-    "sourceUrl": null,
+    "discoveryAdapter": "configured",
+    "officialUrl": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects",
+    "sourceUrl": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/",
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
       "sourceRow": 32,
@@ -918,6 +936,14 @@
       "agendaPublishingSchedule": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes",
       "notification": "https://ndep.nv.gov/about",
       "website": ""
+    },
+    "discovery": {
+      "type": "dated-table",
+      "indexUrl": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/",
+      "bodyPattern": ".",
+      "title": "Nevada Board for Financing Water Projects Meeting",
+      "datePattern": "^\\s*\\d{1,2}/\\d{1,2}/\\d{2}\\s*$",
+      "horizonDays": 120
     }
   },
   {
@@ -1013,7 +1039,7 @@
     "name": "STPUD — Board",
     "shortName": "STPUD",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://www.stpud.us/",
     "sourceUrl": "https://www.stpud.us/board-meetings",
     "legacy": {
@@ -1027,6 +1053,13 @@
       "agendaPublishingSchedule": "https://stpud.us/about/agendas-minutes/",
       "notification": "",
       "website": ""
+    },
+    "discovery": {
+      "type": "link-index",
+      "indexUrl": "https://www.stpud.us/board-meetings",
+      "bodyPattern": "Board",
+      "title": "South Tahoe Public Utility District Board Meeting",
+      "qualifySpecial": true
     }
   },
   {
@@ -1150,9 +1183,9 @@
     "name": "Truckee Tahoe Airport",
     "shortName": "Truckee Tahoe Airport",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://truckeetahoeairport.com/",
-    "sourceUrl": "https://truckeetahoeairport.com/board_meetings/",
+    "sourceUrl": "https://truckeetahoeairport.com/administration/board/meetings",
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
       "sourceRow": 43,
@@ -1164,6 +1197,11 @@
       "agendaPublishingSchedule": "",
       "notification": "",
       "website": ""
+    },
+    "discovery": {
+      "type": "meeting-files",
+      "indexUrl": "https://truckeetahoeairport.com/administration/board/meetings",
+      "title": "Truckee Tahoe Airport District Regular Board Meeting"
     }
   },
   {

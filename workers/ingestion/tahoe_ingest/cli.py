@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, alerts, evaluate_topics, scheduled
+from . import ai_topics, alerts, backfill, evaluate_topics, scheduled
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -119,6 +119,22 @@ def _parser() -> argparse.ArgumentParser:
     scheduled_run.add_argument("--out", help="Also write the export JSON to this path")
     scheduled_run.add_argument("--skip-discovery", action="store_true", help="Use tracked config only; no live index checks")
     scheduled_run.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
+    history = sub.add_parser("backfill", help="One-time history backfill: capture every meeting dated in a range, then publish")
+    history.add_argument("--since", required=True, type=_iso_date, help="First meeting date to capture (YYYY-MM-DD)")
+    history.add_argument("--until", type=_iso_date, help=f"Last meeting date (default: {backfill.DEFAULT_FUTURE_DAYS} days ahead)")
+    history.add_argument("--agency", action="append", default=[], help="Only this followed agency ID (repeatable)")
+    history.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."), help="Directory holding config/")
+    history.add_argument("--max-documents", type=int, default=2, help="Documents fetched per meeting (1..10)")
+    history.add_argument("--delay", type=float, default=1.0, help="Seconds between source downloads (at least 1)")
+    history.add_argument("--forecast-days", type=int, default=int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS)))
+    history.add_argument("--min-meetings", type=int, default=1)
+    history.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for Claude classification this run")
+    history.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET, help="USD month-to-date AI budget")
+    history.add_argument("--lock-wait-minutes", type=float, default=backfill.DEFAULT_LOCK_WAIT_SECONDS / 60,
+                         help="Wait this long for a running scheduled run to release the lock, then exit")
+    history.add_argument("--out", help="Also write the export JSON to this path")
+    history.add_argument("--dry-run", action="store_true", help="Discover and report only; no downloads, export, or publish")
+    history.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
     publish = sub.add_parser("publish-export", help="Validate an export file, store it in public_exports, and call the deploy hook if set")
     publish.add_argument("--file", required=True)
     publish.add_argument("--min-meetings", type=int, default=1)
@@ -163,6 +179,8 @@ def main(argv=None) -> int:
             return _run_scheduled(conn, args)
         if args.command == "publish-export":
             return _publish_export(conn, args)
+        if args.command == "backfill":
+            return _backfill(conn, args)
         if args.command == "init-db":
             init_db(conn)
             print("PostgreSQL schema ready")
@@ -279,6 +297,30 @@ def _run_scheduled(conn, args) -> int:
         min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
         out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
     summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))
+    summary["alerts"] = alerts.alert_on_summary(summary)
+    print(json.dumps(summary, default=str), flush=True)
+    return 1 if summary["status"] == "failed" else 0
+
+
+def _iso_date(value: str):
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected YYYY-MM-DD, got {value!r}") from None
+
+
+def _backfill(conn, args) -> int:
+    if not 1 <= args.max_documents <= 10 or args.delay < 1 or not 0 <= args.forecast_days <= 366 or args.lock_wait_minutes < 0:
+        raise SystemExit("backfill limits: --max-documents 1..10, --delay >= 1, --forecast-days 0..366, --lock-wait-minutes >= 0")
+    try:
+        options = backfill.Options(
+            since=args.since, until=args.until, agencies=args.agency, root=args.root, max_documents=args.max_documents,
+            delay=args.delay, forecast_days=args.forecast_days, min_meetings=args.min_meetings, max_cost=args.max_cost,
+            monthly_budget=args.monthly_budget, out=args.out, publish=not args.no_publish, dry_run=args.dry_run,
+            lock_wait_seconds=args.lock_wait_minutes * 60)
+        summary = backfill.backfill(conn, options, fetch=lambda url: download_extract(url))
+    except ValueError as exc:
+        raise SystemExit(str(exc))
     summary["alerts"] = alerts.alert_on_summary(summary)
     print(json.dumps(summary, default=str), flush=True)
     return 1 if summary["status"] == "failed" else 0

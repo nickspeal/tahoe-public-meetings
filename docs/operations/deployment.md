@@ -84,6 +84,43 @@ gcloud secrets versions list tahoe-database-url --project=<project-id>
 gcloud secrets versions destroy <old-version> --secret=tahoe-database-url --project=<project-id>
 ```
 
+## History backfill
+
+The scheduled run looks only at the newest few listings per agency, so it cannot build history. The maintainer set coverage to start on 2026-01-01, with everything kept, and history filled once by `tahoe-ingest backfill` (see the [worker README](../../workers/ingestion/README.md#history-backfill)). It runs as a separate Cloud Run job, `tahoe-backfill`, with no scheduler, so the production `tahoe-ingest` job and its image stay untouched. It takes the same advisory lock as the scheduled run. If a scheduled run is in progress it waits up to 45 minutes. A scheduled run that starts while the backfill is running skips itself.
+
+1. **Check storage headroom first.** Compare the current database size with the Prisma Postgres plan's storage limit (see [storage monitoring](../operations.md#check-database-storage)), and dry-run the range to see how many meetings it would add:
+   ```sh
+   DATABASE_URL=... tahoe-ingest backfill --since 2026-01-01 --dry-run   # discovery only; no downloads, export, or publish
+   ```
+2. **Build and push an image** from a committed revision, tagged `backfill-<sha>`. The registry's cleanup policy keeps only the newest 3 versions of each image, and the `ingestion` prefix also matches any `ingestion-*` name, so confirm that the image `tahoe-ingest` runs is still among the newest 3 after the push (`gcloud artifacts docker images list us-west1-docker.pkg.dev/<project-id>/tahoe/ingestion --include-tags --sort-by=~UPDATE_TIME`).
+   ```sh
+   docker buildx build --platform linux/amd64 -f workers/ingestion/Dockerfile \
+     -t us-west1-docker.pkg.dev/<project-id>/tahoe/ingestion:backfill-<sha> --push .
+   ```
+3. **Create the job.** It uses the same service account, the two secrets, and the Claude federation IDs. 1 vCPU, 2 GiB, a 6-hour task timeout, and no retries (a rerun resumes anyway):
+   ```sh
+   gcloud run jobs create tahoe-backfill --project=<project-id> --region=us-west1 \
+     --image=us-west1-docker.pkg.dev/<project-id>/tahoe/ingestion:backfill-<sha> \
+     --service-account=tahoe-ingest-job@<project-id>.iam.gserviceaccount.com \
+     --cpu=1 --memory=2Gi --task-timeout=6h --max-retries=0 \
+     --set-secrets=DATABASE_URL=tahoe-database-url:latest,VERCEL_DEPLOY_HOOK_URL=tahoe-vercel-deploy-hook-url:latest \
+     --set-env-vars=TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata,ANTHROPIC_ORGANIZATION_ID=...,ANTHROPIC_SERVICE_ACCOUNT_ID=...,ANTHROPIC_FEDERATION_RULE_ID=...,ANTHROPIC_WORKSPACE_ID=... \
+     --args=backfill,--since,2026-07-01
+   ```
+4. **Run it outside a scheduled slot.** The scheduler fires at 00, 06, 12, and 18 h Pacific. Check that no `tahoe-ingest` execution is running, then:
+   ```sh
+   gcloud run jobs executions list --job=tahoe-ingest --region=us-west1 --project=<project-id> --limit=3
+   gcloud run jobs execute tahoe-backfill --region=us-west1 --project=<project-id> --wait
+   ```
+   For the full year, change the arguments and run the job again. Meetings already stored with documents are skipped, so a full-year run after a partial one only fetches what is missing:
+   ```sh
+   gcloud run jobs update tahoe-backfill --region=us-west1 --project=<project-id> --args=backfill,--since,2026-01-01
+   gcloud run jobs execute tahoe-backfill --region=us-west1 --project=<project-id> --wait
+   ```
+5. **Check the result.** The last log line is a JSON summary. It has a `byAgency` entry for each agency (found, already stored, captured, failures, earliest date the source listed, and whether it reached `--since`), plus download volume, `phaseSeconds`, database size before and after, `exportBytes`, `aiCostUsd`, and `peakMemory`. The deploy hook starts a Vercel production build. Confirm that the build is Ready and that the site shows the larger meeting count.
+
+Claude classification during a backfill uses the same `--max-cost` ($1 per run) and `--monthly-budget` guards. If the run stops at a cost limit, the remaining meetings keep rule tags and are classified by later scheduled runs.
+
 ## Logs and status
 
 ```sh

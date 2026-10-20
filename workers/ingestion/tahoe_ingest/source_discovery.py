@@ -80,7 +80,8 @@ def candidate(agency, sid, title, day, url, docs, text=''):
 
 
 def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
-    if not 1<=limit<=20:raise ValueError('discovery limit must be 1..20')
+    # limit=None lists every row the index shows (used by the backfill's date-range discovery).
+    if limit is not None and not 1<=limit<=20:raise ValueError('discovery limit must be 1..20')
     url=config.get('indexUrlTemplate',config['indexUrl']).replace('{year}',str(datetime.now(ZoneInfo('America/Los_Angeles')).year));kind=config['type']
     markup=fetch(url)
     body=re.compile(config.get('bodyPattern','.'),re.I)
@@ -321,3 +322,128 @@ def municode(agency, config, limit):
         row['location']=meeting.get('venue')
         rows.append(row)
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
+
+
+# ---------------------------------------------------------------- date-range discovery (backfill)
+# These wrap the bounded adapters above without changing them. Each returns
+# (candidates dated since..until, earliest date the source listed or None).
+
+def _memo(fetch):
+    cache={}
+    def cached(url,*args,**kwargs):
+        if args or kwargs:return fetch(url,*args,**kwargs)
+        if url not in cache:cache[url]=fetch(url)
+        return cache[url]
+    return cached
+
+
+def _in_range(rows, since, until):
+    days=[r['date'] for r in rows if r.get('date')]
+    earliest=min(days) if days else None
+    return [r for r in rows if r.get('date') and since.isoformat()<=r['date']<=until.isoformat()], earliest
+
+
+def municode_range(agency, config, since, until, *, fetch_json=None):
+    """Every Municode meeting dated since..until (the API takes a date range)."""
+    def default(payload):
+        raw,_=fetch_bytes('https://meetings.municode.com/api/publicMeetings/list',max_bytes=6*1024*1024,accept='application/json',payload=payload)
+        return json.loads(raw)
+    fetch_json=fetch_json or default
+    rows=[]
+    for meeting in fetch_json(json.dumps({'displayClientCode':config.get('clientCode','TRUCKEECA'),'isDraft':False,'meetingTypeIds':[],
+                                          'meetingDateFrom':since.isoformat(),'meetingDateTo':until.isoformat()}).encode()):
+        title=meeting.get('meeting') or meeting.get('meetingType') or ''
+        if not re.search(config.get('bodyPattern','Town Council'),title,re.I):continue
+        day=date_in(meeting.get('date',''))
+        if not day:continue
+        sid=meeting['meetingId'];docs=[]
+        for key,label in [('adaHTMLAgenda','Official agenda (HTML)'),('agenda','Official agenda (PDF)')]:
+            if meeting.get(key):docs.append({'id':agency+'-agenda-'+('html' if key=='adaHTMLAgenda' else 'pdf'),'title':label,'url':meeting[key]})
+        official='https://meetings.municode.com/MeetingDetailsPage/index?clientCode='+config.get('clientCode','TRUCKEECA')+'&meetingId='+sid
+        row=candidate(agency,sid,title,day,official,docs,meeting.get('time',''))
+        row['location']=meeting.get('venue')
+        rows.append(row)
+    return _in_range(sorted(rows,key=lambda r:r['date'],reverse=True),since,until)
+
+
+def civicclerk_range(agency, config, since, until, *, fetch=fetch_text, max_pages=40):
+    """Page the CivicClerk event list (newest first) until events are older than ``since``."""
+    api=config.get('apiUrl') or 'https://'+urllib.parse.urlparse(config['indexUrl']).hostname.split('.')[0]+'.api.civicclerk.com/v1'
+    rows,earliest=[],None
+    skip=0
+    for _ in range(max_pages):
+        data=json.loads(fetch(api+f"/Events/GetEventsList(fromDate='',toDate='',categoryIds=[],skip={skip},sortDescending=true,cursorId=0)"))
+        records=data.get('value',data.get('items',[])) if isinstance(data,dict) else data
+        if not records:break
+        page=civicclerk(agency,config,json.dumps({'items':records}),None,fetch)
+        rows.extend(page)
+        days=[d for d in (date_in(e.get('eventDate') or e.get('date') or e.get('startDate') or '') for e in records) if d]
+        if days:earliest=min([earliest or days[0],*days])
+        skip+=len(records)
+        if (days and min(days)<since.isoformat()) or not (isinstance(data,dict) and data.get('hasMore')):break
+    unique={r['source_id']:r for r in rows}
+    found,_=_in_range(sorted(unique.values(),key=lambda r:r['date'],reverse=True),since,until)
+    return found,earliest
+
+
+def legistar_range(agency, config, since, until, *, fetch=fetch_text, page_size=1000, max_pages=10):
+    """Legistar events dated since..until from the public web API, filtered by body name.
+
+    Source IDs are the API's EventId, which differs from the MeetingDetail ID on
+    department pages; capture's source_identity bridges a same-date stored meeting.
+    """
+    client=config.get('legistarClient') or urllib.parse.urlparse(config['indexUrl']).hostname.split('.')[0]
+    body=re.compile(config.get('bodyPattern','.'),re.I)
+    flt=urllib.parse.quote(f"EventDate ge datetime'{since.isoformat()}' and EventDate le datetime'{until.isoformat()}'")
+    rows=[]
+    for page in range(max_pages):
+        events=json.loads(fetch(f'https://webapi.legistar.com/v1/{client}/events?$filter={flt}&$orderby=EventDate%20desc&$top={page_size}&$skip={page*page_size}'))
+        for event in events:
+            if not body.search(event.get('EventBodyName') or ''):continue
+            day=(event.get('EventDate') or '')[:10]
+            if not day or not event.get('EventId'):continue
+            docs=[]
+            if (event.get('EventAgendaFile') or '').startswith('https://'):
+                docs.append({'id':agency+'-agenda','title':'Agenda','url':event['EventAgendaFile']})
+            url=event.get('EventInSiteURL') or config['indexUrl']
+            text=' '.join(str(event.get(k) or '') for k in ('EventTime','EventComment','EventAgendaStatusName'))
+            rows.append(candidate(agency,str(event['EventId']),config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,url,docs,text))
+        if len(events)<page_size:break
+    return sorted(rows,key=lambda r:r['date'],reverse=True)
+
+
+def discover_configured_range(agency, config, *, since, until, fetch=fetch_text, municode_json=None):
+    """Every configured-source candidate dated since..until.
+
+    Returns (candidates, earliest date listed, queried_by_date). Full-listing
+    indexes (Granicus, link indexes, TRPA) are read whole; yearly indexes are
+    read once per year in the range; Municode and the Legistar web API are
+    queried by date range (queried_by_date=True: they reach ``since`` by
+    design); CivicClerk is paged until events are older than ``since``.
+    """
+    fetch=_memo(fetch)
+    kind=config['type']
+    if kind=='civicclerk':
+        found,earliest=civicclerk_range(agency,config,since,until,fetch=fetch)
+        return found,earliest,False
+    template=config.get('indexUrlTemplate')
+    if template and '{year}' in template:
+        rows=[]
+        for year in range(since.year,until.year+1):
+            rows+=discover_configured(agency,{**config,'indexUrlTemplate':template.replace('{year}',str(year))},limit=None,fetch=fetch)
+        return (*_in_range(rows,since,until),True)
+    if kind=='civicplus':
+        markup=fetch(config['indexUrl'])
+        if any('meetings.municode.com/MeetingsPage/' in n.attrs.get('src','') for n in document(markup).find('iframe')):
+            return (*municode_range(agency,config,since,until,fetch_json=municode_json),True)
+    if kind=='legistar':
+        try:
+            api=legistar_range(agency,config,since,until,fetch=fetch)
+        except (OSError,RuntimeError,ValueError):
+            api=None  # Fall back to the department page alone.
+        if api is not None:
+            page,_=_in_range(discover_configured(agency,config,limit=None,fetch=fetch),since,until)
+            covered={r['date'] for r in api}
+            rows=api+[r for r in page if r['date'] not in covered]
+            return (*_in_range(rows,since,until),True)
+    return (*_in_range(discover_configured(agency,config,limit=None,fetch=fetch),since,until),False)

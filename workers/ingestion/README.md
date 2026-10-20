@@ -144,6 +144,33 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 
 A failure in steps 2–10 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
 
+### History backfill
+
+`tahoe-ingest backfill --since YYYY-MM-DD [--until YYYY-MM-DD] [--agency ID ...] [--dry-run]` captures every meeting dated in a range. Coverage starts on 2026-01-01, so the full-year run is `backfill --since 2026-01-01`. `--until` defaults to 120 days ahead. Each followed agency with a discovery adapter is enumerated through the date-range variant of its adapter:
+
+| Adapter | Range function | How it reaches back |
+| --- | --- | --- |
+| `ttd` | `discovery.discover_ttd_range` | Pages WordPress meeting posts until they are 180 days older than `--since`. The date comes from the post title. An undated board post published in the range is kept |
+| `slt` | `discovery.discover_slt_range` | Reads the Granicus publisher, a full archive |
+| `truckee` (custom calendar) | `discovery.discover_truckee_range` | Reads the calendar month by month |
+| `configured` | `source_discovery.discover_configured_range` | Granicus, link-index, and TRPA read the whole index page. `dated-table` reads one yearly page per year. CivicPlus with a Municode embed queries Municode by date. Legistar queries the web API by date and adds department-page rows for dates the API does not cover. CivicClerk is paged until events are older than `--since` |
+
+Meetings already stored with documents are skipped, and quarantined candidates are ignored, so the command is resumable. A rerun downloads only what is missing, including documents that failed earlier. Capture uses the scheduled run's path: `capture.capture_candidates`, incremental commits, 2 documents per meeting, and at least 1 second between downloads (`--delay`). Each failing index or document is recorded and never stops the run. After capture, the backfill runs the scheduled post-steps from `scheduled.py`: quarantine, reparse, reclassify, classify-topics within the same cost guards, export, validate, store, and the deploy hook. `--no-publish` stops after validation. `--dry-run` only discovers and reports.
+
+The backfill takes the scheduled run's advisory lock. It waits up to `--lock-wait-minutes` (default 45) for a running scheduled run and then exits as `skipped`. A scheduled run that starts during a backfill skips itself.
+
+The JSON summary extends the `run-scheduled` summary with:
+
+- `window`
+- `byAgency`: `found`, `alreadyStored`, `toCapture`, `captured`, `failed`, `documentFailures`, `earliestListed`, `earliestInRange`, `reachesSince`, `error`, and per-agency seconds
+- `totals`, including `agenciesNotReachingSince`
+- `downloads` (documents and bytes)
+- `phaseSeconds`
+- `database` (`pg_database_size` and row counts before and after)
+- `exportBytes`
+
+A live dry run on 2026-10-20 for `--since 2026-01-01` found 201 meetings in 19 agencies. Every source reached 2026-01-01 except four whose indexes list only recent items: `trcd` (earliest 2026-01-13), `trpa-advisory` (2026-03-11), `trpa-governing` (2026-07-22), and `truckee-north-shore-tma` (2026-10-01). Placer returned its known 403 ([SOURCE-001](../../docs/issues/SOURCE-001-placer-downloads.md)). See the [deployment runbook](../../docs/operations/deployment.md#history-backfill) for the separate `tahoe-backfill` Cloud Run job.
+
 Environment: `DATABASE_URL` (required; hosted URLs need `?sslmode=require`), `VERCEL_DEPLOY_HOOK_URL` (optional, from Secret Manager), the `ANTHROPIC_*` federation IDs with `TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata` (optional; `ANTHROPIC_API_KEY` also works locally), `TAHOE_FORECAST_DAYS`. `TAHOE_SOURCE_ROOT` (`/app` in the image) locates `config/` and `tests/fixtures/`; `TAHOE_SCRATCH_DIR` overrides the scratch parent (default `TMPDIR`).
 
 Build from the repository root; the root `.dockerignore` is an allowlist:

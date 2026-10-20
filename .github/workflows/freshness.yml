@@ -1,0 +1,42 @@
+# Dead-man's switch for the scheduled pipeline. The Cloud Run failure alert cannot see a
+# scheduler that is paused or not firing; this checks the published site instead, so it
+# also catches a deploy hook or Vercel build that stopped working.
+name: Site freshness
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+permissions: {}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Alert if the published data is stale
+        env:
+          NTFY_URL: ${{ secrets.NTFY_URL }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          SITE_URL: https://tahoepublicmeetings.org
+          # The job runs every 6 hours; 14 hours tolerates one missed run plus build time.
+          MAX_AGE_HOURS: '14'
+        run: |
+          problem=""
+          if ! status="$(curl -fsS --max-time 20 --retry 2 "$SITE_URL/status.json")"; then
+            problem="$SITE_URL/status.json could not be fetched."
+          else
+            generated="$(printf '%s' "$status" | jq -r '.generatedAt // empty')"
+            if ! then_s="$(date -d "$generated" +%s 2>/dev/null)"; then
+              problem="status.json has no valid generatedAt."
+            else
+              age=$(( ($(date +%s) - then_s) / 3600 ))
+              echo "Published data is $age hours old (generated $generated)."
+              [ "$age" -le "$MAX_AGE_HOURS" ] || problem="Published data is $age hours old (limit $MAX_AGE_HOURS); generated $generated. Check the Cloud Scheduler job, the Cloud Run job, and the Vercel deploy hook."
+            fi
+          fi
+          [ -z "$problem" ] && exit 0
+          echo "::error::$problem"
+          if [ -z "$NTFY_URL" ]; then echo "::warning::NTFY_URL secret not set; no alert sent."; exit 1; fi
+          args=(-fsS --max-time 20 -H "Title: Tahoe site data is stale" -H "Tags: rotating_light" -H "Priority: high" -d "$problem")
+          [ -z "$NTFY_TOKEN" ] || args+=(-H "Authorization: Bearer $NTFY_TOKEN")
+          curl "${args[@]}" "$NTFY_URL" >/dev/null
+          exit 1

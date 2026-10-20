@@ -43,6 +43,8 @@ button, a, select, summary { touch-action: manipulation; }
 .site-footer { margin-top: 64px; border-top: 1px solid var(--line); background: #edf2ee; }
 .footer-inner { min-height: 92px; }
 .footer-brand { font-size: 14px; }
+.data-freshness { width: min(100%, var(--wrap)); margin: 0 auto; padding: 0 24px 18px; font-size: 13px; color: var(--muted); }
+.data-freshness.is-stale { color: #8a3b00; font-weight: 600; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 20px; }
 .eyebrow { margin: 0 0 8px; color: var(--subtle); font-size: 12px; font-weight: 700; letter-spacing: .08em; line-height: 1.4; text-transform: uppercase; }
 .page-hero, .meeting-detail-hero { padding: 30px 0; background: #edf3ef; border-bottom: 1px solid var(--line); }

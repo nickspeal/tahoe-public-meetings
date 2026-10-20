@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import FeedbackDialog from '../components/FeedbackDialog.astro';
+import { data, formatDate } from '../lib/data';
 const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false } = Astro.props;
 // Absolute canonical URL on the production origin (astro.config.mjs `site`), so www and preview hosts point at the apex.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
@@ -37,6 +38,16 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : nu
         <div><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M4 29 15 12l7 10 5-7 9 14H4Z"/><path d="M8 33h24"/></svg></span><span class="brand-name">Tahoe <strong>Public Meetings</strong></span></a></div>
         <nav class="footer-links" aria-label="Site information"><a href="/about/">About</a><a href="/about/#coverage">Coverage</a><button class="footer-feedback" type="button" data-feedback-open>Send feedback</button></nav>
       </div>
+      <p class="data-freshness">Meeting data updated <time datetime={data.generatedAt} data-generated-at>{formatDate(data.generatedAt, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' })}</time><span data-generated-ago></span></p>
     </footer>
+    <script>
+      const stamp = document.querySelector<HTMLTimeElement>('[data-generated-at]');
+      const ago = document.querySelector<HTMLElement>('[data-generated-ago]');
+      const hours = stamp ? (Date.now() - Date.parse(stamp.dateTime)) / 3_600_000 : NaN;
+      if (ago && Number.isFinite(hours) && hours >= 0) {
+        ago.textContent = hours < 1 ? ' (less than an hour ago)' : hours < 48 ? ` (${Math.floor(hours)} hours ago)` : ` (${Math.floor(hours / 24)} days ago)`;
+        if (hours > 24) ago.closest('.data-freshness')?.classList.add('is-stale');
+      }
+    </script>
   </body>
 </html>

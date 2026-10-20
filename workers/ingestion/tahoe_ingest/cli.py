@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, evaluate_topics, scheduled
+from . import ai_topics, alerts, evaluate_topics, scheduled
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -278,6 +278,7 @@ def _run_scheduled(conn, args) -> int:
         min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
         out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
     summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))
+    summary["alerts"] = alerts.alert_on_summary(summary)
     print(json.dumps(summary, default=str), flush=True)
     return 1 if summary["status"] == "failed" else 0
 

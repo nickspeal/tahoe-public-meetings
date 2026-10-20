@@ -9,7 +9,7 @@
 #
 # Usage:
 #   scripts/deploy/gcp-ingestion.sh [deploy] [--yes] [--run-now] [--cloud-build] [--skip-build]
-#   scripts/deploy/gcp-ingestion.sh set-secret database-url|vercel-deploy-hook-url
+#   scripts/deploy/gcp-ingestion.sh set-secret database-url|vercel-deploy-hook-url|ntfy-url
 #   scripts/deploy/gcp-ingestion.sh run-now [--yes]
 #
 # Secret values are never accepted as arguments or printed. They are read from
@@ -55,6 +55,7 @@ ANTHROPIC_WORKSPACE_ID="${ANTHROPIC_WORKSPACE_ID:-}"
 
 SECRET_DATABASE_URL="tahoe-database-url"
 SECRET_DEPLOY_HOOK="tahoe-vercel-deploy-hook-url"
+SECRET_NTFY_URL="tahoe-ntfy-url"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 AR_HOST="${REGION}-docker.pkg.dev"
@@ -106,7 +107,8 @@ secret_id_for() {
   case "$1" in
     database-url) echo "$SECRET_DATABASE_URL" ;;
     vercel-deploy-hook-url) echo "$SECRET_DEPLOY_HOOK" ;;
-    *) die "unknown secret '$1'; use database-url or vercel-deploy-hook-url" ;;
+    ntfy-url) echo "$SECRET_NTFY_URL" ;;
+    *) die "unknown secret '$1'; use database-url, vercel-deploy-hook-url, or ntfy-url" ;;
   esac
 }
 
@@ -303,6 +305,8 @@ validate_secret_value() {
       [[ "$value" == *sslmode=require* ]] || warn "DATABASE_URL has no sslmode=require" ;;
     "$SECRET_DEPLOY_HOOK")
       [[ "$value" == https://api.vercel.com/* ]] || warn "deploy hook URL does not start with https://api.vercel.com/" ;;
+    "$SECRET_NTFY_URL")
+      [[ "$value" == https://* ]] || die "NTFY_URL must be the full https topic URL, e.g. https://ntfy.sh/<topic>" ;;
   esac
 }
 
@@ -340,12 +344,14 @@ ensure_secrets() {
   log "Secret Manager secrets ($REGION, accessible only to $JOB_SA)"
   ensure_secret_resource "$SECRET_DATABASE_URL"
   ensure_secret_resource "$SECRET_DEPLOY_HOOK"
+  ensure_secret_resource "$SECRET_NTFY_URL"
   prompt_secret "$SECRET_DATABASE_URL" "DATABASE_URL (Prisma Postgres TCP URL)" 1
   prompt_secret "$SECRET_DEPLOY_HOOK" "VERCEL_DEPLOY_HOOK_URL" 0
+  prompt_secret "$SECRET_NTFY_URL" "NTFY_URL (full ntfy topic URL, for run-quality alerts)" 0
 }
 
 cmd_set_secret() {
-  [[ -n "$SECRET_ARG" ]] || die "usage: $0 set-secret database-url|vercel-deploy-hook-url"
+  [[ -n "$SECRET_ARG" ]] || die "usage: $0 set-secret database-url|vercel-deploy-hook-url|ntfy-url"
   local id value=""
   id="$(secret_id_for "$SECRET_ARG")"
   g secrets describe "$id" >/dev/null 2>&1 || die "secret $id does not exist; run deploy first"
@@ -380,6 +386,11 @@ deploy_job() {
     secrets+=",VERCEL_DEPLOY_HOOK_URL=${SECRET_DEPLOY_HOOK}:latest"
   else
     warn "no Vercel deploy hook; the site will not rebuild after runs"
+  fi
+  if secret_has_version "$SECRET_NTFY_URL"; then
+    secrets+=",NTFY_URL=${SECRET_NTFY_URL}:latest"
+  else
+    warn "no ntfy URL; failed meetings and cost-limit stops will not send alerts"
   fi
   g run jobs deploy "$JOB_NAME" --region="$REGION" --image="$IMAGE_REF" \
     --service-account="$JOB_SA" --tasks=1 --parallelism=1 --max-retries="$MAX_RETRIES" \

@@ -1,6 +1,6 @@
 # Local implementation status
 
-Updated: 2026-10-20. Work is committed directly to `main` and pushed to the public [GitHub repository](https://github.com/nickspeal/tahoe-public-meetings); no cloud deployment is configured. Read this with the current [implementation handoff](implementation-handoff.md) and [README](../../README.md) when resuming.
+Updated: 2026-10-20. Work is committed directly to `main` and pushed to the public [GitHub repository](https://github.com/nickspeal/tahoe-public-meetings). Production is live at https://tahoepublicmeetings.org (see [Production](#production)). Read this with the current [implementation handoff](implementation-handoff.md) and [README](../../README.md) when resuming.
 
 ## Working locally
 
@@ -32,10 +32,22 @@ The local backup and restore-check workflow was exercised against a dedicated di
 
 The final integrated check passed: 144 backend tests, 27 frontend/calendar tests, 650 citation references, clean Astro diagnostics, and 133 built pages with 2,543 internal links. Earlier local HTTP route checks returned 200, including 18 calendar downloads checked for calendar content and MIME type; this configuration change was checked through static build and interaction tests. Earlier topic packaging checks loaded the catalog from an installed wheel built through a source distribution; the build hook now includes both catalogs; the dependency lock check passes. Repeat with `python3 scripts/project.py test` and `python3 scripts/check_site.py --url http://127.0.0.1:4321`. Local database snapshots are saved under ignored `data/backups/`. Browser visual QA and manual calendar-application imports have not been performed.
 
-This is a local proof of concept with selected-page source coverage, not a comprehensive or automatically current meeting feed. No cloud services or deployment have been used. The code is public under the MIT License ([decision 0016](../decisions/0016-public-open-source-repository.md)).
+Coverage is still selected-page source coverage, not a comprehensive meeting feed. The code is public under the MIT License ([decision 0016](../decisions/0016-public-open-source-repository.md)).
 
 ## Recent implementation commits
 
 Recent local commits add shared topics, meeting-level filters and visible tags, calendar downloads, and interaction/regression tests. Earlier commits implement the timeline redesign, expanded real source data, explainable topic reclassification, PostgreSQL ingestion, local setup, operator corrections, restore verification, and agency-specific parsing. Check `git log --oneline` for the current sequence and inspect `git status` before editing or committing.
 
-Next proposed local work: keyword search across captured agenda items and source excerpts, then extending item parsing for additional captured PDF layouts. Truckee’s September 22 HTML agenda is now captured and parsed. Keep alerts, accounts, and cloud deployment deferred.
+Next proposed local work: keyword search across captured agenda items and source excerpts, then extending item parsing for additional captured PDF layouts. Truckee’s September 22 HTML agenda is now captured and parsed. Keep alerts and accounts deferred.
+
+## Production
+
+Live since 2026-10-20 at https://tahoepublicmeetings.org (`www` redirects to the apex). [Decision 0018](../decisions/0018-scheduled-publication.md) and the [deployment runbook](../operations/deployment.md) describe the setup; no data was uploaded by hand.
+
+- A Cloud Run job (`tahoe-ingest`, us-west1) runs `tahoe-ingest run-scheduled` every 6 hours (Cloud Scheduler, America/Los_Angeles) against Prisma Postgres. It stores each validated export in `public_exports` and calls a Vercel deploy hook; the Vercel build (root `apps/web`, Git-connected) reads the newest export and refuses to publish without one.
+- Claude topic classification authenticates with workload identity federation (no API key).
+- Spend limits: $5/month Google budget with a guard that pauses the scheduler, a $5/month Claude workspace limit, and the job's $5 monthly AI budget.
+- First run (2026-10-20, from an empty database): 25 minutes, status `degraded` only because of source download failures. 134 confirmed meetings across 35 bodies, 29 expected meetings, 1,738 agenda items, all classified by Claude Haiku 5.5 for $0.11. Peak container memory 213 MiB. The deploy hook built 146 pages.
+- Known source gaps in production: South Shore TMA agenda PDFs and the Placer Tahoe Basin Design Review index return 403 from the job; Lahontan and Placer agenda items captured locally by one-off scripts are not reproduced by the pipeline.
+- Verified on the live site: main routes, 404 page, `robots.txt`, `www` and HTTP redirects, meeting URLs containing `:` (literal and `%3A`), and `.ics` downloads served as `text/calendar`.
+

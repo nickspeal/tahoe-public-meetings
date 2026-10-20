@@ -1,6 +1,6 @@
 # Implementation handoff
 
-This is the scope and architecture brief. Read it before earlier comparison documents. A local proof of concept was implemented on 2026-10-19; see [implementation status](implementation-status.md) and the root README for commands, verification, and remaining limits. No cloud resources or deployment have been created. Code is public on GitHub ([decision 0016](../decisions/0016-public-open-source-repository.md)); commits go directly to `main` and are pushed to `origin`.
+This is the scope and architecture brief. Read it before earlier comparison documents. A local proof of concept was implemented on 2026-10-19; see [implementation status](implementation-status.md) and the root README for commands, verification, and remaining limits. Production runs at https://tahoepublicmeetings.org from the scheduled pipeline ([decision 0018](../decisions/0018-scheduled-publication.md), [deployment runbook](../operations/deployment.md)). Code is public on GitHub ([decision 0016](../decisions/0016-public-open-source-repository.md)); commits go directly to `main` and are pushed to `origin`.
 
 ## Current coverage update (2026-10-20)
 
@@ -14,12 +14,12 @@ This is the scope and architecture brief. Read it before earlier comparison docu
 
 [Decision 0011](../decisions/0011-claude-for-automated-analysis.md) makes Claude the topic classifier: `worker classify-topics` sends new or changed meetings to Haiku 5.5, falls back to Sonnet 5.5, and leaves rule tags when both fail. It runs only by hand today.
 
-**Pending scheduling work** (part of the scheduling step in the first implementation slice):
+**Scheduling work** (done 2026-10-20 except where noted; see decision 0018):
 
-- Add `classify-topics` to the scheduled Cloud Run job after ingestion and before `export`, so new agendas get Claude tags without a manual run. Until then, they show rule tags.
-- Store `ANTHROPIC_API_KEY` as a Secret Manager secret for the job, never in the image or repository, and install the worker's optional `ai` extra in the job image.
-- Set Anthropic console spend limits as a backstop to the job's `--max-cost` and `--monthly-budget` guards, and alert on failed meetings or a run stopped by a cost limit (both are in the command's JSON output and the `ai_usage` table).
-- Consider the Message Batches API (50% cheaper) once volume justifies the delay; at current volume a run costs about $0.02.
+- Done: `classify-topics` runs in the scheduled Cloud Run job after ingestion and before `export`; the image installs the worker's `ai` extra.
+- Done, differently: the job authenticates with Anthropic workload identity federation from its Google service account, so no `ANTHROPIC_API_KEY` is stored anywhere.
+- Done: a $5/month Claude workspace spend limit backs the job's `--max-cost` and `--monthly-budget` guards. Failed executions email the operator; failed meetings and cost stops appear in the run's JSON summary and the `ai_usage` table but do not yet alert on their own.
+- Consider the Message Batches API (50% cheaper) once volume justifies the delay; an incremental run costs about $0.02; the first full classification of 1,738 items cost $0.11.
 
 ## Accepted product scope (earlier baseline; see update above)
 
@@ -41,7 +41,7 @@ Summaries publish automatically after programmatic validation; no mandatory huma
 | Durable derived data | Page-separated text, source metadata/hashes, summaries, topic assignments, internal corrections and overrides |
 | AI | Claude via the Anthropic API ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)); topic classification uses Haiku 5.5 with a Sonnet 5.5 fallback and rule tags as the last resort (`worker classify-topics`) |
 
-See [decision 0005](../decisions/0005-selected-stack.md) for account verification. Do not use another Vercel account because it happens to be logged in. Prisma workspace and Google project/billing identity still require identification before provisioning. No deployment has been requested as part of this documentation handoff.
+See [decision 0005](../decisions/0005-selected-stack.md) for account verification. Do not use another Vercel account because it happens to be logged in. Prisma Postgres is provisioned through the Vercel Marketplace on the designated scope, and the ingestion job runs in its own Google Cloud project; see the deployment runbook.
 
 ## Proposed implementation defaults, not additional maintainer commitments
 

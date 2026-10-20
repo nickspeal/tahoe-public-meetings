@@ -52,3 +52,5 @@ What new evidence would change the decision?
 [0015: Deterministic agenda layouts](0015-deterministic-agenda-layouts.md) adds validated per-agency agenda layouts (no model cost), a `reparse` command for stored text, and empty-state wording that says why a meeting lists no items.
 
 [0016: Public open-source repository](0016-public-open-source-repository.md) publishes the code on GitHub under the MIT License, keeps maintainer notes outside Git, and lifts the local-only Git constraint.
+
+[0017: Reader feedback](0017-reader-feedback.md) adds an anonymous feedback dialog and a "Suggest a topic…" Topic dropdown entry, stores submissions in Postgres, alerts the operator through ntfy, and treats feedback as untrusted input for agents.

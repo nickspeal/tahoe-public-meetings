@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import FeedbackDialog from '../components/FeedbackDialog.astro';
 const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.' } = Astro.props;
 ---
 <!doctype html>
@@ -22,14 +23,16 @@ const { title = 'Tahoe Public Meetings', description = 'Follow the local decisio
         <nav aria-label="Main navigation" class="primary-nav">
           <a href="/meetings/">Meetings</a>
           <a href="/comment-periods/">Public comment</a>
+          <button class="nav-feedback" type="button" data-feedback-open>Feedback</button>
         </nav>
       </div>
     </header>
     <main id="main"><slot /></main>
+    <FeedbackDialog />
     <footer class="site-footer">
       <div class="footer-inner">
         <div><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M4 29 15 12l7 10 5-7 9 14H4Z"/><path d="M8 33h24"/></svg></span><span class="brand-name">Tahoe <strong>Public Meetings</strong></span></a></div>
-        <nav class="footer-links" aria-label="Site information"><a href="/about/">About</a><a href="/about/#coverage">Coverage</a></nav>
+        <nav class="footer-links" aria-label="Site information"><a href="/about/">About</a><a href="/about/#coverage">Coverage</a><button class="footer-feedback" type="button" data-feedback-open>Send feedback</button></nav>
       </div>
     </footer>
   </body>

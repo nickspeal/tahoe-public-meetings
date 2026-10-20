@@ -12,12 +12,15 @@ const earlierCount = earlier?.querySelector<HTMLElement>('summary span');
 const noUpcoming = document.querySelector<HTMLElement>('#no-upcoming-message');
 const rows = [...document.querySelectorAll<HTMLElement>('[data-meeting-row]')];
 const groups = [...document.querySelectorAll<HTMLElement>('[data-timeline-group]')];
+// The last topic option is "Suggest a topic…": it opens the feedback dialog instead of filtering.
+const SUGGEST_TOPIC = '__suggest';
 
 if (topicSelect && agencySelect && viewSelect) {
   const params = new URLSearchParams(window.location.search);
   const isTopicRoute = window.location.pathname.startsWith('/topics/');
   const queryTopic = isTopicRoute ? null : params.get('topic');
-  if (queryTopic && [...topicSelect.options].some((option) => option.value === queryTopic)) topicSelect.value = queryTopic;
+  if (queryTopic && queryTopic !== SUGGEST_TOPIC && [...topicSelect.options].some((option) => option.value === queryTopic)) topicSelect.value = queryTopic;
+  let currentTopic = topicSelect.value;
   const agency = params.get('agency');
   if (agency && [...agencySelect.options].some((option) => option.value === agency)) agencySelect.value = agency;
   if (params.get('view') === 'all') viewSelect.value = 'all';
@@ -92,6 +95,13 @@ if (topicSelect && agencySelect && viewSelect) {
 
   topicSelect.addEventListener('change', () => {
     const topic = topicSelect!.value;
+    if (topic === SUGGEST_TOPIC) {
+      const option = topicSelect!.selectedOptions[0];
+      topicSelect!.value = currentTopic;
+      window.dispatchEvent(new CustomEvent('feedback:open', { detail: { kind: option?.dataset.feedbackKind, prompt: option?.dataset.feedbackPrompt } }));
+      return;
+    }
+    currentTopic = topic;
     if (window.location.pathname.startsWith('/topics/')) {
       const url = new URL(window.location.href);
       url.pathname = topic ? `/topics/${encodeURIComponent(topic)}/` : '/';

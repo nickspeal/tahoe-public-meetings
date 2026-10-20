@@ -17,6 +17,6 @@ const documentCount = meetings.reduce((sum, meeting) => sum + meeting.documents.
       <article><p class="eyebrow">SOURCES</p><h2>Official pages and documents</h2><p>Meeting details link to the agency event page and available agenda documents. Cited passages link to the relevant source page. Some records may have only agenda text; open the packet for supporting reports.</p><p>Agenda excerpts are drawn from text in linked official documents. They are automated and not human reviewed unless stated otherwise. An agenda item is not a record of a final decision.</p></article>
     </div>
     <section class="agency-coverage"><p class="eyebrow">AGENCY SOURCES</p><ul>{data.agencies.map((agency) => <li><div><h3>{agency.name}</h3><p>{agencySourceLabel(agency)}</p></div><a href={agency.sourceUrl} target="_blank" rel="noopener noreferrer">Agency meeting source ↗</a></li>)}</ul></section>
-    <div class="correction-guide" id="corrections"><p class="eyebrow">ERRORS</p><h2>Spotted a mistake?</h2><p>There is no public submission form or contact address on this site. For current meeting information, use the official agency source.</p></div>
+    <div class="correction-guide" id="corrections"><p class="eyebrow">ERRORS</p><h2>Spotted a mistake?</h2><p>Use <button class="inline-feedback" type="button" data-feedback-open>Send feedback</button> to report an error, ask for a topic or agency, or suggest an improvement. Feedback goes to the maintainer and is not published. For current meeting information, use the official agency source.</p></div>
   </section>
 </SiteLayout>

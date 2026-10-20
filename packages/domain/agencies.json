@@ -157,7 +157,7 @@
     "name": "Douglas County — Board of Commissioners",
     "shortName": "Douglas County",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://www.douglascountynv.gov/government/board-of-county-commissioners",
     "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
     "schedule": {
@@ -198,6 +198,12 @@
       "agendaPublishingSchedule": "5 days before",
       "notification": "Website isn't working: https://www.douglascountynv.gov/cms/One.aspx?portalId=12493103&pageId=12557332",
       "website": "https://www.douglascountynv.gov/cms/one.aspx?portalid=12493103&pageid=12553208"
+    },
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "bodyPattern": "(?s)^(?!.*Supplement)\\s*Board of County Commissioners",
+      "titlePrefix": "Douglas County "
     }
   },
   {
@@ -205,7 +211,7 @@
     "name": "Douglas County — Planning Commission",
     "shortName": "Douglas County",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://www.douglascountynv.gov/government/county_boards_and_commissions",
     "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
     "schedule": {
@@ -239,6 +245,12 @@
       "agendaPublishingSchedule": "5 days before",
       "notification": "Website isn't working: https://www.douglascountynv.gov/cms/One.aspx?portalId=12493103&pageId=12557332",
       "website": "https://www.douglascountynv.gov/cms/one.aspx?pageId=12553412"
+    },
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
+      "bodyPattern": "(?s)^(?!.*Supplement)\\s*Planning Commission",
+      "titlePrefix": "Douglas County "
     }
   },
   {
@@ -293,9 +305,9 @@
     "name": "El Dorado County — Board of Supervisors",
     "shortName": "El Dorado County",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://www.eldoradocounty.ca.gov/County-Government/Board-of-Supervisors",
-    "sourceUrl": "https://eldorado.legistar.com/Calendar.aspx",
+    "sourceUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
       "sourceRow": 12,
@@ -307,6 +319,12 @@
       "agendaPublishingSchedule": "",
       "notification": "https://service.govdelivery.com/accounts/CAELDOR/subscriber/new?topic_id=CAELDOR_2",
       "website": "https://www.edcgov.us/Government/BOS"
+    },
+    "discovery": {
+      "type": "legistar",
+      "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
+      "bodyPattern": "Board of Supervisors",
+      "title": "El Dorado County Board of Supervisors Meeting"
     }
   },
   {
@@ -367,9 +385,9 @@
     "name": "Washoe County — Board of Commissioners",
     "shortName": "Washoe County",
     "follow": true,
-    "discoveryAdapter": null,
+    "discoveryAdapter": "configured",
     "officialUrl": "https://www.washoecounty.gov/bcc/board_committees/",
-    "sourceUrl": "https://washoelife.washoecounty.gov/category/washoe-county/board-of-county-commissioners/",
+    "sourceUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=30765&GUID=4B8B322D-C2C5-48F3-899F-45F45D87C758",
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
       "sourceRow": 14,
@@ -381,6 +399,12 @@
       "agendaPublishingSchedule": "",
       "notification": "https://www.washoecounty.us/county_news_update_subscription.php",
       "website": "https://www.washoecounty.us/bcc/index.php"
+    },
+    "discovery": {
+      "type": "legistar",
+      "indexUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=30765&GUID=4B8B322D-C2C5-48F3-899F-45F45D87C758",
+      "bodyPattern": "Board of County Commissioners",
+      "title": "Washoe County Board of County Commissioners Meeting"
     }
   },
   {

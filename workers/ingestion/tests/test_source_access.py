@@ -124,3 +124,35 @@ def test_annual_tables_keep_dates_cancellations_and_agendas_scoped_to_rows():
     assert rows[1]['date']=='2026-10-13' and rows[1]['start_time']=='09:00'
     assert len(rows[1]['documents'])==1 and '247178' in rows[1]['documents'][0]['url']
     assert 'Multi-day' in rows[1]['warnings'][0]
+
+
+def _live_config(agency):
+    from tahoe_ingest.catalog import agency_catalog
+    return next(a['discovery'] for a in agency_catalog() if a['id']==agency)
+
+
+def _fixture(name):
+    from pathlib import Path
+    return (Path(__file__).resolve().parents[3]/'tests/fixtures/discovery'/name).read_text()
+
+
+def test_douglas_publisher_splits_bodies_and_drops_supplement_duplicates():
+    markup=_fixture('douglas-granicus-publisher.html')
+    bcc=discover_configured('douglas-commissioners',_live_config('douglas-commissioners'),limit=20,fetch=lambda _:markup)
+    assert [r['source_id'] for r in bcc]==['1907','1846','1842']
+    assert all(r['title'].startswith('Douglas County Board of County Commissioners') for r in bcc)
+    assert bcc[2]['title'].endswith('Special Meeting')
+    # A recorded archive row's time is playback, not a scheduled start.
+    assert bcc[0]['start_time'] is None and bcc[1]['start_time'] is None
+    pc=discover_configured('douglas-planning',_live_config('douglas-planning'),limit=20,fetch=lambda _:markup)
+    assert {r['source_id'] for r in pc}=={'1901','1859','1855'}
+    assert next(r for r in pc if r['source_id']=='1855')['start_time']=='13:00'
+    assert not any('Library' in r['title'] or 'Supplement' in r['title'] for r in bcc+pc)
+
+
+def test_county_legistar_departments_are_scoped_and_keep_cancellations():
+    ed=discover_configured('el-dorado-supervisors',_live_config('el-dorado-supervisors'),fetch=lambda _:_fixture('el-dorado-board-of-supervisors.html'))
+    assert [(r['source_id'],r['date'],r['start_time']) for r in ed]==[('1440017','2026-10-20','09:00')]
+    assert ed[0]['title']=='El Dorado County Board of Supervisors Meeting'
+    wa=discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),fetch=lambda _:_fixture('washoe-board-of-county-commissioners.html'))
+    assert [(r['source_id'],r['status']) for r in wa]==[('1347923','canceled'),('1347922','unknown')]

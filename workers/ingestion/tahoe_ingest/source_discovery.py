@@ -155,9 +155,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             docs=documents_in(row_markup,url,agency)
             if not any(d['url']==agenda for d in docs):docs.insert(0,{'id':agency+'-agenda-html','title':'Official agenda (HTML)','url':agenda})
             cells=[n for n in tr.children if getattr(n,'tag',None)=='td']
-            title=config.get('title') or (cells[0].text() if cells else text[:180])
+            title=config.get('title') or config.get('titlePrefix','')+(cells[0].text() if cells else text[:180])
             row=candidate(agency,sid,title,day,agenda,docs,text)
-            if re.search(r'\d{2}h\s+\d{2}m',text):
+            if re.search(r'\d{2}h\s+\d{2}m',text) or any('MediaPlayer.php' in ' '.join(a.attrs.values()) for a in tr.find('a')):
                 row['start_time']=None
                 row['warnings'].append('Archive playback timestamps are not used as scheduled start times; see the official agenda.')
             rows.append(row)

@@ -69,7 +69,7 @@ Checked October 20, 2026, one request each. All three newsrooms respond normally
 - `tahoe-usfs` (Tahoe National Forest): fire-restriction and prescribed-fire releases and feature stories. No meetings and no comment periods on that page. A kids' fishing day is an event, not a public meeting.
 - `usfws` (Reno office): species listing news. Two items in about 20 months announced virtual public hearings (February 2026 Fish Lake Valley tui chub, March 2025 bleached sandhill skipper); several others were comment periods. Most are not in the Tahoe Basin.
 
-These are sources of public comment periods, handled by `config/public-comment-periods.json`, not meeting bodies. Recommendation for the maintainer: remove `"meeting"` from `participationTypes` for `ltbmu` and `tahoe-usfs`; for `usfws` it is optional, since hearings are rare and usually outside the basin. The registry was not changed.
+These are sources of public comment periods, handled by `config/public-comment-periods.json`, not meeting bodies. Per the maintainer's decision, `ltbmu` and `tahoe-usfs` now have `participationTypes` of `public-comment-period` only. `usfws` keeps `"meeting"` for its occasional virtual hearings.
 
 ## Maintaining this page
 

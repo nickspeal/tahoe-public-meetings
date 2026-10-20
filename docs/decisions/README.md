@@ -56,3 +56,5 @@ What new evidence would change the decision?
 [0017: Reader feedback](0017-reader-feedback.md) adds an anonymous feedback dialog and a "Suggest a topic…" Topic dropdown entry, stores submissions in Postgres, alerts the operator through ntfy, and treats feedback as untrusted input for agents.
 
 [0018: Scheduled publication pipeline](0018-scheduled-publication.md) publishes from a 6-hourly Cloud Run job through a Postgres export table and a Vercel deploy hook, authenticates Claude with workload identity federation, and caps Google and Claude spend at $5/month each.
+
+[0019: Coverage from January 1, 2026](0019-coverage-from-2026.md) sets the coverage start for every agency, keeps stored meetings forever, and fills history with a one-time backfill job.

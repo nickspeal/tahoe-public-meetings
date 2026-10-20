@@ -22,6 +22,8 @@ import math
 import os
 import random
 import re
+import urllib.parse
+import urllib.request
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -350,7 +352,8 @@ class AnthropicTopicModel:
                 raise SystemExit("The live comparison needs the optional AI dependency: "
                                  "uv sync --project workers/ingestion --extra test --extra ai") from exc
             self._sdk = anthropic
-            client = anthropic.Anthropic()
+            client = anthropic.Anthropic(credentials=gcp_federated_credentials(anthropic)) if uses_gcp_federation() \
+                else anthropic.Anthropic()
         self.client = client
 
     def complete(self, *, system: str, user: str, schema: dict, max_tokens: int) -> ModelReply:
@@ -370,7 +373,8 @@ class AnthropicTopicModel:
             try:
                 response = call()
             except (sdk.AuthenticationError, sdk.PermissionDeniedError) as exc:
-                raise ModelError(f"credentials rejected ({exc.status_code}); check ANTHROPIC_API_KEY", fatal=True) from exc
+                raise ModelError(f"credentials rejected ({exc.status_code}); check ANTHROPIC_API_KEY or the federation rule",
+                                 fatal=True) from exc
             except sdk.NotFoundError as exc:
                 raise ModelError(f"model {self.model} not found", fatal=True) from exc
             except sdk.BadRequestError as exc:
@@ -388,7 +392,46 @@ class AnthropicTopicModel:
 
 
 def has_credentials() -> bool:
-    return bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN"))
+    return bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN") or uses_federation())
+
+
+# Workload identity federation: the Cloud Run job trades its Google service account identity for a
+# short-lived Anthropic token, so no API key is stored anywhere.
+GCP_IDENTITY_URL = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity"
+DEFAULT_FEDERATION_AUDIENCE = "https://api.anthropic.com"
+
+
+def uses_federation() -> bool:
+    """The SDK's federation settings are present (token file or literal token supplied by the environment)."""
+    return bool(os.getenv("ANTHROPIC_FEDERATION_RULE_ID") and os.getenv("ANTHROPIC_ORGANIZATION_ID")
+                and (uses_gcp_federation() or os.getenv("ANTHROPIC_IDENTITY_TOKEN_FILE")
+                     or "ANTHROPIC_IDENTITY_TOKEN" in os.environ))
+
+
+def uses_gcp_federation() -> bool:
+    """Federation configured with Google's metadata server as the identity token source."""
+    return bool(os.getenv("ANTHROPIC_FEDERATION_RULE_ID") and os.getenv("ANTHROPIC_ORGANIZATION_ID")
+                and os.getenv("TAHOE_IDENTITY_TOKEN_SOURCE") == "gcp-metadata")
+
+
+def gcp_identity_token(opener=urllib.request.urlopen) -> str:
+    """A fresh Google ID token for the job's service account, with its email claim for the federation rule."""
+    query = urllib.parse.urlencode({"audience": os.getenv("ANTHROPIC_FEDERATION_AUDIENCE", DEFAULT_FEDERATION_AUDIENCE),
+                                    "format": "full"})
+    request = urllib.request.Request(f"{GCP_IDENTITY_URL}?{query}", headers={"Metadata-Flavor": "Google"})
+    with opener(request, timeout=10) as response:
+        return response.read().decode().strip()
+
+
+def gcp_federated_credentials(sdk):
+    """Anthropic credentials that exchange a new metadata-server token on every refresh."""
+    return sdk.WorkloadIdentityCredentials(
+        identity_token_provider=gcp_identity_token,
+        federation_rule_id=os.environ["ANTHROPIC_FEDERATION_RULE_ID"],
+        organization_id=os.environ["ANTHROPIC_ORGANIZATION_ID"],
+        service_account_id=os.getenv("ANTHROPIC_SERVICE_ACCOUNT_ID") or None,
+        workspace_id=os.getenv("ANTHROPIC_WORKSPACE_ID") or None,
+    )
 
 
 def parse_reply(reply: ModelReply, request: ClassificationRequest, topic_ids) -> tuple[dict, list[str]]:

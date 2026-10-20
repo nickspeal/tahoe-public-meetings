@@ -9,16 +9,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .core import connect, edit_item, export_public, ingest_bundle, init_db, reclassify_topics, record_failure
-from .agenda import parse_agenda
 from .reparse import reparse_meetings
-from .discovery import discover_slt, discover_truckee, discover_ttd
-from .source_discovery import discover_configured
+from .capture import capture_candidates, discover_agency, source_identity
 from .source import download_extract
 from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, evaluate_topics
+from . import ai_topics, evaluate_topics, scheduled
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -105,6 +103,25 @@ def _parser() -> argparse.ArgumentParser:
     ai.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
     ai.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
                     help="USD; refuse to run once month-to-date AI spend reaches it")
+    scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: seed, discover, capture, classify, export, validate, publish")
+    scheduled_run.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."),
+                               help="Directory holding config/ and tests/fixtures/ (default: TAHOE_SOURCE_ROOT or the working directory)")
+    scheduled_run.add_argument("--discovery-limit", type=int, default=6, help="Candidates per agency index (1..20)")
+    scheduled_run.add_argument("--past-days", type=int, default=45, help="Capture discovered meetings this many days back")
+    scheduled_run.add_argument("--future-days", type=int, default=120, help="Capture discovered meetings this many days ahead")
+    scheduled_run.add_argument("--max-documents", type=int, default=2, help="Documents fetched per meeting (1..10)")
+    scheduled_run.add_argument("--delay", type=float, default=1.0, help="Seconds between source downloads")
+    scheduled_run.add_argument("--forecast-days", type=int, default=int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS)))
+    scheduled_run.add_argument("--min-meetings", type=int, default=1, help="Refuse to publish an export with fewer meetings")
+    scheduled_run.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for Claude classification this run")
+    scheduled_run.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET, help="USD month-to-date AI budget")
+    scheduled_run.add_argument("--out", help="Also write the export JSON to this path")
+    scheduled_run.add_argument("--skip-discovery", action="store_true", help="Use tracked config only; no live index checks")
+    scheduled_run.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
+    publish = sub.add_parser("publish-export", help="Validate an export file, store it in public_exports, and call the deploy hook if set")
+    publish.add_argument("--file", required=True)
+    publish.add_argument("--min-meetings", type=int, default=1)
+    publish.add_argument("--no-hook", action="store_true", help="Do not call VERCEL_DEPLOY_HOOK_URL")
     evaluate = sub.add_parser("evaluate-topics", help="Compare rule tags with a Claude classifier; read-only, dry run without ANTHROPIC_API_KEY")
     evaluate_topics.add_arguments(evaluate)
     return p
@@ -121,15 +138,9 @@ def main(argv=None) -> int:
             print(json.dumps(bundle, indent=2))
             return 0
     if args.command == "discover":
-        adapter = followed_agencies()[args.agency].get("discoveryAdapter")
-        if not adapter:
+        if not followed_agencies()[args.agency].get("discoveryAdapter"):
             raise SystemExit(f"{args.agency}: no discovery adapter yet; use ingest-one-offs or ingest-manifest")
-        candidates = (discover_configured(args.agency, followed_agencies()[args.agency]["discovery"], limit=args.limit) if adapter == "configured" else
-                      discover_ttd(limit=args.limit) if adapter == "ttd" else
-                      discover_slt(limit=args.limit) if adapter == "slt" else
-                      discover_truckee(year=args.year, month=args.month, limit=args.limit))
-        for candidate in candidates:
-            candidate["agency"] = args.agency
+        candidates = discover_agency(args.agency, followed_agencies()[args.agency], limit=args.limit, year=args.year, month=args.month)
         dest = Path(args.out)
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(json.dumps({"captured_at": datetime.now(timezone.utc).isoformat(), "candidates": candidates}, indent=2) + "\n")
@@ -147,6 +158,10 @@ def main(argv=None) -> int:
                 conn, agency=args.agency, max_meetings=args.max_meetings, force=args.force, dry_run=args.dry_run,
                 max_cost=args.max_cost, monthly_budget=args.monthly_budget), indent=2))
             return 0
+        if args.command == "run-scheduled":
+            return _run_scheduled(conn, args)
+        if args.command == "publish-export":
+            return _publish_export(conn, args)
         if args.command == "init-db":
             init_db(conn)
             print("PostgreSQL schema ready")
@@ -244,87 +259,39 @@ def main(argv=None) -> int:
             if not 1 <= args.max_meetings <= 20 or not 1 <= args.max_documents <= 10:
                 raise SystemExit("capture limits must be 1..20 meetings and 1..10 documents")
             candidates = json.loads(Path(args.path).read_text())["candidates"][:args.max_meetings]
-            rows = []
-            failures = []
-            failure_records = []
-            for candidate in candidates:
-                candidate = dict(candidate)
-                candidate["source_id"] = _source_identity(conn, candidate)
-                docs = []
-                pages = []
-                html_items = None
-                try:
-                    document_errors = []
-                    for document in candidate["documents"][:args.max_documents]:
-                        try:
-                            fetched = download_extract(document["url"])
-                        except (OSError, RuntimeError, ValueError) as exc:
-                            document_errors.append(str(exc))
-                            failures.append(f"{candidate['agency']}:{candidate['source_id']}: {exc}")
-                            failure_records.append((candidate["agency"], candidate["source_id"], str(exc)))
-                            continue
-                        if fetched.get("items_complete") and html_items is None:
-                            html_items = fetched["agenda_items"]
-                            for item in html_items:
-                                for ref in item["source_pages"]:
-                                    ref["document_id"] = document["id"]
-                        docs.append({**document, "sha256": fetched["sha256"], "fetched_at": datetime.now(timezone.utc).isoformat(),
-                                     "page_count": fetched["page_count"], "media_type": fetched.get("media_type", "application/pdf"), "warnings": fetched["warnings"]})
-                        pages.extend({"document_id": document["id"], **page} for page in fetched["pages"])
-                    complete_document_set = not document_errors and len(candidate["documents"]) <= args.max_documents
-                    from .agenda import ParseResult
-                    parsed = ParseResult(html_items, True) if html_items else (parse_agenda(candidate["agency"], docs, pages) if docs and complete_document_set else None)
-                    warnings = list(candidate.get("warnings", []))
-                    if document_errors:
-                        warnings.append("Some official documents could not be retrieved; the meeting notice is retained and document capture will need a retry.")
-                    if parsed and parsed.complete:
-                        warnings = [w for w in warnings if "agenda items require" not in w.lower()]
-                    else:
-                        warnings.append(parsed.warning if parsed else
-                            "Document limit omitted source PDFs; agenda items require review." if docs else
-                            "No agenda PDF is linked; agenda items require review.")
-                    rows.append({"agency": candidate["agency"], "id": candidate["source_id"], "title": candidate["title"],
-                                 "source_meeting_url": candidate["official_url"], "status": candidate.get("status", "unknown"),
-                                 "date": candidate.get("date"), "start_time": candidate.get("start_time"),
-                                 "timezone": "America/Los_Angeles", "location": candidate.get("location"),
-                                 "warnings": warnings, "partial_logistics": True,
-                                 "documents": docs, "documents_complete": bool(candidate.get("documents_complete")) and complete_document_set,
-                                 "pages": pages, "agenda_items": parsed.items if parsed and parsed.complete else [],
-                                 "items_complete": bool(parsed and parsed.complete)})
-                except Exception as exc:
-                    failures.append(f"{candidate['agency']}:{candidate['source_id']}: {exc}")
-                    failure_records.append((candidate["agency"], candidate["source_id"], str(exc)))
-            result = ingest_bundle(conn, {"meetings": rows}, mode="live")
-            for agency_id, source_id, error in failure_records:
-                record_failure(conn, agency_id, source_id, "capture", error)
-            result["captureFailures"] = failures
+            result = capture_candidates(conn, candidates, max_documents=args.max_documents,
+                                        fetch=lambda url: download_extract(url))
             print(json.dumps(result, indent=2))
-            return 1 if result["failed"] or failures else 0
+            return 1 if result["failed"] or result["captureFailures"] else 0
     return 0
 
 
-def _source_identity(conn, candidate):
-    """Bridge a previously captured calendar ID to the same official agenda.
+_source_identity = source_identity  # Kept for callers of the former CLI helper.
 
-    Only a unique same-date notice can be bridged, and workshops/special/joint
-    meetings must agree. The alias is persisted for subsequent fetches.
-    """
-    aid, sid = candidate['agency'], str(candidate['source_id'])
-    direct = conn.execute("SELECT source_id FROM meetings WHERE agency_id=%s AND source_id=%s", (aid,sid)).fetchone()
-    if direct:return sid
-    alias = conn.execute("SELECT m.source_id FROM meeting_source_aliases a JOIN meetings m ON m.id=a.meeting_id WHERE a.agency_id=%s AND a.alias=%s",(aid,sid)).fetchone()
-    if alias:return alias['source_id']
-    rows=list(conn.execute("SELECT id,source_id,title,official_url FROM meetings WHERE agency_id=%s AND local_date=%s AND quarantine_reason IS NULL",(aid,candidate.get('date'))))
-    exact=[r for r in rows if r['official_url']==candidate['official_url']]
-    import re
-    def qualifiers(title):
-        return {word for word in ('workshop','special','joint') if re.search(r'\b'+word+r'\b',title,re.I)}
-    matching=exact or [r for r in rows if qualifiers(r['title'])==qualifiers(candidate['title'])]
-    if len(matching)==1:
-        row=matching[0]
-        conn.execute("INSERT INTO meeting_source_aliases(agency_id,alias,meeting_id) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING",(aid,sid,row['id']))
-        return row['source_id']
-    return sid
+
+def _run_scheduled(conn, args) -> int:
+    if not 1 <= args.discovery_limit <= 20 or not 1 <= args.max_documents <= 10 or not 0 <= args.forecast_days <= 366:
+        raise SystemExit("run-scheduled limits: --discovery-limit 1..20, --max-documents 1..10, --forecast-days 0..366")
+    options = scheduled.Options(
+        root=args.root, discovery_limit=args.discovery_limit, past_days=args.past_days, future_days=args.future_days,
+        max_documents=args.max_documents, delay=args.delay, forecast_days=args.forecast_days,
+        min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
+        out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
+    summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))
+    print(json.dumps(summary, default=str), flush=True)
+    return 1 if summary["status"] == "failed" else 0
+
+
+def _publish_export(conn, args) -> int:
+    run = scheduled.Run(conn)
+    run.step("init-db", lambda: init_db(conn), fatal=True)
+    payload = json.loads(Path(args.file).read_text())
+    hook = None if args.no_hook else os.getenv("VERCEL_DEPLOY_HOOK_URL")
+    published = scheduled.publish(conn, payload, run, min_meetings=args.min_meetings, hook_url=hook) if not run.fatal else {}
+    status = "failed" if run.fatal else "ok"
+    print(json.dumps({"message": f"publish-export {status}", "status": status, "steps": run.steps,
+                      "exportId": published.get("exportId"), "failures": run.failures}, default=str), flush=True)
+    return 1 if run.fatal else 0
 
 
 def _learn_schedules(conn, args) -> int:

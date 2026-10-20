@@ -71,8 +71,7 @@ alone sometimes return cache errors.
 
 Generated summaries are deterministic source excerpts,
 not AI analysis. Only excerpts whose exact quotes occur on their cited pages
-are published. Claude is the selected provider for future automated analysis
-(decision 0011), but no model call is part of ingestion yet.
+are published. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
 
 `evaluate-topics` compares the title rules with Claude Haiku 5.5 on stored
 agenda items, given either the title alone or the title plus the item's own
@@ -123,4 +122,29 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 
 [Decision 0014](../../docs/decisions/0014-reviewed-sources-and-public-comment-periods.md) and the [configuration guide](../../config/README.md) describe the current sources. Configured discovery supports reviewed Granicus/Legistar/CivicClerk/Municode/category indexes and rolling links. PDF, HTML, and plain text are captured through a bounded fetcher; curl/system CA certificates provide a verified-TLS fallback. HTML uses source sections rather than invented PDF pages. Partial fetch failures retain the notice and successful documents. `quarantine-meeting ID --reason TEXT` hides a misattributed record without deleting its provenance.
 
-`ingest-comment-periods [FILE]` verifies official notice text and imports a separate comment window; default `config/public-comment-periods.json`. It never submits a comment or manufactures a multi-day meeting. No active period was verified in this review. Placer's persistent 403 errors remain [SOURCE-001](../../docs/issues/SOURCE-001-placer-downloads.md); no cloud scheduling was added.
+`ingest-comment-periods [FILE]` verifies official notice text and imports a separate comment window; default `config/public-comment-periods.json`. It never submits a comment or manufactures a multi-day meeting. No active period was verified in this review. Placer's persistent 403 errors remain [SOURCE-001](../../docs/issues/SOURCE-001-placer-downloads.md).
+
+## Scheduled pipeline (Cloud Run Job)
+
+`tahoe-ingest run-scheduled` builds an empty database from scratch and keeps it current. Production data comes only from this command: tracked config and fixtures in the image plus live official sources, never a local dump. Steps, in order:
+
+1. `init-db` (idempotent; includes `public_exports`).
+2. `seed-fixtures`: `tests/fixtures/meetings.json`, only meetings not yet stored, so a later live capture is never overwritten.
+3. `one-offs` and 4. `comment-periods` from `config/` (comment notices are fetched and verified).
+5. `verified-sources`: `config/verified-agency-meetings-*.json` candidates not yet stored; missing documents are retried at most once a day. Candidates in `config/quarantined-meeting-candidates.json` are skipped.
+6. `discover`: every followed agency with a discovery adapter, `--discovery-limit 6` candidates, keeping meetings from 45 days back to 120 days ahead; stored meetings older than 14 days that already have documents are not downloaded again. At most 2 documents per meeting, 1 second between downloads.
+7. `quarantine`, 8. `reparse`, 9. `reclassify`, 10. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`).
+11. `export` (mode `live`), 12. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 13. `store` in `public_exports` (latest 30 kept), 14. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
+
+A failure in steps 2–10 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
+
+Environment: `DATABASE_URL` (required; hosted URLs need `?sslmode=require`), `VERCEL_DEPLOY_HOOK_URL` (optional, from Secret Manager), the `ANTHROPIC_*` federation IDs with `TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata` (optional; `ANTHROPIC_API_KEY` also works locally), `TAHOE_FORECAST_DAYS`. `TAHOE_SOURCE_ROOT` (`/app` in the image) locates `config/` and `tests/fixtures/`; `TAHOE_SCRATCH_DIR` overrides the scratch parent (default `TMPDIR`).
+
+Build from the repository root; the root `.dockerignore` is an allowlist:
+
+```sh
+docker build --platform linux/amd64 -f workers/ingestion/Dockerfile -t tahoe-ingest .
+docker run --rm -e DATABASE_URL=... tahoe-ingest            # run-scheduled
+```
+
+Sizing: PDFs are read whole into memory and also written to a per-run directory under `TMPDIR`, removed after each file and at the end of the run. Cloud Run's `/tmp` is in memory, so one large file counts about twice (the 80 MiB download cap bounds it near 160 MiB plus extracted text). The 505-page SLT packet is about 38 MB. A from-scratch run in the amd64 image with `/tmp` on tmpfs (including that packet and two other ~500-page packets) peaked at about 170 MiB for the container and took about 6 minutes; a rerun took about 2 minutes. Give the job 1 GiB of memory and 1 vCPU, a task timeout of at least 30 minutes, and `--max-retries 0` or 1 (the next scheduled run retries sources anyway).

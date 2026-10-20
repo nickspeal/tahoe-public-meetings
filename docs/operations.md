@@ -2,6 +2,8 @@
 
 The local PostgreSQL database holds meeting records, source hashes and extracted page text, generated summaries, topic assignments, corrections, suppressions, and topic overrides. Keep it backed up before schema changes and after editing published content.
 
+This page covers the local checkout. For the hosted Google Cloud ingestion job, secrets, budget guard, and Vercel publication, see the [deployment runbook](operations/deployment.md).
+
 ## Create a backup
 
 Start the checkout's local database if needed, then create a backup:

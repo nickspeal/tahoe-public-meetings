@@ -97,7 +97,7 @@ def test_spend_limits_and_missing_key(conn, monkeypatch):
     monkeypatch.delenv("ANTHROPIC_AUTH_TOKEN", raising=False)
     dry = ai_topics.classify_topics(conn, dry_run=True)
     assert dry["meetingsPending"] == 1 and dry["itemsPending"] == 16 and dry["estimatedCostUsd"] > 0
-    assert "ANTHROPIC_API_KEY" in ai_topics.classify_topics(conn)["skipped"]
+    assert "no Claude credentials" in ai_topics.classify_topics(conn)["skipped"]
     clients = {m: StubModel(m) for m in ("claude-haiku-5-5", "claude-sonnet-5-5")}
     with pytest.raises(SystemExit, match="exceeds --max-cost"):
         ai_topics.classify_topics(conn, clients=clients, max_cost=0)

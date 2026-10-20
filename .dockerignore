@@ -1,0 +1,13 @@
+# Allowlist: the ingestion image (workers/ingestion/Dockerfile, built from the
+# repository root) receives only tracked source it needs. Local data, private
+# notes, credentials, and node_modules never enter the build context.
+*
+!config/*.json
+!packages/domain/*.json
+!tests/fixtures/meetings.json
+!workers/ingestion/pyproject.toml
+!workers/ingestion/README.md
+!workers/ingestion/build_hook.py
+!workers/ingestion/tahoe_ingest/
+**/__pycache__
+**/*.py[cod]

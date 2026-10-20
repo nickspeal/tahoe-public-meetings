@@ -4,13 +4,20 @@
   "license": "MIT",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
+    "prebuild": "node scripts/fetch-export.mjs",
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
     "test": "npm run build && node --test",
     "feedback": "node scripts/feedback.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

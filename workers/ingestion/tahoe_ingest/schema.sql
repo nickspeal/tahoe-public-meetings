@@ -125,3 +125,12 @@ CREATE TABLE IF NOT EXISTS ai_usage (
   cost_usd numeric(12,6) NOT NULL, error text
 );
 CREATE INDEX IF NOT EXISTS ix_ai_usage_recorded ON ai_usage(recorded_at);
+-- Validated public exports written by `tahoe-ingest run-scheduled` / `publish-export`.
+-- The website build reads the newest row; only the latest 30 are retained.
+CREATE TABLE IF NOT EXISTS public_exports (
+  id bigserial PRIMARY KEY,
+  schema_version integer NOT NULL,
+  generated_at timestamptz NOT NULL,
+  payload jsonb NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);

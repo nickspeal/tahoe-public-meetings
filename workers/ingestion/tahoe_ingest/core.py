@@ -25,7 +25,10 @@ AGENCIES = followed_agencies()
 
 
 def connect(url: str) -> psycopg.Connection:
-    return psycopg.connect(url, row_factory=dict_row)
+    # Hosted URLs carry their own sslmode (e.g. ?sslmode=require); keepalives protect
+    # long scheduled runs whose connection idles during source downloads.
+    return psycopg.connect(url, row_factory=dict_row, connect_timeout=30,
+                           keepalives=1, keepalives_idle=60, keepalives_interval=15, keepalives_count=4)
 
 
 def init_db(conn: psycopg.Connection) -> None:

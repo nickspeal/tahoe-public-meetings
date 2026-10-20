@@ -81,7 +81,7 @@ def classify_topics(conn, *, agency: str | None = None, max_meetings: int | None
     if dry_run or not requests:
         return report
     if clients is None and not has_credentials():
-        report["skipped"] = "ANTHROPIC_API_KEY is not set; rule tags stay in place"
+        report["skipped"] = "no Claude credentials (API key or workload identity federation); rule tags stay in place"
         return report
     if spent_this_month >= monthly_budget:
         raise SystemExit(f"Month-to-date AI spend ${spent_this_month:.2f} has reached the ${monthly_budget:.2f} budget")

@@ -1,7 +1,9 @@
 ---
 import '../styles/global.css';
 import FeedbackDialog from '../components/FeedbackDialog.astro';
-const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.' } = Astro.props;
+const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false } = Astro.props;
+// Absolute canonical URL on the production origin (astro.config.mjs `site`), so www and preview hosts point at the apex.
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
 ---
 <!doctype html>
 <html lang="en">
@@ -11,6 +13,7 @@ const { title = 'Tahoe Public Meetings', description = 'Follow the local decisio
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f6f4ed" />
     <title>{title} · Tahoe Public Meetings</title>
+    {noindex ? <meta name="robots" content="noindex" /> : canonical && <link rel="canonical" href={canonical} />}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

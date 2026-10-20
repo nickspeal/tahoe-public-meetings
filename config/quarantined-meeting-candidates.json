@@ -17,6 +17,30 @@
           "Official Placer AgendaCenter lists the October 1 agenda as “10.01.26 OVDRC Agenda Cancelled”; this is a cancellation notice, not a held meeting."
         ]
       }
+    },
+    {
+      "reviewId": "DUP-001",
+      "quarantinedAt": "2026-10-20",
+      "reason": "Duplicate of tcpud Granicus source 1187 (same October 23, 2026 special board meeting, same agenda). The verified-source copy was stored separately because its title lacked 'Special', so same-date matching did not bridge it. Keep the Granicus record, which scheduled discovery maintains.",
+      "candidate": {
+        "agency": "tcpud",
+        "source_id": "event-1187",
+        "title": "Tahoe City Public Utility District Special Board of Directors Meeting",
+        "official_url": "https://www.tcpud.org/meetings",
+        "date": "2026-10-23",
+        "status": "unknown",
+        "documents": [
+          {
+            "id": "tcpud-board-agenda-2026-10-23",
+            "title": "Official Board of Directors agenda",
+            "url": "https://tahoecitypud.granicus.com/GeneratedAgendaViewer.php?view_id=2&event_id=1187"
+          }
+        ],
+        "warnings": [
+          "Official TCPUD Granicus Board agenda identifies Friday October 23, 2026 at 08:30 and was posted October 16. This is agenda notice evidence; status remains unknown.",
+          "Granicus lists this event (event_id 1187) as a Special Board of Directors Meeting; it is the same meeting as Granicus discovery source 1187."
+        ]
+      }
     }
   ]
 }

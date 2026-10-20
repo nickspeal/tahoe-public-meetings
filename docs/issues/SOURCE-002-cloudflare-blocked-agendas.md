@@ -3,6 +3,10 @@
 Status: open, found 2026-10-20 while filling agenda-less meetings
 Related: [SOURCE-001](SOURCE-001-placer-downloads.md), [decision 0015](../decisions/0015-deterministic-agenda-layouts.md)
 
+## Affected registry entries
+
+`state-lands` (California State Lands Commission) and `ctc` (California Tahoe Conservancy Board, `tahoe.ca.gov`). Overview: [source coverage](../operations/source-coverage.md).
+
 ## Observed behavior
 
 The official meeting pages at `slc.ca.gov` and `tahoe.ca.gov` are hosted behind Cloudflare (WP Engine). A plain request from this worker receives a Cloudflare "Sorry, you have been blocked" page instead of the meeting page, so agenda links cannot be discovered or fetched. Examples:

@@ -3,6 +3,10 @@
 Status: deferred, per the maintainer's October 20, 2026 source review
 Related reviews: SR-001 (download issue only; committee identity corrected), SR-013, SR-014
 
+## Affected registry entries
+
+`placer-supervisors` (Board of Supervisors), `placer-planning` (Planning Commission), and `placer-tahoe-design-review` (Tahoe Basin Design Review Committee, whose archive lists notices but whose agenda PDFs are blocked). `placer-transportation` has no source URL in the registry and has not been tested. Overview: [source coverage](../operations/source-coverage.md).
+
 ## Observed behavior
 
 The maintainer can open the official archive and PDFs in a browser. This worker receives HTTP 403 for the examples below through both Python and the native curl fallback using normal TLS verification. The cause is not established; DocAccess or automated-request filtering is a hypothesis, not a diagnosis. The URL fragment `#docaccess-...` is a browser interface anchor, not a separate downloadable document.

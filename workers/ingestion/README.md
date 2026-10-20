@@ -114,7 +114,7 @@ the public export carries only the latest summary text.
 
 ## Configured coverage and one-off notices
 
-See the [configuration guide](../../config/README.md). Shared topic rules and agencies live in `packages/domain/`; `ingest-one-offs --dry-run` validates `config/one-off-meetings.json`, and `ingest-one-offs` upserts notices without fabricating agendas or start times. `agencies` lists followed entries and adapter readiness. Run `init-db` after registry edits, and `reclassify` after topic edits. New CSV entries remain unverified and have no automatic discovery adapter.
+See the [configuration guide](../../config/README.md). Shared topic rules and agencies live in `packages/domain/`; `ingest-one-offs --dry-run` validates `config/one-off-meetings.json`, and `ingest-one-offs` upserts notices without fabricating agendas or start times. `agencies` lists followed entries and adapter readiness. Run `init-db` after registry edits, and `reclassify` after topic edits. Entries without a `discoveryAdapter` are snapshot-only; see [source coverage](../../docs/operations/source-coverage.md).
 
 `learn-schedules [--agency ID] [--dry-run | --write] [--registry PATH] [--json]` infers regular meeting patterns from stored meetings. It needs 3+ matches and a 60%+ match rate, and `--write` never replaces a `configured` schedule. `export --forecast-days N` (default 90, or `TAHOE_FORECAST_DAYS`; 0 disables) adds expected meetings derived from those schedules. Forecasts are never written to the database. See [Meeting schedules and expected meetings](../../config/README.md#meeting-schedules-and-expected-meetings).
 

@@ -88,7 +88,7 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     assert steps["classify-topics"]["status"] == "skipped"
     assert steps["seed-fixtures"]["detail"]["processed"] == 19
     assert steps["discover"]["detail"]["agenciesWithFailures"] == ["tcpud"]
-    assert steps["discover"]["detail"]["byAgency"]["slt-planning"]["captured"] == 1  # the 400-day-old row is outside the window
+    assert steps["discover"]["detail"]["byAgency"]["slt-planning"]["captured"] == 1  # the 400-day-old row predates the coverage floor
     assert any(f.startswith("discover:tcpud: index down") for f in summary["failures"])
     assert hook.calls == ["https://hooks.example/secret-token"]
     assert "secret-token" not in json.dumps(summary)
@@ -114,6 +114,119 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     assert db.execute("SELECT count(*) AS n FROM meetings").fetchone()["n"] == meetings
     assert db.execute("SELECT count(*) AS n FROM public_exports").fetchone()["n"] == 2
     assert len(hook.calls) == 2
+
+
+TODAY = date(2026, 3, 10)
+
+
+def meeting(source_id, day, documents=()):
+    return {"agency": "slt-planning", "source_id": source_id, "title": "Planning Commission", "date": day.isoformat(),
+            "official_url": f"https://example.gov/planning/{source_id}", "warnings": [],
+            "documents": [{"id": f"slt-planning-{source_id}-{n}", "title": "Agenda", "url": url} for n, url in enumerate(documents)]}
+
+
+def discover_one(rows, seen_limits=None):
+    def discover(agency_id, config, *, limit):
+        if seen_limits is not None:
+            seen_limits[agency_id] = limit
+        return [dict(r) for r in rows][:limit] if agency_id == "slt-planning" else []
+    return discover
+
+
+def discover_report(db, rows, **overrides):
+    run = scheduled.Run(db)
+    fetched = []
+    def fetch(url):
+        fetched.append(url)
+        text = f"{AGENDA_TEXT}\n3. Source {url}"
+        return {**fake_fetch(AGENDA_URL), "sha256": hashlib.sha256(text.encode()).hexdigest(),
+                "pages": [{"page_number": 1, "text": text}]}
+    status, detail = scheduled.discover_sources(db, ROOT, run, options(**overrides), discover_one(rows), fetch, TODAY)
+    return detail["byAgency"]["slt-planning"], fetched
+
+
+def test_window_is_applied_before_the_per_agency_cap(db):
+    init_db(db)
+    # Newest first, as the indexes list them: far-future postings would fill a 6-row cap.
+    far = [meeting(f"far{n}", TODAY + timedelta(days=200 + n)) for n in range(12)]
+    near = [meeting("next", TODAY + timedelta(days=5), [AGENDA_URL]), meeting("later", TODAY + timedelta(days=60)),
+            meeting("recent", TODAY - timedelta(days=12), [AGENDA_URL]), meeting("older", TODAY - timedelta(days=50)),
+            meeting("stale", TODAY - timedelta(days=61)), meeting("dec", date(2025, 12, 31)),
+            meeting("jan", date(2026, 1, 1))]
+    rows = sorted(far + near, key=lambda r: r["date"], reverse=True)
+    assert len(rows) <= scheduled.INDEX_LIMIT
+    report, fetched = discover_report(db, rows, max_captures_per_agency=3)
+    assert report["discovered"] == len(rows)
+    # The window is 2026-01-09..2026-07-08: far-future, "stale", and "jan" fall outside; "dec" predates coverage.
+    assert report["outsideWindow"] == 12 + 2 and report["beforeCoverage"] == 1
+    # Four are in the window; the nearest three are captured and "later" waits for the next run.
+    assert report["captured"] == 3 and report["deferred"] == 1
+    stored = {r["source_id"] for r in db.execute("SELECT source_id FROM meetings WHERE agency_id='slt-planning'")}
+    assert stored == {"next", "recent", "older"}
+    assert fetched == [AGENDA_URL, AGENDA_URL]
+    # The next run reaches the deferred meetings; nothing stored is removed by the window.
+    report, _ = discover_report(db, rows, max_captures_per_agency=10, past_days=2, future_days=2)
+    assert report["outsideWindow"] == len(rows) - 1 and report.get("captured", 0) == 0
+    assert db.execute("SELECT count(*) AS n FROM meetings WHERE agency_id='slt-planning'").fetchone()["n"] == 3
+
+
+def test_settled_meetings_are_skipped_until_a_new_document_is_linked(db):
+    init_db(db)
+    minutes = "https://example.gov/planning/minutes.pdf"
+    rows = [meeting("old", TODAY - timedelta(days=20), [AGENDA_URL]), meeting("week", TODAY - timedelta(days=3), [AGENDA_URL])]
+    report, fetched = discover_report(db, rows)
+    assert report["captured"] == 2 and len(fetched) == 2
+    # Within the 7-day recapture window a meeting is fetched again; older ones are settled.
+    report, fetched = discover_report(db, rows)
+    assert report["settled"] == 1 and report["captured"] == 1 and len(fetched) == 1
+    # A document at a new URL (minutes) on a settled meeting is captured once, then it settles again.
+    rows[0]["documents"].append({"id": "slt-planning-old-minutes", "title": "Minutes", "url": minutes})
+    report, fetched = discover_report(db, rows)
+    assert "settled" not in report and report["captured"] == 2 and fetched.count(minutes) == 1
+    report, fetched = discover_report(db, rows)
+    assert report["settled"] == 1 and minutes not in fetched
+    # Documents beyond the per-meeting cap are never fetched, so they cannot unsettle a meeting.
+    rows[0]["documents"].append({"id": "slt-planning-old-extra", "title": "Extra", "url": "https://example.gov/x.pdf"})
+    assert discover_report(db, rows)[0]["settled"] == 1
+
+
+def test_failed_downloads_of_settled_age_meetings_retry_daily(db):
+    init_db(db)
+    rows = [meeting("old", TODAY - timedelta(days=20), ["https://example.gov/missing.pdf"])]
+    run = scheduled.Run(db)
+    scheduled.discover_sources(db, ROOT, run, options(), discover_one(rows), fake_fetch, TODAY)
+    report, fetched = discover_report(db, rows)
+    assert report["retryLater"] == 1 and fetched == []
+
+
+def test_index_limits():
+    opts = options()
+    assert opts.discovery_limit == scheduled.INDEX_LIMIT == 20
+    assert scheduled._index_limit({"discoveryAdapter": "ttd"}, opts) == scheduled.UNDATED_INDEX_LIMIT
+    assert scheduled._index_limit({"discoveryAdapter": "configured"}, opts) == 20
+    undated = {"source_id": "t", "date": None}
+    assert scheduled._window_reason(undated, TODAY, opts) is None  # TTD posts are bounded by count instead
+    assert scheduled._window_reason({"date": "2025-12-31"}, date(2026, 1, 20), opts) == "beforeCoverage"
+    assert [c["source_id"] for c in scheduled._nearest_first(
+        [{"source_id": "a", "date": "2026-06-01"}, {"source_id": "b", "date": "2026-03-01"}, undated], TODAY)] == ["t", "b", "a"]
+
+
+def test_truckee_calendar_months(monkeypatch):
+    from tahoe_ingest import capture
+    assert capture.truckee_months(date(2026, 1, 5)) == [(2025, 12), (2026, 1), (2026, 2)]
+    assert capture.truckee_months(date(2026, 12, 20)) == [(2026, 12), (2027, 1)]
+    calls = []
+
+    def fake_truckee(*, year, month, limit):
+        calls.append((year, month, limit))
+        return [{"source_id": f"{month}", "title": "Town Council"}, {"source_id": "shared", "title": "Town Council"}]
+    monkeypatch.setattr(capture, "discover_truckee", fake_truckee)
+    found = capture.discover_agency("truckee", {"discoveryAdapter": "truckee"}, limit=5)
+    assert len(calls) in (2, 3) and all(c[2] == 5 for c in calls)
+    assert [c["source_id"] for c in found].count("shared") == 1 and all(c["agency"] == "truckee" for c in found)
+    calls.clear()
+    capture.discover_agency("truckee", {"discoveryAdapter": "truckee"}, limit=5, year=2026, month=4)
+    assert calls == [(2026, 4, 5)]
 
 
 def test_invalid_or_empty_export_is_not_stored_or_deployed(db, monkeypatch, tmp_path):

@@ -8,7 +8,7 @@ stops the run, but an invalid export is never published:
 3. one-offs          config/one-off-meetings.json (idempotent upsert)
 4. comment-periods   config/public-comment-periods.json (fetches and verifies notices)
 5. verified-sources  config/verified-agency-meetings-*.json; captures meetings not yet stored
-6. discover          each followed agency with an adapter, bounded window, polite delays
+6. discover          each followed agency with an adapter: recent and upcoming meetings, polite delays
 7. quarantine        config/quarantined-meeting-candidates.json
 8. reparse           stored text of meetings without items
 9. reclassify        rule topic tags
@@ -59,10 +59,22 @@ QUARANTINED = "config/quarantined-meeting-candidates.json"
 FAILED_RETRY_HOURS = 24
 MAX_LISTED_FAILURES = 100
 
+# Discovery policy. History is filled once by a separate backfill; the scheduled
+# job only keeps recent and upcoming meetings current. Stored meetings are kept
+# forever, whatever the window.
+COVERAGE_START = date(2026, 1, 1)  # Never capture a dated meeting before this day (undated TTD posts excepted).
+INDEX_LIMIT = 20                   # Rows requested from each index (the adapters' maximum); the window is applied afterwards.
+UNDATED_INDEX_LIMIT = 6            # TTD posts are undated and each costs a page fetch, so they stay bounded by count.
+PAST_DAYS = 60                     # Look-back for newly linked documents on past meetings (minutes, revised packets).
+FUTURE_DAYS = 120                  # Horizon for posted notices; covers the 90-day forecast.
+RECAPTURE_PAST_DAYS = 7            # Past meetings this recent are re-downloaded every run (same-URL corrections, cancellations).
+MAX_CAPTURES_PER_AGENCY = 10       # Meetings captured per agency per run, nearest to today first.
+
 
 class Options:
-    def __init__(self, *, root=".", discovery_limit=6, past_days=45, future_days=120, recapture_past_days=14,
-                 max_documents=2, delay=1.0, forecast_days=None, min_meetings=1,
+    def __init__(self, *, root=".", discovery_limit=INDEX_LIMIT, past_days=PAST_DAYS, future_days=FUTURE_DAYS,
+                 recapture_past_days=RECAPTURE_PAST_DAYS, max_captures_per_agency=MAX_CAPTURES_PER_AGENCY,
+                 coverage_start=COVERAGE_START, max_documents=2, delay=1.0, forecast_days=None, min_meetings=1,
                  max_cost=ai_topics.DEFAULT_MAX_RUN_COST, monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET,
                  out=None, skip_discovery=False, publish=True):
         self.root = Path(root)
@@ -70,6 +82,8 @@ class Options:
         self.past_days = past_days
         self.future_days = future_days
         self.recapture_past_days = recapture_past_days
+        self.max_captures_per_agency = max_captures_per_agency
+        self.coverage_start = coverage_start
         self.max_documents = max_documents
         self.delay = delay
         self.forecast_days = (int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS))
@@ -225,42 +239,89 @@ def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
     return ("degraded" if result["failed"] or result["captureFailures"] else "ok"), counts
 
 
-def _in_window(candidate: dict, today: date, options: Options) -> bool:
+def _window_reason(candidate: dict, today: date, options: Options) -> str | None:
+    """Why a candidate is outside the scheduled window, or None. Stored meetings are never removed for this."""
     if not candidate.get("date"):
-        return True  # Undated candidates (TTD posts) cannot be windowed; their count is bounded by the limit.
+        return None  # Undated candidates (TTD posts) cannot be windowed; their count is bounded by UNDATED_INDEX_LIMIT.
     day = date.fromisoformat(candidate["date"])
-    return today - timedelta(days=options.past_days) <= day <= today + timedelta(days=options.future_days)
+    if day < options.coverage_start:
+        return "beforeCoverage"
+    if not today - timedelta(days=options.past_days) <= day <= today + timedelta(days=options.future_days):
+        return "outsideWindow"
+    return None
 
 
-def _settled(conn, meeting_id: str, today: date, options: Options) -> bool:
-    """A stored past meeting with documents is not downloaded again on every run."""
+def _stored_document_urls(conn, meeting_id: str) -> set[str]:
+    return {r["url"] for r in conn.execute("""SELECT v.url FROM document_current c JOIN document_versions v
+        ON v.id=c.version_id WHERE c.meeting_id=%s""", (meeting_id,))}
+
+
+def _skip_reason(conn, meeting_id: str, candidate: dict, today: date, options: Options) -> str | None:
+    """Keep stored past meetings from being downloaded again on every run.
+
+    Older than the recapture window, a meeting is "settled" once every document
+    a capture would fetch is already stored under the same URL, so a newly
+    linked document (minutes, a packet at a new address) is still picked up.
+    Its failed downloads are retried at most once a day.
+    """
     row = conn.execute("SELECT local_date FROM meetings WHERE id=%s", (meeting_id,)).fetchone()
-    if not row or not row["local_date"] or not _has_documents(conn, meeting_id):
-        return False
-    return row["local_date"] < today - timedelta(days=options.recapture_past_days)
+    if not row or not row["local_date"] or row["local_date"] >= today - timedelta(days=options.recapture_past_days):
+        return None
+    stored = _stored_document_urls(conn, meeting_id)
+    if stored and all(d["url"] in stored for d in candidate.get("documents", [])[:options.max_documents]):
+        return "settled"
+    if _recent_capture_failure(conn, meeting_id):
+        return "retryLater"
+    return None
+
+
+def _index_limit(config: dict, options: Options) -> int:
+    if config.get("discoveryAdapter") == "ttd":
+        return min(options.discovery_limit, UNDATED_INDEX_LIMIT)
+    return options.discovery_limit
+
+
+def _nearest_first(candidates: list[dict], today: date) -> list[dict]:
+    """Recent and upcoming meetings before distant ones; undated posts keep their newest-first order."""
+    return sorted(candidates, key=lambda c: abs((date.fromisoformat(c["date"]) - today).days) if c.get("date") else 0)
 
 
 def discover_sources(conn, root: Path, run: Run, options: Options, discover, fetch, today: date):
+    """Capture each followed agency's recent and upcoming meetings.
+
+    Each index is read up to the adapters' maximum and only then filtered to the
+    coverage floor and window, so far-future postings never crowd out recent past
+    meetings. Settled meetings are skipped, and at most `max_captures_per_agency`
+    of the rest are captured, nearest to today first; the remainder wait for the
+    next run.
+    """
     followed = followed_agencies()
     quarantined = _quarantine_keys(root)
     agencies = {}
     for aid in sorted(a for a, config in followed.items() if config.get("discoveryAdapter")):
         report = agencies[aid] = {}
         try:
-            candidates = discover(aid, followed[aid], limit=options.discovery_limit)
+            candidates = discover(aid, followed[aid], limit=_index_limit(followed[aid], options))
             report["discovered"] = len(candidates)
             selected = []
             for candidate in candidates:
                 if not candidate.get("date"):
                     candidate["date"] = date_in(candidate.get("title", ""))
-                if (aid, str(candidate.get("source_id"))) in quarantined or not _in_window(candidate, today, options):
+                if (aid, str(candidate.get("source_id"))) in quarantined:
                     continue
-                meeting_id = stable_id(aid, source_identity(conn, candidate))
-                if _settled(conn, meeting_id, today, options):
-                    report["settled"] = report.get("settled", 0) + 1
+                reason = _window_reason(candidate, today, options)
+                if not reason:
+                    meeting_id = stable_id(aid, source_identity(conn, candidate))
+                    reason = _skip_reason(conn, meeting_id, candidate, today, options)
+                if reason:
+                    report[reason] = report.get(reason, 0) + 1
                     continue
                 selected.append(candidate)
             conn.commit()
+            selected = _nearest_first(selected, today)
+            if len(selected) > options.max_captures_per_agency:
+                report["deferred"] = len(selected) - options.max_captures_per_agency
+                selected = selected[:options.max_captures_per_agency]
             result = capture_candidates(conn, selected, max_documents=options.max_documents, fetch=fetch,
                                         incremental=True, delay=options.delay)
             report.update(captured=result["processed"], failed=result["failed"])

@@ -2,6 +2,8 @@
 
 Updated October 20, 2026. This runbook covers the hosted pipeline from [decision 0005](../decisions/0005-selected-stack.md): a Cloud Run job ingests sources every six hours, stores a validated public export in Prisma Postgres, and calls a Vercel deploy hook, and Vercel then rebuilds the static site from that export. One idempotent script, [`scripts/deploy/gcp-ingestion.sh`](../../scripts/deploy/gcp-ingestion.sh), creates or updates everything on Google Cloud. Rerunning it is safe: each step checks for an existing resource before creating one, and a rerun never resumes a paused scheduler.
 
+The scheduled job only keeps meetings current: by default it captures meetings from 60 days back to 120 days ahead, and never anything dated before the 2026-01-01 coverage floor. Earlier history comes from the separate one-time backfill, and stored meetings are kept whatever the window. See the worker's [scheduled pipeline](../../workers/ingestion/README.md#scheduled-pipeline-cloud-run-job) notes.
+
 Nothing in this repository names the operator's accounts. The Google project, billing account, alert address, and Vercel scope are supplied when you run the commands.
 
 ## What the script creates

@@ -132,7 +132,13 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 2. `seed-fixtures`: `tests/fixtures/meetings.json`, only meetings not yet stored, so a later live capture is never overwritten.
 3. `one-offs` and 4. `comment-periods` from `config/` (comment notices are fetched and verified).
 5. `verified-sources`: `config/verified-agency-meetings-*.json` candidates not yet stored; missing documents are retried at most once a day. Candidates in `config/quarantined-meeting-candidates.json` are skipped.
-6. `discover`: every followed agency with a discovery adapter, `--discovery-limit 6` candidates, keeping meetings from 45 days back to 120 days ahead; stored meetings older than 14 days that already have documents are not downloaded again. At most 2 documents per meeting, 1 second between downloads.
+6. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
+   - Each index is read up to the adapters' maximum (`--discovery-limit 20`; TTD's undated posts, which each cost a page fetch, stay at 6). The window is applied after reading, so far-future postings never crowd out recent past meetings.
+   - Window: 60 days back (`--past-days`) to 120 days ahead (`--future-days`). The look-back lets minutes and revised packets linked after a monthly or bimonthly body's next meeting still be picked up. Dated meetings before the coverage floor, 2026-01-01, are never captured; undated TTD posts are exempt.
+   - Upcoming meetings and meetings from the last 7 days are re-downloaded every run, which catches revised agendas and cancellations. An older meeting is settled, and skipped, once every document a capture would fetch (the first 2) is already stored at the same URL. A newly linked document makes it captured again. Its failed downloads are retried at most once a day.
+   - At most 10 meetings per agency are captured per run, nearest to today first; the rest wait for the next run. At most 2 documents per meeting, 1 second between downloads.
+   - The legacy Truckee calendar adapter reads the current and next month, plus the previous month during the first 14 days of a month. The followed Truckee entry uses the configured Municode feed, which already spans 90 days on each side.
+   - Stored meetings outside the window are never deleted or hidden.
 7. `quarantine`, 8. `reparse`, 9. `reclassify`, 10. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`).
 11. `export` (mode `live`), 12. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 13. `store` in `public_exports` (latest 30 kept), 14. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
 

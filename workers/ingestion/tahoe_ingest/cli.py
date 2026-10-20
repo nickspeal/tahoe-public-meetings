@@ -106,9 +106,10 @@ def _parser() -> argparse.ArgumentParser:
     scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: seed, discover, capture, classify, export, validate, publish")
     scheduled_run.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."),
                                help="Directory holding config/ and tests/fixtures/ (default: TAHOE_SOURCE_ROOT or the working directory)")
-    scheduled_run.add_argument("--discovery-limit", type=int, default=6, help="Candidates per agency index (1..20)")
-    scheduled_run.add_argument("--past-days", type=int, default=45, help="Capture discovered meetings this many days back")
-    scheduled_run.add_argument("--future-days", type=int, default=120, help="Capture discovered meetings this many days ahead")
+    scheduled_run.add_argument("--discovery-limit", type=int, default=scheduled.INDEX_LIMIT,
+                               help="Rows read from each agency index before the window is applied (1..20)")
+    scheduled_run.add_argument("--past-days", type=int, default=scheduled.PAST_DAYS, help="Capture discovered meetings this many days back")
+    scheduled_run.add_argument("--future-days", type=int, default=scheduled.FUTURE_DAYS, help="Capture discovered meetings this many days ahead")
     scheduled_run.add_argument("--max-documents", type=int, default=2, help="Documents fetched per meeting (1..10)")
     scheduled_run.add_argument("--delay", type=float, default=1.0, help="Seconds between source downloads")
     scheduled_run.add_argument("--forecast-days", type=int, default=int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS)))

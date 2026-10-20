@@ -23,7 +23,7 @@ if (dialog && form) {
     sent = false;
     kind.value = topic ? 'topic' : 'general';
     title.textContent = topic ? 'Suggest a topic' : 'Send feedback';
-    help.textContent = topic ? 'What subject should the site follow? Examples of agenda items, places, or agencies help. Feedback is not published, but please leave out personal details.' : generalHelp;
+    help.textContent = topic ? 'What subject should the site follow? Examples of agenda items, places, or agencies help.' : generalHelp;
     status.textContent = '';
     status.classList.remove('is-error');
     submit.disabled = false;

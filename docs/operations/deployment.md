@@ -206,7 +206,7 @@ These are list prices checked on October 20, 2026 for `us-west1` (a Tier 1 regio
 | Cloud Build (only with `--cloud-build`) | A few builds per month within the free build minutes | $0 |
 | **Google total** | | **about $0.10 to $0.20 per month** |
 
-Outside Google, Prisma Postgres starts on the Free plan and Vercel on the plan the designated scope already uses. Anthropic usage is about $0.02 per classification run, limited by the job's `--max-cost` and `--monthly-budget` guards and the Anthropic console limits ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)). Watch Prisma storage as well, but the job keeps only the latest 5 exports (about 8 MB each). See [storage monitoring](../operations.md#check-database-storage).
+Outside Google, Prisma Postgres runs on the Free plan and Vercel on the plan the designated scope already uses. The Prisma Postgres Free plan allows **2 GB of storage and 200,000 operations per month** (as reported by the maintainer, October 2026). After the September 2026 backfill the database was 28 MB, so storage has ample headroom; the operations quota is the limit to watch, because every scheduled run and every Vercel build queries the database. Check usage in the Prisma dashboard (Vercel Storage, then the database) after a few days of 6-hourly runs. Anthropic usage is about $0.02 per classification run, limited by the job's `--max-cost` and `--monthly-budget` guards and the Anthropic console limits ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)). Watch Prisma storage as well, but the job keeps only the latest 5 exports (about 8 MB each). See [storage monitoring](../operations.md#check-database-storage).
 
 ## Claude credentials: workload identity federation
 

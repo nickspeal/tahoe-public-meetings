@@ -177,6 +177,12 @@ The source collector checks the index again on each invocation; `refresh` alone 
 
 Acquisition prefers small agendas over full packets, supports HTML/plain text as well as PDFs, and stores the detected format. HTML citations refer to source sections and link to the webpage without invented PDF page numbers. A complete supported structured HTML agenda can publish exact cited headings; other layouts retain text for later parsing. Bounded captures keep existing unrelated documents unless the candidate explicitly declares `documents_complete: true`. A failed document still leaves a verified meeting notice available with a retry warning. Verified TLS stays enabled for the native curl fallback; install `curl` and system CA certificates on worker hosts (included in the Dockerfile).
 
+## Skipped endpoints
+
+[`skipped-endpoints.json`](skipped-endpoints.json) lists URL prefixes the worker never requests, so a source known to answer HTTP 403 is not retried on every scheduled run. Each entry has a `prefix`, the observed `status`, the `since` date, and a `reason` (optionally an `issue` path). The skip applies to discovery indexes and document downloads alike. A skipped agency's index is reported as `skipped` in the run summary, not as a failure. Stored meetings whose documents are all skipped are not re-ingested, and a newly captured notice carries a warning that its documents are read at the official link.
+
+To try an endpoint again, delete its entry (or set `skipped` to `[]`) and rebuild the container image, since the file is bundled with it. If the fetch fails again, add the entry back. Locally the file is read from `TAHOE_SOURCE_ROOT` (default: the working directory).
+
 ## Public comment periods
 
 Edit [`public-comment-periods.json`](public-comment-periods.json) when an official comment window is verified. It starts empty because no current Tahoe-related deadline was verified during this source review. A record looks like:

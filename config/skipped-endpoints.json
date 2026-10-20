@@ -1,0 +1,11 @@
+{
+  "skipped": [
+    {
+      "prefix": "https://www.placer.ca.gov/",
+      "status": 403,
+      "since": "2026-10-20",
+      "reason": "Every request, including the home page, returns HTTP 403 to this worker. Cause not established; see SOURCE-001.",
+      "issue": "docs/issues/SOURCE-001-placer-downloads.md"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 """Bounded public-source retrieval with verified TLS and a native curl fallback."""
 from __future__ import annotations
 
+import json
+import os
 import shutil
 import ssl
 import subprocess
@@ -11,6 +13,31 @@ from pathlib import Path
 from urllib.parse import urlparse, urlunparse, quote
 
 USER_AGENT = 'TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)'
+SKIPPED_ENDPOINTS = 'config/skipped-endpoints.json'
+
+
+class EndpointSkipped(RuntimeError):
+    """The URL is listed in the skip configuration, so no request was made."""
+
+
+def _skip_file() -> Path:
+    return Path(os.environ.get('TAHOE_SOURCE_ROOT', '.')) / SKIPPED_ENDPOINTS
+
+
+def skipped_endpoint(url: str) -> str | None:
+    """The reason a URL is configured to be skipped, or None.
+
+    Entries in `config/skipped-endpoints.json` match by URL prefix. Delete an
+    entry (or the file) to try the endpoint again. A missing file skips nothing.
+    """
+    try:
+        entries = json.loads(_skip_file().read_text()).get('skipped', [])
+    except FileNotFoundError:
+        return None
+    for entry in entries:
+        if url.startswith(entry['prefix']):
+            return f"{entry['prefix']} is skipped (HTTP {entry.get('status', '?')} since {entry.get('since', '?')}): {entry.get('reason', 'no reason recorded')}"
+    return None
 
 
 def public_url(url: str) -> str:
@@ -46,6 +73,8 @@ def _native_fetch(url: str, max_bytes: int, accept: str, payload: bytes | None =
 
 def fetch_bytes(url: str, *, max_bytes: int, accept: str = '*/*', payload: bytes | None = None) -> tuple[bytes, str]:
     url = public_url(url)
+    if reason := skipped_endpoint(url):
+        raise EndpointSkipped(reason)
     headers = {'User-Agent': USER_AGENT, 'Accept': accept}
     if payload is not None:
         headers['Content-Type'] = 'application/json'

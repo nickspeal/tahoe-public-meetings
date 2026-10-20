@@ -37,6 +37,7 @@ from pathlib import Path
 
 from . import ai_topics, scheduled
 from .capture import capture_candidates, source_identity
+from .http import EndpointSkipped
 from .catalog import followed_agencies
 from .core import export_public, init_db, record_failure, stable_id
 from .discovery import discover_slt_range, discover_truckee_range, discover_ttd_range
@@ -180,13 +181,18 @@ def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dic
                     continue
                 meeting_id = stable_id(aid, source_identity(conn, candidate))
                 stored = conn.execute("SELECT 1 FROM meetings WHERE id=%s", (meeting_id,)).fetchone()
-                if stored and (not candidate.get("documents") or scheduled._has_documents(conn, meeting_id)):
+                if stored and (not candidate.get("documents") or scheduled._has_documents(conn, meeting_id)
+                               or scheduled.documents_skipped(candidate, options.max_documents)):
                     report["alreadyStored"] += 1
                     continue
                 pending.append(candidate)
             conn.commit()
             report["toCapture"] = len(pending)
             plan[aid] = (report, pending)
+        except EndpointSkipped as exc:
+            conn.rollback()
+            report["skipped"] = scheduled._short(exc)
+            plan[aid] = (report, [])
         except Exception as exc:  # One index failing never stops the backfill.
             conn.rollback()
             report["error"] = scheduled._short(exc)

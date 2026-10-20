@@ -38,6 +38,7 @@ from zoneinfo import ZoneInfo
 
 from . import ai_topics
 from .capture import capture_candidates, discover_agency, source_identity
+from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
 from .comment_periods import ingest_comment_periods
 from .core import export_public, ingest_bundle, init_db, reclassify_topics, record_failure, stable_id
@@ -200,6 +201,12 @@ def _recent_capture_failure(conn, meeting_id: str) -> bool:
         AND started_at > now() - make_interval(hours => %s) LIMIT 1""", (meeting_id, FAILED_RETRY_HOURS)).fetchone())
 
 
+def documents_skipped(candidate: dict, max_documents: int) -> bool:
+    """True when the candidate lists documents and every one a capture would fetch is a configured skip."""
+    documents = candidate.get("documents", [])[:max_documents]
+    return bool(documents) and all(skipped_endpoint(d["url"]) for d in documents)
+
+
 def _has_documents(conn, meeting_id: str) -> bool:
     return bool(conn.execute("SELECT 1 FROM document_current WHERE meeting_id=%s LIMIT 1", (meeting_id,)).fetchone())
 
@@ -225,6 +232,7 @@ def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
             meeting_id = stable_id(key[0], source_identity(conn, candidate))
             stored = conn.execute("SELECT 1 FROM meetings WHERE id=%s", (meeting_id,)).fetchone()
             if stored and (not candidate.get("documents") or _has_documents(conn, meeting_id)
+                           or documents_skipped(candidate, options.max_documents)
                            or _recent_capture_failure(conn, meeting_id)):
                 counts["alreadyStored"] += 1
                 continue
@@ -313,6 +321,9 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
                 if not reason:
                     meeting_id = stable_id(aid, source_identity(conn, candidate))
                     reason = _skip_reason(conn, meeting_id, candidate, today, options)
+                    if not reason and documents_skipped(candidate, options.max_documents) and conn.execute(
+                            "SELECT 1 FROM meetings WHERE id=%s", (meeting_id,)).fetchone():
+                        reason = "endpointSkipped"
                 if reason:
                     report[reason] = report.get(reason, 0) + 1
                     continue
@@ -333,6 +344,9 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
                 # The index was checked even when every candidate was already settled.
                 conn.execute("UPDATE agencies SET status='ok',error=NULL,last_checked_at=now() WHERE id=%s", (aid,))
             conn.commit()
+        except EndpointSkipped as exc:
+            conn.rollback()
+            report["skipped"] = _short(exc)
         except Exception as exc:  # A broken index never stops other agencies.
             conn.rollback()
             report["error"] = _short(exc)

@@ -23,6 +23,8 @@ Retest 2026-10-20: after the fetcher's User-Agent was changed to identify the pr
 
 ## Current behavior
 
+The whole `www.placer.ca.gov` host is listed in [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json), so scheduled and backfill runs make no requests to it until the entry is removed.
+
 Keep the sources followed and retain verified notices and any previously extracted documents. A failed PDF no longer discards its meeting notice. Errors are recorded and the command returns a partial-failure result. No empty agenda is represented as complete. The misattributed October 1 OVDRC cancellation is quarantined with its original source metadata, independently of these download problems.
 
 ## Next investigation

@@ -15,6 +15,7 @@ from .agenda import ParseResult, parse_agenda
 from .core import ingest_bundle, record_failure
 from .discovery import discover_slt, discover_truckee, discover_ttd
 from .source_discovery import discover_configured
+from .http import EndpointSkipped
 from .source import download_extract
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
@@ -97,11 +98,15 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
     pages = []
     html_items = None
     document_errors = []
+    skipped = []
     for index, document in enumerate(candidate["documents"][:max_documents]):
         if index and delay:
             time.sleep(delay)
         try:
             fetched = fetch(document["url"])
+        except EndpointSkipped as exc:
+            skipped.append(str(exc))
+            continue
         except (OSError, RuntimeError, ValueError) as exc:
             document_errors.append(str(exc))
             failures.append(f"{candidate['agency']}:{candidate['source_id']}: {exc}")
@@ -116,12 +121,14 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
                      "page_count": fetched["page_count"], "media_type": fetched.get("media_type", "application/pdf"),
                      "warnings": fetched["warnings"]})
         pages.extend({"document_id": document["id"], **page} for page in fetched["pages"])
-    complete_document_set = not document_errors and len(candidate["documents"]) <= max_documents
+    complete_document_set = not document_errors and not skipped and len(candidate["documents"]) <= max_documents
     parsed = ParseResult(html_items, True) if html_items else (
         parse_agenda(candidate["agency"], docs, pages) if docs and complete_document_set else None)
     warnings = list(candidate.get("warnings", []))
     if document_errors:
         warnings.append("Some official documents could not be retrieved; the meeting notice is retained and document capture will need a retry.")
+    if skipped:
+        warnings.append("Official documents at this source are not retrieved automatically; read them at the official link.")
     if parsed and parsed.complete:
         warnings = [w for w in warnings if "agenda items require" not in w.lower()]
     else:

@@ -9,4 +9,5 @@ If `private/AGENTS.private.md` exists, read it too. It holds maintainer-only ins
 - Automatic source-backed summaries need no human approval. There is one automated summarization system with a single editorial voice (decision 0010); the maintainer steers it over time, there are no attributed personal perspective notes, and the public sees only the latest summary.
 - Use the shared global topic catalog across the app; topics can expand per decision 0008. Alerts and resident accounts are deferred. Total recurring budget is below $20/month.
 - Track new ideas in `docs/ideas/` and consequential choices in `docs/decisions/`. Distinguish accepted decisions from proposed defaults.
+- The repository is public and MIT licensed (decision 0016). Commit and push to `origin/main` as work progresses, but treat everything committed, including commit messages, as permanently public: no secrets, personal notes, or private contact details.
 - Refer to people by role ("the maintainer", "the operator") in docs, code, and commit messages, not by name.

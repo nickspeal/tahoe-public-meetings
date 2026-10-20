@@ -50,3 +50,5 @@ What new evidence would change the decision?
 [0014: Reviewed sources and public comment periods](0014-reviewed-sources-and-public-comment-periods.md) records the maintainer's source decisions, two added parks bodies, separate comment windows, and the reusable acquisition path.
 
 [0015: Deterministic agenda layouts](0015-deterministic-agenda-layouts.md) adds validated per-agency agenda layouts (no model cost), a `reparse` command for stored text, and empty-state wording that says why a meeting lists no items.
+
+[0016: Public open-source repository](0016-public-open-source-repository.md) publishes the code on GitHub under the MIT License, keeps maintainer notes outside Git, and lifts the local-only Git constraint.

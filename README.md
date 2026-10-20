@@ -82,4 +82,4 @@ Read the [implementation handoff](docs/planning/implementation-handoff.md) befor
 
 ## License
 
-[MIT](LICENSE). Agenda text in `tests/fixtures/` is excerpted from public agency documents for testing; the official sources remain authoritative.
+[MIT](LICENSE). Source: [github.com/nickspeal/tahoe-public-meetings](https://github.com/nickspeal/tahoe-public-meetings). Agenda text in `tests/fixtures/` is excerpted from public agency documents for testing; the official sources remain authoritative.

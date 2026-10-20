@@ -1,6 +1,6 @@
 # Implementation handoff
 
-This is the scope and architecture brief. Read it before earlier comparison documents. A local proof of concept was implemented on 2026-10-19; see [implementation status](implementation-status.md) and the root README for commands, verification, and remaining limits. No cloud resources, remote, or deployment have been created. The maintainer authorized regular local commits directly to `main`.
+This is the scope and architecture brief. Read it before earlier comparison documents. A local proof of concept was implemented on 2026-10-19; see [implementation status](implementation-status.md) and the root README for commands, verification, and remaining limits. No cloud resources or deployment have been created. Code is public on GitHub ([decision 0016](../decisions/0016-public-open-source-repository.md)); commits go directly to `main` and are pushed to `origin`.
 
 ## Current coverage update (2026-10-20)
 
@@ -71,7 +71,7 @@ Preserve human edits across reprocessing. A source revision invalidates affected
 ## First implementation slice
 
 1. Read product brief, build plan, decisions 0002–0005, and source research.
-2. Set up the local app structure, schemas/migrations, environment examples, and one representative fixture. Track implementation changes in the local Git repository.
+2. Set up the local app structure, schemas/migrations, environment examples, and one representative fixture. Track implementation changes in Git.
 3. Implement one TTD meeting end to end: source metadata → page text → agenda items → topic assignment/summary → public topic and meeting page.
 4. Check citations, dates, missing fields, mobile/keyboard usability, source changes, and retry behavior. Measure extraction/model usage on the large SLT packet as a separate feasibility check.
 5. Generalize to SLT and Truckee, then add scheduling, publication, cost controls, recovery procedures, and beta validation.
@@ -82,4 +82,4 @@ All three agencies remain the launch target even though TTD is the first develop
 
 The project is volunteer-run. Total recurring expense must be **under $20/month**, preferably much lower. Track quota consumption, model tokens, retries, storage, and auxiliary Google charges; use current provider documentation when implementing. Free-tier figures in research are dated estimates, not guarantees.
 
-Keep the Git repository local for now. Prepare for eventual public open source: credentials, local data, private notes, generated database files, and deployment identity files are not distributable source. Preserve the original design as historical input, but review its named outreach list before public release. License remains undecided. Do not publish or add a remote merely to enable hosting integration.
+The repository is public under the MIT License ([decision 0016](../decisions/0016-public-open-source-repository.md)). Credentials, local data, private notes, generated database files, and deployment identity files are not distributable source and stay out of Git. Everything committed is publicly visible.

@@ -17,7 +17,7 @@ Use a checked-in `config/one-off-meetings.json` and local CLI import for one-off
 
 ## Alternatives and consequences
 
-An authenticated admin UI is deferred unless frequent usage or additional admin tasks justify it. Config changes are reviewable through local Git. Imported metadata needs verification and additional adapters before broad automatic ingestion; the recurring budget remains below $20/month. No new services, hosting, accounts, or scheduled jobs are provisioned by this change. Automatic summaries and separate the maintainer-authored perspective notes retain the existing editorial rules.
+An authenticated admin UI is deferred unless frequent usage or additional admin tasks justify it. Config changes are reviewable through Git. Imported metadata needs verification and additional adapters before broad automatic ingestion; the recurring budget remains below $20/month. No new services, hosting, accounts, or scheduled jobs are provisioned by this change. Automatic summaries and separate the maintainer-authored perspective notes retain the existing editorial rules.
 
 Removing an agency from followed coverage hides its exported records without deleting history. Retired topic overrides stay stored and are hidden publicly. One-off notices can match topic filters before an agenda is posted, and never invent agenda items or meeting times.
 

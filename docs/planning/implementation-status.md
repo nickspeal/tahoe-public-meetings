@@ -1,6 +1,6 @@
 # Local implementation status
 
-Updated: 2026-10-20. Work is committed directly to local `main`; no remote or cloud deployment is configured. Read this with the current [implementation handoff](implementation-handoff.md) and [README](../../README.md) when resuming.
+Updated: 2026-10-20. Work is committed directly to `main` and pushed to the public [GitHub repository](https://github.com/nickspeal/tahoe-public-meetings); no cloud deployment is configured. Read this with the current [implementation handoff](implementation-handoff.md) and [README](../../README.md) when resuming.
 
 ## Working locally
 
@@ -32,7 +32,7 @@ The local backup and restore-check workflow was exercised against a dedicated di
 
 The final integrated check passed: 144 backend tests, 27 frontend/calendar tests, 650 citation references, clean Astro diagnostics, and 133 built pages with 2,543 internal links. Earlier local HTTP route checks returned 200, including 18 calendar downloads checked for calendar content and MIME type; this configuration change was checked through static build and interaction tests. Earlier topic packaging checks loaded the catalog from an installed wheel built through a source distribution; the build hook now includes both catalogs; the dependency lock check passes. Repeat with `python3 scripts/project.py test` and `python3 scripts/check_site.py --url http://127.0.0.1:4321`. Local database snapshots are saved under ignored `data/backups/`. Browser visual QA and manual calendar-application imports have not been performed.
 
-This is a local proof of concept with selected-page source coverage, not a comprehensive or automatically current meeting feed. No cloud services, paid APIs, remote Git repository, or deployment have been used. License selection and review of the original design's private outreach list remain before any public open-source release.
+This is a local proof of concept with selected-page source coverage, not a comprehensive or automatically current meeting feed. No cloud services or deployment have been used. The code is public under the MIT License ([decision 0016](../decisions/0016-public-open-source-repository.md)).
 
 ## Recent implementation commits
 

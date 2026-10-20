@@ -3,7 +3,7 @@
 Status: implementation defaults for the authorized local prototype, subject to beta evaluation
 Date: 2026-10-19
 
-The maintainer requested a functional local proof of concept with regular commits directly to `main`. No remote, service provisioning, or cloud deployment is authorized by this work.
+The maintainer requested a functional local proof of concept with regular commits directly to `main`. No service provisioning or cloud deployment is authorized by this work. (The local-only Git constraint was lifted by [decision 0016](0016-public-open-source-repository.md).)
 
 - Use Astro and TypeScript for static public pages. A versioned JSON export separates the website from Python and database credentials.
 - Use a dedicated local PostgreSQL cluster (or the supplied Docker Compose database). Prisma Postgres remains the selected hosted database; Prisma's ORM is not required to use that service and is not introduced for the Python worker.

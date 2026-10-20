@@ -1,6 +1,6 @@
 # Architecture overview
 
-Status: selected service architecture; not implemented. See [decision 0005](../decisions/0005-selected-stack.md) and [implementation handoff](../planning/implementation-handoff.md). Code is tracked in local Git and is intended for eventual public open source. Frontend framework, AI model/provider, and license remain open.
+Status: selected service architecture; not implemented. See [decision 0005](../decisions/0005-selected-stack.md) and [implementation handoff](../planning/implementation-handoff.md). Code is public and MIT licensed ([decision 0016](../decisions/0016-public-open-source-repository.md)). Astro is the implemented frontend and Claude the selected AI provider ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)).
 
 ## Shape of the system
 
@@ -67,7 +67,7 @@ Visitors do not incur model calls. Budget controls cap new AI/OCR work, cache un
 - `tests/fixtures/`: small redistributable or synthetic source examples.
 - `docs/`: architecture, plan, decisions, ideas, and research.
 
-Keep runtime PDFs, databases, logs, API keys, and private notes separate from distributable source. Provide setup instructions and example configuration so others can run their own instance. Select a license before public release; public visibility alone is not an open-source license. Review the original design's named outreach list before publishing. No Git initialization is needed now.
+Keep runtime PDFs, databases, logs, API keys, and private notes separate from distributable source. Provide setup instructions and example configuration so others can run their own instance. The repository is public under the MIT License; maintainer notes stay outside Git.
 
 ## Growth path
 

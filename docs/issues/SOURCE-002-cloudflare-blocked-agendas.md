@@ -1,6 +1,6 @@
 # SOURCE-002: California State Lands Commission and Tahoe Conservancy pages block automated requests
 
-Status: open, found 2026-10-20 while filling agenda-less meetings
+Status: partly resolved 2026-10-20. Found while filling agenda-less meetings. After the fetcher began identifying itself with the project URL instead of "local research prototype", one request each to the Tahoe Conservancy and State Lands meeting pages returned the real page (HTTP 200) instead of the block page. Cause is a hypothesis (a User-Agent rule); the block may return. Adapters and agenda layouts for both are still to be written, so both remain snapshot-only
 Related: [SOURCE-001](SOURCE-001-placer-downloads.md), [decision 0015](../decisions/0015-deterministic-agenda-layouts.md)
 
 ## Affected registry entries

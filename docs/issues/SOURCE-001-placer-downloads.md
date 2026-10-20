@@ -5,7 +5,7 @@ Related reviews: SR-001 (download issue only; committee identity corrected), SR-
 
 ## Affected registry entries
 
-`placer-supervisors` (Board of Supervisors), `placer-planning` (Planning Commission), and `placer-tahoe-design-review` (Tahoe Basin Design Review Committee, whose archive lists notices but whose agenda PDFs are blocked). `placer-transportation` has no source URL in the registry and has not been tested. Overview: [source coverage](../operations/source-coverage.md).
+`placer-supervisors` (Board of Supervisors), `placer-planning` (Planning Commission), and `placer-tahoe-design-review` (Tahoe Basin Design Review Committee, whose archive lists notices but whose agenda PDFs are blocked). `placer-transportation` is published separately at `pctpa.net`, is not affected, and now has live discovery. Overview: [source coverage](../operations/source-coverage.md).
 
 ## Observed behavior
 
@@ -18,6 +18,8 @@ The maintainer can open the official archive and PDFs in a browser. This worker 
 - [Tahoe Basin committee archive](https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13)
 - [August 25 committee agenda](https://www.placer.ca.gov/AgendaCenter/ViewFile/Agenda/_08252026-6577)
 - [September 22 committee agenda](https://www.placer.ca.gov/AgendaCenter/ViewFile/Agenda/_09222026-6619)
+
+Retest 2026-10-20: after the fetcher's User-Agent was changed to identify the project URL, one request to `https://www.placer.ca.gov/` still returned HTTP 403, so the User-Agent text is not the cause here.
 
 ## Current behavior
 

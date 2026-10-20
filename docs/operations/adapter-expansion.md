@@ -1,6 +1,6 @@
 # Adapter expansion
 
-Updated October 20, 2026. Fifteen followed registry entries have no live discovery adapter and show only hand-captured snapshots; see [source coverage](source-coverage.md). This page is the task brief for adding adapters to the ones that are not known to be blocked, and for documenting the blockage where an adapter cannot be built. It is written to be pasted into a fresh agent session.
+Updated October 20, 2026. This brief has been worked once (ten entries now have live discovery; see [source coverage](source-coverage.md) for what remains: Tahoe Conservancy and State Lands adapters, the statewide parks bodies, and the federal comment-period sources). The original wording follows for reuse. This page is the task brief for adding adapters to the ones that are not known to be blocked, and for documenting the blockage where an adapter cannot be built. It is written to be pasted into a fresh agent session.
 
 ## Prompt
 

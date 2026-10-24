@@ -219,11 +219,11 @@ The Free plan allows **2 GB of storage and 200,000 operations per month** for th
 | Feedback submission | 3 |
 | Page views | 0 (the site is static) |
 
-At four runs a day the job should use about 30,000–45,000 operations a month. Other databases in the same Prisma workspace share the quota. Check usage with the Prisma CLI after `npx prisma auth login` (`npx prisma project list` shows the project ID):
+At four runs a day the job should use about 30,000–45,000 operations a month. Other databases in the same Prisma workspace share the quota. Check usage with the Prisma CLI after `npx prisma auth login`. The database is in the Prisma project `tahoe-public-meetings`:
 
 ```sh
-npx prisma postgres usage tahoe-public-meetings-db --project <prisma-project-id>          # month to date
-npx prisma postgres usage tahoe-public-meetings-db --project <prisma-project-id> \
+npx prisma postgres usage tahoe-public-meetings-db --project tahoe-public-meetings          # month to date
+npx prisma postgres usage tahoe-public-meetings-db --project tahoe-public-meetings \
   --from 2026-11-02T00:55:00Z --to 2026-11-02T01:10:00Z                                  # around one run
 ```
 

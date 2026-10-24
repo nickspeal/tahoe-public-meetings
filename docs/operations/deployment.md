@@ -63,7 +63,7 @@ The script prints the active account and target, then asks you to type the proje
 
 ## Redeploy a new image
 
-Commit the worker changes, then rerun the script. It tags the image with the Git SHA, deploys it by digest, and leaves secrets and the scheduler state untouched:
+Commit the worker changes, then rerun the script. It tags the image with the Git SHA, deploys it by digest, and leaves secrets and the scheduler state untouched. Without the `ANTHROPIC_*` IDs in the environment it keeps the deployed job's IDs. Before October 24, 2026 a redeploy without them turned Claude classification off, which happened on October 20:
 
 ```sh
 PROJECT_ID=<project-id> scripts/deploy/gcp-ingestion.sh --yes [--run-now]
@@ -206,7 +206,28 @@ These are list prices checked on October 20, 2026 for `us-west1` (a Tier 1 regio
 | Cloud Build (only with `--cloud-build`) | A few builds per month within the free build minutes | $0 |
 | **Google total** | | **about $0.10 to $0.20 per month** |
 
-Outside Google, Prisma Postgres runs on the Free plan and Vercel on the plan the designated scope already uses. The Prisma Postgres Free plan allows **2 GB of storage and 200,000 operations per month** (as reported by the maintainer, October 2026). After the September 2026 backfill the database was 28 MB, so storage has ample headroom; the operations quota is the limit to watch, because every scheduled run and every Vercel build queries the database. Check usage in the Prisma dashboard (Vercel Storage, then the database) after a few days of 6-hourly runs. Anthropic usage is about $0.02 per classification run, limited by the job's `--max-cost` and `--monthly-budget` guards and the Anthropic console limits ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)). Watch Prisma storage as well, but the job keeps only the latest 5 exports (about 8 MB each). See [storage monitoring](../operations.md#check-database-storage).
+Outside Google, Prisma Postgres runs on the Free plan and Vercel on the plan the designated scope already uses. Anthropic usage is about $0.02 per classification run, limited by the job's `--max-cost` and `--monthly-budget` guards and the Anthropic console limits ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)).
+
+### Prisma Postgres operations
+
+The Free plan allows **2 GB of storage and 200,000 operations per month** for the whole Prisma workspace. Queries are blocked once the quota is used, until the start of the next calendar month. The Vercel integration page shows older plan text (100K operations, 500 MB); the Prisma Console figure is the one enforced. Every SQL statement sent over the direct connection is one operation, so the job's query count is a budget ([decision 0020](../decisions/0020-database-operation-budget.md)):
+
+| Source | Operations |
+| --- | --- |
+| Scheduled run | About 240 statements, plus about 120 `BEGIN`/`COMMIT` if counted. Before October 24, 2026 a run used about 8,700 |
+| Vercel build | 1 (reads the newest export) |
+| Feedback submission | 3 |
+| Page views | 0 (the site is static) |
+
+At four runs a day the job should use about 30,000–45,000 operations a month. Other databases in the same Prisma workspace share the quota. Check usage with the Prisma CLI after `npx prisma auth login` (`npx prisma project list` shows the project ID):
+
+```sh
+npx prisma postgres usage tahoe-public-meetings-db --project <prisma-project-id>          # month to date
+npx prisma postgres usage tahoe-public-meetings-db --project <prisma-project-id> \
+  --from 2026-11-02T00:55:00Z --to 2026-11-02T01:10:00Z                                  # around one run
+```
+
+The period always ends at the end of the `--to` day, so a window that starts just before a run and ends on the same day measures that run plus anything later that day. Storage is far from its limit (0.06 GiB in October 2026); the job keeps only the latest 5 exports (about 21 MB each). See [storage monitoring](../operations.md#check-database-storage).
 
 ## Claude credentials: workload identity federation
 

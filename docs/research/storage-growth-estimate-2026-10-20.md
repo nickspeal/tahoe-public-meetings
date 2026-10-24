@@ -73,7 +73,7 @@ Prisma Postgres, checked 2026-10-20 via [Prisma billing docs](https://www.prisma
 
 - (a) and (b) fit the free 500 MB for 3 years. (c) fits the free tier for about 1 year and needs Starter ($10/month, within the <$20 ceiling) in year 2. Storage alone does not threaten the budget in any scenario; 1.1 GB of 10 GB is 11%.
 - Whether Prisma meters total database size (including the roughly 17 MB baseline) or table data is unconfirmed; the baseline is small either way.
-- Reads for the static build and Cloud Run Jobs count as operations, but at this volume are far under 200k/month.
+- Reads for the static build and Cloud Run Jobs count as operations, but at this volume are far under 200k/month. **Correction (2026-10-24):** this was wrong. Every SQL statement is an operation, and the job's per-item queries used about 35,000 operations a day; see [decision 0020](../decisions/0020-database-operation-budget.md).
 
 Vercel, checked 2026-10-20 via [Vercel limits](https://vercel.com/docs/limits) (search snippet): static file uploads 100 MB on Hobby (1 GB Pro); CLI source upload 100 MB on Hobby; build cache 1 GB. The dist output today is 3.0 MB. `public.json` is gitignored and generated during build/refresh, so it is not a deployed asset, but at 443 MB (scenario c, year 1) it would break any flow that uploads or loads it whole (CLI source upload, Astro build memory), and in scenario (a) it passes 100 MB in about year 2.2. The export, not the database, is the first thing to break.
 

@@ -80,17 +80,65 @@ def source_identity(conn, candidate):
         return alias['source_id']
     rows = list(conn.execute("SELECT id,source_id,title,official_url FROM meetings WHERE agency_id=%s AND local_date=%s "
                              "AND quarantine_reason IS NULL", (aid, candidate.get('date'))))
-    exact = [r for r in rows if r['official_url'] == candidate['official_url']]
+    return _bridge(conn, candidate, rows)
+
+
+def _bridge(conn, candidate, same_date_rows):
+    """Persist and return the stored source ID of the one same-date meeting this candidate matches, else its own ID."""
+    aid, sid = candidate['agency'], str(candidate['source_id'])
+    exact = [r for r in same_date_rows if r['official_url'] == candidate['official_url']]
 
     def qualifiers(title):
         return {word for word in ('workshop', 'special', 'joint') if re.search(r'\b' + word + r'\b', title, re.I)}
-    matching = exact or [r for r in rows if qualifiers(r['title']) == qualifiers(candidate['title'])]
+    matching = exact or [r for r in same_date_rows if qualifiers(r['title']) == qualifiers(candidate['title'])]
     if len(matching) == 1:
         row = matching[0]
         conn.execute("INSERT INTO meeting_source_aliases(agency_id,alias,meeting_id) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING",
                      (aid, sid, row['id']))
         return row['source_id']
     return sid
+
+
+class StoredMeetings:
+    """One bulk read of what is stored, for deciding which of many candidates to fetch.
+
+    The scheduled run checks hundreds of candidates; every hosted query is a billed
+    operation, so these checks read this snapshot instead of querying per candidate.
+    Load it before a batch of decisions. Captures made afterwards are not reflected.
+    """
+
+    def __init__(self, conn, *, failure_hours: int):
+        self.conn = conn
+        self.meetings = {r["id"]: r for r in conn.execute(
+            "SELECT id,agency_id,source_id,title,official_url,local_date,quarantine_reason FROM meetings")}
+        self.by_source = {(r["agency_id"], r["source_id"]): r for r in self.meetings.values()}
+        self.aliases = {(r["agency_id"], r["alias"]): r["meeting_id"] for r in conn.execute(
+            "SELECT agency_id,alias,meeting_id FROM meeting_source_aliases")}
+        self.document_urls = {}
+        for r in conn.execute("""SELECT c.meeting_id,v.url FROM document_current c JOIN document_versions v ON v.id=c.version_id"""):
+            self.document_urls.setdefault(r["meeting_id"], set()).add(r["url"])
+        self.failed = {r["meeting_id"] for r in conn.execute(
+            """SELECT DISTINCT meeting_id FROM processing_runs WHERE stage='capture' AND status='failed'
+            AND meeting_id IS NOT NULL AND started_at > now() - make_interval(hours => %s)""", (failure_hours,))}
+
+    def identity(self, candidate) -> str:
+        """`source_identity` answered from the snapshot; only a new alias is written."""
+        aid, sid = candidate['agency'], str(candidate['source_id'])
+        if (aid, sid) in self.by_source:
+            return sid
+        if (aid, sid) in self.aliases and self.aliases[(aid, sid)] in self.meetings:
+            return self.meetings[self.aliases[(aid, sid)]]["source_id"]
+        try:
+            day = date.fromisoformat(candidate.get('date') or "")
+        except ValueError:
+            return sid
+        rows = [r for r in self.meetings.values()
+                if r["agency_id"] == aid and r["local_date"] == day and r["quarantine_reason"] is None]
+        return _bridge(self.conn, candidate, rows) if rows else sid
+
+    def local_date(self, meeting_id: str):
+        row = self.meetings.get(meeting_id)
+        return row["local_date"] if row else None
 
 
 def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, failure_records: list, delay: float) -> dict:

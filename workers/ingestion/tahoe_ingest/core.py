@@ -12,6 +12,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import psycopg
+from psycopg import sql
 from psycopg.rows import dict_row
 
 from .catalog import public_topics, topic_ids, agency_catalog, followed_agencies, expand_topics
@@ -32,14 +33,26 @@ def connect(url: str) -> psycopg.Connection:
 
 
 def init_db(conn: psycopg.Connection) -> None:
+    """Apply the schema and agency catalog, skipping both when neither changed since the last run.
+
+    The applied version is a hash kept as the comment on the agencies table, so an
+    unchanged scheduled run costs one query instead of the whole schema script.
+    """
+    schema = (Path(__file__).parent / "schema.sql").read_text()
+    agencies = [{"id": a["id"], "name": a["name"], "short_name": a["shortName"],
+                 "official_url": a.get("officialUrl") or "", "source_url": a.get("sourceUrl") or ""} for a in agency_catalog()]
+    version = "schema " + _hash_text({"schema": schema, "agencies": agencies})
     with conn.transaction():
-        conn.execute((Path(__file__).parent / "schema.sql").read_text())
-        for agency in agency_catalog():
-            aid = agency["id"]
-            conn.execute("""INSERT INTO agencies(id,name,short_name,official_url,source_url)
-                VALUES (%s,%s,%s,%s,%s) ON CONFLICT(id) DO UPDATE SET name=excluded.name,short_name=excluded.short_name,
-                official_url=excluded.official_url,source_url=excluded.source_url""",
-                (aid, agency["name"], agency["shortName"], agency.get("officialUrl") or "", agency.get("sourceUrl") or ""))
+        applied = conn.execute("SELECT obj_description(to_regclass('agencies'),'pg_class') AS version").fetchone()["version"]
+        if applied == version:
+            return
+        conn.execute(schema)
+        conn.execute("""INSERT INTO agencies(id,name,short_name,official_url,source_url)
+            SELECT id,name,short_name,official_url,source_url FROM jsonb_to_recordset(%s::jsonb)
+              AS a(id text,name text,short_name text,official_url text,source_url text)
+            ON CONFLICT(id) DO UPDATE SET name=excluded.name,short_name=excluded.short_name,
+            official_url=excluded.official_url,source_url=excluded.source_url""", (json.dumps(agencies),))
+        conn.execute(sql.SQL("COMMENT ON TABLE agencies IS {}").format(sql.Literal(version)))
 
 
 def stable_id(*parts: str) -> str:
@@ -83,13 +96,25 @@ def _citation(version_id: str, page: int, quote: str) -> dict:
     return {"documentId": version_id, "page": page, "quote": quote}
 
 
-def validate_citations(conn, citations: list[dict]) -> None:
+def stored_page_texts(conn, citations: list[dict]) -> dict:
+    """Stored text of every page the citations name, keyed by (version id, page), in one query."""
+    keys = sorted({(c["documentId"], int(c["page"])) for c in citations})
+    if not keys:
+        return {}
+    return {(r["document_version_id"], r["page_number"]): r["text"] for r in conn.execute(
+        """SELECT p.document_version_id,p.page_number,p.text FROM document_pages p
+        JOIN unnest(%s::text[],%s::int[]) AS k(version_id,page) ON p.document_version_id=k.version_id AND p.page_number=k.page""",
+        ([k[0] for k in keys], [k[1] for k in keys]))}
+
+
+def validate_citations(conn, citations: list[dict], page_texts: dict | None = None) -> None:
     if not citations:
         raise ValueError("at least one citation is required")
+    if page_texts is None:
+        page_texts = stored_page_texts(conn, citations)
     for citation in citations:
-        page = conn.execute("""SELECT text FROM document_pages WHERE document_version_id=%s AND page_number=%s""",
-                            (citation["documentId"], citation["page"])).fetchone()
-        if not page or not citation["quote"].strip() or citation["quote"] not in page["text"]:
+        text = page_texts.get((citation["documentId"], int(citation["page"])))
+        if text is None or not citation["quote"].strip() or citation["quote"] not in text:
             raise ValueError(f"citation quote is absent from {citation['documentId']} page {citation['page']}")
 
 
@@ -246,8 +271,12 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             WHERE id=%s AND declared_topics IS DISTINCT FROM %s::jsonb""",
             (json.dumps(supplied_topics), meeting_id, json.dumps(supplied_topics)))
 
-    previous_document_ids = {r["source_document_id"] for r in conn.execute(
-        "SELECT source_document_id FROM document_current WHERE meeting_id=%s", (meeting_id,))}
+    # Rereading an unchanged meeting is the common case, so current state is read up front
+    # and statements that would rewrite identical rows are skipped.
+    current_versions = {r["source_document_id"]: r for r in conn.execute(
+        """SELECT c.source_document_id,c.version_id,(SELECT count(*) FROM document_pages p WHERE p.document_version_id=c.version_id) AS pages
+        FROM document_current c WHERE c.meeting_id=%s""", (meeting_id,))}
+    previous_document_ids = set(current_versions)
     version_ids = {}
     revised_documents = set()
     changed_items = False
@@ -259,7 +288,7 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
         if not re.fullmatch(r"[0-9a-f]{64}", hash_value):
             raise ValueError(f"invalid SHA-256 for {doc_id}")
         version_id = stable_id(meeting_id, doc_id, hash_value[:16])
-        current = conn.execute("SELECT version_id FROM document_current WHERE meeting_id=%s AND source_document_id=%s", (meeting_id, doc_id)).fetchone()
+        current = current_versions.get(doc_id)
         if current and current["version_id"] != version_id:
             revised_documents.add(doc_id)
         page_count = int(doc.get("page_count") or 0)
@@ -277,23 +306,23 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             warnings.append("Original fetch time is unknown; the timestamp shown is when this archived record was captured.")
         if not pages or not any(text.strip() for _, text in pages):
             raise ValueError(f"no extracted pages for {doc_id}; refusing empty publication")
+        version_ids[doc_id] = version_id
+        if current and current["version_id"] == version_id and current["pages"] >= len(pages):
+            continue  # The same file with all of its pages is already current.
         conn.execute("""INSERT INTO document_versions(id,meeting_id,source_document_id,title,url,sha256,fetched_at,page_count,status,warnings,media_type)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'extracted',%s,%s) ON CONFLICT(id) DO NOTHING""",
             (version_id, meeting_id, doc_id, doc.get("title") or doc.get("kind") or "Official document", doc["url"], hash_value,
              datetime.fromisoformat(fetched_at.replace("Z", "+00:00")), page_count, json.dumps(warnings), doc.get("media_type", "application/pdf")))
-        for n, text in pages:
-            conn.execute("""INSERT INTO document_pages(document_version_id,page_number,text) VALUES (%s,%s,%s)
-                ON CONFLICT(document_version_id,page_number) DO NOTHING""", (version_id, n, text))
+        conn.execute("""INSERT INTO document_pages(document_version_id,page_number,text)
+            SELECT %s,n,text FROM unnest(%s::int[],%s::text[]) AS p(n,text)
+            ON CONFLICT(document_version_id,page_number) DO NOTHING""",
+            (version_id, [n for n, _ in pages], [text for _, text in pages]))
         conn.execute("""INSERT INTO document_current(meeting_id,source_document_id,version_id) VALUES (%s,%s,%s)
             ON CONFLICT(meeting_id,source_document_id) DO UPDATE SET version_id=excluded.version_id""", (meeting_id, doc_id, version_id))
-        version_ids[doc_id] = version_id
 
-    seen_items = set()
+    incoming_items = []
     for item in row.get("agenda_items", row.get("items", [])):
         source_key = str(item.get("source_key") or item.get("source_number") or f"unnumbered-{item['order']}")
-        item_id = stable_id(meeting_id, source_key)
-        seen_items.add(item_id)
-        existing = conn.execute("SELECT * FROM agenda_items WHERE id=%s", (item_id,)).fetchone()
         citations = []
         for ref in item.get("source_pages", []):
             doc_id = str(ref["document_id"])
@@ -305,13 +334,23 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             quote = ref.get("quote") or _first_quote(page_text, item["title"])
             if quote:
                 citations.append(_citation(version_id, page_num, quote))
+        incoming_items.append((item, source_key, citations))
+    stored_items = {r["id"]: r for r in conn.execute("SELECT * FROM agenda_items WHERE meeting_id=%s", (meeting_id,))}
+    page_texts = stored_page_texts(conn, [c for _, _, citations in incoming_items for c in citations])
+    seen_items = set()
+    for item, source_key, citations in incoming_items:
+        item_id = stable_id(meeting_id, source_key)
+        # A repeated key sees the row its first occurrence just wrote.
+        existing = (conn.execute("SELECT * FROM agenda_items WHERE id=%s", (item_id,)).fetchone()
+                    if item_id in seen_items else stored_items.get(item_id))
+        seen_items.add(item_id)
         fingerprint = _hash_text({"title": item["title"], "section": item.get("section"), "citations": citations})
         changed = (not existing or existing["source_fingerprint"] != fingerprint or
                    existing["item_order"] != int(item["order"]) or not existing["active"])
         changed_items |= changed
         item_change = "new" if not existing else "revised" if changed else existing["change"]
         try:
-            validate_citations(conn, citations)
+            validate_citations(conn, citations, page_texts)
             valid_citations = citations
             summary_status, summary_error = "published", None
         except ValueError as exc:
@@ -323,15 +362,20 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             changed = True
             changed_items = True
             item_change = "revised"
-        conn.execute("""INSERT INTO agenda_items(id,meeting_id,source_key,number,item_order,title,section,source_fingerprint,citations,change)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            ON CONFLICT(id) DO UPDATE SET number=excluded.number,item_order=excluded.item_order,title=excluded.title,
-            section=excluded.section,source_fingerprint=excluded.source_fingerprint,citations=excluded.citations,active=true,
-            change=excluded.change,updated_at=CASE WHEN agenda_items.source_fingerprint IS DISTINCT FROM excluded.source_fingerprint
-              OR agenda_items.item_order IS DISTINCT FROM excluded.item_order OR NOT agenda_items.active
-            THEN clock_timestamp() ELSE agenda_items.updated_at END""",
-            (item_id, meeting_id, source_key, item.get("source_number") or "", int(item["order"]), item["title"], item.get("section"),
-             fingerprint, json.dumps(valid_citations), item_change))
+        number = item.get("source_number") or ""
+        unchanged_row = (existing and not changed and existing["number"] == number and existing["title"] == item["title"]
+                         and existing["section"] == item.get("section") and existing["change"] == item_change
+                         and _json(existing["citations"]) == valid_citations)
+        if not unchanged_row:
+            conn.execute("""INSERT INTO agenda_items(id,meeting_id,source_key,number,item_order,title,section,source_fingerprint,citations,change)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(id) DO UPDATE SET number=excluded.number,item_order=excluded.item_order,title=excluded.title,
+                section=excluded.section,source_fingerprint=excluded.source_fingerprint,citations=excluded.citations,active=true,
+                change=excluded.change,updated_at=CASE WHEN agenda_items.source_fingerprint IS DISTINCT FROM excluded.source_fingerprint
+                  OR agenda_items.item_order IS DISTINCT FROM excluded.item_order OR NOT agenda_items.active
+                THEN clock_timestamp() ELSE agenda_items.updated_at END""",
+                (item_id, meeting_id, source_key, number, int(item["order"]), item["title"], item.get("section"),
+                 fingerprint, json.dumps(valid_citations), item_change))
         if changed:
             summary_text = _summary_from_citations(citations) if summary_status == "published" else ""
             conn.execute("""INSERT INTO summaries(item_id,text,status,method,generated_at,source_fingerprint,citations,error)
@@ -349,7 +393,7 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                 conn.execute("UPDATE agenda_items SET updated_at=clock_timestamp() WHERE id=%s", (item_id,))
     items_complete = row.get("items_complete", bool(row.get("documents")))
     withdrawn_count = 0
-    if items_complete:
+    if items_complete and any(r["active"] and r["id"] not in seen_items for r in stored_items.values()):
         if seen_items:
             withdrawn_count = conn.execute("""UPDATE agenda_items SET active=false,updated_at=clock_timestamp()
                 WHERE meeting_id=%s AND active=true AND NOT (id=ANY(%s))""",
@@ -415,10 +459,12 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
     after = dict(before)
     changed = 0
     upgraded = 0
+    stored = {}
+    for r in conn.execute("SELECT item_id,topic_id FROM item_topics"):
+        stored.setdefault(r["item_id"], set()).add(r["topic_id"])
     with conn.transaction():
         for item in rows:
-            old = {r["topic_id"] for r in conn.execute(
-                "SELECT topic_id FROM item_topics WHERE item_id=%s", (item["id"],))}
+            old = stored.get(item["id"], set())
             new = set(classify(item["agency_id"], item["title"], _json(item["citations"])))
             for topic in old:
                 before[topic] = before.get(topic, 0) + 1
@@ -449,39 +495,57 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     from .comment_periods import export_comment_periods
     comment_periods = export_comment_periods(conn)
     comment_agencies = {p["agencyId"] for p in comment_periods}
+    # Every hosted query is a billed operation, so each table is read once in bulk
+    # and grouped here; the query count does not grow with the archive.
+    first_url = {r["agency_id"]: r["official_url"] for r in conn.execute(
+        """SELECT DISTINCT ON (agency_id) agency_id,official_url FROM meetings
+        WHERE quarantine_reason IS NULL ORDER BY agency_id,id""")}
     agencies = []
     for a in conn.execute("SELECT * FROM agencies ORDER BY id"):
         # Keep unimplemented watchlist entries out of public coverage claims.
-        if a["id"] not in AGENCIES or (a["id"] not in comment_agencies and not conn.execute(
-                "SELECT 1 FROM meetings WHERE agency_id=%s AND quarantine_reason IS NULL LIMIT 1", (a["id"],)).fetchone()):
+        if a["id"] not in AGENCIES or (a["id"] not in comment_agencies and a["id"] not in first_url):
             continue
-        fallback_row = conn.execute("SELECT official_url FROM meetings WHERE agency_id=%s AND quarantine_reason IS NULL ORDER BY id LIMIT 1", (a["id"],)).fetchone()
-        fallback = fallback_row["official_url"] if fallback_row else next(p["officialUrl"] for p in comment_periods if p["agencyId"] == a["id"])
+        fallback = first_url.get(a["id"]) or next(p["officialUrl"] for p in comment_periods if p["agencyId"] == a["id"])
         agencies.append({"id": a["id"], "name": a["name"], "shortName": a["short_name"], "officialUrl": a["official_url"] or fallback,
                          "sourceUrl": a["source_url"] or fallback, "lastCheckedAt": iso(a["last_checked_at"]), "status": a["status"], "error": a["error"]})
-    meetings = []
-    for m in conn.execute("SELECT * FROM meetings WHERE quarantine_reason IS NULL ORDER BY local_date NULLS LAST, starts_at NULLS LAST, id"):
-        if m["agency_id"] not in AGENCIES:
-            continue
-        docs = []
-        for d in conn.execute("""SELECT v.* FROM document_current c JOIN document_versions v ON v.id=c.version_id
-            WHERE c.meeting_id=%s ORDER BY v.source_document_id""", (m["id"],)):
-            pages = [{"number": p["page_number"], "text": p["text"]} for p in conn.execute(
-                "SELECT page_number,text FROM document_pages WHERE document_version_id=%s ORDER BY page_number", (d["id"],))]
-            docs.append({"id": d["id"], "title": d["title"], "url": d["url"], "sha256": d["sha256"],
-                         "mediaType": d["media_type"], "fetchedAt": iso(d["fetched_at"]), "pageCount": d["page_count"], "status": d["status"],
-                         "warnings": _json(d["warnings"]), "pages": pages})
-        items = []
-        for i in conn.execute("""SELECT i.*,s.text AS summary_text,s.status AS summary_status,s.method,
+    pages_by_version = {}
+    for p in conn.execute("""SELECT p.document_version_id,p.page_number,p.text FROM document_pages p
+            WHERE p.document_version_id IN (SELECT version_id FROM document_current) ORDER BY p.document_version_id,p.page_number"""):
+        pages_by_version.setdefault(p["document_version_id"], []).append({"number": p["page_number"], "text": p["text"]})
+    docs_by_meeting = {}
+    for d in conn.execute("""SELECT c.meeting_id,v.* FROM document_current c JOIN document_versions v ON v.id=c.version_id
+            ORDER BY c.meeting_id,v.source_document_id"""):
+        docs_by_meeting.setdefault(d["meeting_id"], []).append({"id": d["id"], "title": d["title"], "url": d["url"], "sha256": d["sha256"],
+            "mediaType": d["media_type"], "fetchedAt": iso(d["fetched_at"]), "pageCount": d["page_count"], "status": d["status"],
+            "warnings": _json(d["warnings"]), "pages": pages_by_version.get(d["id"], [])})
+    items_by_meeting = {}
+    for i in conn.execute("""SELECT i.*,s.text AS summary_text,s.status AS summary_status,s.method,
             s.generated_at,s.citations AS summary_citations,e.suppressed,e.correction
             FROM agenda_items i LEFT JOIN summaries s ON s.item_id=i.id LEFT JOIN editorial e ON e.item_id=i.id
-            WHERE i.meeting_id=%s AND i.active ORDER BY i.item_order,i.id""", (m["id"],)):
-            ai = conn.execute("SELECT topics FROM ai_topic_classifications WHERE item_id=%s AND source_fingerprint=%s",
-                              (i["id"], i["source_fingerprint"])).fetchone()
+            WHERE i.active ORDER BY i.meeting_id,i.item_order,i.id"""):
+        items_by_meeting.setdefault(i["meeting_id"], []).append(i)
+    claude_topics = {r["item_id"]: r["topics"] for r in conn.execute(
+        """SELECT a.item_id,a.topics FROM ai_topic_classifications a
+        JOIN agenda_items i ON i.id=a.item_id AND i.source_fingerprint=a.source_fingerprint""")}
+    rule_topics = {}
+    for r in conn.execute("SELECT item_id,topic_id FROM item_topics"):
+        rule_topics.setdefault(r["item_id"], set()).add(r["topic_id"])
+    overrides = {}
+    for r in conn.execute("SELECT item_id,topic_id,included FROM topic_overrides"):
+        overrides.setdefault(r["item_id"], []).append(r)
+    meetings = []
+    record_dates = {}
+    for m in conn.execute("SELECT * FROM meetings WHERE quarantine_reason IS NULL ORDER BY local_date NULLS LAST, starts_at NULLS LAST, id"):
+        if m["local_date"]:
+            record_dates.setdefault(m["agency_id"], []).append(m["local_date"])
+        if m["agency_id"] not in AGENCIES:
+            continue
+        docs = docs_by_meeting.get(m["id"], [])
+        items = []
+        for i in items_by_meeting.get(m["id"], []):
             # A current Claude classification replaces the rule tags, including an empty one for items outside Tahoe.
-            topics = set(_json(ai["topics"])) if ai else {
-                r["topic_id"] for r in conn.execute("SELECT topic_id FROM item_topics WHERE item_id=%s", (i["id"],))}
-            for override in conn.execute("SELECT topic_id,included FROM topic_overrides WHERE item_id=%s", (i["id"],)):
+            topics = set(_json(claude_topics[i["id"]])) if i["id"] in claude_topics else set(rule_topics.get(i["id"], ()))
+            for override in overrides.get(i["id"], []):
                 (topics.add if override["included"] else topics.discard)(override["topic_id"])
             summary = None if i["summary_status"] is None else {"text": i["summary_text"], "status": i["summary_status"],
                 "method": i["method"], "generatedAt": iso(i["generated_at"]),
@@ -507,9 +571,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     for agency in agencies:
         if AGENCIES[agency["id"]].get("participationTypes") == ["public-comment-period"]:
             continue
-        record_dates = [r["local_date"] for r in conn.execute(
-            "SELECT local_date FROM meetings WHERE agency_id=%s AND local_date IS NOT NULL AND quarantine_reason IS NULL", (agency["id"],))]
-        meetings.extend(forecast_meetings(agency["id"], AGENCIES[agency["id"]].get("schedule"), record_dates,
+        meetings.extend(forecast_meetings(agency["id"], AGENCIES[agency["id"]].get("schedule"), record_dates.get(agency["id"], []),
                                           today=local_today, horizon_days=forecast_days,
                                           official_url=agency["officialUrl"], generated_at=generated_at))
     for meeting in meetings:

@@ -58,3 +58,5 @@ What new evidence would change the decision?
 [0018: Scheduled publication pipeline](0018-scheduled-publication.md) publishes from a 6-hourly Cloud Run job through a Postgres export table and a Vercel deploy hook, authenticates Claude with workload identity federation, and caps Google and Claude spend at $5/month each.
 
 [0019: Coverage from January 1, 2026](0019-coverage-from-2026.md) sets the coverage start for every agency, keeps stored meetings forever, and fills history with a one-time backfill job.
+
+[0020: Stay within the Prisma Postgres free operations quota](0020-database-operation-budget.md) keeps the free plan, treats database statements as a budget (bulk reads, no unchanged rewrites, tests that guard query counts), and records the October 2026 near-exhaustion.

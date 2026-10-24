@@ -36,7 +36,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from . import ai_topics, scheduled
-from .capture import capture_candidates, source_identity
+from .capture import capture_candidates
 from .http import EndpointSkipped
 from .catalog import followed_agencies
 from .core import export_public, init_db, record_failure, stable_id
@@ -162,6 +162,7 @@ def _selected_agencies(options: Options) -> dict[str, dict]:
 def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dict, discover) -> dict:
     """Discover every agency's in-range candidates and split them into to-capture and already stored."""
     quarantined = scheduled._quarantine_keys(options.root)
+    stored = scheduled.stored_meetings(conn)  # Every agency is planned before any capture.
     plan = {}
     for aid, config in agencies.items():
         report = {"found": 0, "alreadyStored": 0, "quarantined": 0, "toCapture": 0}
@@ -179,10 +180,9 @@ def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dic
                 if (aid, str(candidate.get("source_id"))) in quarantined:
                     report["quarantined"] += 1
                     continue
-                meeting_id = stable_id(aid, source_identity(conn, candidate))
-                stored = conn.execute("SELECT 1 FROM meetings WHERE id=%s", (meeting_id,)).fetchone()
-                if stored and (not candidate.get("documents") or scheduled._has_documents(conn, meeting_id)
-                               or scheduled.documents_skipped(candidate, options.max_documents)):
+                meeting_id = stable_id(aid, stored.identity(candidate))
+                if meeting_id in stored.meetings and (not candidate.get("documents") or meeting_id in stored.document_urls
+                                                      or scheduled.documents_skipped(candidate, options.max_documents)):
                     report["alreadyStored"] += 1
                     continue
                 pending.append(candidate)

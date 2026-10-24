@@ -596,3 +596,61 @@ def test_source_alias_maps_calendar_and_agenda_ids_but_not_distinct_workshop(db)
     assert _source_identity(db,row)==source['id']
     row={**row,'source_id':'distinct-workshop','title':'Housing Workshop'}
     assert _source_identity(db,row)=='distinct-workshop'
+
+
+@contextlib.contextmanager
+def statement_count(monkeypatch):
+    """Count statements sent to the database; on hosted Postgres each one is a billed operation."""
+    counter = {"n": 0}
+    original = psycopg.Cursor.execute
+
+    def execute(self, *args, **kwargs):
+        counter["n"] += 1
+        return original(self, *args, **kwargs)
+    with monkeypatch.context() as patch:
+        patch.setattr(psycopg.Cursor, "execute", execute)
+        yield counter
+
+
+def test_export_and_reclassify_queries_do_not_grow_with_the_archive(db, monkeypatch):
+    assert ingest_bundle(db, one_meeting())["failed"] == 0
+    with statement_count(monkeypatch) as small_export:
+        export_public(db, forecast_days=90)
+    with statement_count(monkeypatch) as small_reclassify:
+        reclassify_topics(db)
+    bundle = fixture_bundle()
+    assert ingest_bundle(db, bundle)["failed"] == 0
+    with statement_count(monkeypatch) as large_export:
+        payload = export_public(db, forecast_days=90)
+    with statement_count(monkeypatch) as large_reclassify:
+        reclassify_topics(db)
+    assert len(payload["meetings"]) > 1 and sum(len(m["items"]) for m in payload["meetings"]) > 10
+    assert large_export["n"] == small_export["n"] <= 12
+    assert large_reclassify["n"] == small_reclassify["n"] <= 3
+
+
+def test_reingesting_an_unchanged_meeting_skips_rewrites(db, monkeypatch):
+    bundle = one_meeting("slt")
+    assert ingest_bundle(db, bundle)["failed"] == 0
+    first = export_public(db)
+    assert len(first["meetings"][0]["items"]) > 3
+    with statement_count(monkeypatch) as again:
+        assert ingest_bundle(db, bundle)["failed"] == 0
+    # Lock, meeting, documents, items, cited pages, agency status, run record: no per-item or per-page writes.
+    assert again["n"] <= 10
+    assert export_public(db)["meetings"] == first["meetings"]
+
+
+def test_stored_snapshot_resolves_identity_like_source_identity(db):
+    from tahoe_ingest.capture import StoredMeetings, source_identity
+    source = one_meeting('slt')['meetings'][0]
+    assert ingest_bundle(db, {'meetings': [source]})['failed'] == 0
+    date = export_public(db)['meetings'][0]['date']
+    rows = [{'agency': 'slt', 'source_id': source['id'], 'title': source['title'], 'date': date, 'official_url': 'x'},
+            {'agency': 'slt', 'source_id': 'calendar-id', 'title': source['title'], 'date': date, 'official_url': 'https://example.gov/a'},
+            {'agency': 'slt', 'source_id': 'distinct-workshop', 'title': 'Housing Workshop', 'date': date, 'official_url': 'y'},
+            {'agency': 'slt', 'source_id': 'undated', 'title': source['title'], 'date': None, 'official_url': 'z'}]
+    stored = StoredMeetings(db, failure_hours=24)
+    assert [stored.identity(r) for r in rows] == [source['id'], source['id'], 'distinct-workshop', 'undated']
+    assert [source_identity(db, r) for r in rows] == [source['id'], source['id'], 'distinct-workshop', 'undated']
+    assert StoredMeetings(db, failure_hours=24).identity({**rows[1], 'date': None}) == source['id']  # The alias now persists.

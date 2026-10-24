@@ -37,7 +37,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import ai_topics
-from .capture import capture_candidates, discover_agency, source_identity
+from .capture import StoredMeetings, capture_candidates, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
 from .comment_periods import ingest_comment_periods
@@ -196,19 +196,14 @@ def comment_periods(conn, root: Path, run: Run, fetch):
     return ("degraded" if result["failed"] else "ok"), {"processed": result["processed"], "failed": result["failed"]}
 
 
-def _recent_capture_failure(conn, meeting_id: str) -> bool:
-    return bool(conn.execute("""SELECT 1 FROM processing_runs WHERE meeting_id=%s AND stage='capture' AND status='failed'
-        AND started_at > now() - make_interval(hours => %s) LIMIT 1""", (meeting_id, FAILED_RETRY_HOURS)).fetchone())
-
-
 def documents_skipped(candidate: dict, max_documents: int) -> bool:
     """True when the candidate lists documents and every one a capture would fetch is a configured skip."""
     documents = candidate.get("documents", [])[:max_documents]
     return bool(documents) and all(skipped_endpoint(d["url"]) for d in documents)
 
 
-def _has_documents(conn, meeting_id: str) -> bool:
-    return bool(conn.execute("SELECT 1 FROM document_current WHERE meeting_id=%s LIMIT 1", (meeting_id,)).fetchone())
+def stored_meetings(conn) -> StoredMeetings:
+    return StoredMeetings(conn, failure_hours=FAILED_RETRY_HOURS)
 
 
 def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
@@ -219,6 +214,7 @@ def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
     followed = followed_agencies()
     quarantined = _quarantine_keys(root)
     pending, counts = [], {"files": len(files), "candidates": 0, "alreadyStored": 0, "quarantined": 0, "unfollowed": 0}
+    stored = stored_meetings(conn)
     for name in files:
         for candidate in _read_json(Path(name)).get("candidates", []):
             counts["candidates"] += 1
@@ -229,11 +225,10 @@ def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
             if key in quarantined:
                 counts["quarantined"] += 1
                 continue
-            meeting_id = stable_id(key[0], source_identity(conn, candidate))
-            stored = conn.execute("SELECT 1 FROM meetings WHERE id=%s", (meeting_id,)).fetchone()
-            if stored and (not candidate.get("documents") or _has_documents(conn, meeting_id)
-                           or documents_skipped(candidate, options.max_documents)
-                           or _recent_capture_failure(conn, meeting_id)):
+            meeting_id = stable_id(key[0], stored.identity(candidate))
+            if meeting_id in stored.meetings and (not candidate.get("documents") or meeting_id in stored.document_urls
+                                                  or documents_skipped(candidate, options.max_documents)
+                                                  or meeting_id in stored.failed):
                 counts["alreadyStored"] += 1
                 continue
             pending.append(candidate)
@@ -259,12 +254,7 @@ def _window_reason(candidate: dict, today: date, options: Options) -> str | None
     return None
 
 
-def _stored_document_urls(conn, meeting_id: str) -> set[str]:
-    return {r["url"] for r in conn.execute("""SELECT v.url FROM document_current c JOIN document_versions v
-        ON v.id=c.version_id WHERE c.meeting_id=%s""", (meeting_id,))}
-
-
-def _skip_reason(conn, meeting_id: str, candidate: dict, today: date, options: Options) -> str | None:
+def _skip_reason(stored: StoredMeetings, meeting_id: str, candidate: dict, today: date, options: Options) -> str | None:
     """Keep stored past meetings from being downloaded again on every run.
 
     Older than the recapture window, a meeting is "settled" once every document
@@ -272,13 +262,13 @@ def _skip_reason(conn, meeting_id: str, candidate: dict, today: date, options: O
     linked document (minutes, a packet at a new address) is still picked up.
     Its failed downloads are retried at most once a day.
     """
-    row = conn.execute("SELECT local_date FROM meetings WHERE id=%s", (meeting_id,)).fetchone()
-    if not row or not row["local_date"] or row["local_date"] >= today - timedelta(days=options.recapture_past_days):
+    local_date = stored.local_date(meeting_id)
+    if not local_date or local_date >= today - timedelta(days=options.recapture_past_days):
         return None
-    stored = _stored_document_urls(conn, meeting_id)
-    if stored and all(d["url"] in stored for d in candidate.get("documents", [])[:options.max_documents]):
+    urls = stored.document_urls.get(meeting_id)
+    if urls and all(d["url"] in urls for d in candidate.get("documents", [])[:options.max_documents]):
         return "settled"
-    if _recent_capture_failure(conn, meeting_id):
+    if meeting_id in stored.failed:
         return "retryLater"
     return None
 
@@ -305,7 +295,9 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
     """
     followed = followed_agencies()
     quarantined = _quarantine_keys(root)
-    agencies = {}
+    # Each agency's captures only add that agency's meetings, so one snapshot serves every agency's selection.
+    stored = stored_meetings(conn)
+    agencies, checked = {}, []
     for aid in sorted(a for a, config in followed.items() if config.get("discoveryAdapter")):
         report = agencies[aid] = {}
         try:
@@ -319,10 +311,9 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
                     continue
                 reason = _window_reason(candidate, today, options)
                 if not reason:
-                    meeting_id = stable_id(aid, source_identity(conn, candidate))
-                    reason = _skip_reason(conn, meeting_id, candidate, today, options)
-                    if not reason and documents_skipped(candidate, options.max_documents) and conn.execute(
-                            "SELECT 1 FROM meetings WHERE id=%s", (meeting_id,)).fetchone():
+                    meeting_id = stable_id(aid, stored.identity(candidate))
+                    reason = _skip_reason(stored, meeting_id, candidate, today, options)
+                    if not reason and documents_skipped(candidate, options.max_documents) and meeting_id in stored.meetings:
                         reason = "endpointSkipped"
                 if reason:
                     report[reason] = report.get(reason, 0) + 1
@@ -342,7 +333,7 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
                 run.fail(f"discover:{aid}", error)
             if not result["failed"] and not result["captureFailures"]:
                 # The index was checked even when every candidate was already settled.
-                conn.execute("UPDATE agencies SET status='ok',error=NULL,last_checked_at=now() WHERE id=%s", (aid,))
+                checked.append(aid)
             conn.commit()
         except EndpointSkipped as exc:
             conn.rollback()
@@ -355,6 +346,9 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
             conn.commit()
         log("WARNING" if report.get("error") or report.get("failed") or report.get("documentFailures") else "INFO",
             f"discover {aid}", agency=aid, result=report)
+    if checked:
+        conn.execute("UPDATE agencies SET status='ok',error=NULL,last_checked_at=now() WHERE id=ANY(%s)", (checked,))
+        conn.commit()
     failed = [aid for aid, r in agencies.items() if r.get("error") or r.get("failed") or r.get("documentFailures")]
     totals = {"agencies": len(agencies), "agenciesWithFailures": failed,
               "captured": sum(r.get("captured", 0) for r in agencies.values()), "byAgency": agencies}

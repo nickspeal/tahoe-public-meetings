@@ -28,13 +28,17 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
           AND EXISTS (SELECT 1 FROM document_current c WHERE c.meeting_id=m.id)
           AND (%s::text IS NULL OR m.agency_id=%s) AND (%s::text IS NULL OR m.id=%s)
         ORDER BY m.agency_id, m.local_date NULLS LAST, m.id""", (agency, agency, meeting, meeting)).fetchall()
+    selected = []
     for m in rows:
         warnings = _json(m["warnings"]) or []
         stuck = any("await reprocessing" in w for w in warnings)
         if not has_parser(m["agency_id"]) or not (force or meeting or stuck or m["active_items"] == 0):
             report["skipped"] += 1
             continue
-        documents, pages = _stored_documents(conn, m["id"])
+        selected.append((m, warnings))
+    stored = _stored_documents(conn, [m["id"] for m, _ in selected])
+    for m, warnings in selected:
+        documents, pages = stored.get(m["id"], ([], []))
         parsed = parse_agenda(m["agency_id"], documents, pages)
         entry = {"meeting": m["id"], "items": len(parsed.items)} if parsed.complete else {"meeting": m["id"], "warning": parsed.warning}
         report["parsed" if parsed.complete else "failed"].append(entry)
@@ -60,15 +64,22 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
     return report
 
 
-def _stored_documents(conn, meeting_id: str) -> tuple[list[dict], list[dict]]:
-    documents, pages = [], []
-    for v in conn.execute("""SELECT v.* FROM document_current c JOIN document_versions v ON v.id=c.version_id
-            WHERE c.meeting_id=%s ORDER BY c.source_document_id""", (meeting_id,)):
+def _stored_documents(conn, meeting_ids: list[str]) -> dict[str, tuple[list[dict], list[dict]]]:
+    """Current documents and page text of each meeting, read in two queries for the whole batch."""
+    if not meeting_ids:
+        return {}
+    stored, source_ids = {}, {}
+    for v in conn.execute("""SELECT c.meeting_id,v.* FROM document_current c JOIN document_versions v ON v.id=c.version_id
+            WHERE c.meeting_id=ANY(%s) ORDER BY c.meeting_id,c.source_document_id""", (meeting_ids,)):
+        documents, _ = stored.setdefault(v["meeting_id"], ([], []))
         documents.append({"id": v["source_document_id"], "title": v["title"], "url": v["url"], "sha256": v["sha256"],
                           "fetched_at": iso(v["fetched_at"]), "page_count": v["page_count"],
                           "media_type": v["media_type"], "warnings": _json(v["warnings"]) or []})
-        for p in conn.execute("SELECT page_number,text FROM document_pages WHERE document_version_id=%s ORDER BY page_number",
-                              (v["id"],)):
-            pages.append({"document_id": v["source_document_id"], "page_number": p["page_number"], "text": p["text"]})
-    return documents, pages
+        source_ids[v["id"]] = (v["meeting_id"], v["source_document_id"])
+    for p in conn.execute("""SELECT p.document_version_id,p.page_number,p.text FROM document_pages p
+            JOIN document_current c ON c.version_id=p.document_version_id
+            WHERE c.meeting_id=ANY(%s) ORDER BY c.meeting_id,c.source_document_id,p.page_number""", (meeting_ids,)):
+        meeting_id, source_document_id = source_ids[p["document_version_id"]]
+        stored[meeting_id][1].append({"document_id": source_document_id, "page_number": p["page_number"], "text": p["text"]})
+    return stored
 

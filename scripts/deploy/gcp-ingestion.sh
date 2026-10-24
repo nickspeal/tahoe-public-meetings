@@ -369,10 +369,38 @@ cmd_set_secret() {
 }
 
 # ---------------------------------------------------------------- job and schedule
+# Print NAME=value for each Claude federation ID the deployed job already has.
+deployed_federation_ids() {
+  g run jobs describe "$JOB_NAME" --region="$REGION" --format=json 2>/dev/null | python3 -c '
+import json, sys
+try:
+    env = json.load(sys.stdin)["spec"]["template"]["spec"]["template"]["spec"]["containers"][0].get("env", [])
+except (ValueError, KeyError, IndexError):
+    sys.exit(0)
+for e in env:
+    if e["name"].startswith("ANTHROPIC_") and e.get("value"):
+        print(e["name"] + "=" + e["value"])
+' || true
+}
+
 deploy_job() {
   log "Cloud Run job $JOB_NAME"
   local secrets="DATABASE_URL=${SECRET_DATABASE_URL}:latest"
   local env_vars="TAHOE_RUNTIME=cloud-run"
+  if [[ -z "$ANTHROPIC_FEDERATION_RULE_ID" && -z "$ANTHROPIC_ORGANIZATION_ID" ]]; then
+    # A redeploy without the IDs in the environment keeps the job's current ones
+    # instead of silently turning Claude classification off.
+    local line
+    while IFS= read -r line; do
+      case "$line" in
+        ANTHROPIC_FEDERATION_RULE_ID=*) ANTHROPIC_FEDERATION_RULE_ID="${line#*=}" ;;
+        ANTHROPIC_ORGANIZATION_ID=*) ANTHROPIC_ORGANIZATION_ID="${line#*=}" ;;
+        ANTHROPIC_SERVICE_ACCOUNT_ID=*) ANTHROPIC_SERVICE_ACCOUNT_ID="${line#*=}" ;;
+        ANTHROPIC_WORKSPACE_ID=*) ANTHROPIC_WORKSPACE_ID="${line#*=}" ;;
+      esac
+    done < <(deployed_federation_ids)
+    [[ -z "$ANTHROPIC_FEDERATION_RULE_ID" ]] || info "keeping the deployed job's Claude federation IDs"
+  fi
   if [[ -n "$ANTHROPIC_FEDERATION_RULE_ID" && -n "$ANTHROPIC_ORGANIZATION_ID" ]]; then
     env_vars+=",TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata"
     env_vars+=",ANTHROPIC_FEDERATION_RULE_ID=${ANTHROPIC_FEDERATION_RULE_ID},ANTHROPIC_ORGANIZATION_ID=${ANTHROPIC_ORGANIZATION_ID}"

@@ -106,7 +106,7 @@ class Mapping:
 
 @dataclass
 class Attachments:
-    """Every file the agenda links under one item, in agenda order (``url``, printed ``name``, ``label``, ``fileType``)."""
+    """Every file the agenda links under one item, in agenda order (``url``, printed ``name``, ``label``)."""
     item_id: str
     fingerprint: str
     files: list
@@ -358,15 +358,8 @@ def map_slt(ctx: Context) -> list[Mapping]:
     return mappings
 
 
-_FILE_TYPES = {"pdf": "PDF", "doc": "Word", "docx": "Word", "xls": "Excel", "xlsx": "Excel", "csv": "Excel",
-               "ppt": "PowerPoint", "pptx": "PowerPoint"}
 _KINDS = re.compile(r"^(staff\s*report|SR\b|resolution|ordinance|presentation|proclamation|(?:attachment|exhibit|att)\s*[A-Z0-9]+\b)"
                     r"\s*[-–:]?\s*(.*)$", re.I)
-
-
-def file_type(name: str, url: str) -> str | None:
-    extension = re.search(r"\.(\w{2,4})$", name.strip()) or re.search(r"\.(\w{2,4})(?:$|\?)", url)
-    return _FILE_TYPES.get(extension.group(1).lower()) if extension else None
 
 
 def attachment_label(name: str) -> str:
@@ -437,7 +430,7 @@ def slt_attachments(ctx: Context, fetched: dict, agenda_pages: dict[int, str]) -
             ctx.skip(item, f"attachments: {problem}")
             continue
         found.append(Attachments(item.id, item.fingerprint, [
-            {"url": f["url"], "name": f["name"], "label": attachment_label(f["name"]), "fileType": file_type(f["name"], f["url"])}
+            {"url": f["url"], "name": f["name"], "label": attachment_label(f["name"])}
             for f in files], {"agendaPages": sorted({f["page"] for f in files}), "heading": f"{item.number}."}))
     return found
 

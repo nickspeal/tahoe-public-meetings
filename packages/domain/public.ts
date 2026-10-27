@@ -29,8 +29,6 @@ export interface ItemAttachment {
   name: string;
   /** The printed name made readable, e.g. "Staff report: Paradise Ave Abandonment". */
   label: string;
-  /** From the printed name's extension; agencies may serve Word files converted to PDF. */
-  fileType: 'PDF' | 'Word' | 'Excel' | 'PowerPoint' | null;
 }
 /**
  * An agenda item's own staff report: a separate official PDF (`page` 1) or a page range of the

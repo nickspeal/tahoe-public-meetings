@@ -252,7 +252,6 @@ def test_slt_item_7_gets_exactly_its_four_attachments_in_agenda_order():
         "02-Resolution-Paradise_Ave_Abandonment.docx", "03 - Attachment 1 - Abandonment Map.pdf"]
     assert [f["label"] for f in files["slt:2339:7"]] == [
         "Executive Summary", "Staff report: Paradise Ave Abandonment", "Resolution: Paradise Ave Abandonment", "Attachment 1: Abandonment Map"]
-    assert [f["fileType"] for f in files["slt:2339:7"]] == ["PDF", "Word", "Word", "PDF"]
     seven = {f["url"] for f in files["slt:2339:7"]}
     for neighbour in ("slt:2339:6", "slt:2339:8"):
         assert files[neighbour] and not seven & {f["url"] for f in files[neighbour]}

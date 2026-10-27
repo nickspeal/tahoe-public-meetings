@@ -455,9 +455,9 @@ class Supporting:
         return public_report(item_id, row, cited, iso)
 
     def attachments(self, item_id: str) -> list | None:
-        """The files the agenda links under the item, in agenda order: url, printed name, label, fileType."""
+        """The files the agenda links under the item, in agenda order: url, printed name, label."""
         row = self.rows.get(item_id)
         files = row["attachments"] if row else None
         if files is None:
             return None
-        return [{k: f[k] for k in ("url", "name", "label", "fileType")} for f in (files if isinstance(files, list) else json.loads(files))]
+        return [{k: f[k] for k in ("url", "name", "label")} for f in (files if isinstance(files, list) else json.loads(files))]

@@ -103,6 +103,21 @@ def check(data):
             seen_items.add(iid)
             require(set(item.get("topics", [])) <= topics, f"{iid}: unknown topic")
             require("short-term-rentals" not in item.get("topics", []) or "housing" in item["topics"], f"{iid}: STR must include housing")
+            # An item's own staff report (IDEA-013) is a source only for that item's citations.
+            item_docs = docs
+            report = item.get("staffReport")
+            if report:
+                rid = report.get("id", "")
+                url(report.get("url"), f"{iid}.staffReport.url")
+                require(rid not in docs, f"{iid}: staff report ID repeats a meeting document")
+                require(bool(re.fullmatch(r"[0-9a-f]{64}", report.get("sha256", ""))), f"{iid}: invalid staff report hash")
+                require(0 < report.get("page", 0) <= report.get("pageEnd", 0) <= report.get("pageCount", 0),
+                        f"{iid}: invalid staff report page range")
+                require(all(0 < p["number"] <= report["pageCount"] for p in report.get("pages", [])), f"{iid}: invalid staff report page")
+                item_docs = {**docs, rid: report}
+            for index, attachment in enumerate(item.get("attachments") or []):
+                url(attachment.get("url"), f"{iid}.attachments[{index}].url")
+                require(bool(attachment.get("name")) and bool(attachment.get("label")), f"{iid}: attachment needs its printed name and a label")
             summary = item.get("summary")
             citations = list(item.get("citations", []))
             if summary:
@@ -112,7 +127,7 @@ def check(data):
                     citations.extend(summary.get("citations", []))
             for citation in citations:
                 citation_count += 1
-                doc = docs.get(citation.get("documentId"))
+                doc = item_docs.get(citation.get("documentId"))
                 require(doc is not None, f"{iid}: citation document missing")
                 if not doc:
                     continue

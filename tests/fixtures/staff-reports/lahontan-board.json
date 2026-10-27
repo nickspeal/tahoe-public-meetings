@@ -1,0 +1,305 @@
+{
+ "note": "Lahontan Regional Water Quality Control Board, October 1, 2026. Agenda link annotations and the first pages of item staff reports.",
+ "meeting": {
+  "id": "lahontan-board:2026-10-01",
+  "agency_id": "lahontan-board",
+  "title": "Lahontan Regional Water Quality Control Board Meeting",
+  "local_date": "2026-10-01"
+ },
+ "items": [
+  {
+   "id": "lahontan-board:2026-10-01:2",
+   "number": "2",
+   "title": "Minutes",
+   "section": "Published agenda",
+   "fingerprint": "5ef7932e1ccb634cc8ad2d3daab8f9226eb1af6eb15b2ed91786d87b31c8c1d8",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Minutes",
+     "documentId": "lahontan-board:2026-10-01:lahontan-agenda-2026-10-01:01c045eacc80c0c5"
+    }
+   ]
+  },
+  {
+   "id": "lahontan-board:2026-10-01:6",
+   "number": "6",
+   "title": "Revised Waste Discharge Requirements for Tahoe-Truckee Sanitation Agency (T- TSA)",
+   "section": "Published agenda",
+   "fingerprint": "f7efd1a93d57426187e7b43b267d66d89b3ea542a963a0541c2b9058fc6e8b01",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Revised Waste Discharge Requirements for Tahoe-Truckee Sanitation Agency (T-\n   TSA)",
+     "documentId": "lahontan-board:2026-10-01:lahontan-agenda-2026-10-01:01c045eacc80c0c5"
+    }
+   ]
+  },
+  {
+   "id": "lahontan-board:2026-10-01:7",
+   "number": "7",
+   "title": "2026 Annual Enforcement Program Update",
+   "section": "Published agenda",
+   "fingerprint": "87ff27b3b5aaee8bc89676cd81d2f585dfc7a7757fd8a41b720ee994a5f1a4ae",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "2026 Annual Enforcement Program Update",
+     "documentId": "lahontan-board:2026-10-01:lahontan-agenda-2026-10-01:01c045eacc80c0c5"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "lahontan-board:2026-10-01:lahontan-agenda-2026-10-01:01c045eacc80c0c5",
+   "source_document_id": "lahontan-agenda-2026-10-01",
+   "title": "Official Lahontan board agenda",
+   "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/oct2026agenda_eng.pdf",
+   "sha256": "01c045eacc80c0c5f4e0e4cee46d2ee71a11135435f65917c6f79c4ea3302b66",
+   "page_count": 6,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {},
+ "downloads": {
+  "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/oct2026agenda_eng.pdf": {
+   "sha256": "01c045eacc80c0c5f4e0e4cee46d2ee71a11135435f65917c6f79c4ea3302b66",
+   "page_count": 6,
+   "pages": [],
+   "links": [
+    {
+     "page": 2,
+     "top": 747,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item1.pdf",
+     "text": "Public Forum"
+    },
+    {
+     "page": 2,
+     "top": 747,
+     "left": 237,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item1.pdf",
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 847,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item2.pdf",
+     "text": "Minutes"
+    },
+    {
+     "page": 2,
+     "top": 848,
+     "left": 190,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item2.pdf",
+     "text": "– The Water Board will consider adopting the minutes of the Regular Meeting of"
+    },
+    {
+     "page": 2,
+     "top": 907,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item3.pdf",
+     "text": "Reports by Water Board Chair and Water Board Members"
+    },
+    {
+     "page": 2,
+     "top": 907,
+     "left": 612,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item3.pdf",
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 978,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item4.pdf",
+     "text": "*Recission of Waste Discharge Requirements for Multiple Facilities"
+    },
+    {
+     "page": 3,
+     "top": 154,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item5.pdf",
+     "text": "*Change of Name and/or Ownership of Facilities with Waste Discharge"
+    },
+    {
+     "page": 3,
+     "top": 175,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item5.pdf",
+     "text": "Requirements"
+    },
+    {
+     "page": 3,
+     "top": 175,
+     "left": 247,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item5.pdf",
+     "text": "– The Water Board will consider amending orders by updating the"
+    },
+    {
+     "page": 3,
+     "top": 299,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item6.pdf",
+     "text": "Revised Waste Discharge Requirements for Tahoe-Truckee Sanitation Agency (T-"
+    },
+    {
+     "page": 3,
+     "top": 320,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item6.pdf",
+     "text": "TSA)"
+    },
+    {
+     "page": 3,
+     "top": 320,
+     "left": 164,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item6.pdf",
+     "text": "– The Water Board will consider adopting revised Waste Discharge Requirements"
+    },
+    {
+     "page": 3,
+     "top": 441,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item7.pdf",
+     "text": "2026 Annual Enforcement Program Update"
+    },
+    {
+     "page": 3,
+     "top": 442,
+     "left": 488,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item7.pdf",
+     "text": "– Water Board staff will present a summary"
+    },
+    {
+     "page": 3,
+     "top": 604,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item8.pdf",
+     "text": "Executive Officer’s Report"
+    },
+    {
+     "page": 3,
+     "top": 604,
+     "left": 347,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item8.pdf",
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 755,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item9.pdf",
+     "text": "2027 Board Meeting Schedule"
+    },
+    {
+     "page": 3,
+     "top": 756,
+     "left": 377,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item9.pdf",
+     "text": "– The Water Board will consider approving the"
+    },
+    {
+     "page": 3,
+     "top": 815,
+     "left": 95,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item10.pdf",
+     "text": "10."
+    },
+    {
+     "page": 3,
+     "top": 815,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item10.pdf",
+     "text": "Board Member Requests for Future Agenda Items and Other Items of Interest"
+    },
+    {
+     "page": 3,
+     "top": 817,
+     "left": 781,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item10.pdf",
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 895,
+     "left": 95,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item11.pdf",
+     "text": "11."
+    },
+    {
+     "page": 3,
+     "top": 895,
+     "left": 122,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item11.pdf",
+     "text": "Closed Session"
+    },
+    {
+     "page": 3,
+     "top": 895,
+     "left": 256,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item11.pdf",
+     "text": "1"
+    },
+    {
+     "page": 3,
+     "top": 895,
+     "left": 263,
+     "url": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item11.pdf",
+     "text": ""
+    }
+   ]
+  },
+  "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item6.pdf": {
+   "sha256": "d773f4a35ffa867ed98a4407ba0b47003ef18a29f588cb2be34dcea26db485ef",
+   "page_count": 64,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "CALIFORNIA REGIONAL WATER QUALITY CONTROL BOARD\n                         LAHONTAN REGION\n\n                     MEETING OF OCTOBER 1, 2026\n                        SOUTH LAKE TAHOE\n\nITEM 6\nREVISED WASTE DISCHARGE REQUIREMENTS – TAHOE-TRUCKEE\nSANITATION AGENCY WATER RECLAMATION PLANT\n\n\n\nCHRONOLOGY\nApril 25, 1974       The Water Board adopted waste discharge requirements\n                     (WDRs), Board Order No. 6-74-44 for the Tahoe-Truckee\n                     Sanitation Agency (T-TSA) Water Reclamation Plant\n                     (Facility). The beginning of the regulated history for this\n                     facility.\n\nMay 12, 1977         The Water Board updated WDRs by adopting Board Order\n                     No. 6-77-27 for the Facility.\n\nJuly 9, 1981         The Water Board updated WDRs by adopting Board Order\n                     No. 6-81-61 for the Facility.\n\nSeptember 17, 1981   The Water Board updated WDRs by adopting Board Order\n                     No. 6-81-71 for the Facility.\n\nFebruary 19, 1987    The Water Board updated WDRs by adopting Board Order\n                     No. 6-87-21 for the Facility.\n\nApril 11, 1990       The Water Board updated WDRs by adopting Board Order\n                     No. 6-90-27 for the Facility.\n\nOctober 3, 1996      The Water Board amended WDRs by adopting Board Order\n                     No. 6-90-27A1 for the Facility.\n\nMay 9, 2002          The Water Board updated WDRs by adopting Board Order\n                     No. R6T-2002-0030 for the Facility, the most recent\n                     revisions to the WDRs\n\n\n\n\n                                                                               6-1"
+    },
+    {
+     "page_number": 2,
+     "text": "BACKGROUND\nThe Facility is located approximately 3 miles east of the Town of Truckee. It is near\nthe southeastern bank of the Truckee River, with Martis Creek approximately a half\nmile to the east.\nThe Facility serves the Town of Truckee and several surrounding communities,\nincluding the North Tahoe Public Utility District, Tahoe City Public Utility District,\nOlympic Valley Public Service District, Alpine Springs County Water District, and\nNorthstar Community Services District. The Facility is capable of transporting, treating\nand disposing of a maximum 7-day average municipal wastewater flow, during the\nsummer months of 9.6 MGD.\nThe current WDRs for T-TSA were adopted in 2002. Since then, the Facility has\nundergone operational improvements and conducted a fate and transport study\nrelated to nutrient removal and groundwater quality. The operational changes and the\nstudy have informed many of the revisions to the WDRs.\n\n\n\nISSUES\nShould the Water Board adopt revised waste discharge requirements for the Truckee-\nTahoe Water Reclamation Plant to reflect changes in discharge conditions, update\nmonitoring and reporting requirements, and incorporate provisions consistent with\ncurrent regulatory standards and policies?\n\n\n\nDISCUSSION\nThe proposed T-TSA WDRs reflects operational changes and updates certain\nmonitoring and reporting program (MRP) requirements. T-TSA requested that Water\nBoard staff review the existing WDRs from 2002 and consider revising it. There is\nalso a need to update the MRP to capture emerging constituents of concern and to\nmodernize analytical methods for other constituents that may otherwise be outdated.\nMajor revisions between the 2002 WDRs and the proposed WDRs include, but are\nnot limited to, the following:\n   a. Findings have been updated to reflect conclusions from the 2024 fate and\n      transport study and updated 303(d) list impaired water bodies.\n   b. An effluent limitation for total nitrogen has been added.\n   c. A biochemical oxygen demand effluent limitation has been added in place of a\n      previously existing chemical oxygen demand limitation.\n   d. Requirements have been added related to construction and new projects. This\n      includes various stormwater pollution prevention controls as well as\n      implementation of best management practices.\n\n\n\n\n                                                                                    6-2"
+    },
+    {
+     "page_number": 3,
+     "text": "DISCUSSION\n   e. Monitoring for per- and polyfluoroalkyl substances (PFAS) has been added to\n      the influent, effluent, and the main compliance groundwater well (Well 31) on a\n      quarterly basis. Monitoring for PFAS has been added to upstream and\n      downstream surface water stations in both Martis Creek and the Truckee River\n      on an annual basis.\n   f. Monitoring requirements have been updated to modernize\n      constituents/methods, e.g., volatile organic compounds has replaced\n      purgeable halocarbons/aromatics.\n   g. Certain editorial changes to address typos and formatting issues.\n\n\n\nSUSTAINABLE GROUNDWATER MANAGEMENT ACT BASINS\nFor purposes of the Sustainable Groundwater Management Act, the California\nDepartment of Water Resources identifies the following groundwater basin in Nevada\nCounty, along with priority, near the discharge location within the Lahontan Region.\n\n      Priority             Groundwater Basin\n      Very Low             Martis Valley (6-067)\n\nSource: Sustainable Groundwater Management Act Basin Prioritization\n\n\n\nCLIMATE CHANGE RESPONSE\nThe revised waste discharge requirements for the Facility are consistent with\nResolution R6T-2019-0277, the Water Board’s Climate Change Mitigation and\nAdaptation Strategy in the following key resources areas: (1) Protection of Wetlands,\nFloodplains, and Headwaters; (2) Infrastructure Protection; and (3) Protection of\nGroundwater Quality and Supply.\nIn particular, the revised waste discharge requirements establish updated effluent,\nsurface water, and groundwater limitations, enhance monitoring and reporting\nrequirements, and add to other permit provisions that help protect groundwater\nquality, surface water quality, and sensitive habitats. These requirements are\nconsistent with the key resource areas identified in the Resolution, including the\nprotection of floodplains, and groundwater quality and supply.\n\n\n\n\n                                                                                      6-3"
+    }
+   ],
+   "links": []
+  },
+  "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/item7.pdf": {
+   "sha256": "9a535323a136ad8f300577bd758cafa1c935120c5741a56676c6b953663c1930",
+   "page_count": 3,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "CALIFORNIA REGIONAL WATER QUALITY CONTROL BOARD\n                        LAHONTAN REGION\n\n                        MEETING OF OCTOBER 1, 2026\n                           SOUTH LAKE TAHOE\n\nITEM 7\n2026 ANNUAL ENFORCEMENT PROGRAM UPDATE\n\nCHRONOLOGY\n              The Water Board and its staff worked through a series of meetings to\n              identify and implement several Enforcement Program\nMarch 2013 –\n              elements/improvements. These included program objectives,\nFebruary 2014\n              standardized hearing procedures, public participation fact sheet, and a\n              new supplemental environmental project (SEP) program.\n              Executive Officer’s Report – Staff provided its first overview and\nMarch 2015    analysis of the numbers and types of violations and enforcement\n              actions taken by the Water Board and its staff during the previous\nMarch 2016    Water Board Agenda Items – Staff presented an annual update of\nand March     violations and the enforcement actions taken by the Water Board and\n2017          its staff during the previous calendar year.\n                Water Board staff explored opportunities for further improving the\nFall 2017       Enforcement Program, focusing on the Settlement Agreement process\n                and Separation of Functions.\n                Water Board Agenda Items – Staff presented a review of changes in\n                the Water Board’s Enforcement Program including reorganization,\n                increased use of progressive enforcement to restore compliance,\nApril and\n                improving communications regarding settlement agreements by\nNovember\n                developing the concept of a Settlement Workshop, and a summary\n2018\n                of the updated 2017 Enforcement Policy. State Water Board staff\n                presented an informational update on statewide cannabis regulatory\n                and enforcement tools.\n               Water Board Agenda Items – Staff presented a review of the Water\n               Board Enforcement Program’s priorities for 2019 and\n               recommendations for program improvements, and information\nMarch and July regarding its Regulatory Compliance Assurance System that\n2019           acknowledges how the Water Board regulatory and enforcement\n               programs work in tandem towards achieving compliance with the\n               State’s water quality laws, policies, and regulations.\n                Staff provided updates to the Water Board as part of an informational\nJune 2021 to    agenda item for each year, respectively.\npresent\n\n\n\n\n                                                                                 7-1"
+    },
+    {
+     "page_number": 2,
+     "text": "BACKGROUND\nWater Board staff has been providing annual updates regarding the Water Board’s\nEnforcement Program for more than ten years. This agenda item will focus on\nimprovements and accomplishments since the 2025 Annual Enforcement Program\nUpdate.\n\nDISCUSSION\nThis agenda item will provide a presentation to the Water Board that includes the\nfollowing topics:\n  •   Summary of fiscal year 2025/2026 violations and informal and formal\n      enforcement actions to address those violations including comparison to prior\n      fiscal years.\n  •   Summary of Enforcement Program accomplishments in fiscal year 2025/2026.\n  •   Summary of planned Enforcement Program improvements for fiscal year\n      2026/2027.\n  •   Summary of Enforcement Program priorities for fiscal year 2026/2027.\nThe enforcement priorities are as follows:\n  •   Continue tracking and obtaining regulatory compliance within the various programs\n      in the Region. Regulatory and permitting staff guide dischargers to compliance\n      through reviewing monitoring reports, conducting inspections, cataloguing\n      compliance violations, and issuing enforcement actions. Each of these activities\n      form the basis for tracking and obtaining compliance with existing permits and\n      ensuring water quality protection.\n  •   Emphasize enforcement in areas that impact public drinking water supply in\n      disadvantaged or severely disadvantaged communities, and in areas that directly\n      impact Tribes or where there are long-standing environmental justice issues.\n  •   Enforcement against alleged violations that are adversely affecting groundwater or\n      surface water quality and beneficial uses. Examples may include unauthorized\n      discharges of sewage, site cleanup and groundwater contamination sites,\n      hazardous waste, and dredge/fill materials to creeks, springs, rivers, lakes, and\n      wetlands.\n  •   Improve Communication and Coordination with internal and external parties. Such\n      external parties may include, but not limited to, municipal jurisdictions, state, and\n      federal agencies. Continue coordination with existing external partners to identify\n      Supplemental Environmental Projects (SEPs) opportunities as well as focus efforts\n      on identifying new external partners to expand the available SEPs throughout the\n      region. Additionally, provide meaningful public participation opportunities to\n      disadvantaged communities and tribes in enforcement matters, improve data\n      collection and availability of violation and enforcement information to minority and\n      low-income communities, and ensure that effective cross-media coordination and\n      accountability in addressing environmental justice issues.\nThis agenda item will also include a presentation from State Water Resource Control\nBoard’s Office of Enforcement regarding an overview of their role in assisting the\nLahontan region with enforcement actions.\n\n                                                                                    7-2"
+    },
+    {
+     "page_number": 3,
+     "text": "PUBLIC OUTREACH/INPUT\n None\n\nRECOMMENDATION\n This is an informational item only. No Water Board action is required for this item;\n however, the Water Board may provide direction to staff.\n\n PRESENTERS\n1. Shelby Barker, Senior Engineering Geologist (Specialist)/Enforcement Coordinator,\n   Lahontan Regional Water Quality Control Board\n 2. Julie Macedo, Attorney, State Water Resources Control Board, Office of Enforcement\n\n\n\n\n                                                                                        7-3"
+    }
+   ],
+   "links": []
+  }
+ },
+ "expected": {
+  "2": null,
+  "6": {
+   "page_start": 1,
+   "url_end": "item6.pdf"
+  },
+  "7": {
+   "page_start": 1,
+   "url_end": "item7.pdf"
+  }
+ }
+}

@@ -16,12 +16,14 @@ stops the run, but an invalid export is never published:
 11. draft-minutes    draft minutes found through later agendas (stored items only)
 12. classify-topics  Claude tags, only with Claude credentials, within cost guards
 13. participation    Claude reads location, remote links, and comment instructions from agendas; same guards
-14. export           public JSON (mode "live")
-15. validate         the same checks as scripts/check_export.py, plus a minimum size
-16. store            insert into public_exports, keep the latest 5
-17. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
+14. staff-reports    link items to their own staff reports (SLT, TTD, Truckee, Lahontan); a few meetings per run
+15. summarize-items  Claude selects summary sentences from those reports; its own per-run cost limit
+16. export           public JSON (mode "live")
+17. validate         the same checks as scripts/check_export.py, plus a minimum size
+18. store            insert into public_exports, keep the latest 5
+19. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
 
-Only 14-17 failing makes the run fail.
+Only 16-19 failing makes the run fail.
 """
 from __future__ import annotations
 
@@ -39,7 +41,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import ai_topics, participation, records
+from . import ai_topics, item_summaries, participation, records, staff_reports
 from .capture import StoredMeetings, capture_candidates, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
@@ -81,6 +83,8 @@ class Options:
                  recapture_past_days=RECAPTURE_PAST_DAYS, max_captures_per_agency=MAX_CAPTURES_PER_AGENCY,
                  coverage_start=COVERAGE_START, max_documents=2, delay=1.0, forecast_days=None, min_meetings=1,
                  max_cost=ai_topics.DEFAULT_MAX_RUN_COST, monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                 summary_max_cost=item_summaries.DEFAULT_MAX_RUN_COST,
+                 staff_report_meetings=staff_reports.DEFAULT_MAX_MEETINGS,
                  out=None, skip_discovery=False, publish=True):
         self.root = Path(root)
         self.discovery_limit = discovery_limit
@@ -96,6 +100,8 @@ class Options:
         self.min_meetings = min_meetings
         self.max_cost = max_cost
         self.monthly_budget = monthly_budget
+        self.summary_max_cost = summary_max_cost
+        self.staff_report_meetings = staff_report_meetings
         self.out = out
         self.skip_discovery = skip_discovery
         self.publish = publish
@@ -391,6 +397,28 @@ def extract_participation(conn, options: Options):
     return status, report
 
 
+def map_staff_reports(conn, options: Options, reader, today: date):
+    if options.staff_report_meetings <= 0:
+        return "skipped", {"reason": "--staff-report-meetings 0"}
+    report = staff_reports.map_staff_reports(conn, max_meetings=options.staff_report_meetings, reader=reader,
+                                             delay=options.delay, today=today)
+    report.pop("dryRun", None)
+    return ("degraded" if report["retryLater"] else "ok"), report
+
+
+def summarize_items(conn, options: Options, today: date):
+    if not ai_topics.has_credentials():
+        return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); agenda excerpts stay in place"}
+    try:
+        report = item_summaries.summarize_items(conn, max_cost=options.summary_max_cost,
+                                                monthly_budget=options.monthly_budget, today=today)
+    except SystemExit as exc:  # Budget and fatal-API guards stop summaries, not publication.
+        conn.rollback()
+        return "degraded", {"stopped": _short(exc)}
+    report.pop("dryRun", None)
+    return ("degraded" if report.get("stoppedEarly") else "ok"), report
+
+
 def classify(conn, options: Options):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); rule tags stay in place"}
@@ -493,7 +521,8 @@ def meeting_records(conn, root: Path, run: Run, today: date, *, fetch_text=None,
 
 
 def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=download_extract,
-                  post=post_deploy_hook, today: date | None = None, feed_fetch=None, json_fetch=None) -> dict:
+                  post=post_deploy_hook, today: date | None = None, feed_fetch=None, json_fetch=None,
+                  read_pdf=staff_reports.read_pdf) -> dict:
     started_at = datetime.now(timezone.utc)
     run = Run(conn)
     today = today or started_at.astimezone(PACIFIC).date()
@@ -529,6 +558,8 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         run.step("draft-minutes", lambda: link_draft_minutes(conn, since=options.coverage_start))
         run.step("classify-topics", lambda: classify(conn, options))
         run.step("participation", lambda: extract_participation(conn, options))
+        run.step("staff-reports", lambda: map_staff_reports(conn, options, read_pdf, today))
+        run.step("summarize-items", lambda: summarize_items(conn, options, today))
 
         def export():
             nonlocal payload
@@ -568,7 +599,7 @@ def _reclassify(conn):
 def _summary(run: Run, started_at: datetime, payload, published: dict) -> dict:
     degraded = any(s["status"] in ("degraded", "failed") for s in run.steps)
     status = "failed" if run.fatal else "degraded" if degraded else "ok"
-    ai = next((s.get("detail", {}) for s in run.steps if s["name"] == "classify-topics"), {})
+    ai_steps = [s.get("detail", {}) for s in run.steps if s["name"] in ("classify-topics", "participation", "summarize-items")]
     counts = {}
     if payload is not None:
         meetings = payload["meetings"]
@@ -582,6 +613,6 @@ def _summary(run: Run, started_at: datetime, payload, published: dict) -> dict:
             "message": f"run-scheduled {status}", "status": status,
             "startedAt": started_at.isoformat(), "durationSeconds": round(time.monotonic() - run.started, 1),
             "steps": run.steps, "counts": counts, "exportId": published.get("exportId"),
-            "aiCostUsd": ai.get("costUsd", 0.0) if isinstance(ai, dict) else 0.0,
+            "aiCostUsd": round(sum(d.get("costUsd", 0.0) for d in ai_steps if isinstance(d, dict)), 6),
             "failureCount": len(run.failures), "failures": run.failures[:MAX_LISTED_FAILURES],
             "peakMemory": peak_memory()}

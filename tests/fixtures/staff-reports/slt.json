@@ -1,0 +1,1136 @@
+{
+ "note": "City of South Lake Tahoe City Council, October 6, 2026. Agenda link annotations, left-margin headings with their positions, and executive summary pages excerpted from the official PDFs.",
+ "meeting": {
+  "id": "slt:2339",
+  "agency_id": "slt",
+  "title": "City Council Meeting Agenda — October 6, 2026",
+  "local_date": "2026-10-06"
+ },
+ "items": [
+  {
+   "id": "slt:2339:2",
+   "number": "2",
+   "title": "City Council Meeting Minutes",
+   "section": "Consent Agenda",
+   "fingerprint": "75b8e85b8e80ca7617ec178adfffdd4af4dff6eadd8a4bc1d2c6d8cfcb0220bf",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "City Council Meeting Minutes",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  },
+  {
+   "id": "slt:2339:5",
+   "number": "5",
+   "title": "Agreement with Eide Bailly Advisory LLC for Governmental Accounting Technical and Financial Reporting Consulting Services",
+   "section": "Consent Agenda",
+   "fingerprint": "1dbd74023a82a4f1abde5d82d863ac1891d9fe6d04f9d5a3ccc24ecbd3bb1d9f",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Agreement with Eide Bailly Advisory LLC for Governmental Accounting Technical and Financial\n     Reporting Consulting Services",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  },
+  {
+   "id": "slt:2339:6",
+   "number": "6",
+   "title": "Authorization to Apply to El Dorado County Air Quality Management District Motor Vehicle Emission Reduction Projects CY 2026 & 2027 for Emissions-Saving Vehicle Replacements",
+   "section": "Consent Agenda",
+   "fingerprint": "026850d248320ad36b413422f561085dbf95e446b20fc62e27be5263fbf2d463",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Authorization to Apply to El Dorado County Air Quality Management District Motor Vehicle Emission\n     Reduction Projects CY 2026 & 2027 for Emissions-Saving Vehicle Replacements",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  },
+  {
+   "id": "slt:2339:7",
+   "number": "7",
+   "title": "Resolution of Intent to Abandon the Easterly 30-foot Portion of Paradise Avenue Right-of-Way",
+   "section": "Consent Agenda",
+   "fingerprint": "95398d8b685220472e71c214fd1faefd32205423774ea43e00e1f03e7b348732",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "Resolution of Intent to Abandon the Easterly 30-foot Portion of Paradise Avenue Right-of-Way",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  },
+  {
+   "id": "slt:2339:8",
+   "number": "8",
+   "title": "Authorization to Submit a Grant Application for the 2027/2028 Sustainable Transportation Planning Grant Program for the Pine Boulevard/Park Avenue Complete Streets Project",
+   "section": "Consent Agenda",
+   "fingerprint": "d046404261713dc4600adf78bd9ddbde7b4a51d79f0dbee9b599e33000dee3cb",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "Authorization to Submit a Grant Application for the 2027/2028 Sustainable Transportation Planning\n     Grant Program for the Pine Boulevard/Park Avenue Complete Streets Project",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  },
+  {
+   "id": "slt:2339:9",
+   "number": "9",
+   "title": "Agreement with Zenith Economics for Economic Development Market Study and Business Attraction Strategy",
+   "section": "Consent Agenda",
+   "fingerprint": "2b2599e679aa5dea427966dc0145d9aa0e7e87ee84a16a46e948da51b39e4056",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "Agreement with Zenith Economics for Economic Development Market Study and Business\n     Attraction Strategy",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  },
+  {
+   "id": "slt:2339:11",
+   "number": "11",
+   "title": "Tahoe Regional Planning Agency Housing Amendments and Water Quality and Mobility Fees Summary",
+   "section": "Regular-Unfinished Business",
+   "fingerprint": "d5f3b56deb8e8df16c8eeedae330b06d832f4639c9fa10a57bf8ce03b5005312",
+   "citations": [
+    {
+     "page": 5,
+     "quote": "Tahoe Regional Planning Agency Housing Amendments and Water Quality and Mobility Fees\n    Summary",
+     "documentId": "slt:2339:slt-agenda:c0c6e6986dfdc05e"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "slt:2339:slt-agenda:c0c6e6986dfdc05e",
+   "source_document_id": "slt-agenda",
+   "title": "agenda",
+   "url": "https://granicus_production_attachments.s3.amazonaws.com/slt/fb52e3c531af6893429f30df879554620.pdf",
+   "sha256": "c0c6e6986dfdc05e8ad10a6f33429128edbc00584a68391639611f75973967be",
+   "page_count": 7,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "slt:2339:slt-agenda:c0c6e6986dfdc05e": {
+   "2": "will be made available for public inspection during normal business hours at the City Clerk's Office\nlocated at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe [Government Code Section 54957.5(b)].\nWritten comments will not be read out loud during the meeting.\n\nThe City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable\neffort will be made to accommodate any person needing special assistance to attend this meeting.\nContact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance [28\nCFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1, 54954.2,\nand 54957.5].\n\nSpanish Interpretations: The public may access Spanish interpretation using the ZOOM link listed on\nthe front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio\ncapabilities and selecting the Spanish language option. Persons without an internet device may attend\nthe meeting in-person and a device will be provided while supplies last. Requests for interpreter services\nto offer public comment may be made by contacting the City Clerk.\n\nLand Acknowledgement\nLand Acknowledgement - The City of South Lake Tahoe acknowledges the lands we occupy today are\nthe lands and home of the Wašíšiw, the people from here known today as the Washoe Tribe of Nevada\nand California, a sovereign nation. Since the beginning of time and for thousands of years before the\narrival of any other people, the Washoe lived here and cared for this place, with values and intention that\nwe can all learn from. On behalf of the City Council, I would like to acknowledge, thank, and honor the\nIndigenous Washoe Tribal Communities that are the past, present, and future stewards of the Lake\nTahoe Basin.\n\nCall to Order/Pledge of Allegiance\n\nRoll Call\n\nClosed Session Report\n\nProclamations\n\n1.   Fire Prevention Week Proclamation\n     Requested Action / Suggested Motions: Issue a Proclamation recognizing the week of October 4-\n     10, 2026, as \"Fire Prevention Week\"\n     Responsible Staff Member(s): Jim Drennan, Fire Chief, and Susan Blankenship, City Clerk\n     Item 1- Executive Summary.pdf\n     Proclamation - Fire Prevention Week.docx\n\nPublic Communications\nThis is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall be\nlimited to four (4) minutes. In accordance with the Brown Act, the City Council cannot deliberate or vote\non any matter raised under public communications, but may briefly respond to statements made or\nquestions posed. (Government Code Sections 54954.2)\n\nCity Commission Reports\n\nConsent Agenda\nPublic Comment - This is the public's opportunity to speak on any topic listed on the Consent Agenda.\nComments shall be limited to three (3) minutes per item and six (6) minutes total per speaker.\nThe consent agenda consists of items of a repeating or routine nature considered under a single action.\nAny Councilmember may have an item on the consent agenda removed and considered separately upon\nrequest.\n\nPass a Motion to adopt the Consent Agenda in one motion except as indicated at each item.",
+   "3": "2.   City Council Meeting Minutes\n     Requested Action / Suggested Motions: Pass a Motion approving the minutes from the of\n     September 22, 2026, Regular City Council meeting.\n     Responsible Staff Member(s): Michelle Davis, Assistant City Clerk, and Susan Blankenship, City\n     Clerk\n     Item 2- Executive Summary.pdf\n     09_22_2026_City_Council_Meeting_Minutes.pdf\n\n3.   Fiscal Year 2026-2027 Appropriation Limit\n     Requested Action / Suggested Motions: Pass a Resolution establishing the Appropriation Limit for\n     Fiscal Tear 2026-2027 in compliance with Proposition 111 in the amount of $114,634,888.\n     Responsible Staff Member(s): Andrew Black, Financial Services Manager\n     Item 3- Executive Summary.pdf\n     01-Staff Report - Appropriations Limit 2026-2027\n     02-Resolution - 2026-2027 Appropriations Limit.docx\n     03-Appropriations Limit 2026 2027 Worksheets.pdf\n\n4.   Resolution Amending the FY 2025-2026 Budget and Approving Budget Transfers for the Fire\n     Station 1 Roof Project and Services Center Roof Project\n     Requested Action / Suggested Motions: Pass a Resolution amending the FY 2025-2026 budget and\n     approving the transfer of funds to the designated project accounts for the Fire Station 1 Roof\n     Project and the Services Center Roof Project.\n     CEQA Determination: The proposed roof replacement work at existing City facilities is categorically\n     exempt from CEQA under CEQA Guidelines Section 15301 (Existing Facilities) and/or Section\n     15302 (Replacement or Reconstruction).\n     Responsible Staff Member(s): Branden Gardella, Project Manager, and Mohammad Qureshi,\n     Director of Public Works\n     Item 4- Executive Summary.pdf\n     01_Staff_Report_Budget_Transfer_Fire_Station_1_Roof___Services_Center_Roof_Project.docx\n     02_Resolution_Budget_Transfer_Fire_Station_1_Roof___Services_Center_Roof_Project.docx\n\n5.   Agreement with Eide Bailly Advisory LLC for Governmental Accounting Technical and Financial\n     Reporting Consulting Services\n     Requested Action / Suggested Motions: Pass a Motion authorizing and directing the Mayor to\n     execute a Professional Services Agreement with Eide Bailly Advisory LLC for Governmental\n     Accounting Technical and Financial Reporting Consulting Services for an initial one-year term in an\n     amount not to exceed $73,200, with up to two optional one-year extensions, and authorizing the\n     City Manager to execute the aforementioned extensions in writing no later than the expiration of the\n     then-current term.\n     Responsible Staff Member(s): Olga Tikhomirova, Director of Finance\n     Item 5- Executive Summary.pdf\n     01-Staff Report Financial Reporting Services.docx\n     02-Request for Proposals No. 2026-08-03 and Addendum No. 1.pdf\n     03-Eide Bailly Proposal.pdf\n     04-Eide Bailly Advisory LLC PSA.docx\n\n6.   Authorization to Apply to El Dorado County Air Quality Management District Motor Vehicle Emission\n     Reduction Projects CY 2026 & 2027 for Emissions-Saving Vehicle Replacements\n     Requested Action / Suggested Motions: Pass a Resolution authorizing the a City Manager, or\n     desginee, to Apply to El Dorado County Air Quality Management District Motor Vehicle Emission\n     Reduction Projects CY 2026 & 2027 for Vehicle Replacement in the amount of up to $200,000.\n     Responsible Staff Member(s): Sara Letton, Sustainability Coordinator, and Dr. Mohammad Qureshi,\n     Director of Public Works\n     Item 6- Executive Summary.pdf\n     01 - Staff Report Auth to Apply to EDC AQMD.docx",
+   "4": "02-Resolution AQMD Grant Application.docx\n     03 - RFP EDC AQMD.pdf\n\n7.   Resolution of Intent to Abandon the Easterly 30-foot Portion of Paradise Avenue Right-of-Way\n     Requested Action / Suggested Motions: Pass a Resolution of Intent to Abandon the Paradise\n     Avenue Right-of-Way and set public hearing date for November 3, 2026.\n     CEQA Determination: The proposed abandonment of approximately 1,438 square feet of dead-end\n     Paradise Avenue right-of-way is categorically exempt from the California Environmental Quality Act\n     (CEQA) pursuant to CEQA Guidelines Section 15301, Class 1, Existing Facilities. The City filed a\n     Notice of Exemption with El Dorado County and the State of California on August 24, 2026.\n     Responsible Staff Member(s): Emily Dougherty, Associate Transportation Planner\n     Item 7- Executive Summary.pdf\n     01-SR_Paradise_Ave_Abandonment.docx\n     02-Resolution-Paradise_Ave_Abandonment.docx\n     03 - Attachment 1 - Abandonment Map.pdf\n\n8.   Authorization to Submit a Grant Application for the 2027/2028 Sustainable Transportation Planning\n     Grant Program for the Pine Boulevard/Park Avenue Complete Streets Project\n     Requested Action / Suggested Motions: Pass a Resolution authorizing the City to submit a grant\n     application for the 2027/2028 Sustainable Transportation Planning Grant Program for the Pine\n     Boulevard/Park Avenue Complete Streets Project.\n     CEQA Determination: The authorization to pursue a grant application for planning and design of the\n     Pine Boulevard/Park Avenue Connection is Statutorily Exempt from CEQA under section 15262\n     (Feasibility and Planning Studies).\n     Responsible Staff Member(s): Emily Dougherty, Associate Transportation Planner\n     Item 8- Executive Summary.pdf\n     01-Staff_Report_Park_Pine_Connect_GrantApp_FY27-28.docx\n     02-Resolution_Park_Pine Connection Project.docx\n     03 - Circulation Study Map_Park & Pine Complete Streets.pdf\n\n9.   Agreement with Zenith Economics for Economic Development Market Study and Business\n     Attraction Strategy\n     Requested Action / Suggested Motions: Pass a Motion authorizing and directing the Mayor to\n     execute a Professional Services Agreement with Zenith Economics for the City’s Economic\n     Development Market Analysis and Business Attraction Strategy in an amount not to exceed\n     $80,100.00.\n     CEQA Determination: This project is categorically exempt from CEQA under CEQA Guidelines\n     section 15306.\n     Responsible Staff Member(s): Brian Dossey, Retired Annuitant, Extra help\n     Item 9- Executive Summary.pdf\n     01-Staff_Report_Professional_Services_Agreement_with_Zenith_Economics.docx\n     02 - Economic Development RFP - Market Analysis and Business Attraction Strategy.pdf\n     03 - Professional Services Agreement-Zenith\n\n10. Waiver of Second Reading and Introduction of Ordinance Amending Chapter 4.60 of the South\n    Lake Tahoe City Code (Nuisances Consisting of Abandoned or Substantially Damaged\n    Nondwelling Structures) to Expressly Authorize Daily Citations and Establish a Process for Referral\n    of Uncorrected Nuisance Conditions to the City Attorney for Evaluation of Further Enforcement\n    Action\n    Requested Action / Suggested Motions: Pass a Motion to waive second reading, introduce by title\n    only, and adopt an Ordinance amending Chapter 4.60 of the South Lake Tahoe City Code\n    (Nuisances Consisting of Abandoned or Substantially Damaged Nondwelling Structures) to\n    expressly authorize daily citations and establish a process for referral of uncorrected nuisance\n    conditions to the City Attorney for evaluation of further enforcement action.\n    Responsible Staff Member(s): Dan Bardzell, Assistant City Attorney",
+   "5": "Item 10- Executive Summary.pdf\n     01-Staff_Report-Abandoned_Property_Ordinance_Second_Reading (1).docx\n     02-Ordinance_SLTCC_4.60_amendment.docx\n     03-SLTCC Chapter 4.60 (REDLINE)\n     04-Notice of Publication-Nuisances Abandoned Srtucture First Reading.pdf\n\nRegular-Unfinished Business\n\n11. Tahoe Regional Planning Agency Housing Amendments and Water Quality and Mobility Fees\n    Summary\n    Requested Action / Suggested Motions: Pass a Motion providing policy direction on the Tahoe\n    Regional Planning Agency Cultivating Communities, Conserving the Basin project and Mobility\n    Mitigation Fees.\n    Responsible Staff Member(s): Jessica Wackenhut Lomeli, Housing Manager and John Hitchcock,\n    Planning Manager\n    Item 11- Executive Summary.pdf\n    01-Staff_TRPA_Phase_3_Housing.docx\n    Attachment 2 _Policy Recommendations Report.pdf\n    Att3_TahoeWorkforceHousingNeedsAssessment2025.pdf\n    04 - TRPA Cultivating Community_Mobility.pptx\n    Att 5_TLWG Staff Comments.docx\n\nRegular-New Business\n\n12. Update on Geothermal Feasibility Study and Recreation & Aquatics Center Hydronic Snowmelt\n    System\n    Requested Action / Suggested Motions: Pass one of the following motions: 1) Pass a Motion\n    directing staff to execute an agreement for a Geothermal Feasibility Study; or, 2) Pass a Motion\n    directing staff to procure and install a gas-powered boiler for the hydronic system at the\n    Multigenerational Recreation and Aquatic Center; or 3) Pass Motion directing staff to execute an\n    agreement for a Geothermal Feasibility Study and procure and install a gas powered boiler for the\n    hydronic system at the Multigenerational Recreation and Aquatic Center.\n    CEQA Determination: Geothermal Feasibility: This action is statutorily exempt under CEQA\n    Guidelines section 15262 (feasibility and planning studies). Gas-fired Hydronic Snowmelt:\n    Installation and operation of the proposed gas-fired boiler is consistent with the project evaluated\n    under the adopted Initial Study/Mitigated Negative Declaration (IS/MND). The IS/MND evaluated\n    the Recreation and Aquatics Center at a project level and expressly accounted for natural gas\n    service, natural-gas-fired heating, and associated operational energy use, air-quality emissions, and\n    greenhouse-gas emissions. The proposed boiler does not represent a new category of\n    environmental impact beyond those previously evaluated in the IS/MND. The proposed modification\n    would not result in new significant environmental effects or a substantial increase in the severity of\n    previously identified environmental effects; therefore, no subsequent environmental document is\n    required pursuant to CEQA Guidelines Section 15162.\n    Responsible Staff Member(s): Ricky Riddle, Construction Manager, Capital Improvements Program\n    Manager, Facilities Program Manager, and Mohammad Qureshi, Director of Public Works\n    Item 12- Executive Summary.pdf\n    01_Staff Report-Geothermal Feasibility and Recreation Aquatics Snowmelt\n    02_GreyEdgeGroupProposal (1).pdf\n\n13. Waive First Reading and Introduction of Ordinance amending South Lake Tahoe City Code Title 6,\n    Chapter 6.40 (Signs and Advertising Structures), Article III (General Provisions), Section 6.40.080\n    (Signs and Activities Not Requiring Permits) to expand the timeframe in which a portable sign may\n    be displayed.\n    Requested Action / Suggested Motions: Pass a Motion to waive First Reading, and introduce by\n    Title only an Ordinance Amending South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and"
+  }
+ },
+ "downloads": {
+  "https://granicus_production_attachments.s3.amazonaws.com/slt/fb52e3c531af6893429f30df879554620.pdf": {
+   "sha256": "c0c6e6986dfdc05e8ad10a6f33429128edbc00584a68391639611f75973967be",
+   "page_count": 7,
+   "pages": [],
+   "links": [
+    {
+     "page": 2,
+     "top": 748,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399125/Item_1-_Executive_Summary.pdf",
+     "text": "Item 1- Executive Summary.pdf"
+    },
+    {
+     "page": 2,
+     "top": 767,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4383072/Proclamation_-_Fire_Prevention_Week.pdf",
+     "text": "Proclamation - Fire Prevention Week.docx"
+    },
+    {
+     "page": 3,
+     "top": 158,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399135/Item_2-_Executive_Summary.pdf",
+     "text": "Item 2- Executive Summary.pdf"
+    },
+    {
+     "page": 3,
+     "top": 177,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4398030/09_22_2026_City_Council_Meeting_Minutes.pdf",
+     "text": "09_22_2026_City_Council_Meeting_Minutes.pdf"
+    },
+    {
+     "page": 3,
+     "top": 288,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399334/Item_3-_Executive_Summary.pdf",
+     "text": "Item 3- Executive Summary.pdf"
+    },
+    {
+     "page": 3,
+     "top": 307,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4392946/01-Staff_Report_Appropriations_Limit_2026-2027.pdf",
+     "text": "01-Staff Report - Appropriations Limit 2026-2027"
+    },
+    {
+     "page": 3,
+     "top": 326,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4365108/02-Resolution_-_2026-2027_Appropriations_Limit.pdf",
+     "text": "02-Resolution - 2026-2027 Appropriations Limit.docx"
+    },
+    {
+     "page": 3,
+     "top": 345,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4371012/03-Appropriations_Limit_2026_2027_Worksheets.pdf",
+     "text": "03-Appropriations Limit 2026 2027 Worksheets.pdf"
+    },
+    {
+     "page": 3,
+     "top": 569,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399348/Item_4-_Executive_Summary.pdf",
+     "text": "Item 4- Executive Summary.pdf"
+    },
+    {
+     "page": 3,
+     "top": 588,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4392598/01_Staff_Report_Budget_Transfer_Fire_Station_1_Roof___Services_Center_Roof_Project.pdf",
+     "text": "01_Staff_Report_Budget_Transfer_Fire_Station_1_Roof___Services_Center_Roof_Project.docx"
+    },
+    {
+     "page": 3,
+     "top": 607,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4392603/02_Resolution_Budget_Transfer_Fire_Station_1_Roof___Services_Center_Roof_Project.pdf",
+     "text": "02_Resolution_Budget_Transfer_Fire_Station_1_Roof___Services_Center_Roof_Project.docx"
+    },
+    {
+     "page": 3,
+     "top": 812,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399371/Item_5-_Executive_Summary.pdf",
+     "text": "Item 5- Executive Summary.pdf"
+    },
+    {
+     "page": 3,
+     "top": 831,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4390230/01-Staff_Report_Financial_Reporting_Services.pdf",
+     "text": "01-Staff Report Financial Reporting Services.docx"
+    },
+    {
+     "page": 3,
+     "top": 850,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4368069/02-Request_for_Proposals_No._2026-08-03_and_Addendum_No._1.pdf",
+     "text": "02-Request for Proposals No. 2026-08-03 and Addendum No. 1.pdf"
+    },
+    {
+     "page": 3,
+     "top": 868,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4368070/03-Eide_Bailly_Proposal.pdf",
+     "text": "03-Eide Bailly Proposal.pdf"
+    },
+    {
+     "page": 3,
+     "top": 887,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4390244/04-Eide_Bailly_Advisory_LLC_PSA.pdf",
+     "text": "04-Eide Bailly Advisory LLC PSA.docx"
+    },
+    {
+     "page": 3,
+     "top": 1055,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399391/Item_6-_Executive_Summary.pdf",
+     "text": "Item 6- Executive Summary.pdf"
+    },
+    {
+     "page": 3,
+     "top": 1074,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4391722/01_-_Staff_Report_Auth_to_Apply_to_EDC_AQMD.pdf",
+     "text": "01 - Staff Report Auth to Apply to EDC AQMD.docx"
+    },
+    {
+     "page": 4,
+     "top": 64,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4391723/02-Resolution_AQMD_Grant_Application.pdf",
+     "text": "02-Resolution AQMD Grant Application.docx"
+    },
+    {
+     "page": 4,
+     "top": 83,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4380120/03_-_RFP_EDC_AQMD.pdf",
+     "text": "03 - RFP EDC AQMD.pdf"
+    },
+    {
+     "page": 4,
+     "top": 269,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400026/Item_7-_Executive_Summary.pdf",
+     "text": "Item 7- Executive Summary.pdf"
+    },
+    {
+     "page": 4,
+     "top": 288,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4397017/01-SR_Paradise_Ave_Abandonment.pdf",
+     "text": "01-SR_Paradise_Ave_Abandonment.docx"
+    },
+    {
+     "page": 4,
+     "top": 307,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4397019/02-Resolution-Paradise_Ave_Abandonment.pdf",
+     "text": "02-Resolution-Paradise_Ave_Abandonment.docx"
+    },
+    {
+     "page": 4,
+     "top": 326,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4377460/03_-_Attachment_1_-_Abandonment_Map.pdf",
+     "text": "03 - Attachment 1 - Abandonment Map.pdf"
+    },
+    {
+     "page": 4,
+     "top": 531,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399681/Item_8-_Executive_Summary.pdf",
+     "text": "Item 8- Executive Summary.pdf"
+    },
+    {
+     "page": 4,
+     "top": 550,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4390491/01-Staff_Report_Park_Pine_Connect_GrantApp_FY27-28.pdf",
+     "text": "01-Staff_Report_Park_Pine_Connect_GrantApp_FY27-28.docx"
+    },
+    {
+     "page": 4,
+     "top": 569,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4389647/02-Resolution_Park_Pine_Connection_Project.pdf",
+     "text": "02-Resolution_Park_Pine Connection Project.docx"
+    },
+    {
+     "page": 4,
+     "top": 588,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4394464/Circulation_Study_-_Park___Pine_Connect.pdf",
+     "text": "03 - Circulation Study Map_Park & Pine Complete Streets.pdf"
+    },
+    {
+     "page": 4,
+     "top": 793,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399695/Item_9-_Executive_Summary.pdf",
+     "text": "Item 9- Executive Summary.pdf"
+    },
+    {
+     "page": 4,
+     "top": 812,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4395410/01-Staff_Report_Professional_Services_Agreement_with_Zenith_Economics.pdf",
+     "text": "01-Staff_Report_Professional_Services_Agreement_with_Zenith_Economics.docx"
+    },
+    {
+     "page": 4,
+     "top": 831,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4339754/02_-_Economic_Development_RFP_-_Market_Analysis_and_Business_Attraction_Strategy.pdf",
+     "text": "02 - Economic Development RFP - Market Analysis and Business Attraction Strategy.pdf"
+    },
+    {
+     "page": 4,
+     "top": 850,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4392650/PSA_Zenith_20260925.pdf",
+     "text": "03 - Professional Services Agreement-Zenith"
+    },
+    {
+     "page": 5,
+     "top": 64,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400124/Item_10-_Executive_Summary.pdf",
+     "text": "Item 10- Executive Summary.pdf"
+    },
+    {
+     "page": 5,
+     "top": 83,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399948/01-Staff_Report-Abandoned_Property_Ordinance_Second_Reading__1_.pdf",
+     "text": "01-Staff_Report-Abandoned_Property_Ordinance_Second_Reading (1).docx"
+    },
+    {
+     "page": 5,
+     "top": 102,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399964/Ordinance_SLTCC_4.60_amendment__3_.pdf",
+     "text": "02-Ordinance_SLTCC_4.60_amendment.docx"
+    },
+    {
+     "page": 5,
+     "top": 121,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399757/SLTCC_Chapter_4.60__REDLINE__v2.pdf",
+     "text": "03-SLTCC Chapter 4.60 (REDLINE)"
+    },
+    {
+     "page": 5,
+     "top": 139,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4399799/Notice_of_Publication-Nuisances_Abandone_Srtucture_First_Reading.pdf",
+     "text": "04-Notice of Publication-Nuisances Abandoned Srtucture First Reading.pdf"
+    },
+    {
+     "page": 5,
+     "top": 342,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400155/Item_11-_Executive_Summary.pdf",
+     "text": "Item 11- Executive Summary.pdf"
+    },
+    {
+     "page": 5,
+     "top": 361,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4395564/01-Staff_TRPA_Phase_3_Housing.pdf",
+     "text": "01-Staff_TRPA_Phase_3_Housing.docx"
+    },
+    {
+     "page": 5,
+     "top": 380,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4380480/Attachment_2__Policy_Recommendations_Report.pdf",
+     "text": "Attachment 2 _Policy Recommendations Report.pdf"
+    },
+    {
+     "page": 5,
+     "top": 399,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4395565/Att3_TahoeWorkforceHousingNeedsAssessment2025.pdf",
+     "text": "Att3_TahoeWorkforceHousingNeedsAssessment2025.pdf"
+    },
+    {
+     "page": 5,
+     "top": 418,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4396858/04_-_TRPA_Cultivating_Community_Mobility.pdf",
+     "text": "04 - TRPA Cultivating Community_Mobility.pptx"
+    },
+    {
+     "page": 5,
+     "top": 436,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4396683/Att_5_TLWG_Staff_Comments.pdf",
+     "text": "Att 5_TLWG Staff Comments.docx"
+    },
+    {
+     "page": 5,
+     "top": 904,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400162/Item_12-_Executive_Summary.pdf",
+     "text": "Item 12- Executive Summary.pdf"
+    },
+    {
+     "page": 5,
+     "top": 922,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4395466/01_Staff_Report_Geothermal_Feasibility_and_Recreation_Aquatics_Snowmelt.pdf",
+     "text": "01_Staff Report-Geothermal Feasibility and Recreation Aquatics Snowmelt"
+    },
+    {
+     "page": 5,
+     "top": 941,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4390343/02_GreyEdgeGroupProposal__1_.pdf",
+     "text": "02_GreyEdgeGroupProposal (1).pdf"
+    },
+    {
+     "page": 6,
+     "top": 253,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400168/Item_13-_Executive_Summary.pdf",
+     "text": "Item 13- Executive Summary.pdf"
+    },
+    {
+     "page": 6,
+     "top": 272,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4380649/01_-_Staff_Report_Sign_Ordinance_Amendments_1.pdf",
+     "text": "01_-_Staff_Report_Sign_Ordinance_Amendments 1.docx"
+    },
+    {
+     "page": 6,
+     "top": 291,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4380319/02_-_Sandwich_Board_Dimensions.pdf",
+     "text": "02 - Sandwich Board Dimensions.pdf"
+    },
+    {
+     "page": 6,
+     "top": 310,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4380320/03_-_Sandwich_Board_Examples.pdf",
+     "text": "03 - Sandwich Board Examples.pdf"
+    },
+    {
+     "page": 6,
+     "top": 328,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4397873/04_-Proposed_Code_Amendments_Tracked_Changes.pdf",
+     "text": "04_-Proposed_Code_Amendments_Tracked_Changes.docx"
+    },
+    {
+     "page": 6,
+     "top": 347,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400252/xxxxxxx.pdf",
+     "text": "05 - Resolution 2026-014_Amend City Ordinance (Signs).pdf"
+    },
+    {
+     "page": 6,
+     "top": 366,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4382189/06_-Sign_Ordinance_Amendment_Notice.pdf",
+     "text": "06 -Sign Ordinance Amendment Notice.pdf"
+    },
+    {
+     "page": 6,
+     "top": 385,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4382190/07_-_Sept_17_PC_Tribune_Notice_Proof.pdf",
+     "text": "07 - Sept 17 PC Tribune Notice Proof.pdf"
+    },
+    {
+     "page": 6,
+     "top": 404,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4382191/08_-_Oct_8_CC_Tribune_Public_Notice.pdf",
+     "text": "08 - Oct 6 CC Tribune Public Notice.pdf"
+    },
+    {
+     "page": 6,
+     "top": 423,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4397858/09_-_City_Council_Ordinance2026-XX.pdf",
+     "text": "09_-_City_Council_Ordinance2026-XX.docx"
+    },
+    {
+     "page": 6,
+     "top": 628,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400268/Item_14-_Executive_Summary.pdf",
+     "text": "Item 14- Executive Summary.pdf"
+    },
+    {
+     "page": 6,
+     "top": 647,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4389593/01-Staff_Report-City_Council_Compensation.pdf",
+     "text": "01-Staff Report-City Council Compensation.docx"
+    },
+    {
+     "page": 6,
+     "top": 666,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4389598/02-Draft_Ordinance_City_Council_Compensation.pdf",
+     "text": "02-Draft Ordinance City Council Compensation.docx"
+    },
+    {
+     "page": 6,
+     "top": 685,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4384927/03-ORD_2024-1189_Increasing_City_Council_Comp__5_.pdf",
+     "text": "03-ORD 2024-1189 Increasing City Council Comp (5).pdf"
+    },
+    {
+     "page": 6,
+     "top": 831,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400293/Item_15-_Executive_Summary.pdf",
+     "text": "Item 15- Executive Summary.pdf"
+    },
+    {
+     "page": 6,
+     "top": 850,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4400154/APC_09_30_2026.pdf",
+     "text": "APC 09 30 2026.pdf"
+    }
+   ],
+   "boxes": [
+    {
+     "page": 2,
+     "top": 65,
+     "left": 81,
+     "url": null,
+     "text": "will be made available for public inspection during normal business hours at the City Clerk's Office"
+    },
+    {
+     "page": 2,
+     "top": 84,
+     "left": 81,
+     "url": null,
+     "text": "located at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe [Government Code Section 54957.5(b)]."
+    },
+    {
+     "page": 2,
+     "top": 103,
+     "left": 81,
+     "url": null,
+     "text": "Written comments will not be read out loud during the meeting."
+    },
+    {
+     "page": 2,
+     "top": 140,
+     "left": 81,
+     "url": null,
+     "text": "The City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable"
+    },
+    {
+     "page": 2,
+     "top": 159,
+     "left": 81,
+     "url": null,
+     "text": "effort will be made to accommodate any person needing special assistance to attend this meeting."
+    },
+    {
+     "page": 2,
+     "top": 178,
+     "left": 81,
+     "url": null,
+     "text": "Contact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance [28"
+    },
+    {
+     "page": 2,
+     "top": 197,
+     "left": 81,
+     "url": null,
+     "text": "CFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1, 54954.2,"
+    },
+    {
+     "page": 2,
+     "top": 216,
+     "left": 81,
+     "url": null,
+     "text": "and 54957.5]."
+    },
+    {
+     "page": 2,
+     "top": 254,
+     "left": 81,
+     "url": null,
+     "text": "Spanish Interpretations:"
+    },
+    {
+     "page": 2,
+     "top": 273,
+     "left": 81,
+     "url": null,
+     "text": "the front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio"
+    },
+    {
+     "page": 2,
+     "top": 292,
+     "left": 81,
+     "url": null,
+     "text": "capabilities and selecting the Spanish language option. Persons without an internet device may attend"
+    },
+    {
+     "page": 2,
+     "top": 310,
+     "left": 81,
+     "url": null,
+     "text": "the meeting in-person and a device will be provided while supplies last. Requests for interpreter services"
+    },
+    {
+     "page": 2,
+     "top": 329,
+     "left": 81,
+     "url": null,
+     "text": "to offer public comment may be made by contacting the City Clerk."
+    },
+    {
+     "page": 2,
+     "top": 364,
+     "left": 81,
+     "url": null,
+     "text": "Land Acknowledgement"
+    },
+    {
+     "page": 2,
+     "top": 383,
+     "left": 81,
+     "url": null,
+     "text": "Land Acknowledgement - The City of South Lake Tahoe acknowledges the lands we occupy today are"
+    },
+    {
+     "page": 2,
+     "top": 402,
+     "left": 81,
+     "url": null,
+     "text": "the lands and home of the Wašíšiw, the people from here known today as the Washoe Tribe of Nevada"
+    },
+    {
+     "page": 2,
+     "top": 421,
+     "left": 81,
+     "url": null,
+     "text": "and California, a sovereign nation. Since the beginning of time and for thousands of years before the"
+    },
+    {
+     "page": 2,
+     "top": 440,
+     "left": 81,
+     "url": null,
+     "text": "arrival of any other people, the Washoe lived here and cared for this place, with values and intention that"
+    },
+    {
+     "page": 2,
+     "top": 459,
+     "left": 81,
+     "url": null,
+     "text": "we can all learn from. On behalf of the City Council, I would like to acknowledge, thank, and honor the"
+    },
+    {
+     "page": 2,
+     "top": 478,
+     "left": 81,
+     "url": null,
+     "text": "Indigenous Washoe Tribal Communities that are the past, present, and future stewards of the Lake"
+    },
+    {
+     "page": 2,
+     "top": 497,
+     "left": 81,
+     "url": null,
+     "text": "Tahoe Basin."
+    },
+    {
+     "page": 2,
+     "top": 532,
+     "left": 81,
+     "url": null,
+     "text": "Call to Order/Pledge of Allegiance"
+    },
+    {
+     "page": 2,
+     "top": 567,
+     "left": 81,
+     "url": null,
+     "text": "Roll Call"
+    },
+    {
+     "page": 2,
+     "top": 602,
+     "left": 81,
+     "url": null,
+     "text": "Closed Session Report"
+    },
+    {
+     "page": 2,
+     "top": 637,
+     "left": 81,
+     "url": null,
+     "text": "Proclamations"
+    },
+    {
+     "page": 2,
+     "top": 672,
+     "left": 81,
+     "url": null,
+     "text": "1."
+    },
+    {
+     "page": 2,
+     "top": 802,
+     "left": 81,
+     "url": null,
+     "text": "Public Communications"
+    },
+    {
+     "page": 2,
+     "top": 821,
+     "left": 81,
+     "url": null,
+     "text": "This is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall be"
+    },
+    {
+     "page": 2,
+     "top": 840,
+     "left": 81,
+     "url": null,
+     "text": "limited to four (4) minutes. In accordance with the Brown Act, the City Council cannot deliberate or vote"
+    },
+    {
+     "page": 2,
+     "top": 859,
+     "left": 81,
+     "url": null,
+     "text": "on any matter raised under public communications, but may briefly respond to statements made or"
+    },
+    {
+     "page": 2,
+     "top": 877,
+     "left": 81,
+     "url": null,
+     "text": "questions posed. (Government Code Sections 54954.2)"
+    },
+    {
+     "page": 2,
+     "top": 913,
+     "left": 81,
+     "url": null,
+     "text": "City Commission Reports"
+    },
+    {
+     "page": 2,
+     "top": 948,
+     "left": 81,
+     "url": null,
+     "text": "Consent Agenda"
+    },
+    {
+     "page": 2,
+     "top": 967,
+     "left": 81,
+     "url": null,
+     "text": "Public Comment - This is the public's opportunity to speak on any topic listed on the Consent Agenda."
+    },
+    {
+     "page": 2,
+     "top": 985,
+     "left": 81,
+     "url": null,
+     "text": "Comments shall be limited to three (3) minutes per item and six (6) minutes total per speaker."
+    },
+    {
+     "page": 2,
+     "top": 1004,
+     "left": 81,
+     "url": null,
+     "text": "The consent agenda consists of items of a repeating or routine nature considered under a single action."
+    },
+    {
+     "page": 2,
+     "top": 1023,
+     "left": 81,
+     "url": null,
+     "text": "Any Councilmember may have an item on the consent agenda removed and considered separately upon"
+    },
+    {
+     "page": 2,
+     "top": 1042,
+     "left": 81,
+     "url": null,
+     "text": "request."
+    },
+    {
+     "page": 2,
+     "top": 1080,
+     "left": 81,
+     "url": null,
+     "text": "Pass a Motion to adopt the Consent Agenda in one motion except as indicated at each item."
+    },
+    {
+     "page": 3,
+     "top": 64,
+     "left": 81,
+     "url": null,
+     "text": "2."
+    },
+    {
+     "page": 3,
+     "top": 212,
+     "left": 81,
+     "url": null,
+     "text": "3."
+    },
+    {
+     "page": 3,
+     "top": 380,
+     "left": 81,
+     "url": null,
+     "text": "4."
+    },
+    {
+     "page": 3,
+     "top": 642,
+     "left": 81,
+     "url": null,
+     "text": "5."
+    },
+    {
+     "page": 3,
+     "top": 922,
+     "left": 81,
+     "url": null,
+     "text": "6."
+    },
+    {
+     "page": 4,
+     "top": 118,
+     "left": 81,
+     "url": null,
+     "text": "7."
+    },
+    {
+     "page": 4,
+     "top": 361,
+     "left": 81,
+     "url": null,
+     "text": "8."
+    },
+    {
+     "page": 4,
+     "top": 623,
+     "left": 81,
+     "url": null,
+     "text": "9."
+    },
+    {
+     "page": 4,
+     "top": 885,
+     "left": 81,
+     "url": null,
+     "text": "10."
+    },
+    {
+     "page": 5,
+     "top": 175,
+     "left": 81,
+     "url": null,
+     "text": "Regular-Unfinished Business"
+    },
+    {
+     "page": 5,
+     "top": 210,
+     "left": 81,
+     "url": null,
+     "text": "11."
+    },
+    {
+     "page": 5,
+     "top": 472,
+     "left": 81,
+     "url": null,
+     "text": "Regular-New Business"
+    },
+    {
+     "page": 5,
+     "top": 507,
+     "left": 81,
+     "url": null,
+     "text": "12."
+    },
+    {
+     "page": 5,
+     "top": 976,
+     "left": 81,
+     "url": null,
+     "text": "13."
+    },
+    {
+     "page": 6,
+     "top": 458,
+     "left": 81,
+     "url": null,
+     "text": "14."
+    },
+    {
+     "page": 6,
+     "top": 720,
+     "left": 81,
+     "url": null,
+     "text": "Agenda Planning Calendar"
+    },
+    {
+     "page": 6,
+     "top": 755,
+     "left": 81,
+     "url": null,
+     "text": "15."
+    },
+    {
+     "page": 6,
+     "top": 885,
+     "left": 81,
+     "url": null,
+     "text": "Updates and Announcements (City Attorney, City Clerk, City Manager)"
+    },
+    {
+     "page": 6,
+     "top": 920,
+     "left": 81,
+     "url": null,
+     "text": "Councilmember Reports and Comments - Assignments to Boards, Committees, and"
+    },
+    {
+     "page": 6,
+     "top": 939,
+     "left": 81,
+     "url": null,
+     "text": "Commissions"
+    },
+    {
+     "page": 6,
+     "top": 974,
+     "left": 81,
+     "url": null,
+     "text": "Adjournment"
+    },
+    {
+     "page": 6,
+     "top": 993,
+     "left": 81,
+     "url": null,
+     "text": "I, Susan Carpenter, City Clerk for the City of South Lake Tahoe, declare that the foregoing agenda for"
+    },
+    {
+     "page": 6,
+     "top": 1012,
+     "left": 81,
+     "url": null,
+     "text": "the Tuesday, October 6, 2026, City Council meeting was posted and available for review on Wednesday,"
+    },
+    {
+     "page": 6,
+     "top": 1030,
+     "left": 81,
+     "url": null,
+     "text": "September 30, 2026, at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe, CA 96150. The agenda was"
+    },
+    {
+     "page": 6,
+     "top": 1049,
+     "left": 81,
+     "url": null,
+     "text": "also available on the City website at https://www.cityofslt.us."
+    },
+    {
+     "page": 6,
+     "top": 1068,
+     "left": 81,
+     "url": null,
+     "text": "Signed September 30, 2026"
+    },
+    {
+     "page": 7,
+     "top": 83,
+     "left": 81,
+     "url": null,
+     "text": "\\\\sb\\\\ Susan Carpenter, Elected City Clerk"
+    }
+   ]
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4399371/Item_5-_Executive_Summary.pdf": {
+   "sha256": "3814cc53493483935f8f1c466cbc31ae7852accb0614aa2f9820080db369ac54",
+   "page_count": 75,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe                           Meeting Date: October 6, 2026\n                                                   Agenda Item #:5\nAgenda Item Executive Summary\nHilary Roverud, City Manager\n\n\n\n__________________________________\n\n\nAgenda Item: Agreement with Eide Bailly Advisory LLC for Governmental Accounting Technical and\nFinancial Reporting Consulting Services\n\nExecutive Summary: The Finance Department requires specialized, as-needed support for complex\ngovernmental accounting and financial reporting matters, including GASB compliance, lease and\nsubscription-based IT arrangement accounting, compensated absences, fair-value analyses, technical\naccounting research, audit support, and the City’s Financial Transactions Report. Following a\ncompetitive RFP process, staff evaluated eleven proposals using the City’s published criteria. Eide\nBailly Advisory LLC was identified as the best-qualified firm based on its governmental accounting\nexpertise, understanding of the City’s financial reporting environment and systems, relevant public-\nsector experience, proposed work plan, and pricing.\n\nRequested Action / Suggested Motions: Pass a Motion authorizing and directing the Mayor to execute\na Professional Services Agreement with Eide Bailly Advisory LLC for Governmental Accounting\nTechnical and Financial Reporting Consulting Services for an initial one-year term in an amount not to\nexceed $73,200, with up to two optional one-year extensions, and authorizing the City Manager to\nexecute the aforementioned extensions in writing no later than the expiration of the then-current term.\n\nResponsible Staff Member: Olga Tikhomirova, Director of Finance\n\nReviewed and Approved By: Susan Blankenship, City Clerk Sergio Rudin, Interim City Attorney\n\nAttachments:\n     01-Staff Report Financial Reporting Services.docx\n     02-Request for Proposals No. 2026-08-03 and Addendum No. 1.pdf\n     03-Eide Bailly Proposal.pdf\n     04-Eide Bailly Advisory LLC PSA.docx\n\n\n\n\n                                                                                                          1"
+    },
+    {
+     "page_number": 2,
+     "text": "City of South Lake Tahoe\n                               Report to City Council\n\n\n\nMeeting Date: October 6, 2026\n\n\nTitle: Agreement with Eide Bailly Advisory LLC for Governmental Accounting Technical and\n       Financial Reporting Consulting Services\n\nLocation:     Citywide\n\nResponsible Staff Member:          Olga Tikhomirova, Director of Finance\n\nBackground:         The Finance Department periodically requires specialized governmental\naccounting and financial reporting support to address complex accounting matters, evaluate new\nand existing transactions, prepare supporting schedules and analyses, assist with financial-\nstatement disclosure support, and respond to technical reporting requirements.\nThe requested services are advisory in nature and are separate from the City’s independent\nfinancial statement audit. The consultant will provide technical expertise, research, analyses,\nrecommendations, schedules, calculations, journal-entry support, and related documentation.\nThe City will retain responsibility for management decisions, accounting policies, internal\ncontrols, financial statement preparation, and final accounting and reporting determinations.\nThe scope of services includes as-needed support for Governmental Accounting Standards\nBoard (GASB) requirements, including GASB Statement No. 72, Fair Value Measurement and\nApplication; GASB Statement No. 87, Leases; GASB Statement No. 96, Subscription-Based\nInformation Technology Arrangements (SBITAs); GASB Statement No. 101, Compensated\nAbsences; future GASB pronouncements; technical accounting and information technology\nconsultation; audit support related to consultant-prepared work products; and preparation\nsupport for the City’s Financial Transactions Report submitted to the California State Controller’s\nOffice.\nThe City issued Request for Proposals No. 2026-08-03 for Governmental Accounting Technical\nand Financial Reporting Consulting Services. The RFP stated that the City anticipated using\nthese services on an as-needed basis, with no minimum amount of work guaranteed. The\nselected consultant may perform only services specifically authorized by the Finance Director or\ndesignee, and compensation may not exceed the approved contract amount without a written\namendment.\nThe proposed agreement would have an initial term of one year and may be extended for up to\ntwo additional one-year terms, subject to satisfactory performance, annual appropriations,\nmutual written agreement, and applicable City purchasing approvals.\n\nIssue and Discussion: The City received eleven proposals in response to the RFP. The\nproposals were reviewed for responsiveness to the RFP requirements and evaluated using the\ncriteria identified in the RFP. The RFP required proposers to demonstrate governmental\naccounting, GASB implementation, financial reporting, and information technology consulting\nCouncil Agenda Report              October 6, 2026                            Page 1 of 3\n\n\n                                                                                                      2"
+    },
+    {
+     "page_number": 3,
+     "text": "experience; provide qualified proposed personnel; present a practical work plan and timeline;\nidentify hourly billing rates and estimated fees; and provide recent, relevant public-sector\nreferences.\nThree reviewers assessed the eleven firm proposals based on the mandatory and technical\nqualifications required by the RFP. The grid below is a recap of the review.\n\n                                 Evaluator #1    Evaluator #2   Evaluator #3\n        Vendor/Proposer Name     Total Score     Total Score    Total Score    Total Score      Ranking\nEide Bailly Advisory LLC              93              90             91           274              1\nPrice Paige & Company, LLP            93              88             89           270              2\nMacias Gini & O’Connell LLP           89              89             89           267              3\nBerryDunn                             87              84             81           252              4\nCherry Bekaert                        85              82             81           248              5\nForvis Mazars, LLP                    77              83             79           239              6\nVasquez & Company LLP                 82              79             76           237              7\nLSL, LLP                              54              87             88           229              8\nBadawi & Associates                   78              71             78           227              9\nErnst & Young LLP                     68              75             80           223             10\nWeaver and Tidwell, LLP               56              80             81           217             11\n\nFollowing the evaluation, staff determined that Eide Bailly Advisory LLC was the highest-ranked\nproposer and best suited to provide the requested services.\nEide Bailly demonstrated a thorough understanding of the City’s financial reporting environment\nand the nature of the requested as-needed technical consulting engagement. Its proposal\nspecifically addresses the City’s existing CentralSquare OneSolution environment, the planned\ntransition to Finance Enterprise, Excel-based reporting processes, LeaseQuery-related lease\nand subscription-based information technology arrangement tracking, financial reporting\nschedules, technical accounting analyses, audit support, and California State Controller\nreporting needs.\nEide Bailly proposed an engagement team led by James Ramsey, Managing Director; Kyle\nBartle, Senior Manager and project manager; and Kinnaly Soukhaseum, Managing Director. The\nteam will be supported by additional governmental accounting specialists as needed. The\nproposed team brings experience working with California governmental entities, financial\nreporting requirements, governmental accounting standards, audit-ready workpapers, and\npublic-sector reporting matters.\nEide Bailly’s proposed approach includes:\n         An initial kickoff meeting to confirm priorities, anticipated service needs, communication\n          protocols, document requirements, and coordination procedures;\n         Development of a work plan and secure process for document transfer, tracking, and\n          retention;\n         Research and technical analysis of applicable GASB and governmental financial\n          reporting requirements;\n         Preparation of calculations, schedules, journal-entry recommendations, disclosure\n          support, technical memoranda, and related workpapers;\n         Internal quality review of significant technical analyses and supporting documentation;\n         Periodic status updates and ongoing consultation during the contract term; and\n   Council Agenda Report                   October 6, 2026                               Page 2 of 3\n\n                                                                                                          3"
+    }
+   ],
+   "links": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4399391/Item_6-_Executive_Summary.pdf": {
+   "sha256": "2304156896ae3b8e92bc970c6030d81ad8236b69d90cb312020f6d9fccb4de0a",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe                              Meeting Date: October 6, 2026\n                                                      Agenda Item #:6\nAgenda Item Executive Summary\nHilary Roverud, City Manager\n\n\n\n__________________________________\n\n\nAgenda Item: Authorization to Apply to El Dorado County Air Quality Management District Motor Vehicle\nEmission Reduction Projects CY 2026 & 2027 for Emissions-Saving Vehicle Replacements\n\nExecutive Summary: Staff identified the opportunity for this grant to help offset the cost of procuring\nfour electric vehicles and one hybrid vehicle for staff in Public Works and IT. Electric vehicle charging\ninfrastructure will be available to these new electric vehicles. $200,000 in grant funds is available for\nprojects implemented in 2027. The application is due by October 30, 2026.\n\nRequested Action / Suggested Motions: Pass a Resolution authorizing the a City Manager, or\ndesginee, to Apply to El Dorado County Air Quality Management District Motor Vehicle Emission\nReduction Projects CY 2026 & 2027 for Vehicle Replacement in the amount of up to $200,000.\n\nResponsible Staff Member: Sara Letton, Sustainability Coordinator, and Dr. Mohammad Qureshi,\nDirector of Public Works\n\nReviewed and Approved By: Susan Blankenship, City Clerk Olga Tikhomirova, Finance Director Sergio\nRudin, Interim City Attorney Hilary Roverud, City Manager\n\nAttachments:\n     03 - RFP EDC AQMD.pdf\n     01 - Staff Report Auth to Apply to EDC AQMD.docx\n     02-Resolution AQMD Grant Application.docx"
+    }
+   ],
+   "links": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4400026/Item_7-_Executive_Summary.pdf": {
+   "sha256": "2eacfaff7a692c36c110b57028ba21763c878fae45e8216d5eb3edea2cedd565",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe                            Meeting Date: October 6, 2026\n                                                    Agenda Item #:7\nAgenda Item Executive Summary\nHilary Roverud, City Manager\n\n\n\n__________________________________\n\n\nAgenda Item: Resolution of Intent to Abandon the Easterly 30-foot Portion of Paradise Avenue Right-of-\nWay\n\nExecutive Summary: This item requests City Council adoption of a Resolution of Intent to abandon\napproximately 1,438 square feet of the easterly 30-foot portion of Paradise Avenue right-of-way adjacent\nto the Americana Vacation Resort, finding that the action would not affect the roadway’s use or\nfunction, is exempt from CEQA under Class 1 Existing Facilities, and would support efficient government\noperations by transferring maintenance responsibilities to the adjoining property owner, who would also\nbe responsible for appraisal, fair market value payment, and all associated processing costs.\n\nRequested Action / Suggested Motions: Pass a Resolution of Intent to Abandon the Paradise Avenue\nRight-of-Way and set public hearing date for November 3, 2026.\n\nResponsible Staff Member: Emily Dougherty, Associate Transportation Planner\n\nReviewed and Approved By: Mohammad Qureshi, Director of Public Works Susan Blankenship, City\nClerk Olga Tikhomirova, Director of Finance Sergio Rudin, Interim City Attorney Hilary Roverud, City\nManager\n\nAttachments:\n     01-SR_Paradise_Ave_Abandonment.docx\n     02-Resolution-Paradise_Ave_Abandonment.docx\n     03 - Attachment 1 - Abandonment Map.pdf"
+    }
+   ],
+   "links": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4399681/Item_8-_Executive_Summary.pdf": {
+   "sha256": "91ebae373b7a588aebd9323b1df1455a1eb9415c2f5fbf10d31831cbe3114246",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe                             Meeting Date: October 6, 2026\n                                                     Agenda Item #:8\nAgenda Item Executive Summary\nHilary Roverud, City Manager\n\n\n\n__________________________________\n\n\nAgenda Item: Authorization to Submit a Grant Application for the 2027/2028 Sustainable Transportation\nPlanning Grant Program for the Pine Boulevard/Park Avenue Complete Streets Project\n\nExecutive Summary: This item requests City Council authorization to submit a Caltrans Fiscal Year\n2027/2028 Sustainable Transportation Planning Grant application for the Pine Boulevard/Park Avenue\nComplete Streets Project, a subsequent phase of the Stateline Complete Streets Project, to advance\nplanning and conceptual design for multimodal safety, connectivity, drainage, erosion, and streetscape\nimprovements in the Tourist Core between Stateline Avenue and US Highway 50. If the City is\nsuccessful in the grant application, the project would include up to $44,159.50 in required local matching\nfunds from General Fund undesignated reserves toward an estimated total planning cost of $385,000.\n\nRequested Action / Suggested Motions: Pass a Resolution authorizing the City to submit a grant\napplication for the 2027/2028 Sustainable Transportation Planning Grant Program for the Pine\nBoulevard/Park Avenue Complete Streets Project.\n\nResponsible Staff Member: Emily Dougherty, Associate Transportation Planner\n\nReviewed and Approved By: Mohammad Qureshi, Director of Public Works Susan Blankenship, City\nClerk Olga Tikhomirova, Director of Finance Sergio Rudin, Interim City Attorney\n\nAttachments:\n     01-Staff_Report_Park_Pine_Connect_GrantApp_FY27-28.docx\n     02-Resolution_Park_Pine Connection Project.docx\n     03 - Circulation Study Map_Park & Pine Complete Streets.pdf"
+    }
+   ],
+   "links": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4399695/Item_9-_Executive_Summary.pdf": {
+   "sha256": "5f605d0c1983dedba05d1152c8e00ea355947ece1918a92848fbf0dcb0dc7386",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe                            Meeting Date: October 6, 2026\n                                                    Agenda Item #:9\nAgenda Item Executive Summary\nHilary Roverud, City Manager\n\n\n\n__________________________________\n\n\nAgenda Item: Agreement with Zenith Economics for Economic Development Market Study and\nBusiness Attraction Strategy\n\nExecutive Summary: The City of South Lake Tahoe is seeking to advance its economic-development\nobjectives by contracting with Zenith Economics to prepare an Economic Development Market Analysis\nand Business Attraction Strategy. Staff recommends that the City Council pass a motion authorizing and\ndirecting the Mayor to execute a Professional Services Agreement with Zenith Economics in an amount\nnot to exceed $80,100.00. The project will provide a data-driven assessment of South Lake Tahoe’s\ncurrent economic conditions, market opportunities, workforce and infrastructure needs, business\nenvironment, and dependence on tourism. It will identify and prioritize viable “second economy”\nsectors that can complement the City’s visitor-serving economy, support year-round employment,\nbroaden the local tax base, promote business resiliency, and attract private investment. The City issued\na Request for Proposals and received 23 proposals. Following a thorough evaluation by the selection\ncommittee, Zenith Economics was selected as the most qualified firm based on their experience,\nunderstanding of the City’s needs, proposed approach, capacity, and cost. The proposed agreement\namount is within the approved project budget of $100,000.00. The consultant’s work will include\neconomic and market analysis; stakeholder and community engagement; assessment of business\nattraction, retention, and expansion opportunities; identification of target industries; infrastructure,\nworkforce, and policy considerations; and development of a prioritized implementation plan. Final\ndeliverables will include draft and final reports, an executive summary, implementation\nrecommendations, and presentations to the City Council. This project advances the City’s\n2025–2030 Strategic Plan, Priority #4, Grow and Diversify the Economy, and will provide the analysis,\nstrategy, and actionable roadmap needed to help complete the City’s Economic Development\nStrategy.\n\nRequested Action / Suggested Motions: Pass a Motion authorizing and directing the Mayor to execute\na Professional Services Agreement with Zenith Economics for the City’s Economic Development Market\nAnalysis and Business Attraction Strategy in an amount not to exceed $80,100.00.\n\nResponsible Staff Member: Brian Dossey, Retired Annuitant, Extra help\n\nReviewed and Approved By: Susan Blankenship, City Clerk Olga Tikhomirova, Director of Finance\nSergio Rudin, Interim City Attorney\n\nAttachments:\n     01-Staff_Report_Professional_Services_Agreement_with_Zenith_Economics.docx\n     02 - Economic Development RFP - Market Analysis and Business Attraction Strategy.pdf\n     03 - Professional Services Agreement-Zenith"
+    }
+   ],
+   "links": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4400155/Item_11-_Executive_Summary.pdf": {
+   "sha256": "349000ba10237e8b174ae5a00b087a5c2c47fe31c4c7c24eba2ea90e5fe5f920",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe                             Meeting Date: October 6, 2026\n                                                     Agenda Item #:11\nAgenda Item Executive Summary\nHilary Roverud, City Manager\n\n\n\n__________________________________\n\n\nAgenda Item: Tahoe Regional Planning Agency Housing Amendments and Water Quality and Mobility\nFees Summary\n\nExecutive Summary: Since 2020, the TRPA Governing Board has identified the Tahoe Living Strategic\nPriority as one of the agency’s key priorities in the annual operations plan. The TRPA Governing\nBoard appointed the Tahoe Living Working Group to help identify and prioritize specific, quantifiable local\nand regional actions that leverage environmental redevelopment and water quality improvements to\nachieve the housing goals of the region. Phase 3 of the Tahoe Living Working Group, is “Cultivating\nCommunity, Conserving the Basin” is a multi-year project to make housing more accessible while\nmaintaining and improving environmental protections. Staff will provide an overview of the policy\nrecommendations under analysis at TRPA.\n\nRequested Action / Suggested Motions: Pass a Motion providing policy direction on the Tahoe\nRegional Planning Agency Cultivating Communities, Conserving the Basin project and Mobility Mitigation\nFees.\n\nResponsible Staff Member: Jessica Wackenhut Lomeli, Housing Manager and John Hitchcock,\nPlanning Manager\n\nReviewed and Approved By: Zach Thomas, Director of Development Services Susan Blankenship,\nCity Clerk Olga Tikhomirova, Director of Finance Sergio Rudin, Interim City Attorney\n\nAttachments:\n     01-Staff_TRPA_Phase_3_Housing.docx\n     Attachment 2 _Policy Recommendations Report.pdf\n     Att3_TahoeWorkforceHousingNeedsAssessment2025.pdf\n     04 - TRPA Cultivating Community_Mobility.pptx\n     Att 5_TLWG Staff Comments.docx"
+    }
+   ],
+   "links": []
+  }
+ },
+ "expected": {
+  "2": null,
+  "5": {
+   "page_start": 1,
+   "url_end": "Item_5-_Executive_Summary.pdf"
+  },
+  "6": {
+   "page_start": 1,
+   "url_end": "Item_6-_Executive_Summary.pdf"
+  },
+  "7": {
+   "page_start": 1,
+   "url_end": "Item_7-_Executive_Summary.pdf"
+  },
+  "8": {
+   "page_start": 1,
+   "url_end": "Item_8-_Executive_Summary.pdf"
+  },
+  "9": {
+   "page_start": 1,
+   "url_end": "Item_9-_Executive_Summary.pdf"
+  },
+  "11": {
+   "page_start": 1,
+   "url_end": "Item_11-_Executive_Summary.pdf"
+  }
+ }
+}

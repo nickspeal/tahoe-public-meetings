@@ -17,7 +17,7 @@ def run_problems(summary: dict) -> list[str]:
     step = next((s for s in summary.get("steps", []) if s.get("name") == "classify-topics"), None)
     detail = (step or {}).get("detail")
     if not isinstance(detail, dict) or (step or {}).get("status") == "skipped":
-        return []
+        return _summary_problems(summary)
     problems = []
     if detail.get("stopped"):
         problems.append(f"Claude classification stopped: {detail['stopped']}")
@@ -28,7 +28,16 @@ def run_problems(summary: dict) -> list[str]:
     if failed:
         problems.append(f"Claude failed on {len(failed)} meeting(s): {', '.join(map(str, failed[:5]))}"
                         + (" …" if len(failed) > 5 else ""))
-    return problems
+    return problems + _summary_problems(summary)
+
+
+def _summary_problems(summary: dict) -> list[str]:
+    """Staff report summaries stopped by a budget or fatal API guard (items keep their agenda text)."""
+    step = next((s for s in summary.get("steps", []) if s.get("name") == "summarize-items"), None)
+    detail = (step or {}).get("detail")
+    if isinstance(detail, dict) and detail.get("stopped"):
+        return [f"Staff report summaries stopped: {detail['stopped']}"]
+    return []
 
 
 def send_ntfy(title: str, message: str, *, tags: str = "warning", priority: str = "default",

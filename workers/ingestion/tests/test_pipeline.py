@@ -62,7 +62,8 @@ def test_replay_is_idempotent_and_public_export_valid(db):
     for meeting in first["meetings"]:
         for item in meeting["items"]:
             if item["summary"] and item["summary"]["status"] == "published":
-                assert item["summary"]["method"] == "deterministic-source-excerpt-v1"
+                # The agenda's own excerpt, or the requested action it prints under the item (decision 0024).
+                assert item["summary"]["method"] in ("deterministic-source-excerpt-v1", "agenda-requested-action-v1")
 
 
 def test_revision_regenerates_summary_and_preserves_editorial(db):
@@ -647,7 +648,7 @@ def test_export_and_reclassify_queries_do_not_grow_with_the_archive(db, monkeypa
     with statement_count(monkeypatch) as large_reclassify:
         reclassify_topics(db)
     assert len(payload["meetings"]) > 1 and sum(len(m["items"]) for m in payload["meetings"]) > 10
-    assert large_export["n"] == small_export["n"] <= 12
+    assert large_export["n"] == small_export["n"] <= 13  # 13: staff reports and their summaries (IDEA-013, IDEA-016)
     assert large_reclassify["n"] == small_reclassify["n"] <= 3
 
 

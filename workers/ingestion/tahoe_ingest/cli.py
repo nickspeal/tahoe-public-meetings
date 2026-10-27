@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, alerts, backfill, evaluate_topics, participation, scheduled
+from . import ai_topics, alerts, backfill, evaluate_topics, item_summaries, participation, scheduled, staff_reports
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -112,6 +112,22 @@ def _parser() -> argparse.ArgumentParser:
     part.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
     part.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
                       help="USD; refuse to run once month-to-date AI spend reaches it")
+    reports = sub.add_parser("map-staff-reports", help="Link agenda items to their own staff reports (SLT, TTD, Truckee, Lahontan); downloads PDFs temporarily")
+    reports.add_argument("--agency", choices=staff_reports.SUPPORTED, help="Only this agency ID")
+    reports.add_argument("--meeting", help="Only this meeting ID")
+    reports.add_argument("--max-meetings", type=int, help="Scan at most this many pending meetings, nearest to today first")
+    reports.add_argument("--force", action="store_true", help="Rescan meetings whose items and documents have not changed")
+    reports.add_argument("--dry-run", action="store_true", help="List pending meetings; no downloads or writes")
+    reports.add_argument("--delay", type=float, default=1.0, help="Seconds between downloads")
+    summaries = sub.add_parser("summarize-items", help="Summarize items from their staff reports with Claude (Haiku, then Sonnet); the agenda excerpt remains the fallback")
+    summaries.add_argument("--agency", help="Only this agency ID")
+    summaries.add_argument("--meeting", help="Only this meeting ID")
+    summaries.add_argument("--max-items", type=int, help="Summarize at most this many pending items")
+    summaries.add_argument("--force", action="store_true", help="Summarize again even when nothing the model sees has changed")
+    summaries.add_argument("--dry-run", action="store_true", help="Report pending items and estimated cost; no API calls")
+    summaries.add_argument("--max-cost", type=float, default=item_summaries.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
+    summaries.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                           help="USD; refuse to run once month-to-date AI spend reaches it")
     scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: seed, discover, capture, classify, export, validate, publish")
     scheduled_run.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."),
                                help="Directory holding config/ and tests/fixtures/ (default: TAHOE_SOURCE_ROOT or the working directory)")
@@ -125,6 +141,10 @@ def _parser() -> argparse.ArgumentParser:
     scheduled_run.add_argument("--min-meetings", type=int, default=1, help="Refuse to publish an export with fewer meetings")
     scheduled_run.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for Claude classification this run")
     scheduled_run.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET, help="USD month-to-date AI budget")
+    scheduled_run.add_argument("--summary-max-cost", type=float, default=item_summaries.DEFAULT_MAX_RUN_COST,
+                               help="USD limit for staff report summaries this run")
+    scheduled_run.add_argument("--staff-report-meetings", type=int, default=staff_reports.DEFAULT_MAX_MEETINGS,
+                               help="Meetings scanned for staff reports this run (0 disables)")
     scheduled_run.add_argument("--out", help="Also write the export JSON to this path")
     scheduled_run.add_argument("--skip-discovery", action="store_true", help="Use tracked config only; no live index checks")
     scheduled_run.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
@@ -192,6 +212,18 @@ def main(argv=None) -> int:
         if args.command == "extract-participation":
             print(json.dumps(participation.extract_participation(
                 conn, agency=args.agency, meeting=args.meeting, max_meetings=args.max_meetings, force=args.force,
+                dry_run=args.dry_run, max_cost=args.max_cost, monthly_budget=args.monthly_budget), indent=2))
+            return 0
+        if args.command == "map-staff-reports":
+            init_db(conn)
+            print(json.dumps(staff_reports.map_staff_reports(
+                conn, agency=args.agency, meeting=args.meeting, max_meetings=args.max_meetings, force=args.force,
+                dry_run=args.dry_run, delay=args.delay), indent=2))
+            return 0
+        if args.command == "summarize-items":
+            init_db(conn)
+            print(json.dumps(item_summaries.summarize_items(
+                conn, agency=args.agency, meeting=args.meeting, max_items=args.max_items, force=args.force,
                 dry_run=args.dry_run, max_cost=args.max_cost, monthly_budget=args.monthly_budget), indent=2))
             return 0
         if args.command == "run-scheduled":
@@ -316,6 +348,7 @@ def _run_scheduled(conn, args) -> int:
         root=args.root, discovery_limit=args.discovery_limit, past_days=args.past_days, future_days=args.future_days,
         max_documents=args.max_documents, delay=args.delay, forecast_days=args.forecast_days,
         min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
+        summary_max_cost=args.summary_max_cost, staff_report_meetings=args.staff_report_meetings,
         out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
     summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))
     summary["alerts"] = alerts.alert_on_summary(summary)

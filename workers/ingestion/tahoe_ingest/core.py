@@ -543,6 +543,10 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     overrides = {}
     for r in conn.execute("SELECT item_id,topic_id,included FROM topic_overrides"):
         overrides.setdefault(r["item_id"], []).append(r)
+    from .item_summaries import Supporting
+    from .requested_actions import for_meeting as requested_actions
+    supporting = Supporting(conn)  # each item's staff report, its summary, and its attachments (IDEA-013, IDEA-016)
+    page_text = {(version, p["number"]): p["text"] for version, pages in pages_by_version.items() for p in pages}
     meetings = []
     record_dates = {}
     for m in conn.execute("SELECT * FROM meetings WHERE quarantine_reason IS NULL ORDER BY local_date NULLS LAST, starts_at NULLS LAST, id"):
@@ -552,6 +556,8 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             continue
         docs = docs_by_meeting.get(m["id"], [])
         items = []
+        actions = requested_actions([{"id": i["id"], "citations": _json(i["citations"])} for i in items_by_meeting.get(m["id"], [])],
+                                    page_text)
         for i in items_by_meeting.get(m["id"], []):
             # A current Claude classification replaces the rule tags, including an empty one for items outside Tahoe.
             topics = set(_json(claude_topics[i["id"]])) if i["id"] in claude_topics else set(rule_topics.get(i["id"], ()))
@@ -560,6 +566,8 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             summary = None if i["summary_status"] is None else {"text": i["summary_text"], "status": i["summary_status"],
                 "method": i["method"], "generatedAt": iso(i["generated_at"]),
                 "citations": _json(i["summary_citations"])}
+            # A current staff report summary, else the agenda's requested action, replaces the excerpt; a correction replaces any.
+            summary = supporting.summary(i["id"], summary, iso, actions.get(i["id"]))
             correction = _json(i["correction"]) if i["correction"] else None
             if summary and correction and summary["status"] == "published":
                 # An operator correction simply replaces the displayed text; no attribution or history is exported.
@@ -567,6 +575,10 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             items.append({"id": i["id"], "number": i["number"], "order": i["item_order"], "title": i["title"],
                 "section": i["section"], "topics": sorted(expand_topics(topics)), "summary": summary, "citations": _json(i["citations"]),
                 "change": i["change"], "updatedAt": iso(i["updated_at"]), "suppressed": bool(i["suppressed"])})
+            if staff_report := supporting.report(i["id"], summary, iso):
+                items[-1]["staffReport"] = staff_report
+            if attachments := supporting.attachments(i["id"]):
+                items[-1]["attachments"] = attachments
         timed = time_certain(docs, items)
         for item in items:
             item["timeCertain"] = timed.get(item["id"])

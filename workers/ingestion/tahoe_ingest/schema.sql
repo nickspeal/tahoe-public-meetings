@@ -145,3 +145,36 @@ CREATE TABLE IF NOT EXISTS ai_participation (
   model text NOT NULL, fields jsonb NOT NULL, rejected jsonb NOT NULL DEFAULT '[]'::jsonb,
   extracted_at timestamptz NOT NULL DEFAULT now()
 );
+-- Each agenda item's own staff report (IDEA-013, tahoe_ingest.staff_reports): only verified
+-- mappings, with the official URL, page range, hash, evidence, and the text of the report's
+-- first pages for summary citations. Used only while source_fingerprint matches the item.
+CREATE TABLE IF NOT EXISTS item_staff_reports (
+  item_id text PRIMARY KEY REFERENCES agenda_items(id), source_fingerprint text NOT NULL, method text NOT NULL,
+  kind text NOT NULL, title text NOT NULL, url text NOT NULL,
+  page_start integer NOT NULL CHECK(page_start > 0), page_end integer NOT NULL CHECK(page_end >= page_start),
+  page_count integer NOT NULL, sha256 text NOT NULL, evidence jsonb NOT NULL, pages jsonb NOT NULL,
+  mapped_at timestamptz NOT NULL DEFAULT now()
+);
+-- Which version of a meeting's items and documents was last scanned for staff reports.
+CREATE TABLE IF NOT EXISTS staff_report_scans (
+  meeting_id text PRIMARY KEY REFERENCES meetings(id), items_sha256 text NOT NULL,
+  status text NOT NULL CHECK(status IN ('done','retry')), report jsonb NOT NULL,
+  scanned_at timestamptz NOT NULL DEFAULT now()
+);
+-- Claude summaries of staff reports (IDEA-016, tahoe_ingest.item_summaries). The export shows a
+-- published row only while it matches the item's fingerprint and its current staff report;
+-- otherwise the deterministic excerpt in `summaries` stands. Failed and skipped attempts are
+-- kept so the same input is not sent again.
+CREATE TABLE IF NOT EXISTS ai_item_summaries (
+  item_id text PRIMARY KEY REFERENCES agenda_items(id), input_sha256 text NOT NULL,
+  source_fingerprint text NOT NULL, report_sha256 text NOT NULL, prompt_sha256 text NOT NULL, model text NOT NULL,
+  status text NOT NULL CHECK(status IN ('published','validation_failed','skipped')),
+  text text NOT NULL DEFAULT '', citations jsonb NOT NULL DEFAULT '[]'::jsonb, error text,
+  summarized_at timestamptz NOT NULL DEFAULT now()
+);
+-- Every file an agenda links under an item, in agenda order (IDEA-013): URL, printed name,
+-- readable label, and file type; never the files themselves (decision 0004).
+CREATE TABLE IF NOT EXISTS item_attachments (
+  item_id text PRIMARY KEY REFERENCES agenda_items(id), source_fingerprint text NOT NULL, method text NOT NULL,
+  files jsonb NOT NULL, evidence jsonb NOT NULL, mapped_at timestamptz NOT NULL DEFAULT now()
+);

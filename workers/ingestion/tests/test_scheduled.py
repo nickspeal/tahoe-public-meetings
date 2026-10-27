@@ -11,7 +11,7 @@ from pathlib import Path
 import psycopg
 import pytest
 
-from tahoe_ingest import cli, scheduled
+from tahoe_ingest import cli, scheduled, staff_reports
 from tahoe_ingest.core import init_db
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -71,22 +71,31 @@ class Hook:
 
 
 def options(**overrides):
-    return scheduled.Options(**{"root": ROOT, "delay": 0, "forecast_days": 30, **overrides})
+    # Staff report scans download PDFs; tests that exercise them pass a fake reader.
+    return scheduled.Options(**{"root": ROOT, "delay": 0, "forecast_days": 30, "staff_report_meetings": 0, **overrides})
+
+
+def no_staff_reports(url, **_):
+    raise staff_reports.Uncertain("no staff report documents in this test")
 
 
 def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, tmp_path):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.setenv("VERCEL_DEPLOY_HOOK_URL", "https://hooks.example/secret-token")
     hook = Hook()
-    summary = scheduled.run_scheduled(db, options(out=tmp_path / "public.json"), discover=fake_discover, fetch=fake_fetch, post=hook)
+    summary = scheduled.run_scheduled(db, options(out=tmp_path / "public.json", staff_report_meetings=50), discover=fake_discover,
+                                      fetch=fake_fetch, post=hook, read_pdf=no_staff_reports)
     json.dumps(summary)  # One JSON line for Cloud Logging.
     steps = {s["name"]: s for s in summary["steps"]}
     assert list(steps) == ["init-db", "seed-fixtures", "one-offs", "comment-periods", "verified-sources", "discover",
                            "quarantine", "reparse", "reclassify", "meeting-records", "draft-minutes", "classify-topics", "participation",
-                           "export", "validate", "store", "deploy-hook"]
+                           "staff-reports", "summarize-items", "export", "validate", "store", "deploy-hook"]
     # Source failures degrade the run but never stop publication.
     assert summary["status"] == "degraded" and summary["exportId"]
-    assert steps["classify-topics"]["status"] == "skipped"
+    assert steps["classify-topics"]["status"] == "skipped" and steps["summarize-items"]["status"] == "skipped"
+    # Every meeting of a supported agency is scanned once; nothing unverifiable is stored.
+    assert steps["staff-reports"]["status"] == "ok" and steps["staff-reports"]["detail"]["itemsMapped"] == 0
+    assert db.execute("SELECT count(*) AS n FROM staff_report_scans").fetchone()["n"] == steps["staff-reports"]["detail"]["meetingsScanned"] > 0
     assert steps["seed-fixtures"]["detail"]["processed"] == 19
     assert steps["discover"]["detail"]["agenciesWithFailures"] == ["tcpud"]
     assert steps["discover"]["detail"]["byAgency"]["slt-planning"]["captured"] == 1  # the 400-day-old row predates the coverage floor

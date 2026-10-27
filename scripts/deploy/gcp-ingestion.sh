@@ -219,7 +219,7 @@ resolve_tag() {
 build_push() {
   local context="$1" dockerfile="$2" ref="$3"
   if ((USE_CLOUD_BUILD)); then
-    # Uploads the context honoring .gitignore (so /private/ and /data/ stay local).
+    # Uploads only the files the root .gcloudignore allowlists (about 0.3 MB), the same set as .dockerignore.
     local config="$TMP_DIR/cloudbuild-$RANDOM.yaml"
     cat >"$config" <<YAML
 steps:

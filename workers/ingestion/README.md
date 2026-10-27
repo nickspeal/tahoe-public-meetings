@@ -184,7 +184,7 @@ A live dry run on 2026-10-20 for `--since 2026-01-01` found 201 meetings in 19 a
 
 Environment: `DATABASE_URL` (required; hosted URLs need `?sslmode=require`), `VERCEL_DEPLOY_HOOK_URL` (optional, from Secret Manager), the `ANTHROPIC_*` federation IDs with `TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata` (optional; `ANTHROPIC_API_KEY` also works locally), `TAHOE_FORECAST_DAYS`. `TAHOE_SOURCE_ROOT` (`/app` in the image) locates `config/` and `tests/fixtures/`; `TAHOE_SCRATCH_DIR` overrides the scratch parent (default `TMPDIR`).
 
-Build from the repository root; the root `.dockerignore` is an allowlist:
+Build from the repository root; the root `.dockerignore` is an allowlist, and `.gcloudignore` mirrors it for Cloud Build (keep the two in step):
 
 ```sh
 docker build --platform linux/amd64 -f workers/ingestion/Dockerfile -t tahoe-ingest .

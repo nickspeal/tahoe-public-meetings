@@ -1,0 +1,31 @@
+# Allowlist for `gcloud builds submit` from the repository root (the deploy
+# script's --cloud-build). Cloud Build receives only what the ingestion image
+# needs, matching the root .dockerignore; keep the two in step. Without this
+# file gcloud falls back to .gitignore and uploads untracked local folders.
+# gitignore syntax: a directory must be re-included before files inside it.
+/*
+!/.dockerignore
+!/config/
+/config/*
+!/config/*.json
+!/packages/
+/packages/*
+!/packages/domain/
+/packages/domain/*
+!/packages/domain/*.json
+!/tests/
+/tests/*
+!/tests/fixtures/
+/tests/fixtures/*
+!/tests/fixtures/meetings.json
+!/workers/
+/workers/*
+!/workers/ingestion/
+/workers/ingestion/*
+!/workers/ingestion/Dockerfile
+!/workers/ingestion/pyproject.toml
+!/workers/ingestion/README.md
+!/workers/ingestion/build_hook.py
+!/workers/ingestion/tahoe_ingest/
+__pycache__/
+*.py[cod]

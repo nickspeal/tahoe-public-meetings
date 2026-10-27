@@ -29,7 +29,7 @@ Settings are environment variables at the top of the script, such as `REGION`, `
    gcloud auth login
    gcloud billing accounts list
    ```
-   Budget creation needs Billing Account Administrator or Billing Account Costs Manager on that account. Docker with `buildx` builds images locally, which avoids Cloud Build. Pass `--cloud-build` to build remotely instead. Cloud Build uploads the repository and skips paths listed in `.gitignore`.
+   Budget creation needs Billing Account Administrator or Billing Account Costs Manager on that account. Docker with `buildx` builds images locally, which avoids Cloud Build. Pass `--cloud-build` to build remotely instead. Cloud Build uploads only the files allowlisted in the root `.gcloudignore` (about 0.3 MB), the same set the `.dockerignore` sends to a local build. Without that file `gcloud` would fall back to `.gitignore` and also upload untracked local folders.
 2. **Vercel scope.** Verify the identity and the designated scope before doing anything in Vercel. Do not use whichever account happens to be logged in:
    ```sh
    vercel whoami

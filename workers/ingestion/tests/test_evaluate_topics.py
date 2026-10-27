@@ -429,3 +429,25 @@ def test_live_run_keeps_going_after_a_refusal_and_respects_the_cost_cap(db_url, 
         assert next(c for c in report["comparisons"] if c["b"] == "claude:title-only")["items"] == 28
         with pytest.raises(SystemExit, match="exceeds --max-cost"):
             ev.run(conn, arguments("--max-cost", "0", "--review-dir", str(tmp_path)), model_client=client)
+
+
+def test_live_client_times_out_instead_of_waiting_ten_minutes(monkeypatch):
+    anthropic = pytest.importorskip("anthropic")
+    created = {}
+
+    class FakeAnthropic:
+        def __init__(self, **kwargs):
+            created.update(kwargs)
+            self.messages = SimpleNamespace(create=self.create)
+
+        def create(self, **kwargs):
+            raise anthropic.APITimeoutError(request=None)
+
+    monkeypatch.setattr(anthropic, "Anthropic", FakeAnthropic)
+    monkeypatch.setattr(ev, "uses_gcp_federation", lambda: False)
+    model = ev.AnthropicTopicModel()
+    assert created["timeout"].read == ev.REQUEST_TIMEOUT_SECONDS
+    assert created["timeout"].connect == ev.CONNECT_TIMEOUT_SECONDS
+    with pytest.raises(ev.ModelError, match="no reply within 180 seconds") as raised:
+        model.complete(system="s", user="u", schema={}, max_tokens=10)
+    assert not raised.value.fatal

@@ -339,6 +339,14 @@ def build_requests(sample: list[AgendaItem], modes, system: str) -> list[Classif
 
 # --- Model client ----------------------------------------------------------
 
+# The SDK's default read timeout is 10 minutes, and it retries twice, so one stalled request could hold a
+# scheduled run for half an hour. The largest reply recorded in ai_usage is about 6,000 output tokens (a
+# long agenda's topic classification), which leaves room for a Sonnet fallback inside three minutes.
+# A timed-out request fails like any other API error and falls back to the next model.
+REQUEST_TIMEOUT_SECONDS = 180.0
+CONNECT_TIMEOUT_SECONDS = 10.0
+
+
 class AnthropicTopicModel:
     """Claude Messages API client with a cached rubric and structured JSON output."""
     provider = "anthropic"
@@ -352,8 +360,9 @@ class AnthropicTopicModel:
                 raise SystemExit("The live comparison needs the optional AI dependency: "
                                  "uv sync --project workers/ingestion --extra test --extra ai") from exc
             self._sdk = anthropic
-            client = anthropic.Anthropic(credentials=gcp_federated_credentials(anthropic)) if uses_gcp_federation() \
-                else anthropic.Anthropic()
+            timeout = anthropic.Timeout(REQUEST_TIMEOUT_SECONDS, connect=CONNECT_TIMEOUT_SECONDS)
+            client = anthropic.Anthropic(credentials=gcp_federated_credentials(anthropic), timeout=timeout) if uses_gcp_federation() \
+                else anthropic.Anthropic(timeout=timeout)
         self.client = client
 
     def complete(self, *, system: str, user: str, schema: dict, max_tokens: int) -> ModelReply:
@@ -383,6 +392,8 @@ class AnthropicTopicModel:
                 raise ModelError("rate limited after SDK retries") from exc
             except sdk.APIStatusError as exc:
                 raise ModelError(f"API error {exc.status_code}") from exc
+            except sdk.APITimeoutError as exc:
+                raise ModelError(f"no reply within {REQUEST_TIMEOUT_SECONDS:.0f} seconds after SDK retries") from exc
             except sdk.APIConnectionError as exc:
                 raise ModelError("network error contacting the API") from exc
         text = "".join(block.text for block in response.content if getattr(block, "type", None) == "text")

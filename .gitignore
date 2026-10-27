@@ -40,3 +40,6 @@ apps/web/public/data/
 /private/
 CLAUDE.local.md
 AGENTS.local.md
+
+# Local agent worktrees
+.claude/worktrees/

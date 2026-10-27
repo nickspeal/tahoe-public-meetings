@@ -157,15 +157,20 @@ def _summary_from_citations(citations: list[dict]) -> str:
     return f"Agenda excerpt: “{citations[0]['quote']}”"
 
 
+def _tags_stale(previous: dict, evidence: dict) -> bool:
+    """Stored generated tags (topic -> item_topics row) differ in set, classifier version, or evidence."""
+    return set(previous) != set(evidence) or any(
+        previous[topic]["source"] != CLASSIFIER_VERSION or _json(previous[topic]["evidence"]) != detail
+        for topic, detail in evidence.items())
+
+
 def _replace_topics(conn, item_id: str, agency_id: str, title: str, citations: list[dict]) -> bool:
     """Replace generated tags only; operator overrides are an independent layer."""
     evidence = classify(agency_id, title, citations)
     previous = {r["topic_id"]: r for r in conn.execute(
         "SELECT topic_id,source,evidence FROM item_topics WHERE item_id=%s", (item_id,))}
     changed = set(previous) != set(evidence)
-    if (changed or any(previous[topic]["source"] != CLASSIFIER_VERSION or
-                       _json(previous[topic]["evidence"]) != detail
-                       for topic, detail in evidence.items())):
+    if _tags_stale(previous, evidence):
         conn.execute("DELETE FROM item_topics WHERE item_id=%s", (item_id,))
         for topic, detail in sorted(evidence.items()):
             conn.execute("INSERT INTO item_topics(item_id,topic_id,source,evidence) VALUES (%s,%s,%s,%s)",
@@ -451,16 +456,25 @@ def _json(value):
 
 
 def _touch_meeting(conn, meeting_id: str) -> None:
+    _touch_meetings(conn, [meeting_id])
+
+
+def _touch_meetings(conn, meeting_ids) -> None:
     conn.execute("""UPDATE meetings SET updated_at=clock_timestamp(),
         change=CASE WHEN change IN ('canceled','rescheduled') THEN change
                     WHEN status='canceled' THEN 'canceled'
                     WHEN status='rescheduled' THEN 'rescheduled'
                     ELSE 'revised' END
-        WHERE id=%s""", (meeting_id,))
+        WHERE id = ANY(%s)""", (sorted(meeting_ids),))
 
 
 def reclassify_topics(conn, *, dry_run=False) -> dict:
-    """Upgrade generated topic tags without altering source or summary versions."""
+    """Upgrade generated topic tags without altering source or summary versions.
+
+    Any topic catalog edit changes CLASSIFIER_VERSION and so upgrades every item;
+    writes therefore go in bulk, a fixed number of statements whatever the archive
+    size (decision 0020).
+    """
     rows = list(conn.execute("""SELECT i.id,i.meeting_id,i.title,i.citations,i.classifier_version,m.agency_id
         FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id WHERE i.active ORDER BY i.id"""))
     before = {t["id"]: 0 for t in TOPICS}
@@ -470,23 +484,43 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
     stored = {}
     for r in conn.execute("SELECT item_id,topic_id FROM item_topics"):
         stored.setdefault(r["item_id"], set()).add(r["topic_id"])
-    with conn.transaction():
-        for item in rows:
-            old = stored.get(item["id"], set())
-            new = set(classify(item["agency_id"], item["title"], _json(item["citations"])))
-            for topic in old:
-                before[topic] = before.get(topic, 0) + 1
-            for topic in new:
-                after[topic] += 1
-            if old != new:
-                changed += 1
-            if item["classifier_version"] != CLASSIFIER_VERSION:
-                upgraded += 1
-            if not dry_run and (old != new or item["classifier_version"] != CLASSIFIER_VERSION):
-                conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s,0))", (item["meeting_id"],))
-                if _replace_topics(conn, item["id"], item["agency_id"], item["title"], _json(item["citations"])):
-                    conn.execute("UPDATE agenda_items SET updated_at=clock_timestamp() WHERE id=%s", (item["id"],))
-                    _touch_meeting(conn, item["meeting_id"])
+    pending = []
+    for item in rows:
+        old = stored.get(item["id"], set())
+        evidence = classify(item["agency_id"], item["title"], _json(item["citations"]))
+        new = set(evidence)
+        for topic in old:
+            before[topic] = before.get(topic, 0) + 1
+        for topic in new:
+            after[topic] += 1
+        if old != new:
+            changed += 1
+        if item["classifier_version"] != CLASSIFIER_VERSION:
+            upgraded += 1
+        if old != new or item["classifier_version"] != CLASSIFIER_VERSION:
+            pending.append((item, evidence))
+    if pending and not dry_run:
+        with conn.transaction():
+            # Ingestion rewrites a meeting's items under that meeting's lock; take every lock needed, in order, first.
+            conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(m,0)) FROM unnest(%s::text[]) AS m",
+                         (sorted({item["meeting_id"] for item, _ in pending}),))
+            previous = {}
+            for r in conn.execute("SELECT item_id,topic_id,source,evidence FROM item_topics WHERE item_id = ANY(%s)",
+                                  ([item["id"] for item, _ in pending],)):
+                previous.setdefault(r["item_id"], {})[r["topic_id"]] = r
+            stale = [(item, evidence) for item, evidence in pending if _tags_stale(previous.get(item["id"], {}), evidence)]
+            retagged = [item for item, evidence in pending if set(previous.get(item["id"], {})) != set(evidence)]
+            if stale:
+                conn.execute("DELETE FROM item_topics WHERE item_id = ANY(%s)", ([item["id"] for item, _ in stale],))
+                conn.execute("""INSERT INTO item_topics(item_id,topic_id,source,evidence)
+                    SELECT item_id,topic_id,%s,evidence FROM jsonb_to_recordset(%s::jsonb) AS t(item_id text,topic_id text,evidence jsonb)""",
+                    (CLASSIFIER_VERSION, json.dumps([{"item_id": item["id"], "topic_id": topic, "evidence": detail}
+                                                     for item, evidence in stale for topic, detail in sorted(evidence.items())])))
+            conn.execute("UPDATE agenda_items SET classifier_version=%s WHERE id = ANY(%s) AND classifier_version IS DISTINCT FROM %s",
+                         (CLASSIFIER_VERSION, [item["id"] for item, _ in pending], CLASSIFIER_VERSION))
+            if retagged:
+                conn.execute("UPDATE agenda_items SET updated_at=clock_timestamp() WHERE id = ANY(%s)", ([item["id"] for item in retagged],))
+                _touch_meetings(conn, {item["meeting_id"] for item in retagged})
     return {"classifierVersion": CLASSIFIER_VERSION, "dryRun": dry_run, "itemsScanned": len(rows),
             "itemsChanged": changed, "itemsUpgraded": upgraded,
             "automaticTopicsBefore": before, "automaticTopicsAfter": after}

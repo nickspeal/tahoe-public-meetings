@@ -133,13 +133,16 @@ def _record_usage(conn, model: str, meeting_id: str, usage: dict, *, ok: bool, e
 
 
 def _store(conn, rows: dict, results: dict, *, model: str, prompt_hash: str) -> None:
-    fingerprints = {r["id"]: r["source_fingerprint"] for r in conn.execute(
-        "SELECT id,source_fingerprint FROM agenda_items WHERE id = ANY(%s)", (list(rows),))}
-    for item_id, result in results.items():
-        conn.execute("""INSERT INTO ai_topic_classifications(item_id,input_sha256,source_fingerprint,prompt_sha256,model,
-            tahoe_relevant,topics,reason) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-            ON CONFLICT(item_id) DO UPDATE SET input_sha256=excluded.input_sha256,source_fingerprint=excluded.source_fingerprint,
-            prompt_sha256=excluded.prompt_sha256,model=excluded.model,tahoe_relevant=excluded.tahoe_relevant,
-            topics=excluded.topics,reason=excluded.reason,classified_at=now()""",
-            (item_id, item_input_sha256(rows[item_id], prompt_hash), fingerprints[item_id], prompt_hash, model,
-             result.get("tahoeRelevant", True), json.dumps(result["topics"]), result["reason"]))
+    """One statement per meeting, however many items it has; a prompt change reclassifies them all (decision 0020)."""
+    incoming = [{"item_id": item_id, "input_sha256": item_input_sha256(rows[item_id], prompt_hash),
+                 "tahoe_relevant": result.get("tahoeRelevant", True), "topics": result["topics"], "reason": result["reason"]}
+                for item_id, result in results.items()]
+    conn.execute("""INSERT INTO ai_topic_classifications(item_id,input_sha256,source_fingerprint,prompt_sha256,model,
+        tahoe_relevant,topics,reason)
+        SELECT r.item_id,r.input_sha256,i.source_fingerprint,%(prompt)s,%(model)s,r.tahoe_relevant,r.topics,r.reason
+        FROM jsonb_to_recordset(%(rows)s::jsonb) AS r(item_id text,input_sha256 text,tahoe_relevant boolean,topics jsonb,reason text)
+        JOIN agenda_items i ON i.id=r.item_id
+        ON CONFLICT(item_id) DO UPDATE SET input_sha256=excluded.input_sha256,source_fingerprint=excluded.source_fingerprint,
+        prompt_sha256=excluded.prompt_sha256,model=excluded.model,tahoe_relevant=excluded.tahoe_relevant,
+        topics=excluded.topics,reason=excluded.reason,classified_at=now()""",
+        {"rows": json.dumps(incoming), "prompt": prompt_hash, "model": model})

@@ -652,6 +652,31 @@ def test_export_and_reclassify_queries_do_not_grow_with_the_archive(db, monkeypa
     assert large_reclassify["n"] == small_reclassify["n"] <= 3
 
 
+def test_reclassify_upgrade_after_a_catalog_edit_does_not_grow_with_the_archive(db, monkeypatch):
+    # Any topics.json edit changes CLASSIFIER_VERSION, so every stored item needs upgrading at once.
+    def upgrade(bundle):
+        assert ingest_bundle(db, bundle)["failed"] == 0
+        db.execute("UPDATE agenda_items SET classifier_version='title-rules-old'")
+        db.execute("UPDATE item_topics SET source='title-rules-old'")
+        lost = db.execute("DELETE FROM item_topics WHERE item_id=(SELECT min(item_id) FROM item_topics) RETURNING item_id").fetchone()
+        with statement_count(monkeypatch) as counter:
+            result = reclassify_topics(db)
+        items = db.execute("SELECT count(*) AS n FROM agenda_items WHERE active").fetchone()["n"]
+        assert result["itemsUpgraded"] == items and result["itemsChanged"] == 1
+        assert db.execute("SELECT count(*) AS n FROM agenda_items WHERE active AND classifier_version IS DISTINCT FROM %s",
+                          (CLASSIFIER_VERSION,)).fetchone()["n"] == 0
+        assert db.execute("SELECT count(*) AS n FROM item_topics WHERE source<>%s", (CLASSIFIER_VERSION,)).fetchone()["n"] == 0
+        assert db.execute("SELECT 1 FROM item_topics WHERE item_id=%s", (lost["item_id"],)).fetchone()
+        return counter["n"], items
+
+    small, small_items = upgrade(one_meeting())
+    large, large_items = upgrade(fixture_bundle())
+    assert large_items > small_items and large == small <= 9
+    with statement_count(monkeypatch) as again:
+        assert reclassify_topics(db)["itemsUpgraded"] == 0
+    assert again["n"] == 2
+
+
 def test_reingesting_an_unchanged_meeting_skips_rewrites(db, monkeypatch):
     bundle = one_meeting("slt")
     assert ingest_bundle(db, bundle)["failed"] == 0

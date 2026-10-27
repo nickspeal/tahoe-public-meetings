@@ -224,7 +224,7 @@ The Free plan allows **2 GB of storage and 200,000 operations per month** for th
 | Source | Operations |
 | --- | --- |
 | Scheduled run | About 260 (measured 2026-10-27; `BEGIN`/`COMMIT` appear not to count). Before October 24, 2026 a run used about 8,700 |
-| Claude classification | About 1 per newly classified item plus 1 per meeting, only when items are new or changed |
+| Claude classification | About 2 per classified meeting, only when items are new or changed. A topic catalog or prompt edit reclassifies every meeting (about 220 for the October 2026 archive; [decision 0020](../decisions/0020-database-operation-budget.md)) |
 | Vercel build | 1 (reads the newest export) |
 | Feedback submission | 3 |
 | Page views | 0 (the site is static) |

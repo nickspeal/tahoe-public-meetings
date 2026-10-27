@@ -104,3 +104,21 @@ def test_spend_limits_and_missing_key(conn, monkeypatch):
     conn.execute("INSERT INTO ai_usage(purpose,model,ok,cost_usd) VALUES ('topic-classification','claude-haiku-5-5',true,5)")
     with pytest.raises(SystemExit, match="reached the \\$5.00 budget"):
         ai_topics.classify_topics(conn, clients=clients)
+
+
+def test_storing_a_meetings_classifications_costs_one_statement_whatever_its_size(conn, monkeypatch):
+    # On hosted Postgres each statement is a billed operation (decision 0020); a prompt change reclassifies every item.
+    counter = {"n": 0}
+    original = psycopg.Cursor.execute
+
+    def execute(self, *args, **kwargs):
+        counter["n"] += 1
+        return original(self, *args, **kwargs)
+    monkeypatch.setattr(psycopg.Cursor, "execute", execute)
+    clients = {m: StubModel(m) for m in ("claude-haiku-5-5", "claude-sonnet-5-5")}
+    report = ai_topics.classify_topics(conn, clients=clients)
+    assert report["classified"] == {"claude-haiku-5-5": 16}
+    assert counter["n"] == 6  # 4 reads, then per meeting one usage row and one statement for all its items
+    stored = conn.execute("""SELECT count(*) AS n FROM ai_topic_classifications a
+        JOIN agenda_items i ON i.id=a.item_id AND i.source_fingerprint=a.source_fingerprint""").fetchone()["n"]
+    assert stored == 16 and exported_topics(conn)["ttd:7110:IV.D"] == {"transit"}

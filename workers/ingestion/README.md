@@ -69,9 +69,14 @@ Legistar agencies expose agenda PDFs through the public web API
 (`https://webapi.legistar.com/v1/CLIENT/events`); the meeting-detail pages
 alone sometimes return cache errors.
 
-Generated summaries are deterministic source excerpts,
-not AI analysis. Only excerpts whose exact quotes occur on their cited pages
-are published. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
+Item summaries follow decision 0024. The export leads with the requested
+action an agenda prints under the item (`requested_actions.py`, exact page
+text, no model), else the agenda excerpt. `map-staff-reports` links items to
+their own staff reports (SLT, TTD, Truckee, Lahontan) and lists SLT
+attachments; `summarize-items` adds one or two sentences that Claude selects
+and trims from the report, published only when every sentence is the cited
+passage with words deleted (`item_summaries.validate`). Use `--dry-run` for
+pending items and cost; `--meeting ID` to try one meeting. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
 
 `evaluate-topics` compares the title rules with Claude Haiku 5.5 on stored
 agenda items, given either the title alone or the title plus the item's own
@@ -142,10 +147,11 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
    - Minutes and video links on each listing row are kept with the candidate. For meetings not captured this run (settled, deferred, or outside the window) they update the stored meeting directly, without a download (decision 0025).
 7. `quarantine`, 8. `reparse`, 9. `reclassify`.
 10. `meeting-records`: YouTube feeds and the Truckee Laserfiche minutes folder from `config/meeting-records.json`, matched to stored meetings (skipped with `--skip-discovery`). 11. `draft-minutes`: draft minutes found through "Approval of minutes" items in later agendas. See [decision 0025](../../docs/decisions/0025-minutes-and-recording-links.md).
-12. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 13. `participation`.
-14. `export` (mode `live`), 15. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 16. `store` in `public_exports` (latest 30 kept), 17. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
+12. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 13. `participation` (same guards).
+14. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and SLT attachment links (`map-staff-reports`). 15. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
+16. `export` (mode `live`), 17. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 18. `store` in `public_exports` (latest 30 kept), 19. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
 
-A failure in steps 2–13 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
+A failure in steps 2–15 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
 
 ### History backfill
 

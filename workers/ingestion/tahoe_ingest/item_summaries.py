@@ -145,7 +145,7 @@ def check_sentence(sentence: str, passage: str) -> str | None:
         return "shares no words with the cited passage"
     if min(used) > 0:  # Dropping a sentence's opening is fine only up to a comma or colon ("If X is approved, ...").
         opening = passage[:_tokens(passage)[min(used)][1]].rstrip()
-        if not opening.endswith((",", ":", ";")):
+        if not opening.endswith((",", ":", ";")) and not re.search(r"(?:^|\s)\(?(?:\d{1,2}|[a-zA-Z])[.)]$", opening):
             return "starts in the middle of the passage's sentence"
     cuts = [b - a - 1 for a, b in zip(used, used[1:]) if b - a > 1]
     if len(cuts) > MAX_INNER_CUTS or any(cut > MAX_INNER_CUT_WORDS for cut in cuts):

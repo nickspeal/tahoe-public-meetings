@@ -343,3 +343,9 @@ def test_sentences_start_where_the_reports_sentences_start():
         sentence("The resolution would abandon approximately 1,438 square feet.",
                  "The resolution would abandon approximately 1,438 square feet of the easterly portion.")], {1: page}, "doc")
     assert text.startswith("The program is expected")
+
+
+def test_a_list_entry_may_be_taken_on_its_own():
+    page = "Recommended Action: That Council: (1) authorize staff to use the budget; and (2) approve the rebate program guidelines."
+    text, _ = item_summaries.validate([sentence("Approve the rebate program guidelines.", page)], {1: page}, "doc")
+    assert text == "Approve the rebate program guidelines."

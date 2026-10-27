@@ -1,6 +1,6 @@
 # IDEA-016: Item summaries from staff reports
 
-Status: proposed
+Status: building (implemented locally; not yet deployed)
 Stage: MVP polish
 
 ## Problem and audience
@@ -24,3 +24,8 @@ Should summaries replace the "From the agenda" text when both exist? How should 
 
 ## Links and updates
 - 2026-10-27: proposed after meeting-page feedback that the agenda excerpt repeats the title.
+- 2026-10-27: implemented locally per [decision 0024](../decisions/0024-verbatim-item-summaries.md), with the maintainer's rules that summaries repeat the source verbatim and lead with the agenda's requested action. The export shows, in order of preference: a Claude staff report summary that matches the current item and report, the requested action printed under the item, or the agenda excerpt. Answers to the open questions: the summary replaces the excerpt; a revised agenda or report changes the item fingerprint or report hash and the item falls back to its agenda text until the next run. Samples (agenda passages are cited to the agenda page, report passages to the report page):
+  - SLT, October 6, 2026, item 9: "Pass a Motion authorizing and directing the Mayor to execute a Professional Services Agreement with Zenith Economics for the City’s Economic Development Market Analysis and Business Attraction Strategy in an amount not to exceed $80,100.00. The proposed agreement amount is within the approved project budget of $100,000.00. Zenith Economics was selected as the most qualified firm based on their experience, understanding of the City’s needs, proposed approach, capacity, and cost." (The last sentence drops "Following a thorough evaluation by the selection committee,".)
+  - TTD, October 7, 2026, item IV.A: "Staff requests the Board to review and approve the selection of the Employee Health Benefit Program for non-bargaining employees for the period December 1, 2026 through November 30, 2027. The Employee Health Benefit Program is expected to cost approximately $393,513 annually. There is a 7.8% increase in medical coverage, 1.9% increase for dental coverage, and 8.3% for short term disability." (The second sentence drops "If these plans are selected,".)
+  - Truckee, October 27, 2026, item 7.2: "That Council: receive an update on the process of developing the next solid waste collection services franchise agreement; and provide feedback on items to include in the request for proposals (RFP). The current ten-year solid waste franchise agreement with Tahoe Truckee Sierra Disposal (TTSD) ends on June 30, 2028, unless extended by the Town, for up to a period of one year, which may occur up to three times."
+  - Lahontan, October 1, 2026, item 6: "Should the Water Board adopt revised waste discharge requirements for the Truckee-Tahoe Water Reclamation Plant to reflect changes in discharge conditions, update monitoring and reporting requirements, and incorporate provisions consistent with current regulatory standards and policies? The Facility is located approximately 3 miles east of the Town of Truckee."

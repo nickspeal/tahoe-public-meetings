@@ -215,7 +215,7 @@ These are list prices checked on October 20, 2026 for `us-west1` (a Tier 1 regio
 | Cloud Build (only with `--cloud-build`) | A few builds per month within the free build minutes | $0 |
 | **Google total** | | **about $0.10 to $0.20 per month** |
 
-Outside Google, Prisma Postgres runs on the Free plan and Vercel on the plan the designated scope already uses. Anthropic usage is about $0.02 per classification run, limited by the job's `--max-cost` and `--monthly-budget` guards and the Anthropic console limits ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)).
+Outside Google, Prisma Postgres runs on the Free plan and Vercel on the plan the designated scope already uses. Anthropic usage is about $0.02 per classification run plus a few cents for new item summaries, limited by the job's `--max-cost`, `--summary-max-cost`, and `--monthly-budget` guards and the Anthropic console limits ([decision 0011](../decisions/0011-claude-for-automated-analysis.md)).
 
 ### Prisma Postgres operations
 
@@ -238,6 +238,15 @@ npx prisma postgres usage tahoe-public-meetings-db --project tahoe-public-meetin
 ```
 
 The period always ends at the end of the `--to` day, so a window that starts just before a run and ends on the same day measures that run plus anything later that day. Storage is far from its limit (0.06 GiB in October 2026); the job keeps only the latest 5 exports (about 21 MB each). See [storage monitoring](../operations.md#check-database-storage).
+
+## Staff report links and item summaries
+
+The image built from the commit that adds [decision 0024](../decisions/0024-verbatim-item-summaries.md) runs two more steps after `participation`; no new secret or environment variable is needed:
+
+- `staff-reports` scans at most 6 meetings per run (`--staff-report-meetings`; 0 disables it), nearest to today first, so the first runs after deployment work through the archive over a few days. It downloads South Lake Tahoe executive summaries, Lahontan item reports, and Municode packets temporarily (in the run's scratch directory) and writes one statement per meeting. Packets already stored (TTD) are read from the database.
+- `summarize-items` needs the same Claude credentials as `classify-topics` and is limited by `--summary-max-cost` ($0.50 per run) and the shared `--monthly-budget`. A backfill of a few hundred items costs well under $1; afterwards a run costs cents.
+
+After deploying, check one run's summary line: `staff-reports.detail.itemsMapped`, `summarize-items.detail.published`, `validationFailed`, and `costUsd`. A stopped summary step sends the same ntfy alert as classification.
 
 ## Claude credentials: workload identity federation
 

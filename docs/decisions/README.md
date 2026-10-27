@@ -67,4 +67,6 @@ What new evidence would change the decision?
 
 [0023: Agenda sections on meeting pages](0023-agenda-sections.md) (proposed default) groups meeting-page items into collapsible agenda sections. It keeps unsectioned items standalone, ends a section at a time-allocation line, and places addendum items in their named sections.
 
+[0024: Verbatim item summaries from requested actions and staff reports](0024-verbatim-item-summaries.md) (accepted maintainer instructions; proposed defaults for the implementation) leads each summary with the agenda's printed requested action, adds sentences trimmed verbatim from the item's own staff report and checked against the stored page text before publishing, links each item's staff report, and lists SLT items' attachments.
+
 [0025: Minutes and recording links](0025-minutes-and-recording-links.md) (accepted) links each meeting's minutes and recording from agency listings, YouTube and Laserfiche feeds, and draft minutes in the next meeting's agenda. Approved minutes outrank drafts, YouTube outranks other hosts, and TTD's on-request Zoom clips are left out.

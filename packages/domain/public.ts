@@ -16,6 +16,8 @@ export interface AgendaItem {
   change: 'new' | 'revised' | null;
   updatedAt: string;
   suppressed?: boolean;
+  /** The agenda says this item will not be heard before this time (meeting's local time), with the source line that says so. */
+  timeCertain?: { time: string; quote: string; documentId: string | null; page: number | null } | null;
 }
 export interface PublicDocument {
   id: string;

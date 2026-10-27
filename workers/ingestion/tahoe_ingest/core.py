@@ -18,6 +18,7 @@ from psycopg.rows import dict_row
 from .catalog import public_topics, topic_ids, agency_catalog, followed_agencies, expand_topics
 from .topics import CLASSIFIER_VERSION, classify
 from .durations import meeting_duration
+from .time_certain import time_certain
 from .schedules import PACIFIC, forecast_meetings
 
 
@@ -557,6 +558,9 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             items.append({"id": i["id"], "number": i["number"], "order": i["item_order"], "title": i["title"],
                 "section": i["section"], "topics": sorted(expand_topics(topics)), "summary": summary, "citations": _json(i["citations"]),
                 "change": i["change"], "updatedAt": iso(i["updated_at"]), "suppressed": bool(i["suppressed"])})
+        timed = time_certain(docs, items)
+        for item in items:
+            item["timeCertain"] = timed.get(item["id"])
         participation = _json(m["participation"])
         meetings.append({"id": m["id"], "agencyId": m["agency_id"], "sourceId": m["source_id"], "kind": "confirmed", "title": m["title"],
             "topics": sorted(expand_topics(set(_json(m["declared_topics"])))),

@@ -36,6 +36,15 @@ export function allItems(meeting: Meeting): AgendaItem[] {
   return meeting.items.filter((item) => !item.suppressed).sort((a, b) => a.order - b.order);
 }
 
+/** "Not before 11:00 AM" when the agenda says an item will not be heard before a stated time. */
+export function timeCertainLabel(item: AgendaItem): string | null {
+  return item.timeCertain ? `Not before ${item.timeCertain.time}` : null;
+}
+
+export function timedItems(meeting: Meeting): AgendaItem[] {
+  return allItems(meeting).filter((item) => item.timeCertain);
+}
+
 export function meetingDate(meeting: Meeting) {
   return meeting.startsAt ? new Date(meeting.startsAt) : null;
 }

@@ -172,6 +172,20 @@ button, a, select, summary { touch-action: manipulation; }
 .agenda-item-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .agenda-item-title h3 { margin: 0; color: var(--forest-dark); font-size: 19px; line-height: 1.32; font-weight: 680; overflow-wrap: anywhere; }
 .agenda-section-name { display: block; margin-top: 6px; color: var(--subtle); font-size: 14px; }
+.time-certain-badge { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 3px; background: #f7f0e2; color: var(--amber); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.time-certain-panel { margin: 0 0 18px; padding: 13px 15px; border-left: 3px solid #b18433; background: #fbf7ee; }
+.time-certain-panel h3 { margin: 0; color: var(--amber); font-size: 16px; }
+.time-certain-panel p { margin: 4px 0 8px; color: var(--muted); font-size: 14px; }
+.time-certain-panel ul { margin: 0; padding: 0; list-style: none; }
+.time-certain-panel a { display: flex; align-items: baseline; gap: 10px; padding: 6px 0; color: var(--forest-dark); text-decoration: none; }
+.time-certain-panel li + li { border-top: 1px solid #ece3cf; }
+.time-certain-panel a:hover strong { text-decoration: underline; }
+.time-certain-panel a span:not(.time-certain-badge) { flex: 0 0 auto; color: var(--subtle); font-size: 13px; }
+.time-certain-panel .time-certain-badge { margin-top: 0; }
+.time-certain-panel strong { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.time-certain-source { margin: 0 0 12px; padding: 8px 11px; background: #fbf7ee; color: var(--muted); font-size: 14px; }
+.time-certain-source strong { color: var(--amber); }
+.time-certain-inline { color: var(--amber); font-style: normal; font-weight: 700; }
 .agenda-disclosure { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid #bac9bf; border-radius: 50%; color: var(--forest); }
 .agenda-disclosure::before { content: '+'; }
 .agenda-item[open] .agenda-disclosure::before { content: '−'; }
@@ -271,6 +285,7 @@ button, a, select, summary { touch-action: manipulation; }
   .detail-layout { grid-template-columns: minmax(0, 1fr) 270px; gap: 22px; }
 }
 @media (max-width: 640px) {
+  .time-certain-panel a { flex-wrap: wrap; gap: 4px 10px; }
   .header-inner, .footer-inner { min-height: 60px; padding: 9px 16px; }
   .brand { font-size: 14px; }
   .brand-mark { width: 27px; height: 27px; }

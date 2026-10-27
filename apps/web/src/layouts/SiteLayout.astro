@@ -5,6 +5,10 @@ import { data, formatDate } from '../lib/data';
 const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false } = Astro.props;
 // Absolute canonical URL on the production origin (astro.config.mjs `site`), so www and preview hosts point at the apex.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
+// Link preview image (source: scripts/og-image.html). Crawlers need an absolute URL.
+const ogImage = new URL('/og-image.png', Astro.site ?? Astro.url).href;
+// The home page's own title is "Meetings", which reads poorly as a shared link's headline.
+const ogTitle = Astro.url.pathname === '/' ? 'Tahoe Public Meetings' : `${title} · Tahoe Public Meetings`;
 ---
 <!doctype html>
 <html lang="en">
@@ -15,6 +19,16 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : nu
     <meta name="theme-color" content="#f6f4ed" />
     <title>{title} · Tahoe Public Meetings</title>
     {noindex ? <meta name="robots" content="noindex" /> : canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tahoe Public Meetings" />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tahoe Public Meetings: what's on the agenda around Lake Tahoe" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

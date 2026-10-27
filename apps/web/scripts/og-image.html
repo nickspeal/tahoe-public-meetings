@@ -1,0 +1,67 @@
+<!doctype html>
+<!--
+  Source for public/og-image.png, the 1200x630 link preview image.
+  Re-render after editing (from apps/web):
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --hide-scrollbars \
+      --force-device-scale-factor=1 --window-size=1200,630 \
+      --screenshot="$PWD/public/og-image.png" "file://$PWD/scripts/og-image.html"
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    background: #f7f7f2;
+    color: #172d2b;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .scene { position: absolute; inset: 0; }
+  .content { position: absolute; left: 84px; top: 74px; right: 84px; }
+  .brand { display: flex; align-items: center; gap: 14px; color: #24534a; font-size: 26px; font-weight: 650; letter-spacing: -.01em; }
+  .brand svg { width: 48px; height: 48px; fill: none; stroke: #24534a; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+  h1 { margin: 34px 0 0; color: #193b36; font-size: 80px; font-weight: 720; letter-spacing: -.045em; line-height: 1.02; }
+  p { margin: 22px 0 0; max-width: 700px; color: #44605a; font-size: 32px; line-height: 1.3; letter-spacing: -.01em; }
+  .topics { display: flex; gap: 12px; margin-top: 34px; }
+  .topics span { padding: 9px 18px; border: 1.5px solid #b9cfc5; border-radius: 999px; background: rgb(255 255 255 / 72%); color: #24534a; font-size: 22px; font-weight: 620; }
+  .url { position: absolute; right: 84px; bottom: 40px; color: #f7f7f2; font-size: 24px; font-weight: 620; letter-spacing: .005em; }
+</style>
+</head>
+<body>
+  <svg class="scene" viewBox="0 0 1200 630" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3d7a70" />
+        <stop offset="1" stop-color="#193b36" />
+      </linearGradient>
+    </defs>
+    <!-- Distant ridge -->
+    <path d="M720 540 L812 462 L858 488 L968 318 L1046 404 L1096 366 L1200 446 L1200 540 Z" fill="#d9e5de" />
+    <!-- Middle ridge -->
+    <path d="M760 540 L866 452 L914 482 L1020 384 L1088 448 L1142 418 L1200 452 L1200 550 L760 550 Z" fill="#bcd4cd" />
+    <!-- Near ridge -->
+    <path d="M820 545 L918 494 L962 512 L1050 452 L1122 506 L1200 478 L1200 560 L820 560 Z" fill="#8fb6ae" />
+    <!-- Lake -->
+    <rect x="0" y="540" width="1200" height="90" fill="url(#lake)" />
+    <g stroke="#a9c9c4" stroke-width="2" stroke-linecap="round" opacity=".45">
+      <path d="M92 566 h96" /><path d="M248 584 h60" /><path d="M412 562 h120" />
+      <path d="M612 590 h70" /><path d="M700 568 h80" />
+    </g>
+  </svg>
+
+  <div class="content">
+    <div class="brand">
+      <svg viewBox="0 0 40 40"><path d="M4 29 15 12l7 10 5-7 9 14H4Z"/><path d="M8 33h24"/></svg>
+      Tahoe Public Meetings
+    </div>
+    <h1>What’s on the agenda<br />around Lake Tahoe</h1>
+    <p>Upcoming meetings, agendas, and public comment periods from local agencies, in one place.</p>
+    <div class="topics"><span>Housing</span><span>Transit</span><span>Biking</span><span>Environment</span></div>
+  </div>
+
+  <div class="url">tahoepublicmeetings.org</div>
+</body>
+</html>

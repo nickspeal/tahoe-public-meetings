@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { shown } from './helpers/shown-items.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
@@ -51,10 +52,10 @@ test('agenda item topic tags follow the shared catalog order', async () => {
 
 test('agenda items show only the agency\'s own numbers and one row of topics', async () => {
   const meeting = data.meetings.find((candidate) => candidate.kind !== 'forecast' &&
-    candidate.items.some((item) => !item.suppressed && item.number) && candidate.items.some((item) => !item.suppressed && !item.number));
+    candidate.items.some((item) => shown(item) && item.number) && candidate.items.some((item) => shown(item) && !item.number));
   assert.ok(meeting, 'export should include a meeting mixing numbered and unnumbered items');
   const document = await meetingDocument(meeting);
-  for (const item of meeting.items.filter((candidate) => !candidate.suppressed)) {
+  for (const item of meeting.items.filter((candidate) => shown(candidate))) {
     const row = document.querySelector(`[data-item-id="${item.id}"]`);
     if (!row) continue; // a section heading shown as its section's header
     assert.equal(row.querySelector('.agenda-order').textContent, item.number, `${item.id} shows only its printed number`);
@@ -65,7 +66,7 @@ test('agenda items show only the agency\'s own numbers and one row of topics', a
 });
 
 test('a meeting without listed items explains whether its agenda is posted, pending, or only on the agency site', async () => {
-  const listed = (meeting) => meeting.items.some((item) => !item.suppressed);
+  const listed = (meeting) => meeting.items.some((item) => shown(item));
   const stored = data.meetings.filter((meeting) => meeting.kind !== 'forecast' && !listed(meeting) && meeting.status !== 'canceled');
   const today = new Date().toISOString().slice(0, 10);
   const isAgenda = (document) => /agenda|packet/i.test(document.title) && !/supplement/i.test(document.title);

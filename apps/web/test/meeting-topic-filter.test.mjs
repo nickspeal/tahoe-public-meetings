@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { shown } from './helpers/shown-items.mjs';
 import ts from 'typescript';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -20,7 +21,7 @@ function routeId(id) {
 
 function topicCombinationMeeting() {
   return publicData.meetings.find((meeting) => {
-    const items = meeting.items.filter((item) => !item.suppressed);
+    const items = meeting.items.filter((item) => shown(item));
     const topicIds = new Set(items.flatMap((item) => item.topics));
     return items.some((item) => item.topics.length) && topicIds.size >= 2;
   });
@@ -45,7 +46,7 @@ const itemIds = (rows) => rows.map((item) => item.dataset.itemId);
 test('meeting topic filters use OR matching, restore query state, and reset without losing deep links', async () => {
   const meeting = topicCombinationMeeting();
   assert.ok(meeting, 'the exported meetings should include at least one agenda with multiple topics');
-  const items = meeting.items.filter((item) => !item.suppressed).sort((a, b) => a.order - b.order);
+  const items = meeting.items.filter((item) => shown(item)).sort((a, b) => a.order - b.order);
   const [firstTopic, secondTopic] = [...new Set(items.flatMap((item) => item.topics))];
   const expected = items.filter((item) => item.topics.includes(firstTopic) || item.topics.includes(secondTopic));
   assert.ok(expected.length < items.length, 'fixture should include at least one item outside the selected topics');
@@ -85,7 +86,7 @@ test('meeting topic filters use OR matching, restore query state, and reset with
 });
 
 test('uncategorized agenda items are unlabeled and excluded when a topic is selected', async () => {
-  const meeting = publicData.meetings.find((candidate) => candidate.items.some((item) => !item.suppressed && item.topics.length === 0));
+  const meeting = publicData.meetings.find((candidate) => candidate.items.some((item) => shown(item) && item.topics.length === 0));
   if (!meeting) return;
   const topic = [...new Set(meeting.items.flatMap((item) => item.topics))][0];
   if (!topic) return;
@@ -98,7 +99,7 @@ test('uncategorized agenda items are unlabeled and excluded when a topic is sele
 });
 
 test('a meeting without captured agenda items has no empty filter controls', async () => {
-  const meeting = publicData.meetings.find((candidate) => candidate.items.every((item) => item.suppressed));
+  const meeting = publicData.meetings.find((candidate) => candidate.items.every((item) => !shown(item)));
   if (!meeting) return;
   const dom = await openMeeting(meeting);
   assert.equal(dom.window.document.querySelector('#agenda-topic-filter'), null);
@@ -108,7 +109,7 @@ test('a meeting without captured agenda items has no empty filter controls', asy
 
 function sectionedMeeting() {
   return publicData.meetings.find((meeting) => {
-    const items = meeting.items.filter((item) => !item.suppressed);
+    const items = meeting.items.filter((item) => shown(item));
     const sections = new Set(items.map((item) => item.section).filter(Boolean));
     return sections.size >= 2 && items.some((item) => item.topics.length) && items.some((item) => !item.topics.length && item.section);
   });

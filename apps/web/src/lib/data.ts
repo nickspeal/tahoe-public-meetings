@@ -1,5 +1,6 @@
 import type { AgendaItem, Meeting, PublicData } from '../../../../packages/domain/public';
 import topicCatalog from '../../../../packages/domain/topics.json';
+import { isRoutineItem } from './routine-items';
 
 const publicDataModules = import.meta.glob('../data/public.json', { eager: true, import: 'default' }) as Record<string, PublicData>;
 const loadedData = publicDataModules['../data/public.json'];
@@ -32,8 +33,9 @@ export function agencyFor(meeting: Meeting) {
   return agencies.find((agency) => agency.id === meeting.agencyId);
 }
 
+/** Agenda items shown to readers, in agenda order: not suppressed, and not routine meeting mechanics. */
 export function allItems(meeting: Meeting): AgendaItem[] {
-  return meeting.items.filter((item) => !item.suppressed).sort((a, b) => a.order - b.order);
+  return meeting.items.filter((item) => !item.suppressed && !isRoutineItem(item)).sort((a, b) => a.order - b.order);
 }
 
 /** "Not before 11:00 AM" when the agenda says an item will not be heard before a stated time. */

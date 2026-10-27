@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { shown } from './helpers/shown-items.mjs';
 import ts from 'typescript';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -46,7 +47,7 @@ test('every cited agenda item on a built meeting page links to its official page
   const routeId = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
   const html = await readFile(resolve(root, 'dist', 'meetings', routeId, 'index.html'), 'utf8');
   const page = new JSDOM(html).window.document;
-  for (const item of meeting.items.filter((candidate) => !candidate.suppressed && candidate.citations.length)) {
+  for (const item of meeting.items.filter((candidate) => shown(candidate) && candidate.citations.length)) {
     const expected = links.itemSourceLink(meeting, item);
     const anchor = page.querySelector(`[data-item-id="${item.id}"] a.agenda-source-link`);
     assert.ok(anchor, `${item.id} should offer a direct source link`);

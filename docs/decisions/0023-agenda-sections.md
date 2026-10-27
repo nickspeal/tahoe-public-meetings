@@ -43,3 +43,8 @@ Both fixes reach stored meetings only through `worker reparse --agency slt --for
 
 ## Revisit when
 Readers prefer collapsed sections by default, an agency nests sections more than one level deep in a way readers need to see, or an addendum format adds items without continuing the numbering.
+
+## Update 2026-10-27: numbering and routine items
+At the maintainer's request, meeting pages show only the item numbers printed on the agenda, with no running position, and leave out routine meeting mechanics. `apps/web/src/lib/routine-items.ts` treats a title as routine when every part of it (split on "/", ",", "and", and dashes) is calling to order, roll call, the pledge or flag salute, establishing a quorum, approving, reviewing, or correcting the agenda, adjourning, or adjourning and reconvening as another body. Dates, "– Action", and a presiding officer's name after the call to order are ignored. A routine item with a topic or a "not before" time stays visible. Public comment, closed session, minutes, reports, and "adjournment to closed session" are not routine.
+
+Hidden items are left out of the page and of meeting-card item counts; they stay in the database and the public export. Across the 97 local meetings with items, this hides 266 of 1,908 items and empties no agenda. Unnumbered items that are not routine stay, without a number.

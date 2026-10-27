@@ -19,6 +19,7 @@ from .catalog import public_topics, topic_ids, agency_catalog, followed_agencies
 from .topics import CLASSIFIER_VERSION, classify
 from .durations import meeting_duration
 from .time_certain import time_certain
+from .start_times import agenda_start_time
 from .history import HISTORY_SQL, document_history
 from .participation import merged as merged_participation
 from .schedules import PACIFIC, forecast_meetings
@@ -570,13 +571,20 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         extracted = _json(extracted["fields"]) if extracted and set(_json(extracted["version_ids"])) <= {d["id"] for d in docs} else None
         location, participation = merged_participation(m["location"], _json(m["participation"]), extracted,
                                                        AGENCIES[m["agency_id"]].get("participation"))
+        start, warnings = m["starts_at"], _json(m["warnings"])
+        if not start and (agenda_time := agenda_start_time(m["title"], m["local_date"], docs)):
+            try:
+                start = starts_at({"date": m["local_date"].isoformat(), "start_time": agenda_time, "timezone": m["timezone"]})
+                warnings = [w for w in warnings if not w.startswith("Confirm the scheduled start in the agenda")]
+            except ValueError:  # A daylight-saving gap or overlap; the agenda cannot say which.
+                pass
         meetings.append({"id": m["id"], "agencyId": m["agency_id"], "sourceId": m["source_id"], "kind": "confirmed", "title": m["title"],
             "topics": sorted(expand_topics(set(_json(m["declared_topics"])))),
-            "startsAt": iso(m["starts_at"]), "date": m["local_date"].isoformat() if m["local_date"] else None,
+            "startsAt": iso(start), "date": m["local_date"].isoformat() if m["local_date"] else None,
             "timezone": m["timezone"], "status": m["status"], "location": location,
             "officialUrl": m["official_url"], "participation": participation,
             "minutesUrl": m["minutes_url"], "recordingUrl": m["recording_url"], "lastCheckedAt": iso(m["last_checked_at"]),
-            "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": _json(m["warnings"]), "documents": docs, "items": items,
+            "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": warnings, "documents": docs, "items": items,
             "history": history_by_meeting.get(m["id"], []),
             "duration": meeting_duration(m, [{"title": i["title"], "section": i["section"]} for i in items])})
     # Expected meetings follow the stored records; the website sorts by date.

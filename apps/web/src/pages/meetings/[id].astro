@@ -22,7 +22,7 @@ const topicOrder = new Map(topics.map((topic, index) => [topic.id, index]));
 const itemTopicIds = new Map(items.map((item) => [item.id, [...item.topics].sort((a, b) => (topicOrder.get(a) ?? Number.MAX_SAFE_INTEGER) - (topicOrder.get(b) ?? Number.MAX_SAFE_INTEGER) || a.localeCompare(b))]));
 const state = meetingStateLabel(meeting);
 const stateTone = meeting.status === 'canceled' ? 'red' : 'amber';
-const when = meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : meetingDateValue(meeting) ? `${meetingDateLabel(meeting, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} · Time not announced` : 'Date and time not published';
+const when = meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : meetingDateValue(meeting) ? meetingDateLabel(meeting, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : 'Date and time not published';
 const warnings = meeting.warnings.map(residentWarning).filter(Boolean);
 const availability = agendaAvailability(meeting);
 const history = agendaHistory(meeting);

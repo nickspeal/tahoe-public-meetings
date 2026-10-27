@@ -20,7 +20,7 @@ const link = forecast ? { href: meeting.officialUrl, target: '_blank', rel: 'noo
   <a class="meeting-card-main" {...link}>
     <div class="meeting-date">{dateValue ? <><span class="date-day">{meetingDateLabel(meeting, { day: '2-digit' })}</span><span>{meetingDateLabel(meeting, { month: 'short' })}</span></> : <span class="date-unscheduled">Date<br />TBA</span>}</div>
     <div class="meeting-card-copy">
-      <div class="eyebrow">{meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : dateValue ? `${meetingDateLabel(meeting, { weekday: 'long' })} · Time not announced` : 'Date not announced'}</div>
+      <div class="eyebrow">{meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : dateValue ? meetingDateLabel(meeting, { weekday: 'long' }) : 'Date not announced'}</div>
       <h3>{canceled && <span class="sr-only">Canceled: </span>}{forecast && <span class="sr-only">Expected, no agenda yet: </span>}{title}</h3>
       {forecast ? <p>{meeting.forecast?.basis} <span class="dot">·</span> Check the agency website<span class="sr-only"> (opens in a new tab)</span></p> : <p>{meeting.location ?? 'Location not yet published'} <span class="dot">·</span> {agendaLabel}</p>}
       {warning && <span class="subtle">{warning}</span>}

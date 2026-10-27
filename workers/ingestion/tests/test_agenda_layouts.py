@@ -83,3 +83,16 @@ def test_committee_agendas_before_the_board_agenda_are_skipped():
     assert titles[0] == "CALL TO ORDER AND DETERMINATION OF QUORUM"
     assert "August Financials" in titles  # consent item printed after the board agenda
     assert result.items[-1]["source_number"] == "13"
+
+
+def test_accessible_html_copy_does_not_discard_a_validated_pdf():
+    # Legistar lists the agenda PDF and its accessible HTML copy (M=AADA) for the same meeting.
+    fixture, pages = _load(next(p for p in FIXTURES if p.stem == "el-dorado-supervisors--2026-09-29"))
+    html = [{"document_id": "html", "page_number": 1, "text": pages[0]["text"]}]
+    docs = [{"id": "doc", "media_type": "application/pdf"}, {"id": "html", "media_type": "text/html"}]
+    result = parse_agenda(fixture["agency"], docs, pages + html)
+    assert result.complete, result.warning
+    assert len(result.items) == len(fixture["expected"])
+    # A second PDF that fails validation still blocks publication.
+    docs[1]["media_type"] = "application/pdf"
+    assert not parse_agenda(fixture["agency"], docs, pages + html).complete

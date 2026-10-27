@@ -339,7 +339,10 @@ def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> Parse
         if result.complete:
             successes.append(result)
         elif recognized:
-            failures.append(result)
+            failures.append((result, document.get("media_type", "application/pdf") != "application/pdf"))
+    # Legistar's accessible HTML copy of a PDF agenda (View.ashx?M=AADA) is text the PDF
+    # layouts were not written for; its failure must not discard a validated PDF parse.
+    failures = [result for result, html_copy in failures if not (html_copy and successes)]
     if failures and successes:
         return _result([], False, "An agenda PDF has an unvalidated structure; review all agenda documents.")
     if len(successes) == 1:

@@ -143,6 +143,10 @@ def check_sentence(sentence: str, passage: str) -> str | None:
     used = [j for _, j in pairs]
     if not used:
         return "shares no words with the cited passage"
+    if min(used) > 0:  # Dropping a sentence's opening is fine only up to a comma or colon ("If X is approved, ...").
+        opening = passage[:_tokens(passage)[min(used)][1]].rstrip()
+        if not opening.endswith((",", ":", ";")):
+            return "starts in the middle of the passage's sentence"
     cuts = [b - a - 1 for a, b in zip(used, used[1:]) if b - a > 1]
     if len(cuts) > MAX_INNER_CUTS or any(cut > MAX_INNER_CUT_WORDS for cut in cuts):
         return f"cuts too much from the middle of the passage ({len(cuts)} cuts, longest {max(cuts)} words)"
@@ -167,6 +171,10 @@ def validate(sentences: list[dict], pages: dict[int, str], document_id: str, *, 
         if span is None:
             raise ValueError(f"sentence {number}: cited passage is not on page {page}")
         passage = pages[page][span[0]:span[1]]
+        before = pages[page][:span[0]]
+        if before.strip() and not (before.rstrip()[-1] in ".?!:;•" or ("\n" in before[len(before.rstrip()):] or before.endswith("\n"))
+                                   and (passage[0].isupper() or passage[0].isdigit())):
+            raise ValueError(f"sentence {number}: the cited passage starts in the middle of a sentence on page {page}")
         problem = check_sentence(sentence, passage)
         if problem:
             raise ValueError(f"sentence {number}: {problem}: “{sentence[:200]}”")

@@ -8,6 +8,7 @@ Choose two or three passages from the report pages and trim each into one senten
 
 <rules>
 - Repeat the report verbatim as much as possible. You may delete words, phrases, and clauses to make a passage shorter, capitalize its first word, and end it with a period. Do not reword, reorder, paraphrase, summarize in your own words, or add words. The only words you may insert are "the", "a", "an", or "and" where a deletion requires one.
+- Each sentence starts where a sentence of the report starts, so it reads as a whole sentence. You may drop an opening clause only up to a comma or colon ("If these plans are selected, the program..." may become "The program..."); never start partway through a sentence.
 - Never change a number, dollar amount, date, name, or place, and never delete "not", "no", "without", "unless", or any other word whose removal would change the meaning.
 - Do not add interpretation, characterization, opinion, or context that is not in the report. Do not describe the report itself ("The staff report says...") or the meeting.
 - Each sentence is at most 40 words; the whole summary is at most 90 words.

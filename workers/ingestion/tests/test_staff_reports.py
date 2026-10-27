@@ -324,3 +324,22 @@ def test_slt_reads_the_agenda_even_when_a_packet_is_also_stored():
                               "title": "agenda packet", "url": "https://example.gov/packet.pdf", "sha256": "1" * 64})
     found, _, _ = run_rule(data)
     assert found["7"] is not None
+
+
+def test_sentences_start_where_the_reports_sentences_start():
+    page = ("Staff recommends approval. The resolution would abandon\napproximately 1,438 square feet of the easterly portion.\n\n"
+            "If these plans are selected, the program is expected to cost approximately $393,513 annually.")
+    # A fragment lifted from the middle of a sentence fails, even though every word is the report's.
+    with pytest.raises(ValueError, match="middle of a sentence"):
+        item_summaries.validate([sentence("Approximately 1,438 square feet of the easterly portion.",
+                                          "approximately 1,438 square feet of the easterly portion.")], {1: page}, "doc")
+    with pytest.raises(ValueError, match="middle of the passage"):
+        item_summaries.validate([sentence("Approximately 1,438 square feet of the easterly portion.",
+                                          "The resolution would abandon approximately 1,438 square feet of the easterly portion.")], {1: page}, "doc")
+    # Dropping an opening clause up to its comma, or the end of a sentence, is fine.
+    text, _ = item_summaries.validate([
+        sentence("The program is expected to cost approximately $393,513 annually.",
+                 "If these plans are selected, the program is expected to cost approximately $393,513 annually."),
+        sentence("The resolution would abandon approximately 1,438 square feet.",
+                 "The resolution would abandon approximately 1,438 square feet of the easterly portion.")], {1: page}, "doc")
+    assert text.startswith("The program is expected")

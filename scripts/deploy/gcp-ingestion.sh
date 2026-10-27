@@ -30,6 +30,7 @@ KEEP_IMAGES="${KEEP_IMAGES:-3}"
 JOB_NAME="${JOB_NAME:-tahoe-ingest}"
 JOB_SA_NAME="${JOB_SA_NAME:-tahoe-ingest-job}"
 SCHEDULER_SA_NAME="${SCHEDULER_SA_NAME:-tahoe-ingest-scheduler}"
+BUILD_SA_NAME="${BUILD_SA_NAME:-tahoe-build}"      # Cloud Build identity, only with --cloud-build
 SCHEDULER_JOB="${SCHEDULER_JOB:-tahoe-ingest-every-6h}"
 SCHEDULE="${SCHEDULE:-0 */6 * * *}"
 TIME_ZONE="${TIME_ZONE:-America/Los_Angeles}"
@@ -62,6 +63,8 @@ AR_HOST="${REGION}-docker.pkg.dev"
 IMAGE_BASE="${AR_HOST}/${PROJECT_ID}/${AR_REPO}/${IMAGE_NAME}"
 JOB_SA="${JOB_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 SCHEDULER_SA="${SCHEDULER_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+BUILD_SA="${BUILD_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+BUILD_SOURCE_BUCKET="${PROJECT_ID}_cloudbuild"      # where `gcloud builds submit` stages the source
 GUARD_SA="${GUARD_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 GUARD_IMAGE_BASE="${AR_HOST}/${PROJECT_ID}/${AR_REPO}/${GUARD_NAME}"
 BUDGET_ALERT_PUBLISHER="serviceAccount:billing-budget-alert@system.gserviceaccount.com"
@@ -221,13 +224,17 @@ build_push() {
   if ((USE_CLOUD_BUILD)); then
     # Uploads only the files the root .gcloudignore allowlists (about 0.3 MB), the same set as .dockerignore.
     local config="$TMP_DIR/cloudbuild-$RANDOM.yaml"
+    # A user-specified service account needs a logging option; Cloud Logging needs no bucket.
     cat >"$config" <<YAML
 steps:
   - name: gcr.io/cloud-builders/docker
     args: ["build", "-f", "${dockerfile#"$context"/}", "-t", "${ref}", "."]
 images: ["${ref}"]
+options:
+  logging: CLOUD_LOGGING_ONLY
 YAML
-    g builds submit "$context" --config="$config" --region="$REGION"
+    g builds submit "$context" --config="$config" --region="$REGION" \
+      --service-account="projects/${PROJECT_ID}/serviceAccounts/${BUILD_SA}"
   else
     command -v docker >/dev/null || die "docker not found; install it or pass --cloud-build"
     "$GCLOUD" auth configure-docker "$AR_HOST" --quiet >/dev/null 2>&1
@@ -274,6 +281,25 @@ ensure_sa() {
     g iam service-accounts create "$name" --display-name="$display" >/dev/null
     info "service account $email created"
   fi
+}
+
+# Cloud Build's default identity (the Compute Engine default account) holds no roles in
+# this project, so builds run as a dedicated account that can only read the staged
+# source, push to this repository, and write build logs.
+ensure_build_sa() {
+  log "Cloud Build service account"
+  ensure_sa "$BUILD_SA_NAME" "Tahoe image builds"
+  if ! g storage buckets describe "gs://${BUILD_SOURCE_BUCKET}" >/dev/null 2>&1; then
+    g storage buckets create "gs://${BUILD_SOURCE_BUCKET}" --location=us --uniform-bucket-level-access >/dev/null
+    info "bucket gs://${BUILD_SOURCE_BUCKET} created"
+  fi
+  g storage buckets add-iam-policy-binding "gs://${BUILD_SOURCE_BUCKET}" \
+    --member="serviceAccount:${BUILD_SA}" --role=roles/storage.objectViewer >/dev/null
+  g artifacts repositories add-iam-policy-binding "$AR_REPO" --location="$REGION" \
+    --member="serviceAccount:${BUILD_SA}" --role=roles/artifactregistry.writer >/dev/null
+  g projects add-iam-policy-binding "$PROJECT_ID" --member="serviceAccount:${BUILD_SA}" \
+    --role=roles/logging.logWriter --condition=None >/dev/null
+  info "can read gs://${BUILD_SOURCE_BUCKET}, push to $AR_REPO, and write logs"
 }
 
 ensure_service_accounts() {
@@ -652,6 +678,7 @@ main() {
       ensure_project
       enable_apis
       ensure_registry
+      if ((USE_CLOUD_BUILD)); then ensure_build_sa; fi
       ((SKIP_BUILD)) || build_image
       resolve_image
       ensure_service_accounts

@@ -5,8 +5,10 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
+import { shown } from './helpers/shown-items.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const publicData = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const filterSource = await readFile(resolve(root, 'src/scripts/timeline-filters.ts'), 'utf8');
 const filterScript = ts.transpileModule(filterSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 
@@ -154,7 +156,10 @@ test('renders compact date badges and truthful agenda availability on a meeting 
   assert.ok(row);
   assert.equal(row.querySelector('.date-day').textContent, '27');
   assert.equal(row.querySelector('.meeting-date > span:nth-child(2)').textContent, 'Oct');
-  assert.match(row.querySelector('.meeting-card-copy p').textContent, /Agenda not posted/);
+  // The label follows the meeting's stored agenda: its listed item count once posted, otherwise "Agenda not posted".
+  const stored = publicData.meetings.find((meeting) => meeting.id === 'truckee:1796');
+  const listed = stored.items.filter(shown).length;
+  assert.match(row.querySelector('.meeting-card-copy p').textContent, listed ? new RegExp(`${listed} agenda items?`) : /Agenda not posted/);
   assert.doesNotMatch(row.querySelector('.meeting-card-copy p').textContent, /0 agenda/);
   const canceled = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:1771');
   assert.equal(canceled.dataset.bucket, 'earlier');

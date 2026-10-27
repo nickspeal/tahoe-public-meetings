@@ -14,7 +14,7 @@ import re
 from .agenda import has_parser, parse_agenda
 from .core import _json, ingest_bundle, iso
 
-STALE = re.compile(r"No parser exists|items require review|review required|await reprocessing|"
+STALE = re.compile(r"No parser exists|items require review|review required|review all agenda documents|await reprocessing|"
                    r"agenda text (?:is )?not (?:yet )?(?:captured|extracted)", re.I)
 
 

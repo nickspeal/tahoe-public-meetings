@@ -66,3 +66,13 @@ def test_slt_standalone_number_uses_same_page_title_quote():
     assert item["title"].startswith("Agreement with Eide Bailly")
     assert item["source_pages"][0]["page_number"] == 3
     assert item["source_pages"][0]["quote"] in page["text"]
+
+
+def test_reparse_clears_every_parse_agenda_failure_warning():
+    import re
+    from pathlib import Path
+    from tahoe_ingest.reparse import STALE
+    source = (Path(__file__).resolve().parents[1] / "tahoe_ingest/agenda.py").read_text()
+    in_parse_agenda = source[source.index("def parse_agenda"):]
+    warnings = re.findall(r'_result\(\[\], False, f?"([^"]+)"\)', in_parse_agenda)
+    assert warnings and all(STALE.search(w) for w in warnings), warnings

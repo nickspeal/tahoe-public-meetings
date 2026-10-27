@@ -10,6 +10,9 @@ A time counts only when it is printed close to the meeting's own date on the
 first page of an agenda document. That keeps out office hours, comment
 deadlines, and sessions held on other days of a multi-day meeting. The first
 such time is used; if two agenda documents disagree, no time is shown.
+
+The same pairing gives the meeting date when a listing states none (some TTD
+posts): the date beside the first page's start times, read once at capture.
 """
 from __future__ import annotations
 
@@ -59,8 +62,8 @@ def _start(match: re.Match) -> str:
     return f"{minutes // 60:02}:{minutes % 60:02}"
 
 
-def page_start_time(text: str, day: date) -> str | None:
-    """The first start time on a page that sits next to ``day`` and no other date, as ``HH:MM``."""
+def _heading_times(text: str):
+    """Each start time on a page with the date printed nearest to it (within ``NEAR``), in page order."""
     text = " ".join(text.split())  # Column layouts pad the gap between a time and its date.
     dates = _dates(text)
     for match in TIME.finditer(text):
@@ -68,20 +71,53 @@ def page_start_time(text: str, day: date) -> str | None:
             continue
         distance = [(max(start - match.end(), match.start() - end, 0), when) for start, end, when in dates]
         nearby = [d for d in distance if d[0] <= NEAR]
-        if nearby and min(nearby, key=lambda d: d[0])[1] == day:
-            return _start(match)
-    return None
+        if nearby:
+            yield match, min(nearby, key=lambda d: d[0])[1]
+
+
+def page_start_time(text: str, day: date) -> str | None:
+    """The first start time on a page that sits next to ``day`` and no other date, as ``HH:MM``."""
+    return next((_start(match) for match, when in _heading_times(text) if when == day), None)
+
+
+def page_meeting_date(text: str) -> date | None:
+    """The page's first date, when every start time on the page sits beside it.
+
+    Requiring both keeps out multi-day notices and a time printed beside a
+    posting or deadline date further down the page.
+    """
+    days = {when for _, when in _heading_times(text)}
+    first = min(_dates(" ".join(text.split())), default=None)
+    return first[2] if first and days == {first[2]} else None
+
+
+def _agendas(meeting_title: str, documents: list[dict]) -> list[dict]:
+    return [d for d in documents if not NOT_AGENDA.search(d.get("title") or "")
+            and (COMMITTEE.search(meeting_title) or not COMMITTEE.search(d.get("title") or ""))]
+
+
+def _first_page(document: dict) -> str | None:
+    return next((p["text"] for p in document.get("pages", []) if p["number"] == 1), None)
+
+
+def agenda_date(meeting_title: str, documents: list[dict]) -> date | None:
+    """The meeting date printed beside the start time on the agenda's first page, if the agendas agree.
+
+    For sources whose listing states no date (some TTD posts); a date written
+    on the listing is always preferred.
+    """
+    days = {found for doc in _agendas(meeting_title, documents)
+            if (first := _first_page(doc)) and (found := page_meeting_date(first))}
+    return days.pop() if len(days) == 1 else None
 
 
 def agenda_start_time(meeting_title: str, day: date | None, documents: list[dict]) -> str | None:
     """The start time printed on the meeting's agenda documents, if they state one and agree."""
     if not day:
         return None
-    agendas = [d for d in documents if not NOT_AGENDA.search(d.get("title") or "")
-               and (COMMITTEE.search(meeting_title) or not COMMITTEE.search(d.get("title") or ""))]
     times = set()
-    for doc in agendas:
-        first = next((p["text"] for p in doc.get("pages", []) if p["number"] == 1), None)
+    for doc in _agendas(meeting_title, documents):
+        first = _first_page(doc)
         if first and (found := page_start_time(first, day)):
             times.add(found)
     return times.pop() if len(times) == 1 else None

@@ -18,6 +18,7 @@ from .source_discovery import discover_configured
 from .http import EndpointSkipped
 from .records import apply_links, links_of, match_meeting, qualifiers
 from .source import download_extract
+from .start_times import agenda_date
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
 
@@ -206,9 +207,14 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
         warnings.append(parsed.warning if parsed else
                         "Document limit omitted source PDFs; agenda items require review." if docs else
                         "No agenda PDF is linked; agenda items require review.")
+    day = candidate.get("date")
+    if not day and (found := agenda_date(candidate["title"], [
+            {**d, "pages": [{"number": p["page_number"], "text": p["text"]} for p in pages if p["document_id"] == d["id"]]}
+            for d in docs])):
+        day = found.isoformat()  # The listing states no date; the agenda heading does.
     return {"agency": candidate["agency"], "id": candidate["source_id"], "title": candidate["title"],
             "source_meeting_url": candidate["official_url"], "status": candidate.get("status", "unknown"),
-            "date": candidate.get("date"), "start_time": candidate.get("start_time"),
+            "date": day, "start_time": candidate.get("start_time"),
             "timezone": "America/Los_Angeles", "location": candidate.get("location"),
             "warnings": warnings, "partial_logistics": True,
             "documents": docs, "documents_complete": bool(candidate.get("documents_complete")) and complete_document_set,

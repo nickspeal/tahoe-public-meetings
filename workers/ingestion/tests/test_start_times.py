@@ -1,6 +1,7 @@
 from datetime import date
 
-from tahoe_ingest.start_times import agenda_start_time, page_start_time
+from tahoe_ingest.capture import _capture_row
+from tahoe_ingest.start_times import agenda_date, agenda_start_time, page_meeting_date, page_start_time
 
 TRPA = ("Tahoe Regional Planning Agency (TRPA)\n                         Governing Board and Committee Meetings\n\n"
         "                                   PUBLIC MEETING NOTICE & AGENDAS\n\n"
@@ -60,3 +61,41 @@ def test_agenda_documents_must_agree_and_minutes_or_committees_do_not_count():
     revised = doc("Revised agenda", "Board Meeting October 28, 2026 10:00 a.m.")
     assert agenda_start_time("TRPA Governing Board Meeting", day, [governing, revised]) is None
     assert agenda_start_time("TRPA Governing Board Meeting", None, [governing]) is None
+
+
+TTD = ("TAHOE TRANSPORTATION DISTRICT (TTD)\n Notice of Agenda and Agenda\n\n"
+       "Tahoe Regional Planning Agency                                    March 4, 2026\n"
+       "128 Market Street                                                     3:00 p.m.\n"
+       "Stateline, NV 89449\n\nI. CALL TO ORDER AND GENERAL MATTERS\n"
+       "B. For Possible Action: Approval of Agenda for March 4, 2026\n"
+       "C. For Possible Action: Approval of Minutes of February 4, 2026      Page 1\n")
+
+
+def test_meeting_date_is_the_heading_date_beside_the_start_time():
+    assert page_meeting_date(TTD) == date(2026, 3, 4)
+    assert page_meeting_date(TRPA) == date(2026, 10, 28)
+    # A multi-day notice, or a start time beside a later posting date rather than the heading's, gives no date.
+    multi_day = "Wednesday, September 30, 2026, 2:30 p.m. REGULAR MEETING Thursday, October 1, 2026, 9:00 a.m."
+    assert page_meeting_date(multi_day) is None
+    posted = ("REGULAR MEETING AGENDA FOR SEPTEMBER 23, 2026" + " filler" * 40 +
+              " Posted September 18, 2026 REGULAR MEETING: 4:30 PM")
+    assert page_meeting_date(posted) is None
+    assert page_meeting_date("Regular Meeting October 1, 2026") is None
+
+
+def test_agenda_date_needs_agreeing_agendas_and_ignores_minutes():
+    title = "TTD Board of Directors Meeting"
+    agenda = doc("Agenda Packet", TTD)
+    assert agenda_date(title, [agenda]) == date(2026, 3, 4)
+    assert agenda_date(title, [agenda, doc("Minutes", "February 4, 2026 called to order at 3:02 p.m.")]) == date(2026, 3, 4)
+    assert agenda_date(title, [agenda, doc("Revised agenda", "Board Meeting April 1, 2026 3:00 p.m.")]) is None
+
+
+def test_capture_dates_an_undated_listing_from_its_agenda():
+    def fetch(url):
+        return {"sha256": "0" * 64, "page_count": 1, "warnings": [], "pages": [{"page_number": 1, "text": TTD}]}
+    candidate = {"agency": "ttd", "source_id": "7156", "title": "TTD Board of Directors Meeting", "official_url": "https://example.org/m",
+                 "documents": [{"id": "ttd-agenda-packet", "title": "Agenda Packet", "url": "https://example.org/a.pdf"}]}
+    assert _capture_row(candidate, 2, fetch, [], [], 0)["date"] == "2026-03-04"
+    # A date stated on the listing is kept.
+    assert _capture_row({**candidate, "date": "2026-03-05"}, 2, fetch, [], [], 0)["date"] == "2026-03-05"

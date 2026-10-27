@@ -13,6 +13,7 @@ const filterScript = ts.transpileModule(filterSource, { compilerOptions: { targe
 async function openPage(file, route) {
   const html = await readFile(resolve(root, 'dist', file), 'utf8');
   const dom = new JSDOM(html, { url: `http://localhost${route}`, runScripts: 'outside-only' });
+  dom.window.scrollBy = () => {}; // jsdom has no layout to scroll.
   dom.window.eval(filterScript);
   return dom;
 }
@@ -44,6 +45,7 @@ test('the default view shows upcoming meetings with posted agendas and no earlie
   assert.ok(earlier.length > 20, 'the fixture needs enough history to page through');
   assert.equal(document.querySelector('#earlier-more-label').textContent, 'Show 10 earlier meetings');
   assert.equal(document.querySelector('#earlier-remaining').textContent, `${earlier.length} earlier`);
+  assert.equal(document.querySelector('#earlier-today-jump').hidden, true, 'Today is at the top, so there is nothing to scroll back to');
   assert.equal(document.querySelector('#date-filter'), null, 'the Dates filter is gone');
   dom.window.close();
 });
@@ -58,18 +60,23 @@ test('earlier meetings open ten at a time, most recent first, and reset when a f
 
   click(dom, more);
   assert.deepEqual(shown(), earlier.slice(-10), 'the first click shows the ten most recent earlier meetings');
-  assert.equal(document.querySelector('#earlier-more-label').textContent, 'Show 10 more earlier meetings');
+  assert.equal(document.querySelector('#earlier-more-label').textContent, 'Show 10 earlier meetings');
   assert.equal(document.querySelector('#earlier-remaining').textContent, `${earlier.length - 10} not shown`);
+  const todayJump = document.querySelector('#earlier-today-jump');
+  assert.equal(todayJump.hidden, false, 'with earlier meetings open, a link scrolls back to Today');
+  assert.equal(todayJump.getAttribute('href'), '#today-divider');
   assert.ok(shown().every((row) => !row.closest('[data-timeline-group]').hidden));
   click(dom, more);
   assert.deepEqual(shown(), earlier.slice(-20));
   while (!more.hidden) click(dom, more);
   assert.equal(shown().length, earlier.length, 'the button disappears once every earlier meeting is shown');
+  assert.equal(todayJump.hidden, false, 'the Today link stays after the button is gone');
 
   const agency = document.querySelector('#agency-filter');
   agency.value = 'ttd';
   change(dom, agency);
   assert.equal(shown().length, 0, 'changing a filter collapses earlier meetings again');
+  assert.equal(todayJump.hidden, true);
   assert.equal(more.hidden, false);
   click(dom, more);
   const ttdEarlier = earlier.filter((row) => row.dataset.agency === 'ttd');

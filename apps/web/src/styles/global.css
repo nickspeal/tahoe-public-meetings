@@ -78,6 +78,9 @@ button, a, select, summary { touch-action: manipulation; }
 .timeline-more::before { content: '+'; display: inline-grid; flex: 0 0 auto; place-items: center; width: 22px; height: 22px; border: 1px solid #b7c7bd; border-radius: 50%; }
 .timeline-more[aria-expanded="true"]::before { content: '−'; }
 .timeline-more:hover { background: var(--tint); }
+.timeline-jump { text-decoration: none; }
+.timeline-jump::before { content: '↓'; }
+#earlier-more:not([hidden]) + .timeline-jump { margin-top: 8px; }
 .timeline-more-count { margin-left: auto; color: var(--subtle); font-weight: 600; }
 .upcoming-more { margin: 18px 0; }
 .timeline-more-hint { margin: 6px 0 0; color: var(--muted); font-size: 13px; }

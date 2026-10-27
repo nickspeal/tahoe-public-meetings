@@ -67,6 +67,7 @@ const meetingAgencies = data.agencies.filter((agency) => meetingAgencyIds.has(ag
   <div class="timeline section-wrap" id="meeting-timeline">
     <div class="earlier-meetings" id="earlier-meetings" data-step={step} hidden={initialEarlierCount === 0}>
       <button type="button" class="timeline-more" id="earlier-more" aria-controls="earlier-list"><span id="earlier-more-label">Show {Math.min(step, initialEarlierCount)} earlier {Math.min(step, initialEarlierCount) === 1 ? 'meeting' : 'meetings'}</span><span class="timeline-more-count" id="earlier-remaining">{initialEarlierCount} earlier</span></button>
+      <a class="timeline-more timeline-jump" id="earlier-today-jump" href="#today-divider" hidden>Scroll to today</a>
       <div class="earlier-list" id="earlier-list">{earlierGroups.map(([key, rows]) => <section class="timeline-date-group earlier-date-group" data-timeline-group={`earlier-${key}`} hidden><h2>{dateHeading(key)}</h2><div class="timeline-meeting-list">{rows.map((meeting) => <TimelineRow meeting={meeting} bucket="earlier" initialTopic={initialTopic} hidden />)}</div></section>)}</div>
     </div>
     <div class="today-divider" id="today-divider"><span class="today-label">TODAY</span><time>{formatDate(today, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</time></div>

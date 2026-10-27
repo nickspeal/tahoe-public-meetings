@@ -9,6 +9,8 @@ const earlier = document.querySelector<HTMLElement>('#earlier-meetings');
 const earlierMore = document.querySelector<HTMLButtonElement>('#earlier-more');
 const earlierLabel = document.querySelector<HTMLElement>('#earlier-more-label');
 const earlierRemaining = document.querySelector<HTMLElement>('#earlier-remaining');
+// With earlier meetings open, Today is no longer at the top of the timeline, so offer a way back to it.
+const earlierTodayJump = document.querySelector<HTMLElement>('#earlier-today-jump');
 // Upcoming meetings without a posted agenda, including expected ones, stay hidden unless the reader asks.
 const upcomingMore = document.querySelector<HTMLElement>('#upcoming-more');
 const upcomingToggle = document.querySelector<HTMLButtonElement>('#upcoming-toggle');
@@ -84,7 +86,8 @@ if (topicSelect && agencySelect) {
     const nextEarlier = Math.min(EARLIER_STEP, earlierLeft);
     if (earlier) earlier.hidden = earlierMatches.length === 0;
     if (earlierMore) earlierMore.hidden = earlierLeft === 0;
-    if (earlierLabel) earlierLabel.textContent = `Show ${earlierShown.length ? `${nextEarlier} more` : nextEarlier} earlier ${nextEarlier === 1 ? 'meeting' : 'meetings'}`;
+    if (earlierTodayJump) earlierTodayJump.hidden = earlierShown.length === 0;
+    if (earlierLabel) earlierLabel.textContent = `Show ${nextEarlier} earlier ${nextEarlier === 1 ? 'meeting' : 'meetings'}`;
     if (earlierRemaining) earlierRemaining.textContent = earlierShown.length ? `${earlierLeft} not shown` : `${earlierLeft} earlier`;
 
     if (upcomingMore) upcomingMore.hidden = awaitingTotal === 0;
@@ -141,9 +144,13 @@ if (topicSelect && agencySelect) {
     } else changeFilters();
   });
   agencySelect.addEventListener('change', changeFilters);
+  // Earlier meetings open above the reader's place: the Today marker and everything after it stay put on screen.
   earlierMore?.addEventListener('click', () => {
+    const anchor = earlier?.nextElementSibling;
+    const before = anchor?.getBoundingClientRect().top;
     earlierLimit += EARLIER_STEP;
     applyFilters();
+    if (anchor && before !== undefined) window.scrollBy({ top: anchor.getBoundingClientRect().top - before, behavior: 'instant' });
   });
   upcomingToggle?.addEventListener('click', () => {
     showAwaiting = !showAwaiting;

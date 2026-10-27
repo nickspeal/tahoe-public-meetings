@@ -1,21 +1,28 @@
 const topicSelect = document.querySelector<HTMLSelectElement>('#topic-filter');
 const agencySelect = document.querySelector<HTMLSelectElement>('#agency-filter');
-const viewSelect = document.querySelector<HTMLSelectElement>('#date-filter');
-// Expected meetings (forecasts without an agenda) stay hidden unless the reader opts in.
-const expectedToggle = document.querySelector<HTMLInputElement>('#forecast-filter');
-const expectedCount = document.querySelector<HTMLElement>('#forecast-count');
 const count = document.querySelector<HTMLElement>('#timeline-count');
 const agendaCount = document.querySelector<HTMLElement>('#agenda-count');
 const noResults = document.querySelector<HTMLElement>('#timeline-no-results');
-const earlier = document.querySelector<HTMLDetailsElement>('#earlier-meetings');
-const earlierCount = earlier?.querySelector<HTMLElement>('summary span');
 const noUpcoming = document.querySelector<HTMLElement>('#no-upcoming-message');
+// Earlier meetings open backward in time, a fixed number per click.
+const earlier = document.querySelector<HTMLElement>('#earlier-meetings');
+const earlierMore = document.querySelector<HTMLButtonElement>('#earlier-more');
+const earlierLabel = document.querySelector<HTMLElement>('#earlier-more-label');
+const earlierRemaining = document.querySelector<HTMLElement>('#earlier-remaining');
+// Upcoming meetings without a posted agenda, including expected ones, stay hidden unless the reader asks.
+const upcomingMore = document.querySelector<HTMLElement>('#upcoming-more');
+const upcomingToggle = document.querySelector<HTMLButtonElement>('#upcoming-toggle');
+const upcomingLabel = document.querySelector<HTMLElement>('#upcoming-toggle-label');
+const upcomingHint = document.querySelector<HTMLElement>('#upcoming-hint');
 const rows = [...document.querySelectorAll<HTMLElement>('[data-meeting-row]')];
 const groups = [...document.querySelectorAll<HTMLElement>('[data-timeline-group]')];
 // The last topic option is "Suggest a topic…": it opens the feedback dialog instead of filtering.
 const SUGGEST_TOPIC = '__suggest';
+const EARLIER_STEP = Number(earlier?.dataset.step) || 10;
 
-if (topicSelect && agencySelect && viewSelect) {
+const plural = (total: number, word: string) => `${total} ${word}${total === 1 ? '' : 's'}`;
+
+if (topicSelect && agencySelect) {
   const params = new URLSearchParams(window.location.search);
   const isTopicRoute = window.location.pathname.startsWith('/topics/');
   const queryTopic = isTopicRoute ? null : params.get('topic');
@@ -23,62 +30,80 @@ if (topicSelect && agencySelect && viewSelect) {
   let currentTopic = topicSelect.value;
   const agency = params.get('agency');
   if (agency && [...agencySelect.options].some((option) => option.value === agency)) agencySelect.value = agency;
-  if (params.get('view') === 'all') viewSelect.value = 'all';
-  if (viewSelect.value === 'all' && earlier) earlier.open = true;
-  if (expectedToggle) expectedToggle.checked = params.get('expected') === '1';
+  // `expected=1` is the bookmark from the former "Show expected meetings" checkbox.
+  let showAwaiting = params.get('upcoming') === 'all' || params.get('expected') === '1';
+  let earlierLimit = 0;
 
   function applyFilters() {
     const topic = topicSelect!.value;
     const agency = agencySelect!.value;
-    const showExpected = Boolean(expectedToggle?.checked);
-    let total = 0;
-    let earlierTotal = 0;
-    let upcomingTotal = 0;
-    let matchingAgendaItems = 0;
+    const topicName = topic ? topicSelect!.selectedOptions[0]?.textContent : '';
+    const earlierMatches: HTMLElement[] = [];
+    let awaitingTotal = 0;
     let expectedAvailable = 0;
     let expectedShown = 0;
+    let upcomingShown = 0;
 
     for (const row of rows) {
       const topics = JSON.parse(row.dataset.topics ?? '[]') as string[];
-      const expected = row.dataset.forecast === 'true';
-      const filtered = (!topic || topics.includes(topic)) && (!agency || row.dataset.agency === agency);
-      if (expected && filtered) expectedAvailable += 1;
-      const matches = filtered && (!expected || showExpected);
-      row.hidden = !matches;
-      if (matches) {
-        total += 1;
-        if (expected) expectedShown += 1;
-        if (row.dataset.bucket === 'earlier') earlierTotal += 1;
-        if ((row.dataset.bucket === 'today' || row.dataset.bucket === 'upcoming') && row.dataset.canceled !== 'true') upcomingTotal += 1;
+      const matches = (!topic || topics.includes(topic)) && (!agency || row.dataset.agency === agency);
+      if (row.dataset.bucket === 'earlier') {
+        row.hidden = true;
+        if (matches) earlierMatches.push(row);
+        continue;
       }
+      const awaiting = row.dataset.awaitingAgenda === 'true';
+      const expected = row.dataset.forecast === 'true';
+      if (matches && awaiting) awaitingTotal += 1;
+      if (matches && expected) expectedAvailable += 1;
+      row.hidden = !(matches && (!awaiting || showAwaiting));
+      if (!row.hidden && expected) expectedShown += 1;
+      if (!row.hidden && row.dataset.canceled !== 'true') upcomingShown += 1;
+    }
+    // Rows are oldest first, so the most recent earlier meetings are at the end.
+    const earlierShown = earlierMatches.slice(Math.max(0, earlierMatches.length - earlierLimit));
+    for (const row of earlierShown) row.hidden = false;
 
+    let total = 0;
+    let matchingAgendaItems = 0;
+    for (const row of rows) {
+      if (row.hidden) continue;
+      total += 1;
       for (const topicItems of row.querySelectorAll<HTMLElement>('[data-topic-items]')) {
-        const showTopic = Boolean(topic && matches && topicItems.dataset.topicItems === topic);
+        const showTopic = Boolean(topic && topicItems.dataset.topicItems === topic);
         topicItems.hidden = !showTopic;
         if (showTopic) matchingAgendaItems += topicItems.querySelectorAll('a').length;
       }
     }
-
     for (const group of groups) {
       const groupRows = [...group.querySelectorAll<HTMLElement>('[data-meeting-row]')];
       group.hidden = groupRows.length > 0 && groupRows.every((row) => row.hidden);
     }
-    if (earlier) earlier.hidden = earlierTotal === 0;
-    if (earlierCount) earlierCount.textContent = String(earlierTotal);
-    if (count) count.textContent = `${total} ${total === 1 ? 'meeting' : 'meetings'}${topic ? ` · ${topicSelect!.selectedOptions[0]?.textContent}` : ''}${expectedShown ? ` · ${expectedShown} expected` : ''}`;
-    if (expectedCount) expectedCount.textContent = `(${expectedAvailable})`;
+
+    const earlierLeft = earlierMatches.length - earlierShown.length;
+    const nextEarlier = Math.min(EARLIER_STEP, earlierLeft);
+    if (earlier) earlier.hidden = earlierMatches.length === 0;
+    if (earlierMore) earlierMore.hidden = earlierLeft === 0;
+    if (earlierLabel) earlierLabel.textContent = `Show ${earlierShown.length ? `${nextEarlier} more` : nextEarlier} earlier ${nextEarlier === 1 ? 'meeting' : 'meetings'}`;
+    if (earlierRemaining) earlierRemaining.textContent = earlierShown.length ? `${earlierLeft} not shown` : `${earlierLeft} earlier`;
+
+    if (upcomingMore) upcomingMore.hidden = awaitingTotal === 0;
+    if (upcomingToggle) upcomingToggle.setAttribute('aria-expanded', String(showAwaiting));
+    if (upcomingLabel) upcomingLabel.textContent = `${showAwaiting ? 'Hide' : 'Show'} ${plural(awaitingTotal, 'upcoming meeting')} without a posted agenda`;
+    if (upcomingHint) upcomingHint.textContent = expectedAvailable ? `Includes ${expectedAvailable} expected from each agency’s usual schedule` : '';
+
+    if (count) count.textContent = `${plural(total, 'meeting')}${topicName ? ` · ${topicName}` : ''}${expectedShown ? ` · ${expectedShown} expected` : ''}`;
     if (agendaCount) agendaCount.textContent = topic ? `${matchingAgendaItems} related agenda ${matchingAgendaItems === 1 ? 'item' : 'items'}` : '';
+    const anyMatches = total + awaitingTotal + earlierMatches.length > 0;
     if (noResults) {
-      noResults.hidden = total > 0;
+      noResults.hidden = anyMatches;
       const heading = noResults.querySelector('h2');
-      const detail = noResults.querySelector('p');
-      if (heading) heading.textContent = topic ? `No agenda items match ${topicSelect!.selectedOptions[0]?.textContent} yet` : 'No meetings match these filters';
-      if (detail) detail.textContent = topic ? 'Try another topic or agency, or choose all dates.' : 'Try another agency, or choose all dates.';
+      if (heading) heading.textContent = topic ? `No agenda items match ${topicName} yet` : 'No meetings match these filters';
     }
     if (noUpcoming) {
-      noUpcoming.hidden = !(viewSelect!.value === 'upcoming' && upcomingTotal === 0 && earlierTotal > 0);
-      if (topic && upcomingTotal === 0 && earlierTotal > 0) noUpcoming.textContent = `No upcoming agenda items match ${topicSelect!.selectedOptions[0]?.textContent} yet. Earlier matches are available above.`;
-      else noUpcoming.textContent = 'No upcoming meetings are listed. Earlier meetings are available above.';
+      noUpcoming.hidden = upcomingShown > 0 || !anyMatches;
+      noUpcoming.textContent = topic ? `No upcoming agendas match ${topicName} yet.`
+        : showAwaiting ? 'No upcoming meetings are listed.' : 'No upcoming agendas are posted yet.';
     }
 
     const url = new URL(window.location.href);
@@ -86,11 +111,17 @@ if (topicSelect && agencySelect && viewSelect) {
     else url.searchParams.delete('topic');
     if (agency) url.searchParams.set('agency', agency);
     else url.searchParams.delete('agency');
-    if (viewSelect!.value === 'all') url.searchParams.set('view', 'all');
-    else url.searchParams.delete('view');
-    if (showExpected) url.searchParams.set('expected', '1');
-    else url.searchParams.delete('expected');
+    if (showAwaiting) url.searchParams.set('upcoming', 'all');
+    else url.searchParams.delete('upcoming');
+    url.searchParams.delete('expected');
+    url.searchParams.delete('view');
     window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  // A filter change returns earlier meetings to the default, collapsed view.
+  function changeFilters() {
+    earlierLimit = 0;
+    applyFilters();
   }
 
   topicSelect.addEventListener('change', () => {
@@ -107,12 +138,15 @@ if (topicSelect && agencySelect && viewSelect) {
       url.pathname = topic ? `/topics/${encodeURIComponent(topic)}/` : '/';
       url.searchParams.delete('topic');
       window.location.assign(`${url.pathname}${url.search}`);
-    } else applyFilters();
+    } else changeFilters();
   });
-  agencySelect.addEventListener('change', applyFilters);
-  expectedToggle?.addEventListener('change', applyFilters);
-  viewSelect.addEventListener('change', () => {
-    if (earlier) earlier.open = viewSelect!.value === 'all';
+  agencySelect.addEventListener('change', changeFilters);
+  earlierMore?.addEventListener('click', () => {
+    earlierLimit += EARLIER_STEP;
+    applyFilters();
+  });
+  upcomingToggle?.addEventListener('click', () => {
+    showAwaiting = !showAwaiting;
     applyFilters();
   });
   applyFilters();

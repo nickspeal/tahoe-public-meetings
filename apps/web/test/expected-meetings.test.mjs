@@ -25,44 +25,56 @@ const expectedRows = (document) => rows(document).filter((row) => row.dataset.fo
 const change = (dom, element) => element.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
 const exists = (path) => access(path).then(() => true, () => false);
 
-test('expected meetings are hidden by default and a bookmarkable toggle reveals them with counts', async () => {
+const click = (dom, element) => element.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+const awaitingRows = (document) => rows(document).filter((row) => row.dataset.awaitingAgenda === 'true');
+
+test('expected meetings and agendas not yet posted share one bookmarkable reveal with counts', async () => {
   assert.ok(forecasts.length > 0, 'the export should include expected meetings derived from agency schedules');
   const dom = await openPage('index.html', '/');
   const { document } = dom.window;
   const expected = expectedRows(document);
+  const awaiting = awaitingRows(document);
   assert.ok(expected.length > 0);
-  assert.ok(expected.every((row) => row.hidden), 'expected meetings start hidden');
+  assert.ok(expected.every((row) => row.dataset.awaitingAgenda === 'true'), 'every expected meeting is awaiting an agenda');
+  assert.ok(awaiting.length > expected.length, 'confirmed meetings without an agenda are revealed with them');
+  assert.ok(awaiting.every((row) => row.hidden), 'meetings without an agenda start hidden');
   assert.ok(expected.every((row) => row.dataset.bucket !== 'earlier'), 'expected meetings are never history');
-  const toggle = document.querySelector('#forecast-filter');
-  assert.equal(toggle.checked, false);
+  const toggle = document.querySelector('#upcoming-toggle');
+  assert.equal(toggle.getAttribute('aria-expanded'), 'false');
   const confirmed = visible(document).length;
-  assert.equal(document.querySelector('#timeline-count').textContent, `${confirmed} meetings`);
-  assert.equal(document.querySelector('#forecast-count').textContent, `(${expected.length})`);
+  assert.equal(document.querySelector('#timeline-count').textContent, `${confirmed} ${confirmed === 1 ? 'meeting' : 'meetings'}`);
+  assert.equal(document.querySelector('#upcoming-hint').textContent, `Includes ${expected.length} expected from each agency’s usual schedule`);
 
-  toggle.checked = true;
-  change(dom, toggle);
-  assert.equal(visible(document).length, confirmed + expected.length);
-  assert.equal(document.querySelector('#timeline-count').textContent, `${confirmed + expected.length} meetings · ${expected.length} expected`);
-  assert.equal(dom.window.location.search, '?expected=1');
+  click(dom, toggle);
+  assert.equal(toggle.getAttribute('aria-expanded'), 'true');
+  assert.equal(visible(document).length, confirmed + awaiting.length);
+  assert.equal(document.querySelector('#timeline-count').textContent, `${confirmed + awaiting.length} meetings · ${expected.length} expected`);
+  assert.equal(document.querySelector('#upcoming-toggle-label').textContent, `Hide ${awaiting.length} upcoming meetings without a posted agenda`);
+  assert.equal(dom.window.location.search, '?upcoming=all');
   const group = expected[0].closest('[data-timeline-group]');
   assert.equal(group.hidden, false, 'a date with only expected meetings appears once they are shown');
 
-  toggle.checked = false;
-  change(dom, toggle);
-  assert.equal(visible(document).length, confirmed);
-  assert.equal(dom.window.location.search, '');
+  const agency = document.querySelector('#agency-filter');
+  agency.value = 'ttd';
+  change(dom, agency);
+  assert.equal(toggle.getAttribute('aria-expanded'), 'true', 'the reveal survives filter changes');
+
+  click(dom, toggle);
+  assert.ok(awaitingRows(document).every((row) => row.hidden));
+  assert.equal(dom.window.location.search, '?agency=ttd');
   dom.window.close();
 });
 
 test('expected meetings combine with agency filters and disappear for any topic', async () => {
   const dom = await openPage('index.html', '/?agency=ttd&expected=1');
   const { document } = dom.window;
-  assert.equal(document.querySelector('#forecast-filter').checked, true);
+  assert.equal(document.querySelector('#upcoming-toggle').getAttribute('aria-expanded'), 'true', 'the old expected=1 bookmark still opens the reveal');
+  assert.deepEqual(Object.fromEntries(new URLSearchParams(dom.window.location.search)), { agency: 'ttd', upcoming: 'all' });
   const shown = visible(document);
   const expected = shown.filter((row) => row.dataset.forecast === 'true');
   assert.ok(expected.length > 0, 'TTD has a configured first-Wednesday schedule');
   assert.ok(shown.every((row) => row.dataset.agency === 'ttd'));
-  assert.equal(document.querySelector('#forecast-count').textContent, `(${expected.length})`);
+  assert.equal(document.querySelector('#upcoming-hint').textContent, `Includes ${expected.length} expected from each agency’s usual schedule`);
 
   const card = expected[0];
   const link = card.querySelector('.meeting-card-main');
@@ -77,18 +89,18 @@ test('expected meetings combine with agency filters and disappear for any topic'
   topic.value = 'transit';
   change(dom, topic);
   assert.ok(visible(document).every((row) => row.dataset.forecast !== 'true'));
-  assert.equal(document.querySelector('#forecast-count').textContent, '(0)');
+  assert.equal(document.querySelector('#upcoming-hint').textContent, '');
   assert.doesNotMatch(document.querySelector('#timeline-count').textContent, /expected/);
-  assert.deepEqual(Object.fromEntries(new URLSearchParams(dom.window.location.search)), { topic: 'transit', agency: 'ttd', expected: '1' });
+  assert.deepEqual(Object.fromEntries(new URLSearchParams(dom.window.location.search)), { topic: 'transit', agency: 'ttd', upcoming: 'all' });
   dom.window.close();
 });
 
 test('topic pages keep expected meetings out even when the bookmark opts in', async () => {
-  const dom = await openPage('topics/transit/index.html', '/topics/transit/?expected=1');
+  const dom = await openPage('topics/transit/index.html', '/topics/transit/?upcoming=all');
   const { document } = dom.window;
   assert.ok(expectedRows(document).length > 0);
   assert.ok(expectedRows(document).every((row) => row.hidden));
-  assert.equal(document.querySelector('#forecast-count').textContent, '(0)');
+  assert.equal(document.querySelector('#upcoming-hint').textContent, '');
   dom.window.close();
 });
 
@@ -104,7 +116,7 @@ test('expected meetings get no meeting page or calendar download', async () => {
 });
 
 test('canceled meetings are greyed out with a readable, announced status', async () => {
-  const dom = await openPage('index.html', '/?view=all');
+  const dom = await openPage('index.html', '/');
   const { document } = dom.window;
   const canceled = rows(document).filter((row) => row.dataset.canceled === 'true');
   assert.ok(canceled.length > 0);

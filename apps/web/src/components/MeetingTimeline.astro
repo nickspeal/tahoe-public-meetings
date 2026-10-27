@@ -2,7 +2,7 @@
 import type { Meeting } from '../../../../packages/domain/public';
 import TimelineRow from './TimelineRow.astro';
 import { commentPeriods } from '../lib/data';
-import { allItems, meetingTopicIds, data, forecastMeetings, formatDate, isForecast, meetings, topics } from '../lib/data';
+import { allItems, awaitingAgenda, meetingTopicIds, data, forecastMeetings, formatDate, isForecast, meetings, topics } from '../lib/data';
 const { initialTopic = '' } = Astro.props as { initialTopic?: string };
 // Not a filter: choosing it opens the feedback dialog (timeline-filters.ts).
 const SUGGEST_TOPIC = '__suggest';
@@ -35,16 +35,22 @@ function dateHeading(key: string) {
   return formatDate(new Date(`${key}T12:00:00-07:00`), { weekday: 'long', month: 'long', day: 'numeric' });
 }
 const topicMatches = (meeting: Meeting, topicId: string) => meetingTopicIds(meeting).includes(topicId);
-// Mirrors timeline-filters.ts: expected meetings start hidden, and match no topic.
-const rowHidden = (meeting: Meeting) => isForecast(meeting) || (!!initialTopic && !topicMatches(meeting, initialTopic));
-const groupHidden = (rows: Meeting[]) => rows.length > 0 && rows.every(rowHidden);
-const topicFilteredMeetings = initialTopic ? meetings.filter((meeting) => topicMatches(meeting, initialTopic)) : meetings;
-const initialCount = topicFilteredMeetings.length;
-const initialEarlierCount = initialTopic ? earlier.filter((meeting) => topicMatches(meeting, initialTopic)).length : earlier.length;
-const initialAgendaCount = initialTopic ? topicFilteredMeetings.reduce((total, meeting) => total + allItems(meeting).filter((item) => item.topics.includes(initialTopic)).length, 0) : 0;
-const initialUpcomingCount = topicFilteredMeetings.filter((meeting) => meeting.status !== 'canceled' && meeting.change !== 'canceled' && meetingDateValue(meeting) && dateKey(meetingDateValue(meeting)!) >= todayKey).length;
-const initialExpectedCount = expected.filter((meeting) => !initialTopic || topicMatches(meeting, initialTopic)).length;
+const filtered = (meeting: Meeting) => !initialTopic || topicMatches(meeting, initialTopic);
+// Mirrors the default view in timeline-filters.ts: earlier meetings and upcoming ones without an agenda start hidden.
+const rowHidden = (meeting: Meeting, bucket: string) => !filtered(meeting) || bucket === 'earlier' || awaitingAgenda(meeting);
+const groupHidden = (rows: Meeting[], bucket: string) => rows.length > 0 && rows.every((meeting) => rowHidden(meeting, bucket));
+const upcoming = [...todayMeetings, ...future, ...undated].filter(filtered);
+const initialShown = upcoming.filter((meeting) => !awaitingAgenda(meeting));
+const initialCount = initialShown.length;
+const initialAwaiting = upcoming.length - initialShown.length;
+const initialExpected = upcoming.filter(isForecast).length;
+const initialEarlierCount = earlier.filter(filtered).length;
+const initialAgendaCount = initialTopic ? initialShown.reduce((total, meeting) => total + allItems(meeting).filter((item) => item.topics.includes(initialTopic)).length, 0) : 0;
+const initialUpcomingCount = initialShown.filter((meeting) => meeting.status !== 'canceled' && meeting.change !== 'canceled').length;
 const earlierGroups = groupByDate(earlier);
+const step = 10;
+const awaitingLabel = (count: number) => `Show ${count} upcoming ${count === 1 ? 'meeting' : 'meetings'} without a posted agenda`;
+const expectedHint = (count: number) => count ? `Includes ${count} expected from each agency’s usual schedule` : '';
 const meetingAgencyIds = new Set(meetings.map((meeting) => meeting.agencyId));
 const meetingAgencies = data.agencies.filter((agency) => meetingAgencyIds.has(agency.id));
 ---
@@ -54,23 +60,25 @@ const meetingAgencies = data.agencies.filter((agency) => meetingAgencyIds.has(ag
     <form class="timeline-filters" aria-label="Filter meetings">
       <label>Topic<select id="topic-filter" name="topic" aria-label="Filter by topic"><option value="">All topics</option>{topics.map((topic) => <option value={topic.id} selected={topic.id === initialTopic}>{topic.name}</option>)}<option value={SUGGEST_TOPIC} data-feedback-kind="topic" data-feedback-prompt="I'm interested in adding a new topic: ">Suggest a topic…</option></select></label>
       <label>Agency<select id="agency-filter" name="agency" aria-label="Filter by agency"><option value="">All agencies</option>{meetingAgencies.map((agency) => <option value={agency.id}>{agency.name}</option>)}</select></label>
-      <label>Dates<select id="date-filter" name="view" aria-label="Choose which dates to show"><option value="upcoming">Upcoming</option><option value="all">All dates</option></select></label>
       <a class="clear-filters" id="clear-filters" href="/">Clear filters</a>
-      <label class="forecast-toggle"><input type="checkbox" id="forecast-filter" name="expected" value="1" aria-describedby="forecast-hint" /><span>Show expected meetings <span id="forecast-count">({initialExpectedCount})</span></span><small id="forecast-hint">Predicted from each agency’s usual schedule; no agenda yet</small></label>
     </form>
   </div>
   <div class="timeline-count section-wrap"><span id="timeline-count" aria-live="polite">{initialCount} {initialCount === 1 ? 'meeting' : 'meetings'}{initialTopic ? ` · ${topics.find((topic) => topic.id === initialTopic)?.name}` : ''}</span><span id="agenda-count">{initialTopic ? `${initialAgendaCount} related agenda ${initialAgendaCount === 1 ? 'item' : 'items'}` : ''}</span><a class="today-jump" href="#today-divider">Today ↓</a></div>
   <div class="timeline section-wrap" id="meeting-timeline">
-    <details class="earlier-meetings" id="earlier-meetings" open={false}>
-      <summary>Earlier meetings <span>{initialEarlierCount}</span></summary>
-      {earlier.length ? <div class="timeline-meeting-list">{earlierGroups.map(([key, rows]) => <section class="earlier-date-group" data-timeline-group={`earlier-${key}`} hidden={groupHidden(rows)}><h3>{dateHeading(key)}</h3><div class="timeline-meeting-list">{rows.map((meeting) => <TimelineRow meeting={meeting} bucket="earlier" initialTopic={initialTopic} hidden={rowHidden(meeting)} />)}</div></section>)}</div> : <p class="timeline-empty-inline">No earlier meetings are listed.</p>}
-    </details>
+    <div class="earlier-meetings" id="earlier-meetings" data-step={step} hidden={initialEarlierCount === 0}>
+      <button type="button" class="timeline-more" id="earlier-more" aria-controls="earlier-list"><span id="earlier-more-label">Show {Math.min(step, initialEarlierCount)} earlier {Math.min(step, initialEarlierCount) === 1 ? 'meeting' : 'meetings'}</span><span class="timeline-more-count" id="earlier-remaining">{initialEarlierCount} earlier</span></button>
+      <div class="earlier-list" id="earlier-list">{earlierGroups.map(([key, rows]) => <section class="timeline-date-group earlier-date-group" data-timeline-group={`earlier-${key}`} hidden><h2>{dateHeading(key)}</h2><div class="timeline-meeting-list">{rows.map((meeting) => <TimelineRow meeting={meeting} bucket="earlier" initialTopic={initialTopic} hidden />)}</div></section>)}</div>
+    </div>
     <div class="today-divider" id="today-divider"><span class="today-label">TODAY</span><time>{formatDate(today, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</time></div>
-    <section class="timeline-date-group" data-timeline-group="today" hidden={groupHidden(todayMeetings)}><h2>Today</h2><div class="timeline-meeting-list">{todayMeetings.map((meeting) => <TimelineRow meeting={meeting} bucket="today" initialTopic={initialTopic} hidden={rowHidden(meeting)} />)}</div>{todayMeetings.length === 0 && <p class="timeline-empty-inline" data-today-empty>No meetings scheduled today.</p>}</section>
-    {groupByDate(future).map(([key, rows]) => <section class="timeline-date-group" data-timeline-group={`future-${key}`} hidden={groupHidden(rows)}><h2>{dateHeading(key)}</h2><div class="timeline-meeting-list">{rows.map((meeting) => <TimelineRow meeting={meeting} bucket="upcoming" initialTopic={initialTopic} hidden={rowHidden(meeting)} />)}</div></section>)}
-    {undated.length > 0 && <section class="timeline-date-group" data-timeline-group="undated" hidden={groupHidden(undated)}><h2>Date to be announced</h2><div class="timeline-meeting-list">{undated.map((meeting) => <TimelineRow meeting={meeting} bucket="undated" initialTopic={initialTopic} hidden={rowHidden(meeting)} />)}</div></section>}
-    <div class="timeline-no-results" id="timeline-no-results" hidden={initialCount > 0}><h2>No meetings match these filters</h2><p>Try another topic or agency, or choose all dates.</p></div>
-    <p class="timeline-empty-future" id="no-upcoming-message" hidden={initialUpcomingCount > 0}>{initialTopic && initialEarlierCount > 0 ? `No upcoming agenda items match ${topics.find((topic) => topic.id === initialTopic)?.name} yet. Earlier matches are available above.` : 'No upcoming meetings are listed. Earlier meetings are available above.'}</p>
+    <section class="timeline-date-group" data-timeline-group="today" hidden={groupHidden(todayMeetings, 'today')}><h2>Today</h2><div class="timeline-meeting-list">{todayMeetings.map((meeting) => <TimelineRow meeting={meeting} bucket="today" initialTopic={initialTopic} hidden={rowHidden(meeting, 'today')} />)}</div>{todayMeetings.length === 0 && <p class="timeline-empty-inline" data-today-empty>No meetings scheduled today.</p>}</section>
+    {groupByDate(future).map(([key, rows]) => <section class="timeline-date-group" data-timeline-group={`future-${key}`} hidden={groupHidden(rows, 'upcoming')}><h2>{dateHeading(key)}</h2><div class="timeline-meeting-list">{rows.map((meeting) => <TimelineRow meeting={meeting} bucket="upcoming" initialTopic={initialTopic} hidden={rowHidden(meeting, 'upcoming')} />)}</div></section>)}
+    {undated.length > 0 && <section class="timeline-date-group" data-timeline-group="undated" hidden={groupHidden(undated, 'undated')}><h2>Date to be announced</h2><div class="timeline-meeting-list">{undated.map((meeting) => <TimelineRow meeting={meeting} bucket="undated" initialTopic={initialTopic} hidden={rowHidden(meeting, 'undated')} />)}</div></section>}
+    <p class="timeline-empty-future" id="no-upcoming-message" hidden={initialUpcomingCount > 0 || initialCount + initialAwaiting + initialEarlierCount === 0}>{initialTopic ? `No upcoming agendas match ${topics.find((topic) => topic.id === initialTopic)?.name} yet.` : 'No upcoming agendas are posted yet.'}</p>
+    <div class="upcoming-more" id="upcoming-more" hidden={initialAwaiting === 0}>
+      <button type="button" class="timeline-more" id="upcoming-toggle" aria-expanded="false"><span id="upcoming-toggle-label">{awaitingLabel(initialAwaiting)}</span></button>
+      <p class="timeline-more-hint" id="upcoming-hint">{expectedHint(initialExpected)}</p>
+    </div>
+    <div class="timeline-no-results" id="timeline-no-results" hidden={initialCount + initialAwaiting + initialEarlierCount > 0}><h2>No meetings match these filters</h2><p>Try another topic or agency.</p></div>
   </div>
   <script src="../scripts/timeline-filters.ts"></script>
 </section>

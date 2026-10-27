@@ -60,3 +60,5 @@ What new evidence would change the decision?
 [0019: Coverage from January 1, 2026](0019-coverage-from-2026.md) sets the coverage start for every agency, keeps stored meetings forever, and fills history with a one-time backfill job.
 
 [0020: Stay within the Prisma Postgres free operations quota](0020-database-operation-budget.md) keeps the free plan, treats database statements as a budget (bulk reads, no unchanged rewrites, tests that guard query counts), and records the October 2026 near-exhaustion.
+
+[0022: Timeline default view](0022-timeline-default-view.md) opens the timeline on upcoming meetings with posted agendas, folds expected meetings into one reveal for meetings without an agenda, opens earlier meetings ten at a time, and removes the Dates filter.

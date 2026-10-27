@@ -165,6 +165,11 @@ export function agendaAvailability(meeting: Meeting): AgendaAvailability {
     href: meeting.officialUrl, linkText: 'Official meeting page' };
 }
 
+/** Expected meetings and upcoming ones whose agency has not posted an agenda yet. */
+export function awaitingAgenda(meeting: Meeting) {
+  return isForecast(meeting) || agendaAvailability(meeting).kind === 'not-posted';
+}
+
 export function meetingAgendaLabel(meeting: Meeting) {
   return agendaAvailability(meeting).label;
 }

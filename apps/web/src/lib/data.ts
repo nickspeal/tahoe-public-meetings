@@ -110,8 +110,9 @@ export function residentWarning(value: string) {
   if (/playback timestamps/i.test(value)) return 'A recording start time may differ from the scheduled meeting time; check the official agenda.';
   if (/CivicClerk.*wall.clock/i.test(value)) return 'The scheduled start time has not been verified; check the official agenda.';
   if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
-  // Parser outcomes are explained by the agenda section itself (see agendaAvailability).
-  if (/No parser exists|review required|agenda items require review|No complete .* agenda recognized/i.test(value)) return '';
+  // Parser and discovery outcomes, and a missing agenda, are explained by the agenda section itself (see agendaAvailability).
+  if (/No parser exists|review required|agenda items require (?:source )?review|No complete .* agenda recognized/i.test(value)) return '';
+  if (/No agenda document is linked|did not link an agenda/i.test(value)) return '';
   // Shown briefly in the agenda history card instead (see agendaSourceNote).
   if (AGENDA_SOURCE_NOTES.some(([pattern]) => pattern.test(value))) return '';
   if (/A source PDF changed/i.test(value)) return 'Source documents changed; some agenda details still need to be refreshed.';
@@ -122,9 +123,6 @@ export function residentWarning(value: string) {
   if (/original fetch time is unknown/i.test(value)) return 'Original source capture time is unknown.';
   if (/links a Municode HTML agenda/i.test(value)) return 'Agenda is available on the official meeting page; agenda items are not listed here yet.';
   if (/marks this regular meeting canceled/i.test(value)) return 'Canceled; the official event page lists replacement meetings at 4:00 p.m. and 5:30 p.m.';
-  const noAgenda = value.match(/No agenda document is linked.*?as of (\d{4}-\d{2}-\d{2})/i);
-  if (noAgenda) return `No agenda document was linked on the official event page as of ${noAgenda[1]}.`;
-  if (/did not link an agenda or state a start time/i.test(value)) return 'The agency listing did not include an agenda or start time.';
   if (/extract|scanned page|ocr|text.*(?:failed|unavailable)/i.test(value)) return 'Some pages could not be read; open the official document.';
   return value.replace(/\bfixture\b/gi, 'source record').replace(/\bsample\b/gi, 'source record');
 }

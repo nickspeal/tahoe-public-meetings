@@ -84,7 +84,7 @@ test('meeting topic filters use OR matching, restore query state, and reset with
   dom.window.close();
 });
 
-test('uncategorized agenda items are labeled and excluded when a topic is selected', async () => {
+test('uncategorized agenda items are unlabeled and excluded when a topic is selected', async () => {
   const meeting = publicData.meetings.find((candidate) => candidate.items.some((item) => !item.suppressed && item.topics.length === 0));
   if (!meeting) return;
   const topic = [...new Set(meeting.items.flatMap((item) => item.topics))][0];
@@ -93,7 +93,7 @@ test('uncategorized agenda items are labeled and excluded when a topic is select
   const uncategorized = [...dom.window.document.querySelectorAll('[data-agenda-item]')].find((item) => item.dataset.topicIds === '[]');
   assert.ok(uncategorized);
   assert.equal(uncategorized.hidden, true, 'uncategorized items do not match a selected topic');
-  assert.match(uncategorized.querySelector('.agenda-summary-topics').textContent, /Not categorized/);
+  assert.equal(uncategorized.querySelector('.agenda-summary-topics'), null, 'uncategorized items carry no topic label');
   dom.window.close();
 });
 

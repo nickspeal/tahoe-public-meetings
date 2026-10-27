@@ -4,7 +4,7 @@ Status: proposed
 Stage: MVP polish
 
 ## Problem and audience
-Residents who find an interesting agenda item want the fuller explanation (the staff report or executive summary) without hunting through a 500-page packet. Meeting pages currently link each item to its cited agenda page ("Read in agenda (page 2)").
+Residents who find an interesting agenda item want the fuller explanation (the staff report or executive summary) without hunting through a 500-page packet. Meeting pages currently link each item to its cited agenda page (a "Read in the agenda" card showing the page number).
 
 ## Smallest useful version
 Add a second link per item, "Read staff report" or "Read executive summary", that opens the item's own supporting document or the right packet page. Per-agency sources, verified 2026-10-20:

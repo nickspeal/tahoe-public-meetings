@@ -15,19 +15,19 @@ const links = await import(`data:text/javascript;base64,${Buffer.from(javascript
 
 const doc = (overrides = {}) => ({ id: 'v1', title: 'agenda', url: 'https://example.gov/agenda.pdf', pageCount: 7, ...overrides });
 
-test('PDF agenda items link to the cited page with a page-number label', () => {
+test('PDF agenda items link to the cited page with a page-number detail', () => {
   const meeting = { documents: [doc()] };
   assert.deepEqual(links.itemSourceLink(meeting, { citations: [{ documentId: 'v1', page: 7, quote: 'x' }] }),
-    { href: 'https://example.gov/agenda.pdf#page=7', label: 'Read in agenda (page 7)' });
+    { href: 'https://example.gov/agenda.pdf#page=7', label: 'Read in the agenda', detail: 'Page 7 · official PDF' });
   const packet = { documents: [doc({ title: 'agenda_packet', url: 'https://example.gov/p.pdf#view=FitH' })] };
   assert.deepEqual(links.itemSourceLink(packet, { citations: [{ documentId: 'v1', page: 2, quote: 'x' }] }),
-    { href: 'https://example.gov/p.pdf#view=FitH&page=2', label: 'Read in agenda packet (page 2)' });
+    { href: 'https://example.gov/p.pdf#view=FitH&page=2', label: 'Read in the agenda packet', detail: 'Page 2 · official PDF' });
 });
 
 test('HTML agendas link without a page fragment, and uncited items have no link', () => {
   const html = { documents: [doc({ url: 'https://meetings.example.gov/agenda/view.aspx?id=4', pageCount: 0 })] };
   assert.deepEqual(links.itemSourceLink(html, { citations: [{ documentId: 'v1', page: 1, quote: 'x' }] }),
-    { href: 'https://meetings.example.gov/agenda/view.aspx?id=4', label: 'Read in agenda' });
+    { href: 'https://meetings.example.gov/agenda/view.aspx?id=4', label: 'Read in the agenda', detail: 'Official agency webpage' });
   assert.equal(links.itemSourceLink({ documents: [doc()] }, { citations: [] }), null);
   assert.equal(links.itemSourceLink({ documents: [] }, { citations: [{ documentId: 'v1', page: 1, quote: 'x' }] }), null);
 });
@@ -51,7 +51,8 @@ test('every cited agenda item on a built meeting page links to its official page
     const anchor = page.querySelector(`[data-item-id="${item.id}"] a.agenda-source-link`);
     assert.ok(anchor, `${item.id} should offer a direct source link`);
     assert.equal(anchor.getAttribute('href'), expected.href);
-    assert.equal(anchor.textContent, `${expected.label} ↗`);
+    assert.equal(anchor.querySelector('strong').textContent, expected.label);
+    assert.equal(page.querySelectorAll(`[data-item-id="${item.id}"] a[href]`).length, 1, `${item.id} links to its source once`);
     assert.equal(anchor.getAttribute('target'), '_blank');
   }
 });
@@ -60,6 +61,6 @@ test('every cited agenda item on a built meeting page links to its official page
 test('stored HTML source sections never get PDF fragments even on extensionless URLs', () => {
   const html = { documents: [doc({ url: 'https://example.gov/agenda/42', mediaType: 'text/html', pageCount: 1 })] };
   assert.deepEqual(links.itemSourceLink(html, { citations: [{ documentId: 'v1', page: 1, quote: 'Housing' }] }),
-    { href: 'https://example.gov/agenda/42', label: 'Read in agenda' });
+    { href: 'https://example.gov/agenda/42', label: 'Read in the agenda', detail: 'Official agency webpage' });
   assert.equal(links.citationHref('https://example.gov/agenda/42', 1, 'text/html'), 'https://example.gov/agenda/42');
 });

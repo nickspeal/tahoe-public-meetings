@@ -28,13 +28,13 @@ export function isPdfDocument(document: Pick<PublicDocument, 'url' | 'pageCount'
   return document.pageCount > 0;
 }
 
-/** Direct link to the official document at an agenda item's cited page. */
+/** Direct link to the official document at an agenda item's cited page, shown as a card. */
 export function itemSourceLink(meeting: Pick<Meeting, 'documents'>, item: Pick<AgendaItem, 'citations'>) {
   const citation = item.citations[0];
   const document = citation && meeting.documents.find((candidate) => candidate.id === citation.documentId);
   if (!citation || !document) return null;
-  const kind = /packet/i.test(document.title) ? 'agenda packet' : 'agenda';
+  const label = /packet/i.test(document.title) ? 'Read in the agenda packet' : 'Read in the agenda';
   return isPdfDocument(document)
-    ? { href: citationHref(document.url, citation.page), label: `Read in ${kind} (page ${citation.page})` }
-    : { href: document.url, label: `Read in ${kind}` };
+    ? { href: citationHref(document.url, citation.page), label, detail: `Page ${citation.page} · official PDF` }
+    : { href: document.url, label, detail: 'Official agency webpage' };
 }

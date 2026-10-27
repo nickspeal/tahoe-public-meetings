@@ -90,12 +90,28 @@ export function sourceDoc(meeting: Meeting, documentId: string) {
 
 export { citationHref, isPdfDocument, itemSourceLink } from './source-links';
 
+/** Parser outcomes that a reader may want explained next to the agenda history, in brief. */
+const AGENDA_SOURCE_NOTES: [RegExp, string][] = [
+  [/unvalidated structure/i, 'One agenda document could not be read reliably, so items are not listed here.'],
+  [/differing item sequences/i, 'The agenda documents list different items, so items are not listed here.'],
+];
+
+export function agendaSourceNote(meeting: Pick<Meeting, 'warnings'>) {
+  for (const warning of meeting.warnings) {
+    const note = AGENDA_SOURCE_NOTES.find(([pattern]) => pattern.test(warning));
+    if (note) return note[1];
+  }
+  return null;
+}
+
 export function residentWarning(value: string) {
   if (/playback timestamps/i.test(value)) return 'A recording start time may differ from the scheduled meeting time; check the official agenda.';
   if (/CivicClerk.*wall.clock/i.test(value)) return 'The scheduled start time has not been verified; check the official agenda.';
   if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
   // Parser outcomes are explained by the agenda section itself (see agendaAvailability).
   if (/No parser exists|review required|agenda items require review|No complete .* agenda recognized/i.test(value)) return '';
+  // Shown briefly in the agenda history card instead (see agendaSourceNote).
+  if (AGENDA_SOURCE_NOTES.some(([pattern]) => pattern.test(value))) return '';
   if (/A source PDF changed/i.test(value)) return 'Source documents changed; some agenda details still need to be refreshed.';
 
   const retainedPages = value.match(/Text retained for (\d+) of (\d+) source pages/i);

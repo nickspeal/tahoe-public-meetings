@@ -49,6 +49,21 @@ test('agenda item topic tags follow the shared catalog order', async () => {
   assert.deepEqual([...row.querySelectorAll('.agenda-summary-topics .tag')].map((tag) => tag.textContent), expected.map((id) => data.topics.find((topic) => topic.id === id)?.name ?? id));
 });
 
+test('agenda items show only the agency\'s own numbers and one row of topics', async () => {
+  const meeting = data.meetings.find((candidate) => candidate.kind !== 'forecast' &&
+    candidate.items.some((item) => !item.suppressed && item.number) && candidate.items.some((item) => !item.suppressed && !item.number));
+  assert.ok(meeting, 'export should include a meeting mixing numbered and unnumbered items');
+  const document = await meetingDocument(meeting);
+  for (const item of meeting.items.filter((candidate) => !candidate.suppressed)) {
+    const row = document.querySelector(`[data-item-id="${item.id}"]`);
+    if (!row) continue; // a section heading shown as its section's header
+    assert.equal(row.querySelector('.agenda-order').textContent, item.number, `${item.id} shows only its printed number`);
+    assert.equal(row.querySelectorAll('.tag').length, item.topics.length, `${item.id} lists each topic once`);
+  }
+  assert.doesNotMatch(document.querySelector('.meeting-time').textContent, /America\/Los_Angeles|P[DS]T/);
+  assert.doesNotMatch(document.querySelector('.detail-main').textContent, /AGENDA AT A GLANCE|Not categorized/i);
+});
+
 test('a meeting without listed items explains whether its agenda is posted, pending, or only on the agency site', async () => {
   const listed = (meeting) => meeting.items.some((item) => !item.suppressed);
   const stored = data.meetings.filter((meeting) => meeting.kind !== 'forecast' && !listed(meeting) && meeting.status !== 'canceled');

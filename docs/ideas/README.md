@@ -21,3 +21,4 @@ Copy [TEMPLATE.md](TEMPLATE.md) for new ideas. Keep stable IDs and append dated 
 | IDEA-013 | [Direct links to each item's supporting documents](IDEA-013-item-supporting-documents.md) | proposed; agenda-page links shipped locally | MVP polish |
 | IDEA-014 | [Slim the public export and bound stored page text](IDEA-014-export-slimming.md) | parked; monitor thresholds | Operations |
 | IDEA-015 | [Escalate disputed topic tags to a larger model](IDEA-015-topic-escalation.md) | parked; Sonnet fallback shipped locally | Operations |
+| IDEA-016 | [Item summaries from staff reports](IDEA-016-item-summaries-from-staff-reports.md) | proposed | MVP polish |

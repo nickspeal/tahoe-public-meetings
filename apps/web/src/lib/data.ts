@@ -90,7 +90,7 @@ export function sourceDoc(meeting: Meeting, documentId: string) {
   return meeting.documents.find((document) => document.id === documentId);
 }
 
-export { citationHref, isPdfDocument, itemSourceLink } from './source-links';
+export { citationHref, isPdfDocument, itemSourceLink, staffReportLink } from './source-links';
 
 /** Parser outcomes that a reader may want explained next to the agenda history, in brief. */
 const AGENDA_SOURCE_NOTES: [RegExp, string][] = [

@@ -227,6 +227,15 @@ button, a, select, summary { touch-action: manipulation; }
 .agenda-source-link.source-document { text-decoration: none; }
 .agenda-source-link.source-document:hover { border-color: #9eb4a8; }
 .agenda-source-link.source-document:hover strong { text-decoration: underline; }
+/* The agenda link and, when verified, the item's own staff report, side by side where they fit. */
+.agenda-source-links { display: flex; flex-wrap: wrap; column-gap: 12px; }
+.agenda-source-links > .agenda-source-link.source-document { flex: 1 1 260px; }
+.agenda-source-links > .source-document + .source-document { border-top: 1px solid var(--line); }
+.agenda-attachments { margin-top: 12px; font-size: 14px; }
+.agenda-attachments-label { margin: 0 0 4px; color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.agenda-attachments ul { margin: 0; padding-left: 18px; }
+.agenda-attachments li { margin: 2px 0; }
+.agenda-attachments .file-type { margin-left: 6px; color: var(--muted); font-size: 12px; }
 .agenda-source-missing { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
 .tag { padding: 4px 8px; border-radius: 3px; background: #e6eee8; color: var(--forest-dark); font-size: 13px; font-weight: 650; }
 .summary-block { margin-top: 12px; padding: 14px 15px; border-left: 3px solid #76978a; background: #eff3ee; }

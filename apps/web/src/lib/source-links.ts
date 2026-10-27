@@ -38,3 +38,15 @@ export function itemSourceLink(meeting: Pick<Meeting, 'documents'>, item: Pick<A
     ? { href: citationHref(document.url, citation.page), label, detail: `Page ${citation.page} · official PDF` }
     : { href: document.url, label, detail: 'Official agency webpage' };
 }
+
+/** Direct link to the item's own staff report (IDEA-013), shown as a second card beside the agenda link. */
+export function staffReportLink(item: Pick<AgendaItem, 'staffReport'>) {
+  const report = item.staffReport;
+  if (!report) return null;
+  const label = report.kind === 'executive-summary' ? 'Read the executive summary' : 'Read the staff report';
+  const inPacket = report.page > 1 || report.pageEnd < report.pageCount;
+  const detail = inPacket
+    ? `${report.pageEnd > report.page ? `Pages ${report.page}–${report.pageEnd}` : `Page ${report.page}`} of the agenda packet · official PDF`
+    : 'Official PDF';
+  return { href: citationHref(report.url, report.page), label, detail };
+}

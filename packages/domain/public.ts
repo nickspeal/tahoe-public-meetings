@@ -18,6 +18,38 @@ export interface AgendaItem {
   suppressed?: boolean;
   /** The agenda says this item will not be heard before this time (meeting's local time), with the source line that says so. */
   timeCertain?: { time: string; quote: string; documentId: string | null; page: number | null } | null;
+  /** The item's own staff report, present only when its mapping was verified (IDEA-013). */
+  staffReport?: StaffReport;
+  /** Every file the agenda links under this item, in agenda order, when their positions were verified. */
+  attachments?: ItemAttachment[];
+}
+export interface ItemAttachment {
+  url: string;
+  /** The file name as printed in the agenda. */
+  name: string;
+  /** The printed name made readable, e.g. "Staff report: Paradise Ave Abandonment". */
+  label: string;
+  /** From the printed name's extension; agencies may serve Word files converted to PDF. */
+  fileType: 'PDF' | 'Word' | 'Excel' | 'PowerPoint' | null;
+}
+/**
+ * An agenda item's own staff report: a separate official PDF (`page` 1) or a page range of the
+ * agenda packet. Summaries with method `claude-staff-report-v1` cite it by `id`; `pages` holds
+ * only the pages those citations quote.
+ */
+export interface StaffReport {
+  id: string;
+  kind: 'executive-summary' | 'staff-report' | 'staff-memo';
+  title: string;
+  url: string;
+  mediaType: 'application/pdf';
+  /** First page of the report in the document at `url`. */
+  page: number;
+  pageEnd: number;
+  pageCount: number;
+  sha256: string;
+  fetchedAt: string;
+  pages: { number: number; text: string }[];
 }
 export interface PublicDocument {
   id: string;

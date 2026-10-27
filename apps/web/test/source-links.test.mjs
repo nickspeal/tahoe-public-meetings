@@ -65,3 +65,15 @@ test('stored HTML source sections never get PDF fragments even on extensionless 
     { href: 'https://example.gov/agenda/42', label: 'Read in the agenda', detail: 'Official agency webpage' });
   assert.equal(links.citationHref('https://example.gov/agenda/42', 1, 'text/html'), 'https://example.gov/agenda/42');
 });
+
+test('a verified staff report gets its own card: a separate PDF, or its pages in the agenda packet', () => {
+  const report = { id: 'i:staff-report', kind: 'executive-summary', title: 'Item 5 executive summary', mediaType: 'application/pdf',
+    url: 'https://slt.granicus.com/services/legistar/download/pdf/4399371/Item_5-_Executive_Summary.pdf', page: 1, pageEnd: 3, pageCount: 3,
+    sha256: 'a'.repeat(64), fetchedAt: '2026-10-27T00:00:00Z', pages: [] };
+  assert.deepEqual(links.staffReportLink({ staffReport: report }),
+    { href: `${report.url}#page=1`, label: 'Read the executive summary', detail: 'Official PDF' });
+  const memo = { ...report, kind: 'staff-memo', url: 'https://example.gov/packet.pdf', page: 21, pageEnd: 36, pageCount: 197 };
+  assert.deepEqual(links.staffReportLink({ staffReport: memo }),
+    { href: 'https://example.gov/packet.pdf#page=21', label: 'Read the staff report', detail: 'Pages 21–36 of the agenda packet · official PDF' });
+  assert.equal(links.staffReportLink({}), null);
+});

@@ -118,12 +118,17 @@
       "Glyphosate",
       "Incline Village Mobility Hub / 771 Southwood Blvd",
       "Vacancy Tax",
-      "Palisades redevelopment"
+      "Palisades redevelopment",
+      "License plate readers and other surveillance cameras or technology"
     ],
     "titlePatterns": [
       {
         "id": "public-interest-watchlist",
         "pattern": "\\b(?:glyphosate|Incline Village Mobility Hub|771\\s+Southwood(?:\\s+(?:Blvd\\.?|Boulevard))?|vacancy tax|Palisades\\s+(?:Tahoe\\s+)?redevelopment)\\b"
+      },
+      {
+        "id": "surveillance",
+        "pattern": "\\b(?:license\\s+plates?|A?LPRs?|Flock\\s+(?:Safety|Group)|facial\\s+recognition|(?:security|speed|red[-\\s]light|body[-\\s]?worn)\\s+cameras?|(?<!disease\\s)(?<!mosquito\\s)(?<!vector\\s)(?<!virus\\s)surveillance)\\b"
       }
     ],
     "judgmentExamples": [

@@ -32,7 +32,7 @@ Editing the catalog or [the prompt](../workers/ingestion/tahoe_ingest/prompts/to
 
 ## Agencies and bodies
 
-Edit [`packages/domain/agencies.json`](../packages/domain/agencies.json). Each entry has a stable `id`, display names, `follow`, optional operational URLs, optional `discoveryAdapter`, and an optional regular meeting `schedule` (see [below](#meeting-schedules-and-expected-meetings)).
+Edit [`packages/domain/agencies.json`](../packages/domain/agencies.json). Each entry has a stable `id`, display names, optional `aliases` (other names readers may type into the website's agency filter, such as acronyms and full official names), `follow`, optional operational URLs, optional `discoveryAdapter`, and an optional regular meeting `schedule` (see [below](#meeting-schedules-and-expected-meetings)).
 
 The registry preserves **all 41 CSV rows**, plus the existing Town of Truckee entry and two explicitly requested committee entries, for **44 entries**. Six entries are disabled by the maintainer's source-review decisions with `follow: false`; they remain in the registry for provenance. Rows include distinct boards, offices, newsletters, and organizations; these are not necessarily 41 separate jurisdictions or meeting bodies. No rows were merged or dropped. `legacy` preserves all six original CSV cells, original row number, and the supplied February 1, 2023 update date. All imported metadata is explicitly unverified. It is research input only: the software never reads `legacy.meetingSchedule`. Regular meeting patterns live in the separate, validated `schedule` field. Original website and notification cells may contain broken or misplaced links.
 

@@ -61,6 +61,10 @@ def agency_catalog() -> tuple[dict, ...]:
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", agency["id"]) or not all(
                 agency.get(k) for k in ("name", "shortName")) or not isinstance(agency.get("follow"), bool):
             raise ValueError(f"invalid agency: {agency}")
+        # Other names readers search for (acronyms, full names); the website's agency filter matches them.
+        aliases = agency.get("aliases", [])
+        if not isinstance(aliases, list) or not all(isinstance(a, str) and a.strip() for a in aliases):
+            raise ValueError(f"invalid aliases: {agency['id']}")
         if agency.get("discoveryAdapter") not in (None, "ttd", "slt", "truckee", "configured"):
             raise ValueError(f"unknown discovery adapter: {agency['id']}")
         if agency.get("discoveryAdapter") == "configured":

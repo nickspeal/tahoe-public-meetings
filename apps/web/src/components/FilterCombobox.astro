@@ -1,0 +1,30 @@
+---
+/**
+ * A filter you can type into. The hidden <select> holds the value, so timeline-filters.ts reads and
+ * listens to it as before; filter-combobox.ts builds the list from its options. `terms` are other
+ * names an option matches (acronyms, full names), and `always` options stay listed while filtering.
+ */
+interface Option { value: string; label: string; terms?: string[]; always?: boolean; data?: Record<string, string> }
+interface Props { id: string; name: string; label: string; allLabel: string; noun: string; options: Option[]; selected?: string }
+const { id, name, label, allLabel, noun, options, selected = '' } = Astro.props as Props;
+const selectedLabel = options.find((option) => option.value === selected && selected)?.label ?? '';
+const dataAttributes = (data: Record<string, string> = {}) => Object.fromEntries(Object.entries(data).map(([key, value]) => [`data-${key}`, value]));
+---
+<div class:list={['filter-combobox', { 'has-value': selectedLabel }]} data-filter-combobox data-noun={noun}>
+  <label for={`${id}-input`}>{label}</label>
+  <div class="combobox-field">
+    <input id={`${id}-input`} type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls={`${id}-list`} autocomplete="off" autocapitalize="off" spellcheck="false" placeholder={allLabel} data-placeholder={allLabel} value={selectedLabel} />
+    <button type="button" class="combobox-clear" tabindex="-1" aria-label={`Clear ${label.toLowerCase()} filter`} hidden={!selectedLabel}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button>
+    <button type="button" class="combobox-toggle" tabindex="-1" aria-label={`Show all ${noun}`} aria-controls={`${id}-list`} aria-expanded="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg></button>
+  </div>
+  <div class="combobox-popup" hidden>
+    <p class="combobox-empty" hidden></p>
+    <ul class="combobox-list" id={`${id}-list`} role="listbox" aria-label={label}></ul>
+  </div>
+  <span class="sr-only" role="status" aria-live="polite"></span>
+  <select id={id} name={name} hidden>
+    <option value="">{allLabel}</option>
+    {options.map((option) => <option value={option.value} selected={option.value === selected} data-terms={option.terms?.length ? option.terms.join('\n') : undefined} data-always={option.always ? '' : undefined} {...dataAttributes(option.data)}>{option.label}</option>)}
+  </select>
+</div>
+<script src="../scripts/filter-combobox.ts"></script>

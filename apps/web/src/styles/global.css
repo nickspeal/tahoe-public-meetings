@@ -54,8 +54,36 @@ button, a, select, summary { touch-action: manipulation; }
 /* Meeting timeline */
 .timeline-page { padding: 28px 0 0; }
 .timeline-filters { display: grid; grid-template-columns: repeat(2, minmax(110px, 1fr)) auto; align-items: end; gap: 10px; }
-.timeline-filters label { display: grid; gap: 5px; color: var(--muted); font-size: 13px; font-weight: 650; }
-.timeline-filters select { width: 100%; min-height: 42px; padding: 8px 30px 8px 10px; border: 1px solid #bacbc1; border-radius: 4px; background: var(--panel); color: var(--ink); font-size: 15px; }
+/* Type-to-filter dropdowns (FilterCombobox.astro) */
+.filter-combobox { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; min-width: 0; }
+.filter-combobox > label { color: var(--muted); font-size: 13px; font-weight: 650; }
+.combobox-field { position: relative; display: flex; align-items: center; min-height: 44px; border: 1px solid #bacbc1; border-radius: 6px; background: var(--panel); box-shadow: 0 1px 2px rgb(23 45 43 / 6%); transition: border-color .12s, box-shadow .12s; }
+.combobox-field:hover { border-color: #93ab9f; }
+.combobox-field:focus-within { border-color: var(--forest); box-shadow: 0 0 0 3px rgb(36 83 74 / 16%); }
+.filter-combobox.has-value .combobox-field { border-color: #8fb0a2; background: #f3f8f4; }
+.combobox-field input { flex: 1; min-width: 0; height: 42px; padding: 0 4px 0 12px; border: 0; border-radius: 6px; background: transparent; color: var(--ink); font: inherit; font-size: 16px; text-overflow: ellipsis; }
+.combobox-field input:focus { outline: none; }
+.combobox-field input::placeholder { color: var(--subtle); opacity: 1; }
+.filter-combobox.has-value input:not(:focus) { color: var(--forest-dark); font-weight: 650; }
+.combobox-clear, .combobox-toggle { display: inline-grid; place-items: center; flex: 0 0 auto; width: 32px; height: 42px; padding: 0; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.combobox-toggle { width: 36px; border-left: 1px solid #e1e8e3; }
+.combobox-clear:hover, .combobox-toggle:hover { color: var(--forest-dark); }
+.combobox-clear svg, .combobox-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.combobox-toggle svg { transition: transform .15s; }
+.filter-combobox.is-open .combobox-toggle svg { transform: rotate(180deg); }
+.combobox-popup { position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; width: max(100%, min(360px, calc(100vw - 32px))); border: 1px solid #c3d2c9; border-radius: 8px; background: var(--panel); box-shadow: 0 12px 30px rgb(23 45 43 / 16%), 0 2px 6px rgb(23 45 43 / 8%); overflow: hidden; }
+.timeline-filters > .filter-combobox:nth-of-type(2) .combobox-popup { left: auto; right: 0; }
+.combobox-list { max-height: min(360px, 55vh); margin: 0; padding: 5px; overflow-y: auto; overscroll-behavior: contain; list-style: none; }
+.combobox-option { position: relative; display: grid; gap: 1px; padding: 8px 10px 8px 32px; border-radius: 5px; color: var(--ink); cursor: pointer; font-size: 15px; line-height: 1.35; }
+.combobox-option.is-active { background: var(--tint); color: var(--forest-dark); }
+.combobox-option[aria-selected="true"] { color: var(--forest-dark); font-weight: 650; }
+.combobox-option[aria-selected="true"]::before { content: ''; position: absolute; left: 12px; top: 13px; width: 10px; height: 5px; border-left: 2px solid var(--forest); border-bottom: 2px solid var(--forest); transform: rotate(-45deg); }
+.combobox-option-hint { color: var(--subtle); font-size: 13px; font-weight: 400; }
+.combobox-option-hint:empty { display: none; }
+.combobox-action { margin-top: 4px; color: var(--forest); font-weight: 650; }
+.combobox-action::after { content: ''; position: absolute; left: 6px; right: 6px; top: -3px; border-top: 1px solid var(--line); }
+.combobox-list:not(:has(> li:not([hidden]))) { display: none; }
+.combobox-empty { margin: 0; padding: 12px 15px 6px; color: var(--muted); font-size: 14px; }
 .clear-filters { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 11px; border: 1px solid #bacbc1; border-radius: 4px; background: transparent; color: var(--forest-dark); cursor: pointer; font-size: 13px; font-weight: 650; text-decoration: none; }
 .clear-filters:hover { background: var(--tint); }
 .timeline-count { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding-top: 21px; padding-bottom: 10px; color: var(--muted); font-size: 14px; }

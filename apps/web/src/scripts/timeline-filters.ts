@@ -34,6 +34,8 @@ if (topicSelect && agencySelect) {
   if (agency && [...agencySelect.options].some((option) => option.value === agency)) agencySelect.value = agency;
   // `expected=1` is the bookmark from the former "Show expected meetings" checkbox.
   let showAwaiting = params.get('upcoming') === 'all' || params.get('expected') === '1';
+  // The type-to-filter boxes (filter-combobox.ts) show the values just read from the URL.
+  for (const select of [topicSelect, agencySelect]) select.dispatchEvent(new Event('filter:sync'));
   let earlierLimit = 0;
 
   function applyFilters() {

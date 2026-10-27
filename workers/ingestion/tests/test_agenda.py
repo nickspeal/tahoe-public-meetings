@@ -76,3 +76,24 @@ def test_reparse_clears_every_parse_agenda_failure_warning():
     in_parse_agenda = source[source.index("def parse_agenda"):]
     warnings = re.findall(r'_result\(\[\], False, f?"([^"]+)"\)', in_parse_agenda)
     assert warnings and all(STALE.search(w) for w in warnings), warnings
+
+
+def test_legacy_parsers_name_sections_as_printed():
+    bundle = json.loads(FIXTURE.read_text())
+    meetings = {(m["agency"], m["id"]): m for m in bundle["meetings"]}
+
+    def sections(agency, meeting_id):
+        meeting = meetings[(agency, meeting_id)]
+        return {i["source_number"] or i["title"]: i["section"]
+                for i in parse_agenda(agency, meeting["documents"], meeting["pages"]).items}
+
+    # Closed session items followed "Agenda Planning Calendar" when "Closed Session" was not a known heading.
+    slt = sections("slt", "2295")
+    assert [slt[str(n)] for n in range(21, 25)] == ["Closed Session"] * 4
+    assert slt["15"] == "Public Hearing"
+    special = sections("slt", "2351")  # a special meeting's shorter headings
+    assert (special["1"], special["2"], special["4"]) == ("Closed Session", "Consent", "New Business")
+    # TTD keeps acronyms and drops the packet's "Page" column header.
+    ttd = sections("ttd", "6049")
+    assert ttd["IV.A"] == "Tahoe Transportation District (TTD) Consent Items"
+    assert ttd["V.A"] == "Tahoe Transportation District Business Items"

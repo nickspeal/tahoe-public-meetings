@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 from .agenda_custom import CUSTOM_PARSERS
 from .agenda_layouts import LAYOUTS
-from .outline import cover_matches, parse_layout
+from .outline import cover_matches, parse_layout, title_case
 
 
 @dataclass
@@ -79,7 +79,9 @@ def parse_slt(document_id: str, pages: list[dict]) -> ParseResult:
         "Call to Order/Pledge of Allegiance", "Roll Call", "Closed Session Report", "Proclamations",
         "Public Communications", "City Commission Reports", "Consent Agenda", "Regular-Unfinished Business",
         "Regular-New Business", "Agenda Planning Calendar", "Updates and Announcements",
-        "Adjournment",
+        "Adjournment", "Presentations", "Public Hearing", "Public Hearings", "Closed Session",
+        # Special meetings use shorter headings.
+        "Call to Order / Pledge of Allegiance", "Consent", "New Business", "Unfinished Business",
     }
     items = []
     section = "Opening"
@@ -126,12 +128,13 @@ def parse_slt(document_id: str, pages: list[dict]) -> ParseResult:
             items.append(_item(None, len(items) + 1, title, title, document_id, line.page, content))
             continue
         if content.startswith("Updates and Announcements"):
-            items.append(_item(None, len(items) + 1, "Updates and Announcements", content,
-                               document_id, line.page, content))
+            items.append(_item(None, len(items) + 1, content, content, document_id, line.page, content))
             continue
         if content in headings:
-            if content in {"Proclamations", "Public Communications", "City Commission Reports", "Consent Agenda",
-                           "Regular-Unfinished Business", "Regular-New Business", "Agenda Planning Calendar", "Adjournment"}:
+            if content in {"Proclamations", "Presentations", "Public Communications", "City Commission Reports",
+                           "Consent Agenda", "Consent", "Public Hearing", "Public Hearings", "Regular-Unfinished Business",
+                           "Unfinished Business", "Regular-New Business", "New Business", "Agenda Planning Calendar",
+                           "Closed Session", "Adjournment"}:
                 section = content
             items.append(_item(None, len(items) + 1, section, content, document_id, line.page, content))
             if content == "Adjournment" and seen_agenda:
@@ -288,7 +291,7 @@ def parse_ttd(document_id: str, pages: list[dict]) -> ParseResult:
     current_section_title = None
     for kind, number, title, page, quote in entries:
         if kind == "section":
-            current_section_title = title.title()
+            current_section_title = title_case(title)
             if number in sections_with_children:
                 continue
         items.append(_item(number, len(items) + 1, current_section_title, title, document_id, page, quote))

@@ -194,7 +194,7 @@ COMMON_SHORT = {"A", "AN", "AND", "THE", "FOR", "FROM", "WITH", "OF", "TO", "IN"
                 "ITEM", "ACT", "PLAN", "LAND", "PARK", "LAKE", "CITY", "BIKE", "CALL", "ROLL", "OPEN", "TEAM", "AREA",
                 "LONG", "HEAR", "STAFF", "BOARD", "FUND", "UNIT", "WORK", "YEAR", "LEGAL", "CODE", "ROAD", "ALL",
                 "ANY", "NOT", "ITS", "OUR", "BUT", "AD", "HOC", "ONE", "TWO", "USE", "LAW", "END", "LIFE", "FIRE",
-                "WATER", "MAIN", "SIDE", "TOWN", "BUS", "AIR", "FISH", "GAME", "TAX", "PAY", "RISK"}
+                "WATER", "MAIN", "SIDE", "TOWN", "BUS", "AIR", "FISH", "GAME", "TAX", "PAY", "RISK", "LINK", "AS"}
 
 
 def section_name(title: str) -> str:
@@ -205,7 +205,11 @@ def section_name(title: str) -> str:
         text = lead.group(1)  # "REVENUE SHARING – In approving..." -> "REVENUE SHARING"
     if not _caps(text):
         return text
-    # Keep short acronyms (SVRA, TRPA, EIR) while title-casing ordinary words.
+    return title_case(text)
+
+
+def title_case(text: str) -> str:
+    """Title-case ALL-CAPS words while keeping short acronyms (SVRA, TRPA, EIR, "(TTD)")."""
     return " ".join(word if (len(re.sub(r"\W", "", word)) <= 4 and re.sub(r"\W", "", word) not in COMMON_SHORT
                              and re.sub(r"\W", "", word).isalpha()) else "-".join(p.capitalize() for p in word.split("-"))
                     for word in text.split())

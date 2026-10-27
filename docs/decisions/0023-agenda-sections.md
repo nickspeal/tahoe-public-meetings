@@ -34,7 +34,12 @@ Across the 97 stored local meetings, only El Dorado's three agendas changed pars
 ## Cost and limits
 There are no model calls and no schema change. Existing meetings keep their old sections until they are reparsed. Reparsing marks items whose section changed as revised, and each reparsed meeting uses database operations (decision 0020).
 
-Section names are whatever each parser stores. TTD's names keep a trailing "Page" from the packet's page column, and SLT files its closed-session items under "Agenda Planning Calendar". Both now show as section headers, and both are parser fixes, not display rules.
+Section names are whatever each parser stores, so a parser's naming bug shows up as a section header. The first two found this way are now fixed:
+
+- **South Lake Tahoe** filed closed-session items under "Agenda Planning Calendar", because its parser did not know the "Closed Session", "Public Hearing", or "Presentations" headings. A special meeting's shorter "Consent" and "New Business" headings had the same problem. The parser now knows these headings.
+- **TTD** section names used plain title case ("(Ttd)"). They now use the outline engine's acronym-preserving title case ("(TTD)", "TART"). Stored TTD meetings in production also still showed the packet's "Page" column header ("Consent Items Page") from an older parse; the current parser already removes it.
+
+Both fixes reach stored meetings only through `worker reparse --agency slt --force` and `worker reparse --agency ttd --force`.
 
 ## Revisit when
 Readers prefer collapsed sections by default, an agency nests sections more than one level deep in a way readers need to see, or an addendum format adds items without continuing the numbering.

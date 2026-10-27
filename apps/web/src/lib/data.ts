@@ -181,15 +181,11 @@ function localDateKey(value: string) {
   return `${part('year')}-${part('month')}-${part('day')}`;
 }
 
+/** A label only for a meeting that is not going ahead as listed; ordinary meetings carry none. */
 export function meetingStateLabel(meeting: Meeting) {
   if (meeting.status === 'canceled') return 'Canceled';
   if (meeting.status === 'rescheduled') return 'Rescheduled';
-  const value = meetingDateValue(meeting);
-  const today = localDateKey(new Date().toISOString());
-  const localDay = value ? localDateKey(value) : null;
-  if (meeting.status === 'scheduled' && localDay && localDay < today) return 'Past meeting · outcome not verified';
-  if (meeting.status === 'scheduled') return 'Scheduled';
-  return 'Status not confirmed';
+  return null;
 }
 
 export function sourceCheckLabel(value: string | null) {

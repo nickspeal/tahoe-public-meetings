@@ -20,6 +20,7 @@ from .topics import CLASSIFIER_VERSION, classify
 from .durations import meeting_duration
 from .time_certain import time_certain
 from .history import HISTORY_SQL, document_history
+from .participation import merged as merged_participation
 from .schedules import PACIFIC, forecast_meetings
 
 
@@ -530,6 +531,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     claude_topics = {r["item_id"]: r["topics"] for r in conn.execute(
         """SELECT a.item_id,a.topics FROM ai_topic_classifications a
         JOIN agenda_items i ON i.id=a.item_id AND i.source_fingerprint=a.source_fingerprint""")}
+    agenda_participation = {r["meeting_id"]: r for r in conn.execute("SELECT meeting_id,version_ids,fields FROM ai_participation")}
     rule_topics = {}
     for r in conn.execute("SELECT item_id,topic_id FROM item_topics"):
         rule_topics.setdefault(r["item_id"], set()).add(r["topic_id"])
@@ -563,12 +565,16 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         timed = time_certain(docs, items)
         for item in items:
             item["timeCertain"] = timed.get(item["id"])
-        participation = _json(m["participation"])
+        # Agenda-read details count only while the documents they came from are still current.
+        extracted = agenda_participation.get(m["id"])
+        extracted = _json(extracted["fields"]) if extracted and set(_json(extracted["version_ids"])) <= {d["id"] for d in docs} else None
+        location, participation = merged_participation(m["location"], _json(m["participation"]), extracted,
+                                                       AGENCIES[m["agency_id"]].get("participation"))
         meetings.append({"id": m["id"], "agencyId": m["agency_id"], "sourceId": m["source_id"], "kind": "confirmed", "title": m["title"],
             "topics": sorted(expand_topics(set(_json(m["declared_topics"])))),
             "startsAt": iso(m["starts_at"]), "date": m["local_date"].isoformat() if m["local_date"] else None,
-            "timezone": m["timezone"], "status": m["status"], "location": m["location"],
-            "officialUrl": m["official_url"], "participation": {k: participation.get(k) for k in ("instructions", "url", "remoteUrl", "deadline")},
+            "timezone": m["timezone"], "status": m["status"], "location": location,
+            "officialUrl": m["official_url"], "participation": participation,
             "minutesUrl": m["minutes_url"], "recordingUrl": m["recording_url"], "lastCheckedAt": iso(m["last_checked_at"]),
             "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": _json(m["warnings"]), "documents": docs, "items": items,
             "history": history_by_meeting.get(m["id"], []),
@@ -584,6 +590,8 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     for meeting in meetings:
         if meeting.get("kind") == "forecast":
             meeting["duration"] = meeting_duration({"agency_id": meeting["agencyId"]}, [])
+            meeting["location"], meeting["participation"] = merged_participation(
+                meeting["location"], meeting["participation"], None, AGENCIES[meeting["agencyId"]].get("participation"))
     return {"schemaVersion": 2, "generatedAt": generated_at, "mode": mode,
             "coverageNote": "Meetings and agenda items shown are limited to the official source documents processed so far. Check each agency's source and meeting warnings for gaps.",
             "agencies": agencies, "topics": TOPICS, "meetings": meetings, "commentPeriods": comment_periods}

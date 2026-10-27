@@ -110,6 +110,10 @@ export function buildCalendarEvent(meeting: Meeting): string {
   if (participationUrl) details.push(`Participation details: ${participationUrl}`);
   const remoteUrl = safeHttpUrl(meeting.participation.remoteUrl);
   if (remoteUrl) details.push(`Remote access: ${remoteUrl}`);
+  if (meeting.participation.phone) details.push(`By phone: ${meeting.participation.phone}`);
+  const watchUrl = safeHttpUrl(meeting.participation.watchUrl ?? null);
+  if (watchUrl) details.push(`Watch live: ${watchUrl}`);
+  if (meeting.participation.email) details.push(`Written comment: ${meeting.participation.email}`);
   if (meeting.participation.deadline) details.push(`Public comment deadline: ${meeting.participation.deadline}`);
   if (!meeting.duration || meeting.duration.source === 'estimated') {
     details.push('Estimated length; agencies do not publish an end time.');

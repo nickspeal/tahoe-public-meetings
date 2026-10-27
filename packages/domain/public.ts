@@ -80,7 +80,11 @@ export interface Meeting {
   status: 'scheduled' | 'canceled' | 'rescheduled' | 'unknown';
   location: string | null;
   officialUrl: string;
-  participation: { instructions: string | null; url: string | null; remoteUrl: string | null; deadline: string | null };
+  /** Source adapter values first, then details read from the agenda (`fromAgenda`), then the agency's standing instructions. */
+  participation: {
+    instructions: string | null; url: string | null; remoteUrl: string | null; deadline: string | null;
+    watchUrl?: string | null; phone?: string | null; email?: string | null; fromAgenda?: boolean;
+  };
   minutesUrl: string | null;
   recordingUrl: string | null;
   lastCheckedAt: string | null;

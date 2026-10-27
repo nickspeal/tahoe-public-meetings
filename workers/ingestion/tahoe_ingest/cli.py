@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, alerts, backfill, evaluate_topics, scheduled
+from . import ai_topics, alerts, backfill, evaluate_topics, participation, scheduled
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -103,6 +103,15 @@ def _parser() -> argparse.ArgumentParser:
     ai.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
     ai.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
                     help="USD; refuse to run once month-to-date AI spend reaches it")
+    part = sub.add_parser("extract-participation", help="Read location, remote access, and public comment details from agendas with Claude")
+    part.add_argument("--agency", help="Only this agency ID")
+    part.add_argument("--meeting", help="Only this meeting ID")
+    part.add_argument("--max-meetings", type=int, help="Extract at most this many pending meetings")
+    part.add_argument("--force", action="store_true", help="Re-extract meetings whose agendas have not changed")
+    part.add_argument("--dry-run", action="store_true", help="Report pending meetings and estimated cost; no API calls")
+    part.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
+    part.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                      help="USD; refuse to run once month-to-date AI spend reaches it")
     scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: seed, discover, capture, classify, export, validate, publish")
     scheduled_run.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."),
                                help="Directory holding config/ and tests/fixtures/ (default: TAHOE_SOURCE_ROOT or the working directory)")
@@ -174,6 +183,11 @@ def main(argv=None) -> int:
             print(json.dumps(ai_topics.classify_topics(
                 conn, agency=args.agency, max_meetings=args.max_meetings, force=args.force, dry_run=args.dry_run,
                 max_cost=args.max_cost, monthly_budget=args.monthly_budget), indent=2))
+            return 0
+        if args.command == "extract-participation":
+            print(json.dumps(participation.extract_participation(
+                conn, agency=args.agency, meeting=args.meeting, max_meetings=args.max_meetings, force=args.force,
+                dry_run=args.dry_run, max_cost=args.max_cost, monthly_budget=args.monthly_budget), indent=2))
             return 0
         if args.command == "run-scheduled":
             return _run_scheduled(conn, args)

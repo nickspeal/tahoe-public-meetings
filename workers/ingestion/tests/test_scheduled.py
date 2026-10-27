@@ -82,7 +82,7 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     json.dumps(summary)  # One JSON line for Cloud Logging.
     steps = {s["name"]: s for s in summary["steps"]}
     assert list(steps) == ["init-db", "seed-fixtures", "one-offs", "comment-periods", "verified-sources", "discover",
-                           "quarantine", "reparse", "reclassify", "classify-topics", "export", "validate", "store", "deploy-hook"]
+                           "quarantine", "reparse", "reclassify", "classify-topics", "participation", "export", "validate", "store", "deploy-hook"]
     # Source failures degrade the run but never stop publication.
     assert summary["status"] == "degraded" and summary["exportId"]
     assert steps["classify-topics"]["status"] == "skipped"

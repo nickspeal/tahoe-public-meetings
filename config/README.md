@@ -46,6 +46,8 @@ python3 scripts/project.py worker agencies
 
 Named built-in discovery covers TTD and the original SLT Council path. Other reviewed sources use the configured adapters described below, including Truckee's Municode index. Setting `follow` alone does not implement discovery: entries with no adapter remain manual sources. Body-specific filters keep unrelated commissions out. Operational URLs were verified during the source review where possible; `legacy` cells remain unverified and are never fetched automatically.
 
+An entry can also carry a standing `participation` block for details the agency publishes on its website rather than in each agenda: `watchUrl` (livestream), `url` (comment form or participation page), `email`, and `instructions`, plus a required official `sourceUrl` and `checkedOn` date (`YYYY-MM-DD`). The export uses these only when neither the source adapter nor the agenda supplies the field ([decision 0021](../docs/decisions/0021-participation-details-from-agendas.md)). Recheck them when the agency changes its process.
+
 Public agency filters and coverage lists include followed agencies with actual stored meetings. A manually added notice's official URL is used as a source fallback when registry URLs are absent. The registry itself is not a claim of comprehensive live coverage. Existing recurring-cost constraints remain under $20/month; expanding the watchlist does not create cloud jobs or approve a larger budget.
 
 ## Source review flags

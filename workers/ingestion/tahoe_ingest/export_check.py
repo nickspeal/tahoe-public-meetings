@@ -74,6 +74,8 @@ def check(data):
         require(duration.get("source") in ("published", "observed", "estimated"), f"{mid}: invalid duration source")
         require(bool(duration.get("basis")), f"{mid}: duration basis required")
         url(meeting.get("officialUrl"), f"{mid}.officialUrl")
+        for key in ("url", "remoteUrl", "watchUrl"):
+            url((meeting.get("participation") or {}).get(key), f"{mid}.participation.{key}", nullable=True)
         require(set(meeting.get("topics", [])) <= topics, f"{mid}: unknown meeting topic")
         require("short-term-rentals" not in meeting.get("topics", []) or "housing" in meeting["topics"], f"{mid}: STR must include housing")
         docs = {d["id"]: d for d in meeting.get("documents", [])}

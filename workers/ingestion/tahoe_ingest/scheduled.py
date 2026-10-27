@@ -13,12 +13,13 @@ stops the run, but an invalid export is never published:
 8. reparse           stored text of meetings without items
 9. reclassify        rule topic tags
 10. classify-topics  Claude tags, only with Claude credentials, within cost guards
-11. export           public JSON (mode "live")
-12. validate         the same checks as scripts/check_export.py, plus a minimum size
-13. store            insert into public_exports, keep the latest 5
-14. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
+11. participation    Claude reads location, remote links, and comment instructions from agendas; same guards
+12. export           public JSON (mode "live")
+13. validate         the same checks as scripts/check_export.py, plus a minimum size
+14. store            insert into public_exports, keep the latest 5
+15. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
 
-Only 11-14 failing makes the run fail.
+Only 12-15 failing makes the run fail.
 """
 from __future__ import annotations
 
@@ -36,7 +37,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import ai_topics
+from . import ai_topics, participation
 from .capture import StoredMeetings, capture_candidates, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
@@ -365,6 +366,18 @@ def apply_quarantine(conn, root: Path):
     return {"records": len(_quarantined(root)), "applied": applied}
 
 
+def extract_participation(conn, options: Options):
+    if not ai_topics.has_credentials():
+        return "skipped", {"reason": "no Claude credentials (API key or workload identity federation)"}
+    try:
+        report = participation.extract_participation(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget)
+    except SystemExit as exc:  # Budget and fatal-API guards stop extraction, not publication.
+        conn.rollback()
+        return "degraded", {"stopped": _short(exc)}
+    status = "degraded" if report.get("failedMeetings") or report.get("stoppedEarly") else "ok"
+    return status, report
+
+
 def classify(conn, options: Options):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); rule tags stay in place"}
@@ -488,6 +501,7 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         run.step("reparse", lambda: _reparse(conn))
         run.step("reclassify", lambda: _reclassify(conn))
         run.step("classify-topics", lambda: classify(conn, options))
+        run.step("participation", lambda: extract_participation(conn, options))
 
         def export():
             nonlocal payload

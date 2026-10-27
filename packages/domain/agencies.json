@@ -1209,6 +1209,13 @@
     "shortName": "Truckee",
     "officialUrl": "https://www.townoftruckee.gov/275/Town-Council",
     "sourceUrl": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes",
+    "participation": {
+      "watchUrl": "https://www.youtube.com/@TTUSDsports/videos",
+      "url": "https://portal.laserfiche.com/k4088/forms/tpYPx",
+      "instructions": "Comment in person at Town Hall (up to three minutes per speaker on each item), or submit written comment through the Town's public comment form.",
+      "sourceUrl": "https://www.townoftruckee.gov/305/Guide-to-Town-Council-Meetings",
+      "checkedOn": "2026-10-27"
+    },
     "discoveryAdapter": "configured",
     "schedule": {
       "source": "learned",

@@ -62,3 +62,5 @@ What new evidence would change the decision?
 [0020: Stay within the Prisma Postgres free operations quota](0020-database-operation-budget.md) keeps the free plan, treats database statements as a budget (bulk reads, no unchanged rewrites, tests that guard query counts), and records the October 2026 near-exhaustion.
 
 [0022: Timeline default view](0022-timeline-default-view.md) opens the timeline on upcoming meetings with posted agendas, folds expected meetings into one reveal for meetings without an agenda, opens earlier meetings ten at a time, and removes the Dates filter.
+
+[0021: Read participation details from agendas with Claude](0021-participation-details-from-agendas.md) (proposed default) fills each meeting's location, remote access, comment instructions, and deadline from its agenda pages with Claude, keeps only fields found verbatim in the source, and adds standing agency details as a fallback.

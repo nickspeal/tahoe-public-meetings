@@ -70,12 +70,21 @@ def agency_catalog() -> tuple[dict, ...]:
             re.compile(config.get("bodyPattern", "."), re.I)
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
+        from urllib.parse import urlparse
         for key in ("officialUrl", "sourceUrl"):
             if agency.get(key) is not None:
-                from urllib.parse import urlparse
                 url = urlparse(agency[key])
                 if url.scheme not in ("http", "https") or not url.netloc:
                     raise ValueError(f"invalid {key}: {agency['id']}")
+        # Standing participation details, from the agency page named in sourceUrl, fill gaps the agenda leaves.
+        if "participation" in agency:
+            standing = agency["participation"]
+            if set(standing) - {"watchUrl", "url", "email", "instructions", "sourceUrl", "checkedOn"} or not standing.get("sourceUrl") \
+                    or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", standing.get("checkedOn", "")):
+                raise ValueError(f"invalid participation: {agency['id']}")
+            for key in ("watchUrl", "url", "sourceUrl"):
+                if key in standing and (urlparse(standing[key]).scheme != "https" or not urlparse(standing[key]).netloc):
+                    raise ValueError(f"invalid participation.{key}: {agency['id']}")
     return tuple(agencies)
 
 

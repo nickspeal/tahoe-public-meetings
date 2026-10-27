@@ -134,3 +134,10 @@ CREATE TABLE IF NOT EXISTS public_exports (
   payload jsonb NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
+-- Participation details Claude read from a meeting's agenda pages (tahoe_ingest.participation).
+-- The export uses a row only while version_ids are still the meeting's current agenda documents.
+CREATE TABLE IF NOT EXISTS ai_participation (
+  meeting_id text PRIMARY KEY REFERENCES meetings(id), version_ids jsonb NOT NULL, prompt_sha256 text NOT NULL,
+  model text NOT NULL, fields jsonb NOT NULL, rejected jsonb NOT NULL DEFAULT '[]'::jsonb,
+  extracted_at timestamptz NOT NULL DEFAULT now()
+);

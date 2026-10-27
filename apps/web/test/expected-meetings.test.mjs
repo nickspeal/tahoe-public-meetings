@@ -110,7 +110,7 @@ test('expected meetings get no meeting page or calendar download', async () => {
     assert.equal(await exists(resolve(root, 'dist', 'meetings', route, 'index.html')), false, `${meeting.id} has no page`);
     assert.equal(await exists(resolve(root, 'dist', 'calendar', meeting.agencyId, `${meeting.sourceId}.ics`)), false);
   }
-  const html = await readFile(resolve(root, 'dist', 'about', 'index.html'), 'utf8');
+  const html = await readFile(resolve(root, 'dist', 'coverage', 'index.html'), 'utf8');
   const confirmed = data.meetings.length - forecasts.length;
   assert.match(html, new RegExp(`${confirmed} meetings from`), 'coverage counts only stored records');
 });

@@ -36,7 +36,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : nu
     <footer class="site-footer">
       <div class="footer-inner">
         <div><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M4 29 15 12l7 10 5-7 9 14H4Z"/><path d="M8 33h24"/></svg></span><span class="brand-name">Tahoe <strong>Public Meetings</strong></span></a></div>
-        <nav class="footer-links" aria-label="Site information"><a href="/about/">About</a><a href="/about/#coverage">Coverage</a><button class="footer-feedback" type="button" data-feedback-open>Send feedback</button></nav>
+        <nav class="footer-links" aria-label="Site information"><a href="/about/">About</a><a href="/coverage/">Coverage</a><button class="footer-feedback" type="button" data-feedback-open>Send feedback</button></nav>
       </div>
       <p class="data-freshness">Meeting data updated <time datetime={data.generatedAt} data-generated-at>{formatDate(data.generatedAt, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' })}</time><span data-generated-ago></span></p>
     </footer>

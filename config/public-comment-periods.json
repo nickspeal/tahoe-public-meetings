@@ -1,1 +1,17 @@
-{"comment_periods": []}
+{
+  "comment_periods": [
+    {
+      "agency": "trpa-governing",
+      "id": "west-shore-trail-meeks-bay-dl-bliss-nop",
+      "title": "West Shore Trail – Meeks Bay to D.L. Bliss State Park EA or EIS/EIR — scoping comment period",
+      "opens_on": "2026-10-20",
+      "closes_on": "2026-11-20",
+      "closes_at": "2026-11-20T17:00:00-08:00",
+      "official_url": "https://www.trpa.gov/wp-content/uploads/West-Shore-Trail_NOP_Final.pdf",
+      "participation_url": "https://www.trpa.gov/westshoretrail-commentform",
+      "instructions": "TRPA and El Dorado County are jointly preparing the environmental document. Submit written comments on its scope and content through the comment form on the TRPA website, by email to rcremeen@trpa.gov, or by mail to the TRPA senior planner at PO Box 5310, Stateline, NV 89449. Include \"West Shore Trail – Meeks Bay to D.L. Bliss State Park EIS/EIR\" in the subject line. Oral comments are also taken at the scoping open house on November 2, 2026, 5:30–7:00 PM, at the Tahoe City Public Utility District, 221 Fairway Drive, Tahoe City, and during public interest comment at the TRPA Advisory Planning Commission meeting on November 12, 2026.",
+      "topics": ["biking", "environment"],
+      "source_quote": "Written comments on the scope and content of\nthe EIS/EIR may be submitted during the scoping period, beginning October 20, 2026, and ending at 5:00 p.m.\non November 20, 2026."
+    }
+  ]
+}

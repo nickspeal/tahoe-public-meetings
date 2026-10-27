@@ -76,7 +76,9 @@ test('meeting topic filters use OR matching, restore query state, and reset with
 
   document.querySelector('#agenda-filter-reset').click();
   assert.ok(checkboxes.every((checkbox) => !checkbox.checked));
-  assert.deepEqual(itemIds(visibleItems(document)), items.map((item) => item.id));
+  // An agenda heading printed as an item ("Consent Calendar") is shown as its section header instead.
+  const listed = items.filter((item) => !document.getElementById(`item-${item.id}`)?.matches('[data-agenda-section]'));
+  assert.deepEqual(itemIds(visibleItems(document)), listed.map((item) => item.id));
   assert.equal(new URLSearchParams(dom.window.location.search).has('topic'), false);
   if (unmatched) assert.equal(dom.window.location.hash, `#item-${unmatched.id}`);
   dom.window.close();
@@ -102,4 +104,51 @@ test('a meeting without captured agenda items has no empty filter controls', asy
   assert.equal(dom.window.document.querySelector('#agenda-topic-filter'), null);
   assert.ok(dom.window.document.querySelector('.empty-panel[data-agenda-availability]'));
   dom.window.close();
+});
+
+function sectionedMeeting() {
+  return publicData.meetings.find((meeting) => {
+    const items = meeting.items.filter((item) => !item.suppressed);
+    const sections = new Set(items.map((item) => item.section).filter(Boolean));
+    return sections.size >= 2 && items.some((item) => item.topics.length) && items.some((item) => !item.topics.length && item.section);
+  });
+}
+
+test('agenda sections group items, hide when no item matches a topic, and open for a deep link', async () => {
+  const meeting = sectionedMeeting();
+  assert.ok(meeting, 'the exported meetings should include an agenda with several named sections');
+  const dom = await openMeeting(meeting);
+  const { document } = dom.window;
+  const sections = [...document.querySelectorAll('[data-agenda-section]')];
+  assert.ok(sections.length >= 2);
+  assert.ok(sections.every((section) => section.open), 'sections start expanded');
+  for (const section of sections) {
+    const name = section.querySelector('.agenda-section-summary h3').textContent;
+    for (const row of section.querySelectorAll('[data-agenda-item]')) {
+      assert.equal(meeting.items.find((item) => item.id === row.dataset.itemId)?.section, name);
+      assert.equal(row.querySelector('.agenda-section-name'), null, 'a nested item does not repeat its section name');
+    }
+  }
+
+  document.querySelector('[data-section-toggle="close"]').click();
+  assert.ok(sections.every((section) => !section.open));
+  document.querySelector('[data-section-toggle="open"]').click();
+  assert.ok(sections.every((section) => section.open));
+
+  const topic = meeting.items.find((item) => item.topics.length && item.section).topics[0];
+  const checkbox = document.querySelector(`#agenda-topic-filter input[value="${topic}"]`);
+  checkbox.checked = true;
+  checkbox.dispatchEvent(new dom.window.Event('change'));
+  for (const section of sections) {
+    const shown = [...section.querySelectorAll('[data-agenda-item]')].filter((item) => !item.hidden).length;
+    assert.equal(section.hidden, shown === 0);
+  }
+  const target = meeting.items.find((item) => item.section && document.getElementById(`item-${item.id}`)?.matches('[data-agenda-item]'));
+  dom.window.close();
+
+  const linked = await openMeeting(meeting, `#item-${target.id}`);
+  const row = linked.window.document.getElementById(`item-${target.id}`);
+  assert.equal(row.open, true);
+  assert.equal(row.closest('[data-agenda-section]').open, true);
+  linked.window.close();
 });

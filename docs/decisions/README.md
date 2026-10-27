@@ -64,3 +64,5 @@ What new evidence would change the decision?
 [0022: Timeline default view](0022-timeline-default-view.md) opens the timeline on upcoming meetings with posted agendas, folds expected meetings into one reveal for meetings without an agenda, opens earlier meetings ten at a time, and removes the Dates filter.
 
 [0021: Read participation details from agendas with Claude](0021-participation-details-from-agendas.md) (proposed default) fills each meeting's location, remote access, comment instructions, and deadline from its agenda pages with Claude, keeps only fields found verbatim in the source, and adds standing agency details as a fallback.
+
+[0023: Agenda sections on meeting pages](0023-agenda-sections.md) (proposed default) groups meeting-page items into collapsible agenda sections. It keeps unsectioned items standalone, ends a section at a time-allocation line, and places addendum items in their named sections.

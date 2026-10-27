@@ -96,3 +96,15 @@ def test_accessible_html_copy_does_not_discard_a_validated_pdf():
     # A second PDF that fails validation still blocks publication.
     docs[1]["media_type"] = "application/pdf"
     assert not parse_agenda(fixture["agency"], docs, pages + html).complete
+
+
+def test_addendum_items_join_their_named_sections():
+    fixture, pages = _fixture("el-dorado-supervisors--2026-10-27-addendum")
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], pages)
+    numbers = [i["source_number"] for i in result.items]
+    assert numbers.index("28") == numbers.index("5") + 1  # "Item 28 is hereby added to Closed Session"
+    assert numbers.index("29") == numbers.index("9") + 1  # after the last General Government consent item
+    # An addendum that skips a number is rejected rather than published without its items.
+    skipped = [dict(p, text=p["text"].replace("    29. 26-1714", "    30. 26-1714")) for p in pages]
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], skipped)
+    assert not result.complete and "addendum numbering" in result.warning

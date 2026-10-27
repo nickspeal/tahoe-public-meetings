@@ -12,6 +12,13 @@ and publishes items only when the whole outline validates:
 * the agenda reaches its ending marker (normally "Adjournment"); and
 * every title has an exact quote from one extracted page.
 
+Unnumbered ALL-CAPS headings name the section of the items below them. A
+heading may carry a parenthetical note ("DEPARTMENT MATTERS (Items in this
+category may be called at any time)"). A standalone time line ("10:00 A.M. -
+TIME ALLOCATION") ends the section, because its items are scheduled on their
+own. Items in an addendum printed after the ending marker join the section of
+the same name, after that section's last item.
+
 Anything else returns an incomplete result with a reason, so the meeting
 keeps its text and official links but no guessed items.
 """
@@ -19,6 +26,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+
+from .time_certain import time_heading
 
 ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10,
          "XI": 11, "XII": 12, "XIII": 13, "XIV": 14, "XV": 15, "XVI": 16, "XVII": 17, "XVIII": 18,
@@ -72,6 +81,7 @@ class Layout:
     min_items: int = 3
     indent_tolerance: int = 3
     after_end: tuple["Appendix", ...] = ()
+    addendum: str | None = None  # regex for a heading after the ending marker that adds numbered items
     custom: str | None = None
 
 
@@ -170,6 +180,11 @@ def _cleanup(layout: Layout, title: str, top: bool = True) -> str:
     return title.strip(" -–—:*")
 
 
+def _without_note(text: str) -> str:
+    """"DEPARTMENT MATTERS (Items in this category may be called at any time)" -> "DEPARTMENT MATTERS"."""
+    return re.sub(r"\s*\([^()]*\)$", "", text)
+
+
 def _caps(text: str) -> bool:
     letters = [c for c in re.sub(r"\([^)]*\)", "", text) if c.isalpha()]
     return len(letters) >= 4 and all(c.isupper() for c in letters)
@@ -221,6 +236,19 @@ class Parser:
     def is_marker(self, row: Row) -> bool:
         return any(pattern.match(row.clean) for pattern in self.patterns)
 
+    def is_heading(self, text: str) -> bool:
+        if not self.headings:
+            return False
+        base = _without_note(text)
+        # The note form needs a worded heading, so "APN 1318-16-810-060 (Planner: ...)" stays item text.
+        return bool(self.headings.search(text) or (base != text and _caps(base) and self.headings.search(base)))
+
+    def heading_name(self, text: str) -> str | None:
+        """The section a heading line opens; None for one that closes a section ("END CONSENT CALENDAR")."""
+        if re.match(r"(?i)^end\b", text):
+            return None
+        return section_name(_cleanup(self.layout, text if self.headings.search(text) else _without_note(text)))
+
     # -- titles -------------------------------------------------------------
     def title(self, index: int, column: int, clip: int | None, top: bool = True) -> tuple[str, str, int]:
         """Title text, exact quote, and the last row index used."""
@@ -256,7 +284,7 @@ class Parser:
                 break
             row_indent = len(text) - len(text.lstrip())
             outdented = row_indent < column - 2 or row.page_start
-            if ((self.headings and self.headings.search(stripped)) or
+            if (self.is_heading(stripped) or
                     (self.heading_items and self.heading_items.search(stripped))) and (outdented or layout.wrap != "indent"):
                 break
             if self.header and self.header.search(row.clean):
@@ -381,8 +409,8 @@ class Parser:
                 if self.heading_items and self.heading_items.search(stripped):
                     started = True
                 else:
-                    if self.headings and self.headings.search(stripped):
-                        heading = section_name(stripped)
+                    if self.is_heading(stripped):
+                        heading = section_name(stripped if self.headings.search(stripped) else _without_note(stripped))
                     continue
             if self.end.search(stripped):
                 if layout.end_item:
@@ -393,9 +421,11 @@ class Parser:
                 ended = True
                 self.end_row = idx
                 break
-            if self.headings and self.headings.search(stripped):
-                # "END CONSENT CALENDAR" closes a section rather than naming one.
-                heading = None if re.match(r"(?i)^end\b", stripped) else section_name(_cleanup(layout, stripped))
+            if self.headings and time_heading(stripped):
+                heading = None  # items heard at a stated time are not part of the section above
+                continue
+            if self.is_heading(stripped):
+                heading = self.heading_name(stripped)
                 if layout.section_restart:
                     stack = []
                 continue
@@ -415,6 +445,7 @@ class Parser:
         if not ended:
             raise Invalid(f"{layout.name} agenda ending was not found; review required.")
         self.appendices(roots)
+        self.addendum(roots)
         return roots
 
     def choose(self, row, found, stack, level_indent, started):
@@ -527,6 +558,54 @@ class Parser:
                 if not children:
                     raise Invalid(f"{self.layout.name} appendix items were not found; review required.")
                 parent.children.extend(children)
+
+
+    def addendum(self, roots: list[Entry]) -> None:
+        """Numbered items added after the ending marker ("ADDENDUM", then "CLOSED SESSION", "28. ...").
+
+        Numbering continues from the main agenda. Each item is placed after the last
+        main-agenda item in the section of the same name, or before the ending
+        marker when the agenda has no such section. An addendum can also reprint an
+        existing item with a note ("Staff recommending this item be Continued");
+        that item keeps its place in the main agenda.
+        """
+        if not self.layout.addendum:
+            return
+        marker = re.compile(self.layout.addendum)
+        start = next((i for i in range(self.end_row + 1, len(self.rows)) if marker.search(self.rows[i].clean.strip())), None)
+        if start is None:
+            return
+        level = self.layout.levels[0]
+        numbered = [entry for entry in roots if entry.level == 0]
+        listed = {entry.label for entry in numbered}
+        expected = numbered[-1].value + 1 if numbered else 1
+        heading = None
+        added: list[Entry] = []
+        consumed = start
+        for idx in range(start + 1, len(self.rows)):
+            row = self.rows[idx]
+            if idx <= consumed or row.blank:
+                continue
+            stripped = row.clean.strip()
+            match = self.patterns[0].match(row.clean)
+            if match and match.group("v") in listed:
+                _, _, consumed = self.title(idx, match.start("t"), None)
+            elif match:
+                if value_of(level.kind, match.group("v")) != expected or not match.group("t").strip():
+                    raise Invalid(f"{self.layout.name} addendum numbering is not sequential near “{stripped[:60]}”; review required.")
+                title, quote, consumed = self.title(idx, match.start("t"), None)
+                added.append(Entry(0, expected, match.group("v"), title, row.page, quote, None, heading=heading))
+                expected += 1
+            elif self.is_heading(stripped):
+                heading = self.heading_name(stripped)
+            elif time_heading(stripped):
+                heading = None
+        if not added and consumed == start:
+            raise Invalid(f"{self.layout.name} addendum items were not found; review required.")
+        for entry in added:
+            same = [i for i, root in enumerate(roots) if entry.heading and (root.heading or "").casefold() == entry.heading.casefold()]
+            ending = len(roots) - 1 if roots and roots[-1].level < 0 else len(roots)
+            roots.insert(same[-1] + 1 if same else ending, entry)
 
 
 def flatten(layout: Layout, document_id: str, roots: list[Entry]) -> list[dict]:

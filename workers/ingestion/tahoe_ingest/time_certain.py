@@ -36,6 +36,11 @@ _INLINE = [re.compile(p, re.I) for p in (
 )]
 
 
+def time_heading(line: str) -> bool:
+    """A line that only states when the items below it will be heard ("10:00 A.M. - TIME ALLOCATION")."""
+    return any(pattern.search(line) for pattern in _MARKERS)
+
+
 def _label(match: re.Match) -> str:
     return f"{int(match['h'])}:{match['m'] or '00'} {match['ap'].upper()}M"
 

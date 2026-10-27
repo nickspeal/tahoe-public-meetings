@@ -69,13 +69,13 @@ LAYOUTS: dict[str, tuple[Layout, ...]] = {
         Layout("el-dorado-planning", "El Dorado County Legistar agenda",
                cover=(r"County of El Dorado", r"MEETING AGENDA"),
                levels=(LEGISTAR_FILE,), first_pages=20, max_title_lines=8, headings=CAPS_HEADING,
-               min_items=1, skip=r"^County of El Dorado\s+Page \d+|Printed on \d"),
+               min_items=1, skip=r"^County of El Dorado\s+Page \d+|Printed on \d", addendum=r"^ADDENDUM$"),
     ),
     "el-dorado-supervisors": (
         Layout("el-dorado-supervisors", "El Dorado County Legistar agenda",
                cover=(r"County of El Dorado", r"(?i)agenda"),
                levels=(LEGISTAR_FILE,), first_pages=40, max_title_lines=8, headings=CAPS_HEADING,
-               skip=r"^County of El Dorado\s+Page \d+|Printed on \d"),
+               skip=r"^County of El Dorado\s+Page \d+|Printed on \d", addendum=r"^ADDENDUM$"),
     ),
     "ivgid": (
         Layout("ivgid", "IVGID Board of Trustees agenda",

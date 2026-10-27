@@ -4,6 +4,8 @@ function openHashTarget() {
   const target = document.getElementById(id);
   if (target instanceof HTMLDetailsElement) {
     target.open = true;
+    // An item inside a collapsed agenda section.
+    for (let section = target.parentElement?.closest('details'); section; section = section.parentElement?.closest('details')) section.open = true;
     requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
   }
 }

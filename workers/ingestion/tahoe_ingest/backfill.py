@@ -35,12 +35,13 @@ import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from . import ai_topics, scheduled
+from . import ai_topics, records, scheduled
 from .capture import capture_candidates
 from .http import EndpointSkipped
 from .catalog import followed_agencies
 from .core import export_public, init_db, record_failure, stable_id
 from .discovery import discover_slt_range, discover_truckee_range, discover_ttd_range
+from .draft_minutes import link_draft_minutes
 from .scheduled import RUN_LOCK, log
 from .source import download_extract
 from .source_discovery import discover_configured_range
@@ -169,7 +170,8 @@ def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dic
         began = time.monotonic()
         try:
             listed = discover(aid, config, since=options.since, until=options.until)
-            candidates = listed["candidates"]
+            linked = [c for c in listed["candidates"] if c.get("records_only")]  # links for stored meetings only
+            candidates = [c for c in listed["candidates"] if not c.get("records_only")]
             earliest = listed.get("earliestListed")
             report.update(found=len(candidates), earliestListed=earliest,
                           earliestInRange=min((c["date"] for c in candidates if c.get("date")), default=None),
@@ -184,8 +186,12 @@ def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dic
                 if meeting_id in stored.meetings and (not candidate.get("documents") or meeting_id in stored.document_urls
                                                       or scheduled.documents_skipped(candidate, options.max_documents)):
                     report["alreadyStored"] += 1
+                    linked.append(candidate)
                     continue
                 pending.append(candidate)
+            # Minutes and video links of stored meetings need no download.
+            if not options.dry_run and (updated := stored.apply_links(linked, coverage_start=options.since)):
+                report["linksUpdated"] = updated
             conn.commit()
             report["toCapture"] = len(pending)
             plan[aid] = (report, pending)
@@ -222,6 +228,19 @@ def capture_plan(conn, run: scheduled.Run, options: Options, plan: dict, fetch) 
         conn.commit()
         log("WARNING" if result["failed"] or result["captureFailures"] else "INFO",
             f"backfill capture {aid}", agency=aid, result=report)
+
+
+def meeting_records(conn, run: scheduled.Run, options: Options):
+    """The scheduled meeting-records step; with YOUTUBE_API_KEY set, YouTube is read back to --since through the Data API."""
+    key = records.youtube_api_key()
+    report = records.update_meeting_records(conn, options.root, today=datetime.now(scheduled.PACIFIC).date(),
+                                            api_key=key, since=options.since if key else None)
+    if not report["youtubeBodies"] and not report["laserficheBodies"]:
+        return "skipped", {"reason": f"{records.CONFIG} not present"}
+    for error in report["errors"]:
+        run.fail("meeting-records", error)
+    report["youtubeSource"] = "data-api" if key else "feeds"
+    return ("degraded" if report["errors"] else "ok"), report
 
 
 def _agency_status(plan: dict) -> str:
@@ -269,6 +288,8 @@ def backfill(conn, options: Options, *, discover=discover_agency_range, fetch=do
         run.step("quarantine", lambda: scheduled.apply_quarantine(conn, options.root))
         run.step("reparse", lambda: scheduled._reparse(conn))
         run.step("reclassify", lambda: scheduled._reclassify(conn))
+        run.step("meeting-records", lambda: meeting_records(conn, run, options))
+        run.step("draft-minutes", lambda: link_draft_minutes(conn, since=scheduled.COVERAGE_START))
         run.step("classify-topics", lambda: scheduled.classify(conn, options))
 
         def export():

@@ -211,7 +211,7 @@ def forecast_meetings(agency_id: str, schedule: dict | None, record_dates: list[
                 "date": day.isoformat(), "timezone": rule["timezone"], "status": "scheduled", "location": None,
                 "officialUrl": official_url,
                 "participation": {"instructions": None, "url": None, "remoteUrl": None, "deadline": None},
-                "minutesUrl": None, "recordingUrl": None, "lastCheckedAt": None, "updatedAt": generated_at,
+                "minutesUrl": None, "minutesStatus": None, "minutesNote": None, "recordingUrl": None, "lastCheckedAt": None, "updatedAt": generated_at,
                 "change": None, "warnings": [], "documents": [], "items": [],
                 "forecast": {"ruleLabel": rule["label"], "basis": describe(same_label), "source": schedule["source"]},
             }

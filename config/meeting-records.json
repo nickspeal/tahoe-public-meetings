@@ -1,0 +1,25 @@
+{
+  "description": "Recording and minutes sources matched to stored meetings by tahoe_ingest.records (decision 0025). YouTube entries read the channel or playlist feed each run; a video matches a meeting of the agency when its title matches `include` (and not `exclude`) and names the meeting's date. `meetingPattern` limits matches to meetings whose title matches. Laserfiche entries read a folder of year folders whose documents are named 'YYYY-MM-DD - Regular'. Channel IDs were verified on 2026-10-27; several agencies' obvious channels are empty or unrelated, so keep these explicit.",
+  "youtube": [
+    {"agency": "slt", "channelId": "UC3LYne8Ih-kTPLnnuyJW9SQ", "include": "\\bcity council\\b", "exclude": "\\bconcejo\\b"},
+    {"agency": "slt-planning", "channelId": "UC3LYne8Ih-kTPLnnuyJW9SQ", "include": "\\bplanning commission\\b"},
+    {"agency": "truckee", "playlistId": "PLr_DSJ6rtN1Zms9Rs8SazB8Tf1EBfhf6p", "include": "\\btruckee town council\\b"},
+    {"agency": "truckee-tahoe-airport", "playlistId": "PLr_DSJ6rtN1YYUKFqxioyQ-kNF1N0q_Qr", "include": "\\b(?:ttad|truckee tahoe airport)\\b"},
+    {"agency": "douglas-commissioners", "channelId": "UCj6Vp4YBriA8dhsZjB4wKIw", "include": "\\bboard of county commissioners\\b"},
+    {"agency": "douglas-planning", "channelId": "UCj6Vp4YBriA8dhsZjB4wKIw", "include": "\\bplanning commission\\b"},
+    {"agency": "douglas-transportation", "channelId": "UCj6Vp4YBriA8dhsZjB4wKIw", "include": "\\bboard of county commissioners\\b", "meetingPattern": "\\bjoint\\b"},
+    {"agency": "el-dorado-supervisors", "channelId": "UCUMjDk3NUltZJrpw2CL7Zkg", "include": "\\bboard meeting\\b"},
+    {"agency": "washoe-commissioners", "channelId": "UCyj1MIPXwvfcb-bhXNDSzQg", "include": "^board of county commissioners\\b"},
+    {"agency": "washoe-planning", "channelId": "UCyj1MIPXwvfcb-bhXNDSzQg", "include": "^(?:washoe county )?planning commission\\b"},
+    {"agency": "placer-supervisors", "channelId": "UC2yOsPQxXvDt8phGqqKbTTQ", "include": "\\bboard of supervisors\\b"},
+    {"agency": "placer-planning", "channelId": "UC2yOsPQxXvDt8phGqqKbTTQ", "include": "\\bplanning commission\\b", "exclude": "zoning administrator|parcel review|parks commission|municipal advisory|\\bmac\\b"},
+    {"agency": "placer-transportation", "channelId": "UCJDCugElcgh2hsb5i7LaOLw", "include": "\\b(?:pctpa|placer county transportation planning agency)\\b", "exclude": "\\bsprta\\b|south placer regional"},
+    {"agency": "trpa-governing", "playlistId": "PLKbZed26aeuA8fh-HWQcwdhIwQM6uFTdL", "include": "\\bgoverning board\\b"},
+    {"agency": "trpa-advisory", "playlistId": "PLKbZed26aeuC-_H0pVaaKhTScREvsGH-k", "include": "\\badvisory planning commission\\b"},
+    {"agency": "stpud", "channelId": "UCCTZ5fNgs42NvLIseQd7OIw", "include": "\\bboard meeting\\b", "exclude": "\\bforum\\b"},
+    {"agency": "california-fish-game", "channelId": "UCTrLyrErKM3UNqI-3gBWLSg", "include": "\\bcommittee\\b"}
+  ],
+  "laserfiche": [
+    {"agency": "truckee", "repo": "r-6a91ddbc", "folderId": 59909164}
+  ]
+}

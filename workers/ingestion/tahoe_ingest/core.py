@@ -23,6 +23,7 @@ from .start_times import agenda_start_time
 from .history import HISTORY_SQL, document_history
 from .participation import merged as merged_participation
 from .schedules import PACIFIC, forecast_meetings
+from .records import links_of, merged as merged_links
 
 
 TOPICS = public_topics()
@@ -246,26 +247,29 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
     if partial and old and not row.get("participation") and not any(participation.values()):
         participation = old["participation"]
     location = row.get("location") if row.get("location") is not None else old["location"] if partial and old else None
-    minutes_url = row.get("minutes_url") or (old["minutes_url"] if partial and old else None)
-    recording_url = row.get("recording_url") or (old["recording_url"] if partial and old else None)
+    # A capture without a link never removes one; see tahoe_ingest.records for precedence.
+    links = merged_links(dict(old) if old else {}, links_of(row))
     meeting_warnings = list(row.get("warnings", []))
     if row.get("source_warning"):
         meeting_warnings.append(row["source_warning"])
-    conn.execute("""INSERT INTO meetings(id,agency_id,source_id,title,starts_at,local_date,timezone,status,location,official_url,participation,minutes_url,recording_url,last_checked_at,change,warnings)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    conn.execute("""INSERT INTO meetings(id,agency_id,source_id,title,starts_at,local_date,timezone,status,location,official_url,participation,minutes_url,minutes_status,minutes_note,recording_url,last_checked_at,change,warnings)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT(id) DO UPDATE SET title=excluded.title, starts_at=excluded.starts_at, local_date=excluded.local_date, timezone=excluded.timezone,
         status=excluded.status, location=excluded.location, official_url=excluded.official_url,
-        participation=excluded.participation, minutes_url=excluded.minutes_url, recording_url=excluded.recording_url,
+        participation=excluded.participation, minutes_url=excluded.minutes_url, minutes_status=excluded.minutes_status,
+        minutes_note=excluded.minutes_note, recording_url=excluded.recording_url,
         last_checked_at=GREATEST(excluded.last_checked_at,meetings.last_checked_at), change=excluded.change, warnings=excluded.warnings,
         updated_at=CASE WHEN meetings.title IS DISTINCT FROM excluded.title OR meetings.starts_at IS DISTINCT FROM excluded.starts_at
           OR meetings.local_date IS DISTINCT FROM excluded.local_date
           OR meetings.status IS DISTINCT FROM excluded.status OR meetings.participation IS DISTINCT FROM excluded.participation
           OR meetings.location IS DISTINCT FROM excluded.location OR meetings.official_url IS DISTINCT FROM excluded.official_url
-          OR meetings.minutes_url IS DISTINCT FROM excluded.minutes_url OR meetings.recording_url IS DISTINCT FROM excluded.recording_url
+          OR meetings.minutes_url IS DISTINCT FROM excluded.minutes_url OR meetings.minutes_status IS DISTINCT FROM excluded.minutes_status
+          OR meetings.minutes_note IS DISTINCT FROM excluded.minutes_note OR meetings.recording_url IS DISTINCT FROM excluded.recording_url
           THEN now() ELSE meetings.updated_at END""",
         (meeting_id, aid, source_id, row["title"], start, local_date, zone_name, status,
          location, row.get("source_meeting_url") or row.get("official_url") or (old["official_url"] if old else None), json.dumps(participation),
-         minutes_url, recording_url, checked_at, change, json.dumps(meeting_warnings)))
+         links["minutes_url"], links["minutes_status"], links["minutes_note"], links["recording_url"],
+         checked_at, change, json.dumps(meeting_warnings)))
 
     if "topics" in row:
         supplied_topics = row["topics"]
@@ -583,7 +587,9 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             "startsAt": iso(start), "date": m["local_date"].isoformat() if m["local_date"] else None,
             "timezone": m["timezone"], "status": m["status"], "location": location,
             "officialUrl": m["official_url"], "participation": participation,
-            "minutesUrl": m["minutes_url"], "recordingUrl": m["recording_url"], "lastCheckedAt": iso(m["last_checked_at"]),
+            "minutesUrl": m["minutes_url"], "minutesStatus": (m["minutes_status"] or "approved") if m["minutes_url"] else None,
+            "minutesNote": m["minutes_note"] if m["minutes_url"] else None,
+            "recordingUrl": m["recording_url"], "lastCheckedAt": iso(m["last_checked_at"]),
             "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": warnings, "documents": docs, "items": items,
             "history": history_by_meeting.get(m["id"], []),
             "duration": meeting_duration(m, [{"title": i["title"], "section": i["section"]} for i in items])})

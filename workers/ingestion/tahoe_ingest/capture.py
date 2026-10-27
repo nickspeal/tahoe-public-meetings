@@ -12,10 +12,11 @@ from datetime import date, datetime, timezone
 from zoneinfo import ZoneInfo
 
 from .agenda import ParseResult, parse_agenda
-from .core import ingest_bundle, record_failure
+from .core import ingest_bundle, record_failure, stable_id
 from .discovery import discover_slt, discover_truckee, discover_ttd
 from .source_discovery import discover_configured
 from .http import EndpointSkipped
+from .records import apply_links, links_of, match_meeting, qualifiers
 from .source import download_extract
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
@@ -110,7 +111,8 @@ class StoredMeetings:
     def __init__(self, conn, *, failure_hours: int):
         self.conn = conn
         self.meetings = {r["id"]: r for r in conn.execute(
-            "SELECT id,agency_id,source_id,title,official_url,local_date,quarantine_reason FROM meetings")}
+            """SELECT id,agency_id,source_id,title,official_url,local_date,status,quarantine_reason,
+            minutes_url,minutes_status,minutes_note,recording_url FROM meetings""")}
         self.by_source = {(r["agency_id"], r["source_id"]): r for r in self.meetings.values()}
         self.aliases = {(r["agency_id"], r["alias"]): r["meeting_id"] for r in conn.execute(
             "SELECT agency_id,alias,meeting_id FROM meeting_source_aliases")}
@@ -135,6 +137,27 @@ class StoredMeetings:
         rows = [r for r in self.meetings.values()
                 if r["agency_id"] == aid and r["local_date"] == day and r["quarantine_reason"] is None]
         return _bridge(self.conn, candidate, rows) if rows else sid
+
+    def apply_links(self, candidates: list[dict], *, coverage_start: date) -> int:
+        """Store the minutes and recording links of candidates that are not being captured.
+
+        A candidate's own meeting is found by source identity; a records-only entry
+        by date among the agency's stored meetings. Only changed meetings are written.
+        """
+        updated = 0
+        for candidate in candidates:
+            links = links_of(candidate)
+            if not links or (candidate.get("date") or "") < coverage_start.isoformat():
+                continue
+            if candidate.get("records_only"):
+                day = date.fromisoformat(candidate["date"])
+                pool = [m for m in self.meetings.values() if m["agency_id"] == candidate["agency"] and m["quarantine_reason"] is None]
+                meeting = match_meeting(pool, day, qualifiers(candidate.get("title", "")))
+            else:
+                meeting = self.meetings.get(stable_id(candidate["agency"], self.identity(candidate)))
+            if meeting and apply_links(self.conn, meeting, links):
+                updated += 1
+        return updated
 
     def local_date(self, meeting_id: str):
         row = self.meetings.get(meeting_id)
@@ -190,7 +213,7 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
             "warnings": warnings, "partial_logistics": True,
             "documents": docs, "documents_complete": bool(candidate.get("documents_complete")) and complete_document_set,
             "pages": pages, "agenda_items": parsed.items if parsed and parsed.complete else [],
-            "items_complete": bool(parsed and parsed.complete)}
+            "items_complete": bool(parsed and parsed.complete), **links_of(candidate)}
 
 
 def capture_candidates(conn, candidates: list[dict], *, max_documents: int = 2, fetch=download_extract,
@@ -210,6 +233,7 @@ def capture_candidates(conn, candidates: list[dict], *, max_documents: int = 2, 
             result[key] += outcome[key]
         result["errors"].extend(outcome["errors"])
 
+    candidates = [c for c in candidates if not c.get("records_only")]  # links for stored meetings, nothing to capture
     for number, candidate in enumerate(candidates):
         if number and delay:
             time.sleep(delay)

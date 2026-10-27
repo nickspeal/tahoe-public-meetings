@@ -85,7 +85,13 @@ export interface Meeting {
     instructions: string | null; url: string | null; remoteUrl: string | null; deadline: string | null;
     watchUrl?: string | null; phone?: string | null; email?: string | null; fromAgenda?: boolean;
   };
+  /** Approved minutes, or a draft: on the agency's listing, or in a later meeting's agenda or packet (decision 0025). */
   minutesUrl: string | null;
+  /** Absent from exports written before minutes links were added. */
+  minutesStatus?: 'approved' | 'draft' | null;
+  /** Where draft minutes found through a later agenda are, e.g. "Item 6.1 on the September 8, 2026 agenda". */
+  minutesNote?: string | null;
+  /** YouTube when the agency posts there, otherwise the agency's own video host. */
   recordingUrl: string | null;
   lastCheckedAt: string | null;
   updatedAt: string;

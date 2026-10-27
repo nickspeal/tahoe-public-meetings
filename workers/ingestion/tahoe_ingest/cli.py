@@ -144,6 +144,11 @@ def _parser() -> argparse.ArgumentParser:
     history.add_argument("--out", help="Also write the export JSON to this path")
     history.add_argument("--dry-run", action="store_true", help="Discover and report only; no downloads, export, or publish")
     history.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
+    links = sub.add_parser("meeting-records", help="Match recordings and minutes (YouTube, Laserfiche, draft minutes in later agendas) to stored meetings")
+    links.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."), help="Directory holding config/")
+    links.add_argument("--since", type=_iso_date, help="With YOUTUBE_API_KEY set, read YouTube uploads back to this date through the Data API (one-time backfill)")
+    links.add_argument("--skip-feeds", action="store_true", help="Only draft minutes from stored agendas; no network requests")
+    links.add_argument("--dry-run", action="store_true", help="Report matches without storing them")
     publish = sub.add_parser("publish-export", help="Validate an export file, store it in public_exports, and call the deploy hook if set")
     publish.add_argument("--file", required=True)
     publish.add_argument("--min-meetings", type=int, default=1)
@@ -195,6 +200,8 @@ def main(argv=None) -> int:
             return _publish_export(conn, args)
         if args.command == "backfill":
             return _backfill(conn, args)
+        if args.command == "meeting-records":
+            return _meeting_records(conn, args)
         if args.command == "init-db":
             init_db(conn)
             print("PostgreSQL schema ready")
@@ -338,6 +345,28 @@ def _backfill(conn, args) -> int:
     summary["alerts"] = alerts.alert_on_summary(summary)
     print(json.dumps(summary, default=str), flush=True)
     return 1 if summary["status"] == "failed" else 0
+
+
+def _meeting_records(conn, args) -> int:
+    """Run the scheduled run's meeting-records and draft-minutes steps once; the next export publishes them."""
+    from . import records
+    from .draft_minutes import link_draft_minutes
+    init_db(conn)
+    today = datetime.now(scheduled.PACIFIC).date()
+    report = {}
+    if not args.skip_feeds:
+        key = records.youtube_api_key()
+        if args.since and not key:
+            raise SystemExit("--since reads the YouTube Data API: set YOUTUBE_API_KEY")
+        report["feeds"] = records.update_meeting_records(conn, args.root, today=today, api_key=key if args.since else None,
+                                                         since=args.since, dry_run=args.dry_run)
+    report["draftMinutes"] = link_draft_minutes(conn, since=scheduled.COVERAGE_START, dry_run=args.dry_run)
+    if args.dry_run:
+        conn.rollback()
+    else:
+        conn.commit()
+    print(json.dumps(report, indent=2, default=str))
+    return 1 if report.get("feeds", {}).get("errors") else 0
 
 
 def _publish_export(conn, args) -> int:

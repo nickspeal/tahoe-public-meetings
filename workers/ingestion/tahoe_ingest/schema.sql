@@ -15,6 +15,10 @@ CREATE TABLE IF NOT EXISTS meetings (
 ALTER TABLE meetings ADD COLUMN IF NOT EXISTS local_date date;
 ALTER TABLE meetings ADD COLUMN IF NOT EXISTS observed_duration_minutes integer CHECK(observed_duration_minutes IS NULL OR observed_duration_minutes > 0);
 ALTER TABLE meetings ADD COLUMN IF NOT EXISTS duration_source text;
+-- Minutes links (tahoe_ingest.records): approved or draft, and for draft minutes found through a
+-- later meeting's agenda, where they are ("Item 6.1 on the September 8, 2026 agenda").
+ALTER TABLE meetings ADD COLUMN IF NOT EXISTS minutes_status text CHECK(minutes_status IS NULL OR minutes_status IN ('approved','draft'));
+ALTER TABLE meetings ADD COLUMN IF NOT EXISTS minutes_note text;
 CREATE TABLE IF NOT EXISTS document_versions (
   id text PRIMARY KEY, meeting_id text NOT NULL REFERENCES meetings(id), source_document_id text NOT NULL,
   title text NOT NULL, url text NOT NULL, sha256 text NOT NULL,

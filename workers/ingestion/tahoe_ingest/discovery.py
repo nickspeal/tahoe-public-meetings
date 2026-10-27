@@ -15,6 +15,7 @@ from datetime import datetime
 from html.parser import HTMLParser
 
 from .http import fetch_bytes
+from .records import granicus_links
 
 TTD_API = "https://tahoetransportation.org/wp-json/wp/v2"
 SLT_INDEX = "https://slt.granicus.com/ViewPublisher.php?view_id=6"
@@ -122,7 +123,8 @@ def discover_slt(*, limit: int = 5, fetch=fetch_text) -> list[dict]:
                       "official_url": next(url for url, _ in links if "AgendaViewer.php" in url),
                       "date": datetime.strptime(match.group("key")[:10], "%m-%d-%Y").date().isoformat(),
                       "documents": _pdf_links(row, SLT_INDEX, "slt"),
-                      "warnings": ["Publisher row date/time and agenda items require source review."]})
+                      "warnings": ["Publisher row date/time and agenda items require source review."],
+                      **granicus_links(links, html.unescape(row), SLT_INDEX)})
         if len(found) >= limit:
             break
     return found
@@ -238,7 +240,8 @@ def discover_slt_range(*, since, until, fetch=fetch_text) -> tuple[list[dict], s
             "agency": "slt", "source_id": clip.group(1), "title": match.group("key").replace("-", " "),
             "official_url": next(url for url, _ in links if "AgendaViewer.php" in url), "date": day,
             "documents": _pdf_links(row, SLT_INDEX, "slt"),
-            "warnings": ["Publisher row date/time and agenda items require source review."]})
+            "warnings": ["Publisher row date/time and agenda items require source review."],
+            **granicus_links(links, html.unescape(row), SLT_INDEX)})
     return list(found.values()), earliest
 
 

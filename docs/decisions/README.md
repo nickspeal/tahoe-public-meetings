@@ -66,3 +66,5 @@ What new evidence would change the decision?
 [0021: Read participation details from agendas with Claude](0021-participation-details-from-agendas.md) (proposed default) fills each meeting's location, remote access, comment instructions, and deadline from its agenda pages with Claude, keeps only fields found verbatim in the source, and adds standing agency details as a fallback.
 
 [0023: Agenda sections on meeting pages](0023-agenda-sections.md) (proposed default) groups meeting-page items into collapsible agenda sections. It keeps unsectioned items standalone, ends a section at a time-allocation line, and places addendum items in their named sections.
+
+[0025: Minutes and recording links](0025-minutes-and-recording-links.md) (accepted) links each meeting's minutes and recording from agency listings, YouTube and Laserfiche feeds, and draft minutes in the next meeting's agenda. Approved minutes outrank drafts, YouTube outranks other hosts, and TTD's on-request Zoom clips are left out.

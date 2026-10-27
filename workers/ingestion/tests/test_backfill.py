@@ -72,7 +72,7 @@ def test_backfill_captures_range_publishes_and_resumes(db, monkeypatch, tmp_path
     json.dumps(summary)
     steps = {s["name"]: s for s in summary["steps"]}
     assert list(steps) == ["init-db", "backfill-discover", "backfill-capture", "quarantine", "reparse", "reclassify",
-                           "classify-topics", "export", "validate", "store", "deploy-hook"]
+                           "meeting-records", "draft-minutes", "classify-topics", "export", "validate", "store", "deploy-hook"]
     assert summary["status"] == "degraded" and summary["exportId"] and summary["message"] == "backfill degraded"
     planning = summary["byAgency"]["slt-planning"]
     assert planning["found"] == 3 and planning["toCapture"] == 3 and planning["captured"] == 3

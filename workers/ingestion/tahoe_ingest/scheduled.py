@@ -12,14 +12,16 @@ stops the run, but an invalid export is never published:
 7. quarantine        config/quarantined-meeting-candidates.json
 8. reparse           stored text of meetings without items
 9. reclassify        rule topic tags
-10. classify-topics  Claude tags, only with Claude credentials, within cost guards
-11. participation    Claude reads location, remote links, and comment instructions from agendas; same guards
-12. export           public JSON (mode "live")
-13. validate         the same checks as scripts/check_export.py, plus a minimum size
-14. store            insert into public_exports, keep the latest 5
-15. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
+10. meeting-records  YouTube and Laserfiche links from config/meeting-records.json (skipped with --skip-discovery)
+11. draft-minutes    draft minutes found through later agendas (stored items only)
+12. classify-topics  Claude tags, only with Claude credentials, within cost guards
+13. participation    Claude reads location, remote links, and comment instructions from agendas; same guards
+14. export           public JSON (mode "live")
+15. validate         the same checks as scripts/check_export.py, plus a minimum size
+16. store            insert into public_exports, keep the latest 5
+17. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
 
-Only 12-15 failing makes the run fail.
+Only 14-17 failing makes the run fail.
 """
 from __future__ import annotations
 
@@ -37,12 +39,13 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import ai_topics, participation
+from . import ai_topics, participation, records
 from .capture import StoredMeetings, capture_candidates, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
 from .comment_periods import ingest_comment_periods
 from .core import export_public, ingest_bundle, init_db, reclassify_topics, record_failure, stable_id
+from .draft_minutes import link_draft_minutes
 from .export_check import validate_export
 from .one_offs import load_one_offs
 from .reparse import reparse_meetings
@@ -303,6 +306,9 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
         report = agencies[aid] = {}
         try:
             candidates = discover(aid, followed[aid], limit=_index_limit(followed[aid], options))
+            # Records-only entries carry links for earlier meetings; they are never captured.
+            linked = [c for c in candidates if c.get("records_only")]
+            candidates = [c for c in candidates if not c.get("records_only")]
             report["discovered"] = len(candidates)
             selected = []
             for candidate in candidates:
@@ -318,13 +324,20 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
                         reason = "endpointSkipped"
                 if reason:
                     report[reason] = report.get(reason, 0) + 1
+                    linked.append(candidate)
                     continue
                 selected.append(candidate)
             conn.commit()
             selected = _nearest_first(selected, today)
             if len(selected) > options.max_captures_per_agency:
                 report["deferred"] = len(selected) - options.max_captures_per_agency
+                linked.extend(selected[options.max_captures_per_agency:])
                 selected = selected[:options.max_captures_per_agency]
+            # Minutes and video links of meetings not captured this run (settled, deferred, or
+            # outside the window) cost no download: they update the stored meeting directly.
+            if updated := stored.apply_links(linked, coverage_start=options.coverage_start):
+                report["linksUpdated"] = updated
+            conn.commit()
             result = capture_candidates(conn, selected, max_documents=options.max_documents, fetch=fetch,
                                         incremental=True, delay=options.delay)
             report.update(captured=result["processed"], failed=result["failed"])
@@ -470,8 +483,17 @@ def _scratch_dir():
     return Path(tempfile.mkdtemp(prefix="tahoe-run-", dir=base))
 
 
+def meeting_records(conn, root: Path, run: Run, today: date, *, fetch_text=None, fetch_json=None):
+    report = records.update_meeting_records(conn, root, today=today, fetch_text=fetch_text, fetch_json=fetch_json)
+    if not report["youtubeBodies"] and not report["laserficheBodies"]:
+        return "skipped", {"reason": f"{records.CONFIG} not present"}
+    for error in report["errors"]:
+        run.fail("meeting-records", error)
+    return ("degraded" if report["errors"] else "ok"), report
+
+
 def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=download_extract,
-                  post=post_deploy_hook, today: date | None = None) -> dict:
+                  post=post_deploy_hook, today: date | None = None, feed_fetch=None, json_fetch=None) -> dict:
     started_at = datetime.now(timezone.utc)
     run = Run(conn)
     today = today or started_at.astimezone(PACIFIC).date()
@@ -500,6 +522,11 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         run.step("quarantine", lambda: apply_quarantine(conn, root))
         run.step("reparse", lambda: _reparse(conn))
         run.step("reclassify", lambda: _reclassify(conn))
+        if options.skip_discovery:
+            run.steps.append({"name": "meeting-records", "status": "skipped", "detail": {"reason": "--skip-discovery"}})
+        else:
+            run.step("meeting-records", lambda: meeting_records(conn, root, run, today, fetch_text=feed_fetch, fetch_json=json_fetch))
+        run.step("draft-minutes", lambda: link_draft_minutes(conn, since=options.coverage_start))
         run.step("classify-topics", lambda: classify(conn, options))
         run.step("participation", lambda: extract_participation(conn, options))
 

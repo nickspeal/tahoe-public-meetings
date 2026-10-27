@@ -82,7 +82,8 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     json.dumps(summary)  # One JSON line for Cloud Logging.
     steps = {s["name"]: s for s in summary["steps"]}
     assert list(steps) == ["init-db", "seed-fixtures", "one-offs", "comment-periods", "verified-sources", "discover",
-                           "quarantine", "reparse", "reclassify", "classify-topics", "participation", "export", "validate", "store", "deploy-hook"]
+                           "quarantine", "reparse", "reclassify", "meeting-records", "draft-minutes", "classify-topics", "participation",
+                           "export", "validate", "store", "deploy-hook"]
     # Source failures degrade the run but never stop publication.
     assert summary["status"] == "degraded" and summary["exportId"]
     assert steps["classify-topics"]["status"] == "skipped"
@@ -110,7 +111,9 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     # A rerun neither reapplies the fixture bundle nor retries documents that failed within the day.
     assert steps["seed-fixtures"]["detail"]["processed"] == 0
     assert steps["verified-sources"]["detail"].get("captured", 0) == 0
-    assert fetched == [AGENDA_URL]  # only the upcoming discovered agenda is checked again
+    # Only the upcoming discovered agenda is checked again; comment-period notices are re-verified every run by design.
+    notices = {p["official_url"] for p in json.loads((ROOT / scheduled.COMMENT_PERIODS).read_text())["comment_periods"]}
+    assert [url for url in fetched if url not in notices] == [AGENDA_URL]
     assert db.execute("SELECT count(*) AS n FROM meetings").fetchone()["n"] == meetings
     assert db.execute("SELECT count(*) AS n FROM public_exports").fetchone()["n"] == 2
     assert len(hook.calls) == 2

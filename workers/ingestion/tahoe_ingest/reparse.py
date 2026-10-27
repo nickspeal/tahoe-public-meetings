@@ -54,7 +54,6 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
                "starts_at": iso(m["starts_at"]), "date": m["local_date"].isoformat() if m["local_date"] else None,
                "timezone": m["timezone"], "status": m["status"], "location": m["location"],
                "source_meeting_url": m["official_url"], "participation": _json(m["participation"]),
-               "minutes_url": m["minutes_url"], "recording_url": m["recording_url"],
                "warnings": kept, "partial_logistics": True, "documents": documents, "documents_complete": False,
                "pages": pages, "agenda_items": parsed.items, "items_complete": True}
         result = ingest_bundle(conn, {"meetings": [row]}, mode="fixture")

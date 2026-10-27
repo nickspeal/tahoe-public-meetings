@@ -3,6 +3,8 @@
 URLs and body filters are operator configuration, never instructions from HTML.
 Dates must be written on a source row or document filename, not inferred from
 regular meeting patterns. Agenda-only documents are preferred over full packets.
+Minutes and recording links on a listing are kept as candidate fields
+(tahoe_ingest.records); a link for an earlier meeting becomes a records-only entry.
 """
 from __future__ import annotations
 import html
@@ -11,11 +13,12 @@ import json
 import re
 import urllib.parse
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from .http import fetch_bytes
 from .discovery import anchors, fetch_text, _pdf_links
 from .html_dom import document
+from .records import granicus_links, listing_minutes, qualifiers, recording_link, records_entry
 
 
 def date_in(text):
@@ -99,7 +102,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
         if '/pubhtml/sheet' in url:
             return sheet_meetings(agency,markup,url,limit)
     tree=document(markup)
-    rows=[]
+    rows,extras=[],[]
     if kind=='dated-table':
         # These official annual indexes put dates in column one, sometimes
         # without a year or as a multi-day range. Use its first day only.
@@ -127,6 +130,10 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             name=next((n.text() for cell in cells[1:] for n in cell.find('strong') if body.search(n.text())),None)
             title=name or config.get('title') or agency.replace('-',' ').title()+' Meeting'
             row=candidate(agency,day,title,day,url,docs,date_text)
+            for a in tr.find('a'):
+                label,target=a.text(),urllib.parse.urljoin(url,a.attrs.get('href',''))
+                if re.fullmatch(r'(?:Draft\s+)?Minutes(?:\s*\(PDF\))?',label,re.I):row.update(listing_minutes(target,label))
+                elif re.search(r'\bvideo\b',label,re.I) and (recording:=recording_link(target)):row['recording_url']=recording
             if re.search(r'\d\s*[-–]\s*\d',date_text):
                 row['warnings'].append('Multi-day meeting: the date shown is the first day; check the official agenda for subsequent sessions.')
             rows.append(row)
@@ -142,7 +149,12 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             sid=qs.get('ID',[None])[0];day=date_in(text)
             if not sid or not day:continue
             docs=documents_in(''.join(f'<a href="{html.escape(u,quote=True)}">{html.escape(l)}</a>' for u,l in links),url,agency)
-            rows.append(candidate(agency,sid,config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,detail,docs,text))
+            row=candidate(agency,sid,config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,detail,docs,text)
+            # The video opens from an onclick handler. Minutes come from the web API
+            # (legistar_links), because department pages link minutes before they are final.
+            video=re.search(r"Video\.aspx\?[^'\"\s]*ID1=\d+[^'\"\s]*",' '.join(' '.join(a.attrs.values()) for a in tr.find('a')))
+            if video:row['recording_url']=urllib.parse.urljoin(url,video[0])
+            rows.append(row)
     elif kind=='granicus':
         for tr in tree.find('tr'):
             if any(tr.find('tr')):continue
@@ -161,6 +173,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             cells=[n for n in tr.children if getattr(n,'tag',None)=='td']
             title=config.get('title') or config.get('titlePrefix','')+(cells[0].text() if cells else text[:180])
             row=candidate(agency,sid,title,day,agenda,docs,text)
+            row.update(granicus_links(links,' '.join(' '.join(a.attrs.values()) for a in tr.find('a'))+' '+text,url))
             if re.search(r'\d{2}h\s+\d{2}m',text) or any('MediaPlayer.php' in ' '.join(a.attrs.values()) for a in tr.find('a')):
                 row['start_time']=None
                 row['warnings'].append('Archive playback timestamps are not used as scheduled start times; see the official agenda.')
@@ -179,9 +192,12 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             day=date_in(label) or date_in(urllib.parse.unquote(target))
             if not day:continue
             if kind=='civicplus' and 'PreviousVersions' in target:continue
+            links={}
             if kind=='trpa':
                 detail=fetch(target);docs=documents_in(detail,target,agency)
                 title=label
+                links,earlier=page_links(agency,body,day,detail,target)
+                extras.extend(earlier)
             else:
                 docs=documents_in(f'<a href="{html.escape(target,quote=True)}">{html.escape(label)}</a>',url,agency)
                 title=config.get('title') or label
@@ -193,7 +209,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
                 found=re.search(r'\b(special|workshop|joint)\b',urllib.parse.unquote_plus(target),re.I)
                 if found:
                     sid+='-'+found[1].lower();title=title.replace(' Board ',f' {found[1].title()} Board ',1)
-            rows.append(candidate(agency,sid,title,day,target,docs,label))
+            rows.append({**candidate(agency,sid,title,day,target,docs,label),**links})
+        if kind=='link-index' and config.get('minutesLinks'):
+            extras.extend(index_minutes(agency,tree,url,rows))
     elif kind=='meeting-files':
         # Dated meetings (table rows or a "next meeting" paragraph), each with a link to a
         # page listing that meeting's files. Documents are read from those pages below.
@@ -235,7 +253,100 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind=='meeting-files':
         for row in result:
             row['documents']=meeting_files(agency,row,fetch)
-    return result
+    if kind=='legistar':
+        legistar_links(config,result,fetch)
+    return result+extras
+
+
+def page_links(agency, body, day, markup, base):
+    """Minutes and recording links a meeting page gives for this body.
+
+    Returns links for the page's own date, and records-only entries for minutes of
+    earlier meetings ("Draft September 23, 2026 Governing Board Minutes" on the
+    October page). Labels must name the body and a date; minutes must say final or draft.
+    """
+    own,earlier={},[]
+    for target,label in anchors(markup,base):
+        if not body.search(label):continue
+        named=date_in(label)
+        if re.search(r'\bminutes\b',label,re.I) and re.match(r'\s*(?:final|draft)\b',label,re.I):
+            links=listing_minutes(target,label)
+            if named==day:own.update(links)
+            elif named and named<day:earlier.append(records_entry(agency,named,label,links))
+        elif named==day and re.search(r'\b(?:video|recording)\b',label,re.I) and (recording:=recording_link(target)):
+            own['recording_url']=recording
+    return own,earlier
+
+
+def index_minutes(agency, tree, base, rows):
+    """Minutes PDFs linked on a link index, matched by date to that index's agenda rows.
+
+    The date comes from the link's aria-label ("Minutes attachment for 2026-09-03
+    Board Meeting"), its label, or its file name. Minutes whose meeting the index
+    no longer lists become records-only entries.
+    """
+    extras=[]
+    for node in tree.find('a'):
+        label,target=node.text(),urllib.parse.urljoin(base,node.attrs.get('href',''))
+        parsed=urllib.parse.urlparse(target)
+        if not re.search(r'\bminutes\b',label,re.I) or parsed.scheme!='https' or not parsed.path.lower().endswith('.pdf'):continue
+        aria=node.attrs.get('aria-label','');name=urllib.parse.unquote_plus(parsed.path)
+        day=date_in(aria) or date_in(label) or date_in(name)
+        if not day:continue
+        links=listing_minutes(target,label)
+        same={r['source_id']:r for r in rows if r['date']==day}
+        if len(same)>1:
+            quals=qualifiers(aria+' '+label+' '+name)
+            same={sid:r for sid,r in same.items() if qualifiers(r['title'])==quals}
+        if len(same)==1:
+            sid=next(iter(same))
+            for row in rows:
+                if row['source_id']==sid:row.update(links)
+        elif not same:
+            extras.append(records_entry(agency,day,label,links))
+    return extras
+
+
+def legistar_events(config, since, until, *, fetch=fetch_text, page_size=1000, max_pages=10):
+    """(client, events dated since..until whose body matches) from the public Legistar web API."""
+    client=config.get('legistarClient') or urllib.parse.urlparse(config['indexUrl']).hostname.split('.')[0]
+    body=re.compile(config.get('bodyPattern','.'),re.I)
+    flt=urllib.parse.quote(f"EventDate ge datetime'{since.isoformat()}' and EventDate le datetime'{until.isoformat()}'")
+    found=[]
+    for page in range(max_pages):
+        events=json.loads(fetch(f'https://webapi.legistar.com/v1/{client}/events?$filter={flt}&$orderby=EventDate%20desc&$top={page_size}&$skip={page*page_size}'))
+        found.extend(e for e in events if body.search(e.get('EventBodyName') or ''))
+        if len(events)<page_size:break
+    return client,found
+
+
+def event_links(client, event):
+    """Minutes (final or draft, with a file) and the Granicus video of one Legistar event."""
+    links={}
+    minutes=event.get('EventMinutesFile') or ''
+    status=(event.get('EventMinutesStatusName') or '').lower()
+    if minutes.startswith('https://') and status in ('final','draft'):
+        links.update(minutes_url=minutes,minutes_status='approved' if status=='final' else 'draft',minutes_note=None)
+    if event.get('EventMedia'):
+        links['recording_url']=f"https://{client}.legistar.com/Video.aspx?Mode=Granicus&ID1={event['EventMedia']}&Mode2=Video"
+    return links
+
+
+def legistar_links(config, rows, fetch):
+    """Add web API minutes and video to department-page rows, matched by date; a failing API adds nothing."""
+    days=sorted(r['date'] for r in rows if r.get('date'))
+    if not days:return
+    until=date.fromisoformat(days[-1])
+    try:
+        client,events=legistar_events(config,max(date.fromisoformat(days[0]),until-timedelta(days=400)),until,fetch=fetch)
+    except Exception:  # The department page alone still gives meetings and video.
+        return
+    by_day={}
+    for event in events:
+        by_day.setdefault((event.get('EventDate') or '')[:10],[]).append(event)
+    for row in rows:
+        same=by_day.get(row.get('date'),[])
+        if len(same)==1:row.update(event_links(client,same[0]))
 
 
 def meeting_files(agency, row, fetch):
@@ -277,6 +388,10 @@ def civicclerk(agency, config, markup, limit, fetch):
                 'url':api+f'/Meetings/GetMeetingFileStream(fileId={fid},plainText=false)'})
         docs.sort(key=lambda d:'packet' in d['id'])
         row=candidate(agency,str(eid),title,day,portal.rstrip('/')+f'/event/{eid}/overview',docs,title)
+        minutes=[f for f in event.get('publishedFiles',[]) if f.get('type')=='Minutes' and f.get('fileId')]
+        if minutes:
+            row.update(listing_minutes(api+f"/Meetings/GetMeetingFileStream(fileId={minutes[-1]['fileId']},plainText=false)",minutes[-1].get('name') or ''))
+        if event.get('hasMedia'):row['recording_url']=portal.rstrip('/')+f'/event/{eid}/media'
         row['warnings']=['Confirm the scheduled start in the agenda; CivicClerk wall-clock timestamps are not treated as UTC instants.']
         rows.append(row)
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
@@ -298,7 +413,9 @@ def sheet_meetings(agency, markup, url, limit):
             docs.append({'id':agency+'-'+role,'title':label,'url':target})
         if not docs:continue
         docs.sort(key=lambda d:('minutes' in d['id'],'packet' in d['id']))
-        rows.append(candidate(agency,day,agency.upper()+' Board meeting',day,url,docs))
+        row=candidate(agency,day,agency.upper()+' Board meeting',day,url,docs)
+        if minutes:=next((d for d in docs if d['id'].endswith('-minutes')),None):row.update(listing_minutes(minutes['url'],minutes['title']))
+        rows.append(row)
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
 
 
@@ -392,23 +509,18 @@ def legistar_range(agency, config, since, until, *, fetch=fetch_text, page_size=
     Source IDs are the API's EventId, which differs from the MeetingDetail ID on
     department pages; capture's source_identity bridges a same-date stored meeting.
     """
-    client=config.get('legistarClient') or urllib.parse.urlparse(config['indexUrl']).hostname.split('.')[0]
-    body=re.compile(config.get('bodyPattern','.'),re.I)
-    flt=urllib.parse.quote(f"EventDate ge datetime'{since.isoformat()}' and EventDate le datetime'{until.isoformat()}'")
+    client,events=legistar_events(config,since,until,fetch=fetch,page_size=page_size,max_pages=max_pages)
     rows=[]
-    for page in range(max_pages):
-        events=json.loads(fetch(f'https://webapi.legistar.com/v1/{client}/events?$filter={flt}&$orderby=EventDate%20desc&$top={page_size}&$skip={page*page_size}'))
-        for event in events:
-            if not body.search(event.get('EventBodyName') or ''):continue
-            day=(event.get('EventDate') or '')[:10]
-            if not day or not event.get('EventId'):continue
-            docs=[]
-            if (event.get('EventAgendaFile') or '').startswith('https://'):
-                docs.append({'id':agency+'-agenda','title':'Agenda','url':event['EventAgendaFile']})
-            url=event.get('EventInSiteURL') or config['indexUrl']
-            text=' '.join(str(event.get(k) or '') for k in ('EventTime','EventComment','EventAgendaStatusName'))
-            rows.append(candidate(agency,str(event['EventId']),config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,url,docs,text))
-        if len(events)<page_size:break
+    for event in events:
+        day=(event.get('EventDate') or '')[:10]
+        if not day or not event.get('EventId'):continue
+        docs=[]
+        if (event.get('EventAgendaFile') or '').startswith('https://'):
+            docs.append({'id':agency+'-agenda','title':'Agenda','url':event['EventAgendaFile']})
+        url=event.get('EventInSiteURL') or config['indexUrl']
+        text=' '.join(str(event.get(k) or '') for k in ('EventTime','EventComment','EventAgendaStatusName'))
+        row=candidate(agency,str(event['EventId']),config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,url,docs,text)
+        rows.append({**row,**event_links(client,event)})
     return sorted(rows,key=lambda r:r['date'],reverse=True)
 
 

@@ -119,6 +119,15 @@ The scheduled run looks only at the newest few listings per agency, so it cannot
    ```
 5. **Check the result.** The last log line is a JSON summary. It has a `byAgency` entry for each agency (found, already stored, captured, failures, earliest date the source listed, and whether it reached `--since`), plus download volume, `phaseSeconds`, database size before and after, `exportBytes`, `aiCostUsd`, and `peakMemory`. The deploy hook starts a Vercel production build. Confirm that the build is Ready and that the site shows the larger meeting count.
 
+**Recordings before the YouTube feed window** ([decision 0025](../decisions/0025-minutes-and-recording-links.md)). Each YouTube feed holds only the newest 15 videos, which reaches back a few weeks to a few months depending on the channel. To link older recordings, create a free YouTube Data API key (Google Cloud console, APIs and services, enable "YouTube Data API v3", create an API key restricted to that API), store it as a secret, and add it to the backfill job. The backfill then reads each configured channel's uploads back to `--since`, which uses a few dozen of the 10,000 free daily quota units. The scheduled job does not need the key.
+```sh
+gcloud secrets create tahoe-youtube-api-key --project=<project-id> --data-file=-   # paste the key, then Ctrl-D
+gcloud secrets add-iam-policy-binding tahoe-youtube-api-key --project=<project-id> \
+  --member=serviceAccount:tahoe-ingest-job@<project-id>.iam.gserviceaccount.com --role=roles/secretmanager.secretAccessor
+gcloud run jobs update tahoe-backfill --region=us-west1 --project=<project-id> --update-secrets=YOUTUBE_API_KEY=tahoe-youtube-api-key:latest
+```
+Without the key, the backfill still links listing minutes and videos, draft minutes, and recordings within each feed's window.
+
 Claude classification during a backfill uses the same `--max-cost` ($1 per run) and `--monthly-budget` guards. If the run stops at a cost limit, the remaining meetings keep rule tags and are classified by later scheduled runs.
 
 ## Logs and status

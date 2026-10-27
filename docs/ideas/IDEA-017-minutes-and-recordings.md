@@ -1,6 +1,6 @@
 # IDEA-017: Minutes and recording links
 
-Status: proposed
+Status: accepted; implemented ([decision 0025](../decisions/0025-minutes-and-recording-links.md))
 Stage: MVP polish
 
 ## Problem and audience
@@ -30,3 +30,4 @@ Should the page show a separate "Action summary" (Douglas) when no minutes exist
 
 ## Links and updates
 - 2026-10-27: proposed after the maintainer asked why the Minutes and Recording sections are blank. The maintainer confirmed that a draft-minutes link is useful because approved minutes are rarely posted.
+- 2026-10-27: implemented without the TTD clip file, at the maintainer's request, since TTD clips cannot be found systematically. See decision 0025 for what shipped and what remains uncovered.

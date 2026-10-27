@@ -1,10 +1,10 @@
 # Minutes and recordings sources (2026-10-27)
 
-Where each followed body publishes meeting recordings and minutes, and how a scheduled job could link them. Gathered with plain HTTP requests from a residential connection, not from Cloud Run; YouTube and Cloudflare behavior from Cloud Run addresses is untested. Proposal: [IDEA-017](../ideas/IDEA-017-minutes-and-recordings.md).
+Where each followed body publishes meeting recordings and minutes, and how a scheduled job could link them. Gathered with plain HTTP requests from a residential connection, not from Cloud Run; YouTube and Cloudflare behavior from Cloud Run addresses is untested. Proposal: [IDEA-017](../ideas/IDEA-017-minutes-and-recordings.md); implementation: [decision 0025](../decisions/0025-minutes-and-recording-links.md).
 
 ## Why the fields are empty
 
-`meetings.minutes_url` and `meetings.recording_url` exist in the schema, the export (`minutesUrl`, `recordingUrl`) and the meeting page, and `core.py` keeps an earlier value when a later partial scrape omits it. No adapter sets either field, so all 162 meetings in the 2026-10-27 local export show "Not yet available". Some adapters capture minutes PDFs as ordinary documents (for example NTCD's sheet), and `link-index` drops non-agenda links on purpose.
+`meetings.minutes_url` and `meetings.recording_url` exist in the schema, the export (`minutesUrl`, `recordingUrl`) and the meeting page, and `core.py` keeps an earlier value when a later partial scrape omits it. Before decision 0025, no adapter set either field, so all 162 meetings in the 2026-10-27 local export show "Not yet available". Some adapters capture minutes PDFs as ordinary documents (for example NTCD's sheet), and `link-index` drops non-agenda links on purpose.
 
 ## Draft minutes in later packets
 

@@ -221,7 +221,14 @@ button, a, select, summary { touch-action: manipulation; }
 .record-link { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid #e2e8e2; font-size: 14px; }
 .record-card h2 { margin-bottom: 10px; }
 .record-missing { color: var(--subtle); }
-.source-status > p:not(.eyebrow) { color: var(--muted); font-size: 14px; }
+.history-list { margin: 12px 0 0; padding: 0; list-style: none; }
+.history-list li { position: relative; display: grid; gap: 1px; padding: 0 0 12px 20px; font-size: 15px; line-height: 1.4; }
+.history-list li::before { content: ""; position: absolute; left: 3px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--lake); }
+.history-list li.history-revised::before { background: var(--amber); }
+.history-list li:not(:last-child)::after { content: ""; position: absolute; left: 7px; top: 17px; bottom: 0; width: 1px; background: var(--line); }
+.history-list time { color: var(--subtle); font-size: 13px; font-weight: 700; }
+.history-list span { color: #354b45; overflow-wrap: anywhere; }
+.history-note { margin: 4px 0 0; color: var(--subtle); font-size: 13px; line-height: 1.45; }
 .hash-note { display: none; }
 .source-list-block { margin-top: 36px; }
 .source-document { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1px solid var(--line); background: white; }

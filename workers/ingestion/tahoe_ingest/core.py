@@ -19,6 +19,7 @@ from .catalog import public_topics, topic_ids, agency_catalog, followed_agencies
 from .topics import CLASSIFIER_VERSION, classify
 from .durations import meeting_duration
 from .time_certain import time_certain
+from .history import HISTORY_SQL, document_history
 from .schedules import PACIFIC, forecast_meetings
 
 
@@ -519,6 +520,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         docs_by_meeting.setdefault(d["meeting_id"], []).append({"id": d["id"], "title": d["title"], "url": d["url"], "sha256": d["sha256"],
             "mediaType": d["media_type"], "fetchedAt": iso(d["fetched_at"]), "pageCount": d["page_count"], "status": d["status"],
             "warnings": _json(d["warnings"]), "pages": pages_by_version.get(d["id"], [])})
+    history_by_meeting = document_history(conn.execute(HISTORY_SQL), iso)
     items_by_meeting = {}
     for i in conn.execute("""SELECT i.*,s.text AS summary_text,s.status AS summary_status,s.method,
             s.generated_at,s.citations AS summary_citations,e.suppressed,e.correction
@@ -569,6 +571,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             "officialUrl": m["official_url"], "participation": {k: participation.get(k) for k in ("instructions", "url", "remoteUrl", "deadline")},
             "minutesUrl": m["minutes_url"], "recordingUrl": m["recording_url"], "lastCheckedAt": iso(m["last_checked_at"]),
             "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": _json(m["warnings"]), "documents": docs, "items": items,
+            "history": history_by_meeting.get(m["id"], []),
             "duration": meeting_duration(m, [{"title": i["title"], "section": i["section"]} for i in items])})
     # Expected meetings follow the stored records; the website sorts by date.
     local_today = today or stamp.astimezone(ZoneInfo(PACIFIC)).date()

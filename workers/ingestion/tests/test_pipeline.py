@@ -9,6 +9,7 @@ import psycopg
 import pytest
 
 from tahoe_ingest.core import edit_item, export_public, ingest_bundle, init_db, reclassify_topics
+from tahoe_ingest.export_check import check as check_export
 from tahoe_ingest.topics import CLASSIFIER_VERSION, classify
 from tahoe_ingest.catalog import public_topics, topic_ids
 
@@ -385,6 +386,27 @@ def test_meeting_freshness_advances_for_revision_and_operator_edit_but_not_repla
     edit_item(db, item_id, topic=("biking", True, "operator"))
     tagged = export_public(db)["meetings"][0]
     assert tagged["updatedAt"] > edited["updatedAt"]
+
+
+def test_history_records_each_changed_agenda_but_not_identical_text(db):
+    original = one_meeting("ttd")
+    original["meetings"][0]["documents"][0]["fetched_at"] = "2026-10-01T16:00:00Z"
+    assert ingest_bundle(db, original)["failed"] == 0
+    meeting = export_public(db)["meetings"][0]
+    assert meeting["history"] == [{"at": "2026-10-01T16:00:00Z", "change": "added", "document": meeting["documents"][0]["title"]}]
+    # New bytes with the same extracted text, such as a re-rendered page, are not a change.
+    rerendered = copy.deepcopy(original)
+    rerendered["meetings"][0]["documents"][0].update(sha256="e" * 64, fetched_at="2026-10-02T16:00:00Z")
+    assert ingest_bundle(db, rerendered)["failed"] == 0
+    assert len(export_public(db)["meetings"][0]["history"]) == 1
+    revised = copy.deepcopy(rerendered)
+    revised["meetings"][0]["documents"][0].update(sha256="f" * 64, fetched_at="2026-10-03T16:00:00Z")
+    revised["meetings"][0]["pages"][0]["text"] += "\nRevised agenda."
+    assert ingest_bundle(db, revised)["failed"] == 0
+    exported = export_public(db)
+    assert [(e["at"], e["change"]) for e in exported["meetings"][0]["history"]] == [
+        ("2026-10-01T16:00:00Z", "added"), ("2026-10-03T16:00:00Z", "revised")]
+    assert check_export(exported)[0] == []
 
 
 def test_canceled_and_rescheduled_labels_survive_operator_edit(db):

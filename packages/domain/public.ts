@@ -32,6 +32,16 @@ export interface PublicDocument {
   warnings: string[];
   pages: { number: number; text: string }[];
 }
+/**
+ * When this site first found an official document (`added`) or a copy of it with
+ * different text (`revised`). Not the agency's posting time; oldest first.
+ */
+export interface MeetingHistoryEvent {
+  at: string;
+  change: 'added' | 'revised';
+  /** Document title as published with that version. */
+  document: string;
+}
 /** Meeting length. Estimates are long-biased and must be labelled as estimates wherever shown. */
 export interface MeetingDuration {
   minutes: number;
@@ -78,6 +88,8 @@ export interface Meeting {
   change: 'new' | 'revised' | 'rescheduled' | 'canceled' | null;
   warnings: string[];
   documents: PublicDocument[];
+  /** Absent from exports written before the history was added. */
+  history?: MeetingHistoryEvent[];
   items: AgendaItem[];
   duration: MeetingDuration;
 }

@@ -192,6 +192,37 @@ export function sourceCheckLabel(value: string | null) {
   return data.mode === 'fixture' ? `Source capture: ${formatDate(value)}` : `Last checked ${formatDate(value)}`;
 }
 
+export type AgendaHistoryEntry = { at: string; text: string; change: 'added' | 'revised' };
+
+/**
+ * A meeting's document history as one line per day and kind of change, oldest first,
+ * or null for an export written before history was recorded.
+ */
+export function agendaHistory(meeting: Meeting): AgendaHistoryEntry[] | null {
+  if (!meeting.history) return null;
+  const groups = new Map<string, { at: string; change: 'added' | 'revised'; documents: string[] }>();
+  for (const event of meeting.history) {
+    const key = `${localDateKey(event.at)}:${event.change}`;
+    const group = groups.get(key) ?? { at: event.at, change: event.change, documents: [] };
+    if (!group.documents.includes(event.document)) group.documents.push(event.document);
+    groups.set(key, group);
+  }
+  return [...groups.values()].map(({ at, change, documents }) => ({
+    at, change, text: `${listTitles(documents)} ${change === 'added' ? 'found' : 'changed'}`,
+  }));
+}
+
+function listTitles(titles: string[]) {
+  if (titles.length < 3) return titles.join(' and ');
+  return `${titles.slice(0, -1).join(', ')}, and ${titles.at(-1)}`;
+}
+
+export function agendaHistoryHeading(entries: AgendaHistoryEntry[]) {
+  if (!entries.length) return 'No agenda found yet';
+  const latest = formatDate(entries.at(-1)!.at);
+  return entries.length === 1 ? `No changes since ${latest}` : `Last changed ${latest}`;
+}
+
 export function documentFetchLabel(value: string) {
   if (!value) return 'Capture date unknown';
   return data.mode === 'fixture' ? `source captured ${formatDate(value)}` : `checked ${formatDate(value)}`;

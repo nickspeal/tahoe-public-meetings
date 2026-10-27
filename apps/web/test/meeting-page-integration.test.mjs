@@ -92,3 +92,22 @@ test('a meeting without listed items explains whether its agenda is posted, pend
   }
   assert.ok(posted || pending || past, 'export should include at least one meeting without listed items');
 });
+
+test('the agenda history lists found and changed documents, with the source check as a footnote', async () => {
+  const meeting = data.meetings.find((candidate) => candidate.kind !== 'forecast' && candidate.history?.length);
+  assert.ok(meeting, 'export should include a meeting with document history');
+  const card = (await meetingDocument(meeting)).querySelector('.agenda-history');
+  assert.match(card.querySelector('.eyebrow').textContent, /AGENDA HISTORY/);
+  const entries = [...card.querySelectorAll('.history-list li')];
+  assert.ok(entries.length >= 1 && entries.length <= meeting.history.length);
+  assert.equal(entries[0].querySelector('time').getAttribute('datetime'), meeting.history[0].at);
+  assert.match(entries[0].textContent, new RegExp(`${meeting.history[0].document.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.* found`));
+  assert.match(card.querySelector('.history-note').textContent, /first found each version.*(Last checked|Source capture|Not checked)/);
+
+  const pending = data.meetings.find((candidate) => candidate.kind !== 'forecast' && candidate.history && !candidate.history.length);
+  if (pending) {
+    const empty = (await meetingDocument(pending)).querySelector('.agenda-history');
+    assert.equal(empty.querySelector('h2').textContent, 'No agenda found yet');
+    assert.equal(empty.querySelector('.history-list'), null);
+  }
+});

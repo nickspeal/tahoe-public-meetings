@@ -86,6 +86,10 @@ def check(data):
             pages = doc.get("pages", [])
             require(len({p["number"] for p in pages}) == len(pages), f"{doc['id']}: duplicate page")
             require(all(0 < p["number"] <= doc["pageCount"] for p in pages), f"{doc['id']}: invalid page bounds")
+        for index, event in enumerate(meeting.get("history", [])):
+            timestamp(event.get("at"), f"{mid}.history[{index}].at")
+            require(event.get("change") in ("added", "revised"), f"{mid}: invalid history change")
+            require(bool(event.get("document")), f"{mid}: history event lacks a document title")
         for item in meeting.get("items", []):
             iid = item["id"]
             require(iid not in seen_items, f"duplicate item {iid}")

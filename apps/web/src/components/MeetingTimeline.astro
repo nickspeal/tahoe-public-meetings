@@ -1,7 +1,6 @@
 ---
 import type { Meeting } from '../../../../packages/domain/public';
 import TimelineRow from './TimelineRow.astro';
-import { commentPeriods } from '../lib/data';
 import { allItems, awaitingAgenda, meetingTopicIds, data, forecastMeetings, formatDate, isForecast, meetings, topics } from '../lib/data';
 const { initialTopic = '' } = Astro.props as { initialTopic?: string };
 // Not a filter: choosing it opens the feedback dialog (timeline-filters.ts).
@@ -56,7 +55,6 @@ const meetingAgencies = data.agencies.filter((agency) => meetingAgencyIds.has(ag
 ---
 <section class="timeline-page">
   <div class="timeline-head section-wrap">
-    <div class="timeline-heading"><p class="eyebrow">PUBLIC MEETINGS</p><h1>Meeting timeline</h1><p>Agendas, schedules, and public records from Tahoe-area agencies.</p><p><a href="/comment-periods/">Public comment periods{commentPeriods.length > 0 ? ` (${commentPeriods.length})` : ""} ↗</a></p></div>
     <form class="timeline-filters" aria-label="Filter meetings">
       <label>Topic<select id="topic-filter" name="topic" aria-label="Filter by topic"><option value="">All topics</option>{topics.map((topic) => <option value={topic.id} selected={topic.id === initialTopic}>{topic.name}</option>)}<option value={SUGGEST_TOPIC} data-feedback-kind="topic" data-feedback-prompt="I'm interested in adding a new topic: ">Suggest a topic…</option></select></label>
       <label>Agency<select id="agency-filter" name="agency" aria-label="Filter by agency"><option value="">All agencies</option>{meetingAgencies.map((agency) => <option value={agency.id}>{agency.name}</option>)}</select></label>

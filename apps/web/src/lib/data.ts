@@ -133,6 +133,7 @@ export type AgendaAvailability = {
   /** items: listed here; posted: official agenda captured but items not listed; not-posted: no agenda yet;
    *  elsewhere: past meeting whose agenda lives only on the agency site; canceled. */
   kind: 'items' | 'posted' | 'not-posted' | 'elsewhere' | 'canceled';
+  /** Short meeting-card text; empty when the missing item count (or the card's status pill) already says enough. */
   label: string;
   heading: string;
   body: string;
@@ -153,7 +154,7 @@ export function agendaAvailability(meeting: Meeting): AgendaAvailability {
   }
   const agenda = meeting.documents.find((document) => /agenda|packet/i.test(document.title) && !/supplement/i.test(document.title));
   if (agenda) {
-    return { kind: 'posted', label: 'Agenda posted · items not listed here', heading: 'Agenda posted; items aren’t listed here yet',
+    return { kind: 'posted', label: '', heading: 'Agenda posted; items aren’t listed here yet',
       body: 'The agency has published an agenda, but its items haven’t been extracted for this page. Open the official agenda to see what’s on it.',
       href: agenda.url, linkText: 'Open the official agenda' };
   }
@@ -174,7 +175,7 @@ export function agendaAvailability(meeting: Meeting): AgendaAvailability {
       body: 'Open the official meeting page for the agenda.', href: meeting.officialUrl, linkText: 'Official meeting page' };
   }
   if (upcoming) {
-    return { kind: 'not-posted', label: 'Agenda not posted yet', heading: 'Agenda not posted yet',
+    return { kind: 'not-posted', label: '', heading: 'Agenda not posted yet',
       body: 'Agencies usually publish agendas a few days before a meeting. Check back closer to the meeting date, or follow the official meeting page.',
       href: meeting.officialUrl, linkText: 'Official meeting page' };
   }
@@ -200,9 +201,13 @@ function localDateKey(value: string) {
 }
 
 /** A label only for a meeting that is not going ahead as listed; ordinary meetings carry none. */
+/** Status pill shared by expected meetings and upcoming ones still waiting on their agenda. */
+export const awaitingAgendaLabel = 'Expected · no agenda yet';
+
 export function meetingStateLabel(meeting: Meeting) {
   if (meeting.status === 'canceled') return 'Canceled';
   if (meeting.status === 'rescheduled') return 'Rescheduled';
+  if (awaitingAgenda(meeting)) return awaitingAgendaLabel;
   return null;
 }
 

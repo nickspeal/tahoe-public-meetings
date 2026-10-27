@@ -38,6 +38,7 @@ test('expected meetings and agendas not yet posted share one bookmarkable reveal
   assert.ok(expected.every((row) => row.dataset.awaitingAgenda === 'true'), 'every expected meeting is awaiting an agenda');
   assert.ok(awaiting.length > expected.length, 'confirmed meetings without an agenda are revealed with them');
   assert.ok(awaiting.every((row) => row.hidden), 'meetings without an agenda start hidden');
+  assert.ok(awaiting.every((row) => /Expected · no agenda yet/.test(row.querySelector('.status-pill')?.textContent ?? '')), 'confirmed meetings without an agenda share the expected pill');
   assert.ok(expected.every((row) => row.dataset.bucket !== 'earlier'), 'expected meetings are never history');
   const toggle = document.querySelector('#upcoming-toggle');
   assert.equal(toggle.getAttribute('aria-expanded'), 'false');
@@ -83,6 +84,7 @@ test('expected meetings combine with agency filters and disappear for any topic'
   assert.ok(card.querySelector('.meeting-card.meeting-card-forecast'));
   assert.match(card.querySelector('.status-pill').textContent, /Expected · no agenda yet/);
   assert.match(card.textContent, /Usually the first Wednesday at 3:00 PM/);
+  assert.doesNotMatch(card.textContent, /Check the agency website/);
   assert.equal(card.querySelector('.timeline-topic-items'), null);
 
   const topic = document.querySelector('#topic-filter');

@@ -98,6 +98,8 @@ test('a meeting without listed items explains whether its agenda is posted, pend
     const document = await meetingDocument(pending);
     assert.equal(document.querySelector('.empty-panel').dataset.agendaAvailability, 'not-posted');
     assert.match(document.querySelector('.detail-main h2').textContent, /Agenda not posted yet/);
+    assert.match(document.querySelector('.meeting-title-line .status-pill').textContent, /Expected · no agenda yet/);
+    if (!pending.location) assert.doesNotMatch(document.querySelector('.meeting-hero-meta').textContent, /Location/);
   }
   const past = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date < today &&
     !meeting.warnings.some((warning) => /Municode/.test(warning)));

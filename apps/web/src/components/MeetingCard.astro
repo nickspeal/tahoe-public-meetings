@@ -1,6 +1,6 @@
 ---
 import type { Meeting } from '../../../../packages/domain/public';
-import { agencyFor, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, residentWarning } from '../lib/data';
+import { agencyFor, awaitingAgenda, awaitingAgendaLabel, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, residentWarning } from '../lib/data';
 import { meetingCardTitle } from '../lib/meeting-title';
 import StatusPill from './StatusPill.astro';
 const { meeting } = Astro.props as { meeting: Meeting };
@@ -8,9 +8,10 @@ const agency = agencyFor(meeting);
 const forecast = isForecast(meeting);
 const canceled = meeting.status === 'canceled' || meeting.change === 'canceled';
 const title = meetingCardTitle(meeting.title, agency, { canceled });
-const agendaLabel = meetingAgendaLabel(meeting);
-const label = forecast ? 'Expected · no agenda yet' : canceled ? 'Canceled' : meeting.status === 'rescheduled' || meeting.change === 'rescheduled' ? 'Rescheduled' : meeting.change === 'revised' ? 'Revised' : '';
-const tone = forecast ? 'outline' : label === 'Canceled' ? 'red' : label === 'Revised' || label === 'Rescheduled' ? 'amber' : 'muted';
+// Only what is known: an unpublished location or uncounted agenda leaves no placeholder text.
+const details = [meeting.location, meetingAgendaLabel(meeting)].filter(Boolean);
+const label = forecast ? awaitingAgendaLabel : canceled ? 'Canceled' : meeting.status === 'rescheduled' || meeting.change === 'rescheduled' ? 'Rescheduled' : meeting.change === 'revised' ? 'Revised' : awaitingAgenda(meeting) ? awaitingAgendaLabel : '';
+const tone = label === awaitingAgendaLabel ? 'outline' : label === 'Canceled' ? 'red' : label === 'Revised' || label === 'Rescheduled' ? 'amber' : 'muted';
 const dateValue = meetingDateValue(meeting);
 const warning = forecast ? null : meeting.warnings.map(residentWarning).find(Boolean);
 // An expected meeting has no page or calendar file; its card points to the agency for the real notice.
@@ -22,7 +23,7 @@ const link = forecast ? { href: meeting.officialUrl, target: '_blank', rel: 'noo
     <div class="meeting-card-copy">
       <div class="eyebrow">{meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : dateValue ? meetingDateLabel(meeting, { weekday: 'long' }) : 'Date not announced'}</div>
       <h3>{canceled && <span class="sr-only">Canceled: </span>}{forecast && <span class="sr-only">Expected, no agenda yet: </span>}{title}</h3>
-      {forecast ? <p>{meeting.forecast?.basis} <span class="dot">·</span> Check the agency website<span class="sr-only"> (opens in a new tab)</span></p> : <p>{meeting.location ?? 'Location not yet published'} <span class="dot">·</span> {agendaLabel}</p>}
+      {forecast ? <p>{meeting.forecast?.basis}<span class="sr-only"> (opens in a new tab)</span></p> : details.length > 0 && <p>{details.map((detail, index) => <>{index > 0 && <> <span class="dot">·</span> </>}{detail}</>)}</p>}
       {warning && <span class="subtle">{warning}</span>}
     </div>
     <span class="meeting-card-arrow" aria-hidden="true">↗</span>

@@ -156,11 +156,13 @@ test('renders compact date badges and truthful agenda availability on a meeting 
   assert.ok(row);
   assert.equal(row.querySelector('.date-day').textContent, '27');
   assert.equal(row.querySelector('.meeting-date > span:nth-child(2)').textContent, 'Oct');
-  // The label follows the meeting's stored agenda: its listed item count once posted, otherwise "Agenda not posted".
+  // The card counts listed agenda items; without them it shows no agenda text, and a pending agenda gets the status pill.
   const stored = publicData.meetings.find((meeting) => meeting.id === 'truckee:1796');
   const listed = stored.items.filter(shown).length;
-  assert.match(row.querySelector('.meeting-card-copy p').textContent, listed ? new RegExp(`${listed} agenda items?`) : /Agenda not posted/);
-  assert.doesNotMatch(row.querySelector('.meeting-card-copy p').textContent, /0 agenda/);
+  const copy = row.querySelector('.meeting-card-copy').textContent;
+  if (listed) assert.match(copy, new RegExp(`${listed} agenda items?`));
+  else assert.doesNotMatch(copy, /agenda (?:posted|not posted)|items not listed/i);
+  assert.doesNotMatch(copy, /0 agenda|Location not yet published/);
   const canceled = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:1771');
   assert.equal(canceled.dataset.bucket, 'earlier');
   assert.match(canceled.textContent, /Canceled/);

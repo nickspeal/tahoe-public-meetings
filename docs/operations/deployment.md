@@ -214,12 +214,13 @@ The Free plan allows **2 GB of storage and 200,000 operations per month** for th
 
 | Source | Operations |
 | --- | --- |
-| Scheduled run | About 240 statements, plus about 120 `BEGIN`/`COMMIT` if counted. Before October 24, 2026 a run used about 8,700 |
+| Scheduled run | About 260 (measured 2026-10-27; `BEGIN`/`COMMIT` appear not to count). Before October 24, 2026 a run used about 8,700 |
+| Claude classification | About 1 per newly classified item plus 1 per meeting, only when items are new or changed |
 | Vercel build | 1 (reads the newest export) |
 | Feedback submission | 3 |
 | Page views | 0 (the site is static) |
 
-At four runs a day the job should use about 30,000–45,000 operations a month. Other databases in the same Prisma workspace share the quota. Check usage with the Prisma CLI after `npx prisma auth login`. The database is in the Prisma project `tahoe-public-meetings`:
+At four runs a day the job should use about 32,000 operations a month, plus classification of new items. Other databases in the same Prisma workspace share the quota. Check usage with the Prisma CLI after `npx prisma auth login`. The database is in the Prisma project `tahoe-public-meetings`:
 
 ```sh
 npx prisma postgres usage tahoe-public-meetings-db --project tahoe-public-meetings          # month to date

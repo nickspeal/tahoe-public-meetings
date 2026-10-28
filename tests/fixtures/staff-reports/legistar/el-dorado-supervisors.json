@@ -1,0 +1,379 @@
+{
+ "note": "El Dorado County Board of Supervisors, 2026-10-27 (Legistar event 5288). Six of the 30 items; stored agenda pages 5-7, 13 and 15; Legistar Web API responses (\"json\") trimmed to the rows and fields the rule reads, with each Legislation Text body cut after 2,500 characters; the meeting page reduced to its file links. Item 1 is a closed session, item 6 the minutes.",
+ "meeting": {
+  "id": "el-dorado-supervisors:1440018",
+  "agency_id": "el-dorado-supervisors",
+  "title": "El Dorado County Board of Supervisors Meeting",
+  "local_date": "2026-10-27",
+  "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?ID=1440018&GUID=DE73E480-9A58-41E2-A117-835CC7266369&Options=&Search="
+ },
+ "items": [
+  {
+   "id": "el-dorado-supervisors:1440018:1",
+   "number": "1",
+   "title": "Conference with Legal Counsel - Initiation of Litigation pursuant to Government Code Section 54956.9(d)(4). Title: Number of potential cases: (1).",
+   "section": "Closed Session",
+   "fingerprint": "ba087f8d051f9575a420b3fbcfcfffa7f808a6baf0dfb34ed07e9b1bda2252c4",
+   "citations": [
+    {
+     "page": 5,
+     "quote": "Conference with Legal Counsel - Initiation of Litigation pursuant to\n                       Government Code Section 54956.9(d)(4). Title: Number of potential\n                       cases: (1).",
+     "documentId": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b"
+    }
+   ]
+  },
+  {
+   "id": "el-dorado-supervisors:1440018:6",
+   "number": "6",
+   "title": "Clerk of the Board recommending the Board approve the Minutes from the regular meeting on October 20, 2026.",
+   "section": "Consent Calendar",
+   "fingerprint": "ea37ebe1aa13bd937c76824002c0d257ac9eb18274b3c45981e6d4447a8d1104",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "Clerk of the Board recommending the Board approve the Minutes from the\n                       regular meeting on October 20, 2026.",
+     "documentId": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b"
+    }
+   ]
+  },
+  {
+   "id": "el-dorado-supervisors:1440018:7",
+   "number": "7",
+   "title": "Chief Administrative Office recommending the Board: 1) Receive and file the FY 2026-27 Bridge Funding and Sustainability Plan prepared and submitted by National Alliance on Mental Illness (NAMI) El Dorado County Western Slope and South Lake Tahoe, as directed by the Board on September 22, 2026, and direct staff to work with NAMI to provide an update to the Board on implementation of the Plan in the first quarter of 2027; 2) Find that a public benefit is derived from supporting NAMI's Clubhouse",
+   "section": "General Government - Consent Items",
+   "fingerprint": "8e8b0cdcbe0df49cbe17181d32256f46d3f8bb663dddd2f85e44a155c82a0474",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "Chief Administrative Office recommending the Board:\n                       1) Receive and file the FY 2026-27 Bridge Funding and Sustainability Plan\n                       prepared and submitted by National Alliance on Mental Illness (NAMI) El\n                       Dorado County Western Slope and S",
+     "documentId": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b"
+    }
+   ]
+  },
+  {
+   "id": "el-dorado-supervisors:1440018:29",
+   "number": "29",
+   "title": "Human Resources Department recommending the Board: 1) Adopt and authorize the Chair to sign Resolution 175-2026 approving the negotiated Memorandum of Understanding (MOU) between the County of El Dorado and El Dorado County Employees’ Association, Local 1, AFSCME Council 57 representing employees in the General, Professional, and Supervisory Bargaining Units; 2) Authorize the Chair to sign said MOU, noting the MOU will be effective the pay period including January 1, 2027, following the Board of",
+   "section": "General Government - Consent Items",
+   "fingerprint": "1bf04788a90d2afa62923fafae82e9e4ebb444961787f8325d1ddc6ee229649f",
+   "citations": [
+    {
+     "page": 15,
+     "quote": "Human Resources Department recommending the Board:\n                       1) Adopt and authorize the Chair to sign Resolution 175-2026 approving\n                       the negotiated Memorandum of Understanding (MOU) between the County\n                       of El Dorado and El Dorado County Employe",
+     "documentId": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b"
+    }
+   ]
+  },
+  {
+   "id": "el-dorado-supervisors:1440018:10",
+   "number": "10",
+   "title": "Health and Human Services Agency (HHSA) recommending the Board: 1) Approve the County Veterans Affairs Commission’s (VAC) recommendation for the utilization of the Fiscal Year (FY) 2026-27 General Fund Contribution to the VAC; 2) Approve and authorize the HHSA Director or Chief Assistant Director to execute seven funding-out agreements with various organizations supporting veterans, and to distribute the FY 2026-27 funds in the total amount of $175,000, as recommended by the VAC on August 13, 2026,",
+   "section": "Health And Community - Consent Items",
+   "fingerprint": "3b81777edcfab16645f576537970466eb84eb3256fb90d296367d52669f98ec9",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Health and Human Services Agency (HHSA) recommending the Board:\n                       1) Approve the County Veterans Affairs Commission’s (VAC)\n                       recommendation for the utilization of the Fiscal Year (FY) 2026-27 General\n                       Fund Contribution to the VAC;\n    ",
+     "documentId": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b"
+    }
+   ]
+  },
+  {
+   "id": "el-dorado-supervisors:1440018:23",
+   "number": "23",
+   "title": "HEARING - Recorder-Clerk’s Office recommending the Board conduct a public hearing to Introduce and Adopt Ordinance 5272 amending Sections 3.25 of the El Dorado County Ordinance Code to update the Recorder-Clerk’s Schedule of Fees, with fee changes to become effective January 1, 2027.",
+   "section": null,
+   "fingerprint": "06894fb27fc40fa48c74ac344399c037e4c813a048c6a83b9e38e6c7f09b7a2e",
+   "citations": [
+    {
+     "page": 13,
+     "quote": "HEARING - Recorder-Clerk’s Office recommending the Board conduct a\n                       public hearing to Introduce and Adopt Ordinance 5272 amending Sections\n                       3.25 of the El Dorado County Ordinance Code to update the\n                       Recorder-Clerk’s Schedule of Fees, ",
+     "documentId": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b",
+   "source_document_id": "el-dorado-supervisors-agenda",
+   "title": "Agenda",
+   "url": "https://eldorado.legistar.com/View.ashx?M=A&ID=1440018&GUID=DE73E480-9A58-41E2-A117-835CC7266369",
+   "sha256": "12c9858c3a6efd1b1eed822587c5ce26037de2eb9f1b5853ba563ccf157c05b8",
+   "page_count": 15,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda-html:280029df08eb3ff4",
+   "source_document_id": "el-dorado-supervisors-agenda-html",
+   "title": "Accessible Agenda",
+   "url": "https://eldorado.legistar.com/View.ashx?M=AADA&ID=1440018&GUID=DE73E480-9A58-41E2-A117-835CC7266369",
+   "sha256": "280029df08eb3ff4c8deb6839adfecf38def1ce4f28f07834ecff6bacd203888",
+   "page_count": 1,
+   "media_type": "text/html"
+  }
+ ],
+ "stored": {
+  "el-dorado-supervisors:1440018:el-dorado-supervisors-agenda:12c9858c3a6efd1b": {
+   "5": "Board of Supervisors                       MEETING AGENDA                                  October 27, 2026\n\n\n                                         CLOSED SESSION\n\n    1. 26-1703         Conference with Legal Counsel - Initiation of Litigation pursuant to\n                       Government Code Section 54956.9(d)(4). Title: Number of potential\n                       cases: (1).\n    2. 26-1648         Conference with Legal Counsel - Existing Litigation pursuant to\n                       Government Code Section 54956.9(d)(1). Title: Claim of Paul Lewis vs.\n                       County of El Dorado. Sedgwick Workers’ Compensation Claim No.\n                       20212000630. Number of potential cases: (1).\n    3. 26-1708         Conference with Legal Counsel - Existing Litigation pursuant to\n                       Government Code Section 54956.9(d)(1). Title: In re: County of El Dorado\n                       Petition for Modification of CPUC Resolution T-17845. Number of potential\n                       cases: (1).\n    4. 26-1438         Pursuant to Government Code Section 54957- Public Employee\n                       Performance Evaluation. Title: Director of Transportation.\n    5. 26-1675         Pursuant to Government Code Section 54957- Public Employee\n                       Performance Evaluation. Title: Director of Planning and Building.\n\n\n\n\nCounty of El Dorado                              Page 5                                 Printed on 10/26/2026",
+   "6": "Board of Supervisors                       MEETING AGENDA                               October 27, 2026\n\n\n                                       CONSENT CALENDAR\n\n    6. 26-1710         Clerk of the Board recommending the Board approve the Minutes from the\n                       regular meeting on October 20, 2026.\n\nGENERAL GOVERNMENT - CONSENT ITEMS\n\n    7. 26-1680         Chief Administrative Office recommending the Board:\n                       1) Receive and file the FY 2026-27 Bridge Funding and Sustainability Plan\n                       prepared and submitted by National Alliance on Mental Illness (NAMI) El\n                       Dorado County Western Slope and South Lake Tahoe, as directed by the\n                       Board on September 22, 2026, and direct staff to work with NAMI to\n                       provide an update to the Board on implementation of the Plan in the first\n                       quarter of 2027;\n                       2) Find that a public benefit is derived from supporting NAMI's Clubhouse\n                       Program;\n                       3) Approve and authorize the Chair to sign Funding Out Agreement 10670\n                       with NAMI in the amount of $300,000 for the retroactive performance\n                       period of October 1, 2026, through June 30, 2027, to support their\n                       Clubhouse Program; and\n                       4) Authorize the Purchasing Agent to execute amendments relating to\n                       Agreement 10670, contingent upon approval by County Counsel and Risk\n                       Management, which do not increase the maximum dollar amount or term of\n                       the Agreement.\n\n                       FUNDING: General Fund.\n\n    8. 26-1670         Human Resources Department recommending the Board:\n                       1) Adopt and authorize the Chair to sign Resolution 169-2026 to approve,\n                       due to an upward reclassification, the deletion of 1.0 FTE Sr.\n                       Administrative Analyst allocation and the addition of 1.0 FTE Program\n                       Manager allocation in the Department of Transportation; and\n                       2) Approve the incumbent appointment to the Program Manager position\n                       pursuant to Personnel Rule 507.12, which allows direct appointment for an\n                       upward reclassification when the incumbent has been performing the\n                       higher-level duties for the required period.\n\n                       FUNDING: Road Fund.\n\n    9. 26-1672         Recorder-Clerk's Office recommending the Board adopt and authorize the\n                       Chair to sign Resolution 173-2026, authorizing the implementation of a\n                       Recorder Notification Program pursuant to Government Code Section\n                       27297.7.\n\n                       FUNDING: N/A\n\n\n\nCounty of El Dorado                              Page 6                                Printed on 10/26/2026",
+   "7": "Board of Supervisors                       MEETING AGENDA                                October 27, 2026\n\n\n\nHEALTH AND COMMUNITY - CONSENT ITEMS\n\n    10. 26-1461        Health and Human Services Agency (HHSA) recommending the Board:\n                       1) Approve the County Veterans Affairs Commission’s (VAC)\n                       recommendation for the utilization of the Fiscal Year (FY) 2026-27 General\n                       Fund Contribution to the VAC;\n                       2) Approve and authorize the HHSA Director or Chief Assistant Director to\n                       execute seven funding-out agreements with various organizations\n                       supporting veterans, and to distribute the FY 2026-27 funds in the total\n                       amount of $175,000, as recommended by the VAC on August 13, 2026,\n                       contingent upon approval of County Counsel and Risk Management; and\n                       3) Authorize the HHSA Director or Chief Assistant Director to execute\n                       further documents relating to these agreements, contingent upon County\n                       Counsel and Risk Management approval, as applicable, including\n                       amendments that do not increase the maximum dollar amount or term of\n                       the agreements.\n\n                       FUNDING: 100% VAC General Fund Contribution.\n\n    11. 26-1482        Health and Human Services Agency (HHSA) recommending the Board:\n                       1) Make findings pursuant to Section 3.13.030 (B) of the El Dorado County\n                       Ordinance Chapter 3.13, Contracting Out, that the Social Rehabilitation\n                       Treatment Services services provided by Compassion Pathway\n                       Behavioral Health LLC doing business as Compassion Springs\n                       (Compassion) requires specialty skills and qualifications not expressly\n                       identified in County classifications are involved in the performance of the\n                       work;\n                       2) Approve and authorize the Chair to sign Amendment III to Agreement for\n                       Services 8092 with Compassion, increasing the contract value by\n                       $1,500,000, for a revised amount not to exceed $7,500,000, with no\n                       change to the three-year term expiring June 30, 2027, and updating the\n                       reference of the Mental Health Services Act (2004) to the Behavioral\n                       Health Services Act (BHSA) (2024);\n                       3) Authorize the Purchasing Agent to execute amendments relating to\n                       Agreement 8092, contingent upon approval by County Counsel and Risk\n                       Management, which do not increase the maximum dollar amount or term of\n                       the Agreement; and\n                       4) Authorize the HHSA Director, or the Chief Assistant Director, to execute\n                       programmatic, administrative, and fiscal documents relating to Agreement\n                       8092.\n\n                       FUNDING: 36% Federal Medi-Cal, 54% Realignment, and 10% BHSA.\n\n\n\n\nCounty of El Dorado                              Page 7                                 Printed on 10/26/2026",
+   "13": "Board of Supervisors                       MEETING AGENDA                               October 27, 2026\n\n\n\nDEPARTMENT MATTERS (Items in this category may be called at any time)\n\n    22. 26-1234        Agriculture Department recommending the Board receive an informational\n                       presentation on trends seen in the 2025 Crop Report and a departmental\n                       summary of programs administered by the Department of\n                       Agriculture/Weights & Measures, and file the El Dorado-Alpine Counties\n                       2025 Agricultural Crop and Livestock Report.\n\n                       FUNDING: General Fund/Unclaimed Gas Tax.\n\n9:00 A.M. HEARING\n\n    23. 26-1671        HEARING - Recorder-Clerk’s Office recommending the Board conduct a\n                       public hearing to Introduce and Adopt Ordinance 5272 amending Sections\n                       3.25 of the El Dorado County Ordinance Code to update the\n                       Recorder-Clerk’s Schedule of Fees, with fee changes to become effective\n                       January 1, 2027.\n\n                       FUNDING: N/A\n\n10:00 A.M. - TIME ALLOCATION (Items will not be heard prior to the time stated)\n\n    24. 26-1559        Environmental Management Department recommending the Board:\n                       1) Receive and file a presentation from Recology Inc; and\n                       2) Approve and authorize the Chair to sign the third Amendment to the\n                       current Franchise Agreement, adding Section I, Assignment and Guaranty\n                       of Continued Performance, assigning the Tahoe Truckee Sierra Disposal\n                       Franchise Agreement to Recology, Inc., which remains in effect through\n                       September 2028.\n\n                       FUNDING: Solid Waste Franchise Fees.\n\n11:00 A.M. - TIME ALLOCATION (Items will not be heard prior to the time stated)\n\n    25. 26-1650        Sheriff’s Office recommending the Board receive and file a presentation on\n                       Automatic License Plate Recognition systems in El Dorado County.\n\n                       FUNDING: N/A\n\n\n\n\nCounty of El Dorado                              Page 13                                Printed on 10/26/2026",
+   "15": "Board of Supervisors                       MEETING AGENDA                                October 27, 2026\n\n\n\nBOARD MEMBER UPDATES: This is an opportunity for Board Members to provide\nshort informational updates on matters of countywide concern and brief reports on\nmeetings attended at the expense of the County, in accordance with Government Code\n§ 53232.3. No action will be taken. (May be called at any time during the meeting)\n\nCAO UPDATE (May be called at any time during the meeting)\n\nADJOURNMENT\n\n                                             ADDENDUM\n\n                                         CLOSED SESSION\n\n    28. 26-1721        Conference with Legal Counsel - Existing Litigation pursuant to\n                       Government Code Section 54956.9(d)(1). Title: Russell, et al. v. County of\n                       El Dorado, et al., El Dorado Superior Court Case No. 26CV2899.\n\nGENERAL GOVERNMENT - CONSENT ITEMS\n\n    29. 26-1714        Human Resources Department recommending the Board:\n                       1) Adopt and authorize the Chair to sign Resolution 175-2026 approving\n                       the negotiated Memorandum of Understanding (MOU) between the County\n                       of El Dorado and El Dorado County Employees’ Association, Local 1,\n                       AFSCME Council 57 representing employees in the General,\n                       Professional, and Supervisory Bargaining Units;\n                       2) Authorize the Chair to sign said MOU, noting the MOU will be effective\n                       the pay period including January 1, 2027, following the Board of\n                       Supervisors’ adoption of the MOU; and\n                       3) Direct the Human Resources Department and the Auditor-Controller's\n                       Office to administer and implement the MOU provisions.\n\n                       FUNDING: Various funding.\n\n\n\n\nCounty of El Dorado                              Page 15                                 Printed on 10/26/2026"
+  }
+ },
+ "downloads": {},
+ "html": {
+  "https://eldorado.legistar.com/MeetingDetail.aspx?ID=1440018&GUID=DE73E480-9A58-41E2-A117-835CC7266369&Options=&Search=": "<html><body><table id=\"ctl00_ContentPlaceHolder1_gridMain_ctl00\"><tr><td><a href=\"LegislationDetail.aspx?ID=8296510&amp;GUID=0B860154-AA4F-4CF1-A676-7E2233CEB0B7&amp;Options=&amp;Search=\">26-1703</a></td></tr><tr><td><a href=\"LegislationDetail.aspx?ID=8296512&amp;GUID=06926BF1-1020-4E2C-ADCA-2DF7B5D6F9B9&amp;Options=&amp;Search=\">26-1710</a></td></tr><tr><td><a href=\"LegislationDetail.aspx?ID=8296509&amp;GUID=DE4D6FEC-4341-451B-BE9E-A576CB51071A&amp;Options=&amp;Search=\">26-1680</a></td></tr><tr><td><a href=\"LegislationDetail.aspx?ID=8296491&amp;GUID=22E77271-A6ED-4FEB-BEB7-5E839A1395A9&amp;Options=&amp;Search=\">26-1461</a></td></tr><tr><td><a href=\"LegislationDetail.aspx?ID=8296506&amp;GUID=71126D96-0D91-41C8-8788-D9A453CE93A8&amp;Options=&amp;Search=\">26-1671</a></td></tr><tr><td><a href=\"LegislationDetail.aspx?ID=8298459&amp;GUID=43BAF342-A9F6-441A-B6F3-637405335039&amp;Options=&amp;Search=\">26-1714</a></td></tr></table></body></html>"
+ },
+ "json": {
+  "https://webapi.legistar.com/v1/eldorado/Events?$filter=EventDate%20eq%20datetime%272026-10-27%27": [
+   {
+    "EventId": 5288,
+    "EventBodyName": "Board of Supervisors",
+    "EventDate": "2026-10-27T00:00:00",
+    "EventTime": "9:00 AM",
+    "EventAgendaFile": "https://eldorado.legistar1.com/eldorado/meetings/2026/10/5288_A_Board_of_Supervisors_26-10-27_MEETING_AGENDA.pdf",
+    "EventInSiteURL": "https://eldorado.legistar.com/MeetingDetail.aspx?LEGID=5288&GID=57&G=1B73DE4C-938C-4A3A-92A4-CDDFE91781FE"
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Events/5288/EventItems?AgendaNote=1&MinutesNote=1&Attachments=1": [
+   {
+    "EventItemId": 178679,
+    "EventItemEventId": 5288,
+    "EventItemAgendaSequence": 22,
+    "EventItemAgendaNumber": "1.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Conference with Legal Counsel - Initiation of Litigation pursuant to Government Code Section 54956.9(d)(4). Title:  Number of potential cases: (1).",
+    "EventItemMatterId": 41428,
+    "EventItemMatterFile": "26-1703",
+    "EventItemMatterType": "Closed Session Item ",
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 178725,
+    "EventItemEventId": 5288,
+    "EventItemAgendaSequence": 29,
+    "EventItemAgendaNumber": "6.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Clerk of the Board recommending the Board approve the Minutes from the regular meeting on October 20, 2026.",
+    "EventItemMatterId": 41435,
+    "EventItemMatterFile": "26-1710",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 129083,
+      "MatterAttachmentName": "Draft Minutes 10-20-2026",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/8109615b-8a2c-48c2-804e-671f8020e327.pdf"
+     },
+     {
+      "MatterAttachmentId": 129153,
+      "MatterAttachmentName": "Final Minutes 10-20-2026",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/efc76bbe-89b5-4260-b2ea-463cd0c053a8.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 178694,
+    "EventItemEventId": 5288,
+    "EventItemAgendaSequence": 31,
+    "EventItemAgendaNumber": "7.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Chief Administrative Office recommending the Board:\r\n1) Receive and file the FY 2026-27 Bridge Funding and Sustainability Plan prepared and submitted by National Alliance on Mental Illness (NAMI) El Dorado County Western Slope and South Lake Tahoe, as directed by the Board on September 22, 2026, and direct staff to work with NAMI to provide an update to the Board on implementation of the Plan in the first quarter of 2027;\r\n2) Find that a public benefit is derived from supporting NAMI's Clubhouse Program;\r\n3) Approve and authorize the Chair to sign Funding Out Agreement 10670 with NAMI in the amount of $300,000 for the retroactive performance period of October 1, 2026, through June 30, 2027, to support their Clubhouse Program; and\r\n4) Authorize the Purchasing Agent to execute amendments relating to Agreement 10670, contingent upon approval by County Counsel and Risk Management, which do not increase the maximum dollar amount or term of the Agreement.\r\n\r\nFUNDING: General Fund.",
+    "EventItemMatterId": 41405,
+    "EventItemMatterFile": "26-1680",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 128895,
+      "MatterAttachmentName": "A - Bridge Funding and Sustainability Plan",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/f0627d2d-6412-4745-9807-6794d9f88085.pdf"
+     },
+     {
+      "MatterAttachmentId": 128897,
+      "MatterAttachmentName": "C - Counsel Review Agreement 10670",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/2f014fc9-f965-421d-a6d3-1200609cfba1.pdf"
+     },
+     {
+      "MatterAttachmentId": 128912,
+      "MatterAttachmentName": "B - Agreement 10670",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/47aa3723-b8f3-41ef-91a6-c696f2633644.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 178685,
+    "EventItemEventId": 5288,
+    "EventItemAgendaSequence": 36,
+    "EventItemAgendaNumber": "10.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Health and Human Services Agency (HHSA) recommending the Board:\r\n1) Approve the County Veterans Affairs Commission’s (VAC) recommendation for the utilization of the Fiscal Year (FY) 2026-27 General Fund Contribution to the VAC;\r\n2) Approve and authorize the HHSA Director or Chief Assistant Director to execute seven funding-out agreements with various organizations supporting veterans, and to distribute the FY 2026-27 funds in the total amount of $175,000, as recommended by the VAC on August 13, 2026, contingent upon approval of County Counsel and Risk Management; and \r\n3) Authorize the HHSA Director or Chief Assistant Director to execute further documents relating to these agreements, contingent upon County Counsel and Risk Management approval, as applicable, including amendments that do not increase the maximum dollar amount or term of the agreements.  \r\n\r\nFUNDING: 100% VAC General Fund Contribution.",
+    "EventItemMatterId": 41186,
+    "EventItemMatterFile": "26-1461",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 128520,
+      "MatterAttachmentName": "A - VA Commission Meeting Minutes, TOT Allotments",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/565256ba-8973-4d19-b728-647971bebe34.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 178722,
+    "EventItemEventId": 5288,
+    "EventItemAgendaSequence": 57,
+    "EventItemAgendaNumber": "23.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "HEARING - Recorder-Clerk’s Office recommending the Board conduct a public hearing to Introduce and Adopt Ordinance 5272 amending Sections 3.25 of the El Dorado County Ordinance Code to update the Recorder-Clerk’s Schedule of Fees, with fee changes to become effective January 1, 2027.\r\n \r\nFUNDING:  N/A",
+    "EventItemMatterId": 41396,
+    "EventItemMatterFile": "26-1671",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 128856,
+      "MatterAttachmentName": "A - GC 54985",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/9b7e024d-2067-49e1-8c68-2e427a4a2da7.pdf"
+     },
+     {
+      "MatterAttachmentId": 128857,
+      "MatterAttachmentName": "B - Fee Study Report",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/92c33098-564c-400a-bd59-7a41361cbdee.pdf"
+     },
+     {
+      "MatterAttachmentId": 128858,
+      "MatterAttachmentName": "E - Public Hearing Notice - Fees",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/f0ee328e-2f44-4cc5-bc02-c6625b747c38.pdf"
+     },
+     {
+      "MatterAttachmentId": 128913,
+      "MatterAttachmentName": "F - Counsel Review",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/40622ae0-4cfa-40f0-83ed-cf941c439d50.pdf"
+     },
+     {
+      "MatterAttachmentId": 129021,
+      "MatterAttachmentName": "D - Fee Schedule Ordinance Clean",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/0b53d397-4125-4998-ab6c-08d2bb7bcca5.pdf"
+     },
+     {
+      "MatterAttachmentId": 129028,
+      "MatterAttachmentName": "C - Fee Schedule Ordinance Redline",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/604dad0d-4cff-4fc1-ad4d-eb7d69926085.pdf"
+     },
+     {
+      "MatterAttachmentId": 129118,
+      "MatterAttachmentName": "Pre-Adoption - Proof of Publication",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/a08272b3-291b-4ddd-9eb5-fc69942f323d.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 178744,
+    "EventItemEventId": 5288,
+    "EventItemAgendaSequence": 77,
+    "EventItemAgendaNumber": "29.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Human Resources Department recommending the Board:\r\n1) Adopt and authorize the Chair to sign Resolution 175-2026 approving the negotiated Memorandum of Understanding (MOU) between the County of El Dorado and El Dorado County Employees’ Association, Local 1, AFSCME Council 57 representing employees in the General, Professional, and Supervisory Bargaining Units;\r\n2) Authorize the Chair to sign said MOU, noting the MOU will be effective the pay period including January 1, 2027, following the Board of Supervisors’ adoption of the MOU; and\r\n3) Direct the Human Resources Department and the Auditor-Controller's Office to administer and implement the MOU provisions.\r\n \r\nFUNDING:  Various funding.",
+    "EventItemMatterId": 41439,
+    "EventItemMatterFile": "26-1714",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 129062,
+      "MatterAttachmentName": "A - Blue Route 26-1714",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/eb9b967e-e1e9-4251-bcf5-c7c4d3097374.pdf"
+     },
+     {
+      "MatterAttachmentId": 129063,
+      "MatterAttachmentName": "B - Local 1 Reso MOU - 26-1714",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/6ea5974e-28de-4d0f-9aa7-3fc7c211fedf.pdf"
+     },
+     {
+      "MatterAttachmentId": 129064,
+      "MatterAttachmentName": "C- Local 1 Redline MOU 26-1714",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/51ba8a90-34a8-4d00-8bde-cfacc14d98eb.pdf"
+     },
+     {
+      "MatterAttachmentId": 129066,
+      "MatterAttachmentName": "D - Local 1 Clean MOU 26-1714",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/3faed9e7-708e-464e-9b09-5c268e4e8666.pdf"
+     }
+    ]
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Matters/41405/Versions": [
+   {
+    "Key": "49668",
+    "Value": "1"
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Matters/41405/Texts/49668": {
+   "MatterTextId": 49668,
+   "MatterTextMatterId": 41405,
+   "MatterTextVersion": "1",
+   "MatterTextPlain": "..Title\nChief Administrative Office recommending the Board:\n1) Receive and file the FY 2026-27 Bridge Funding and Sustainability Plan prepared and submitted by National Alliance on Mental Illness (NAMI) El Dorado County Western Slope and South Lake Tahoe, as directed by the Board on September 22, 2026, and direct staff to work with NAMI to provide an update to the Board on implementation of the Plan in the first quarter of 2027;\n2) Find that a public benefit is derived from supporting NAMI's Clubhouse Program;\n3) Approve and authorize the Chair to sign Funding Out Agreement 10670 with NAMI in the amount of $300,000 for the retroactive performance period of October 1, 2026, through June 30, 2027, to support their Clubhouse Program; and\n4) Authorize the Purchasing Agent to execute amendments relating to Agreement 10670, contingent upon approval by County Counsel and Risk Management, which do not increase the maximum dollar amount or term of the Agreement.\n\nFUNDING: General Fund.\n..Body\nDISCUSSION / BACKGROUND\nOn September 22, 2026, with Legistar file 26-1515, the Board directed a change to the proposed FY 2026-27 Adopted Budget to “obligate up to $300,000 from General Fund Contingency for Clubhouse El Dorado and work with Clubhouse El Dorado to develop a plan and on an as needed basis to fund them through June 30, 2027, with the understanding that the County will not be opting into BH Connect and direct staff to return to the Board with an update before the end of the calendar year.”\n\nNAMI has prepared a FY 2026-27 Bridge Funding and Sustainability Plan; attached to this item as Attachment A. The Plan outlines that Clubhouse El Dorado requires approximately $530,000 to $600,000 annually to sustain current operations. NAMI’s sustainable funding plan outlines a diversified revenue model combining healthcare\nreimbursement and partnerships, public funding, foundation grants, individual philanthropy, corporate support, community fundraising, and other contracted revenue opportunities. The Plan includes NAMI providing a Mid-Year Progress Report by March 1, 2027. The Plan also includes a FY 2026-27 Budget for the Clubhouse Program.\n\nAgreement 10670 is being presented for Board approval. This Funding Out Agreement will allow for three quarterly payments of $100,000 to NAMI for the period of October 1, 2026, through June 30, 2027. A one-month retroactive performance period is recommended to allow for a full three quarters of funding and to allow the largest period of bridge funding in alignment with the Board’s direction on September 22, 2026. Prior to the payment of the second and third quarter payments, NAMI will submit a request for payment that includes an update on the implementation of the funding sustainability plan and a statement of the ongoing need for the funding. \n\nALTERNATIVES\nThe Board could choose not to approve the proposed Agreement and could provide alternate direction.\n\nPRIOR BOARD ACTION\nSee above.\n\nOTHER DEPARTMENT / AGENCY INVOLVEMENT\nCounty Counsel and Risk Management have reviewed the Agreement. \n\nFINANCIAL IMPACT\nAgreement 10670 was funded through a reduction of General Fund Contingency, per Board direction provided on September 22, 2026, with Legistar file 26-1515. Appropriations for the Agreement were included in the Board-approved budget for General Revenues and Non-Departmental Expenses, also known as Department 15.\n\nCLERK OF THE BOARD FOLLOW UP ACTIONS\nIf approved, obtain the Chair’s signature on Agreement 10670.\n\nS"
+  },
+  "https://webapi.legistar.com/v1/eldorado/Matters/41186/Versions": [
+   {
+    "Key": "49448",
+    "Value": "1"
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Matters/41186/Texts/49448": {
+   "MatterTextId": 49448,
+   "MatterTextMatterId": 41186,
+   "MatterTextVersion": "1",
+   "MatterTextPlain": "..Title\nHealth and Human Services Agency (HHSA) recommending the Board:\n1) Approve the County Veterans Affairs Commission’s (VAC) recommendation for the utilization of the Fiscal Year (FY) 2026-27 General Fund Contribution to the VAC;\n2) Approve and authorize the HHSA Director or Chief Assistant Director to execute seven funding-out agreements with various organizations supporting veterans, and to distribute the FY 2026-27 funds in the total amount of $175,000, as recommended by the VAC on August 13, 2026, contingent upon approval of County Counsel and Risk Management; and \n3) Authorize the HHSA Director or Chief Assistant Director to execute further documents relating to these agreements, contingent upon County Counsel and Risk Management approval, as applicable, including amendments that do not increase the maximum dollar amount or term of the agreements.  \n\nFUNDING: 100% VAC General Fund Contribution.\n..Body\nDISCUSSION / BACKGROUND\nOn March 19, 2013, the Board approved a recommendation to establish an annual allocation of Discretionary Transient Occupancy Tax (DTOT) funds, beginning with the FY 2013-14 budget, for the purpose of funding projects, programs, and services that directly benefit the support and recognition of veterans in El Dorado County (Legistar file 13-0280). On an annual basis, the Board has approved the VAC recommendations for the utilization of funding during each subsequent fiscal year. Prior to July 1, 2018, County Veteran Services (VS) had been administratively supported by the Chief Administrative Office, and funds were distributed according to the VAC directly from the General Fund. Effective July 1, 2018, VS transitioned to HHSA and DTOT funding is included in a VAC Special Revenue Fund budget. The annual allocation amount for the support and recognition of veterans was set at a fixed rate beginning with FY 2020-21 and currently receives an annual allocation of $175,000. \n\nThe annual allocation of $175,000 is included in the FY 2026-27 County budget. The $175,000 allocation is comprised of $133,581 in FY 2026-27 General Fund contribution to the VAC and $41,419 in VAC Special Revenue Fund balance. On August 13, 2026, the VAC voted (minutes approved September 10, 2026) on the FY 2026-27 $175,000 fund distribution, and intends to allocate $78,000 to various organizations to provide support to veterans, as well as $37,197 to fund a 0.50 Full-Time Equivalent (FTE) Office Assistant position for VS, with the remaining $59,803 allocated to the El Dorado Community Foundation for $56,812.85 in mini-grants for services for veterans and $2,990.15 for a five percent administrative fee. \n \nThe VAC recommendation for full utilization of the FY 2026-27 allocation is as follows:\n1) Agreement 10613, Military Family Support Group - $19,000 for outreach and supportive services. \n2) Agreement 10614, El Dorado County Veterans Alliance - $10,000 for costs associated with coordinating and conducting Memorial Day and Veterans Day events at the Veterans Monument.\n3) Agreement 10615, Sierra Chaplaincy - $4,000 for chaplains’ visits, officiating at military funerals, and grief counseling.\n4) Agreement 10616, Snowline Hospice - $15,000 for hospice custodial care and medical equipment.\n5) Agreement 10618, Lake Tahoe Community College - $8,000 for books, materials, and resources at campus Veteran Resource Centers, and improvements to the Veteran Resource Center.\n6) "
+  },
+  "https://webapi.legistar.com/v1/eldorado/Matters/41396/Versions": [
+   {
+    "Key": "49659",
+    "Value": "1"
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Matters/41396/Texts/49659": {
+   "MatterTextId": 49659,
+   "MatterTextMatterId": 41396,
+   "MatterTextVersion": "1",
+   "MatterTextPlain": "..Title\nHEARING - Recorder-Clerk’s Office recommending the Board conduct a public hearing to Introduce and Adopt Ordinance 5272 amending Sections 3.25 of the El Dorado County Ordinance Code to update the Recorder-Clerk’s Schedule of Fees, with fee changes to become effective January 1, 2027.\n \nFUNDING:  N/A\n..Body\nDISCUSSION / BACKGROUND\nCalifornia Government Code Chapter 12.5 County Fees, Section 54985, authorizes the Board of Supervisors to \"recover the cost of providing any product or service . . \" (Attachment A).  Chapter 3.25 of Title 3 of the El Dorado County Ordinance Code describes the services and products which the Recorder-Clerk provides on a fee basis. \n \nOn November 5, 2019, the Board approved Ordinance 5108 amending Title 3 Revenue and Finance, Chapters 3.25 to update the schedule of fees and fee changes.  Since the adoption of the current Fee Schedule, the Recorder-Clerk's Office has seen an increase in the cost for services.\n \nOn September 22, 2026, the Board granted conceptual approval for the Recorder-Clerk’s Office to update the fees recovering the costs of providing services. Staff reviewed the cost of providing services based on the Fiscal Years 2024-25 budget (Attachment B - Recorder-Clerk Fee Study).  The study reflected a decrease in Recorder-Clerk’s Office fully-burdened hourly rate from $119 to $111 due to various efficiencies implemented in the Recorder-Clerk's office, changes in software, and a reduction of staff in Fiscal Year 2024-25. The cost of providing services is determined by multiplying the time required for the service by the hourly rate. Those fees that are not mandated by statute are adjusted to recover more of the County costs to provide the services. While the Recorder-Clerk’s Office fully-burdened rate has declined, many fees are increasing to reflect 100% cost recovery, when the past Fee Study sought to obtain between 49% to 84% cost recovery. \n \nAttachment C provides a red-line version of the updated fee schedule. Attachment D provides a clean version of the updated fee schedule.  \n \nThis Ordinance is proposed for approval and adoption pursuant to Government Code (GOV) subsection (§) 54985 and County Ordinance Code Section 1.04.260, following today's required public meeting (GOV § 54986).  The Ordinance has been noticed (Attachment E) and may be passed at today's meeting with no second reading.  If approved, the Ordinance will take effect 30 days from execution. The new fees will begin being collected January 1, 2027, with the exception of the Deed and Mortgage Notification Fee (Senate Bill 255) which will not begin collection until April 1, 2027.  \n \nALTERNATIVES\nThe Board could choose not to approve this revised ordinance and the Recorder-Clerk would continue to offset the cost of services with Recorder Restricted Reve"
+  },
+  "https://webapi.legistar.com/v1/eldorado/Matters/41439/Versions": [
+   {
+    "Key": "49705",
+    "Value": "1"
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Matters/41439/Texts/49705": {
+   "MatterTextId": 49705,
+   "MatterTextMatterId": 41439,
+   "MatterTextVersion": "1",
+   "MatterTextPlain": "..Title\nHuman Resources Department recommending the Board:\n1) Adopt and authorize the Chair to sign Resolution 175-2026 approving the negotiated Memorandum of Understanding (MOU) between the County of El Dorado and El Dorado County Employees’ Association, Local 1, AFSCME Council 57 representing employees in the General, Professional, and Supervisory Bargaining Units;\n2) Authorize the Chair to sign said MOU, noting the MOU will be effective the pay period including January 1, 2027, following the Board of Supervisors’ adoption of the MOU; and\n3) Direct the Human Resources Department and the Auditor-Controller's Office to administer and implement the MOU provisions.\n \nFUNDING:  Various funding.\n..Body\nDISCUSSION / BACKGROUND\nThe term of the current MOU between the County of El Dorado (County) and the El Dorado County Employees’ Association, Local 1, AFSCME Council 57 (Union) representing employees in the General (GE), Professional (PL), and Supervisory (SU) bargaining units, ends on December 31, 2026. \n \nPursuant to the Meyers-Milias-Brown Act (Government Code sections 3500 et seq.), representatives of the Union and the County (collectively, the Parties) have met and conferred in good faith regarding wages, hours, and other terms and conditions of employment of employees in the GE, PL, and SU bargaining units. The Parties jointly prepared a successor MOU for the term of January 1, 2027 through December 31, 2026, reflecting agreed revisions to certain terms and conditions. Subject to the provisions in the MOU, a summary of the changes are listed below:\n\n1. Effective the first full pay period containing January 1, 2027, the County will increase base wages for benchmark classifications and internally tied non-benchmark classifications to approximately eight percent (+/- 8%) of the total compensation median of the County’s February 2026 comparable agency compensation survey, with the exception of the Associate Civil Engineer, Cook II, Mental Health Clinician II, Public Health Nurse II, and Social Worker II benchmark classifications. The Associate Civil Engineer, Cook II, Mental Health Clinician II, Public Health Nurse II, and Social Worker II benchmark classifications and their internally tied non-benchmark classifications will receive an increase to approximately five percent (+/- 5%) of the total compensation median of the County’s February 2026 comparable agency compensation survey.\n\nThe classification of Hazardous-Materials/Recycling Specialist will receive a four and one-half percent (4.5%) base wage increase, consisting of an increase to (+/- 8%) of the median and an additional 2.75% (non-compounding) increase to address compaction.\n\n2. Effective the first full pay period in January 2028, the County will increase base wages by 3.0% for all classifications subject to this MOU.\n\n3. Modification of existing On-Call language; increase rate from $2.50/hr to $3.00/hr and limit 20% rate to specific Health and Human Services Agency classifications.\n\nOther Terms and Conditions which are recommended for update, and which have little or unknown direct cost impact include, but are not limited to:\n\n• Modification of existing language pertaining to sick leave for "
+  }
+ },
+ "expected": {
+  "1": null,
+  "6": null,
+  "7": {
+   "page_start": 1,
+   "page_end": 1,
+   "url_end": "ID=8296509&GUID=DE4D6FEC-4341-451B-BE9E-A576CB51071A&Options=&Search=",
+   "heading": "File #: 26-1680"
+  },
+  "10": {
+   "page_start": 1,
+   "page_end": 1,
+   "url_end": "ID=8296491&GUID=22E77271-A6ED-4FEB-BEB7-5E839A1395A9&Options=&Search=",
+   "heading": "File #: 26-1461"
+  },
+  "23": {
+   "page_start": 1,
+   "page_end": 1,
+   "heading": "File #: 26-1671"
+  },
+  "29": {
+   "page_start": 1,
+   "page_end": 1,
+   "heading": "File #: 26-1714"
+  }
+ }
+}

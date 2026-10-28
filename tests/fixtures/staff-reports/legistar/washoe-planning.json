@@ -1,0 +1,307 @@
+{
+ "note": "Washoe County Planning Commission, 2026-10-06 (Legistar event 2157). Stored agenda pages 4-6; Legistar Web API responses trimmed to the rows and fields the rule reads (the API lists hearing 8.A as an \"A.\" row followed by its file's row); the first page of the 8.A and 8.B staff reports. 8.C's 80 MB report is not in the fixture (a failed download stores nothing).",
+ "meeting": {
+  "id": "washoe-planning:1442809",
+  "agency_id": "washoe-planning",
+  "title": "Washoe County Planning Commission Meeting",
+  "local_date": "2026-10-06",
+  "official_url": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC"
+ },
+ "items": [
+  {
+   "id": "washoe-planning:1442809:1",
+   "number": "1",
+   "title": "Call to Order and Determination of Quorum",
+   "section": null,
+   "fingerprint": "4e9000eaa6dfc727f4cf692a2dcef3942fab4f94eba32fdd25bc8c3600709c79",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "Call to Order and Determination of Quorum [Non-action item]",
+     "documentId": "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f"
+    }
+   ]
+  },
+  {
+   "id": "washoe-planning:1442809:7",
+   "number": "7",
+   "title": "Approval of the September 1, 2026, Draft Minutes",
+   "section": null,
+   "fingerprint": "2d314e9aa4ebff3e2e126a3176cd4ac8cca154f6df56964ba43dc7a13237d81a",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "Approval of the September 1, 2026, Draft Minutes [For possible action]",
+     "documentId": "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f"
+    }
+   ]
+  },
+  {
+   "id": "washoe-planning:1442809:8.A",
+   "number": "8.A",
+   "title": "Abandonment Case Number WAB26-0009 (Project Max Abandonment)",
+   "section": "Public Hearings",
+   "fingerprint": "806e100094b808f02a815def38e308acf72d4346f4043d102a86c770e68b4011",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "Abandonment Case Number WAB26-0009 (Project Max Abandonment) - [For Possible Action]",
+     "documentId": "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f"
+    }
+   ]
+  },
+  {
+   "id": "washoe-planning:1442809:8.B",
+   "number": "8.B",
+   "title": "WAC26-0014 (NVSOLARWRX) for WSUP26-0008",
+   "section": "Public Hearings",
+   "fingerprint": "3ea79c9afbc44de275e3f6afeba7f512028affbec2892804ada876c1e26bab66",
+   "citations": [
+    {
+     "page": 5,
+     "quote": "WAC26-0014 (NVSOLARWRX) for WSUP26-0008 [For possible action]",
+     "documentId": "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f"
+    }
+   ]
+  },
+  {
+   "id": "washoe-planning:1442809:8.C",
+   "number": "8.C",
+   "title": "Tentative Subdivision Map Case Number WTM25-001 (Palomino Farms)",
+   "section": "Public Hearings",
+   "fingerprint": "72954277f4954413674eb58dea807b9852787938932d92e6a61bba0d17aa443a",
+   "citations": [
+    {
+     "page": 5,
+     "quote": "Tentative Subdivision Map Case Number WTM25-001 (Palomino Farms) [For possible action]",
+     "documentId": "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f",
+   "source_document_id": "washoe-planning-agenda-1442809",
+   "title": "Official Planning Commission agenda",
+   "url": "https://washoe-nv.legistar.com/View.ashx?M=A&ID=1442809&GUID=B11883AA-5CA7-4FAF-ACA1-ABC69C5C7608",
+   "sha256": "485dd8bf32639b6f9189d0d860a8d12aeca09e6ee368947bdd868330d07b0c18",
+   "page_count": 6,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "washoe-planning:1442809:washoe-planning-agenda-1442809:485dd8bf32639b6f": {
+   "4": "Washoe County Planning Commission                                                                      October 6, 2026\n\nAppeal Procedure\nMost decisions rendered by the Planning Commission are appealable to the Board of County Commissioners. If you\ndisagree with the decision of the Planning Commission and you qualify as an aggrieved person/party, you may\nappeal the decision in writing within ten (10) calendar days from the date that the decision being appealed is\nreduced to writing, filed with the Secretary of the Planning Commission, and mailed to the original applicant in the\nproceeding being appealed, in accordance with Washoe County Code. Please call the Planning staff immediately at\n(775) 328-6100 for information on the appeal procedure and application fee.\n_\n_\n                                                           AGENDA\n\n6:00 P.M.\n1.     Call to Order and Determination of Quorum [Non-action item]\n2.     Pledge of Allegiance [Non-action item]\n3.     Ethics Law Announcement [Non-action item]\n4.     Appeal Procedure [Non-action item]\n5.     Public Comment [Non-action item]\n\n       Comment heard under this item will be limited to three minutes per person and may pertain to matters\n       both on and off the agenda. However, action may not be taken on any matter raised during this public\n       comment period until the matter is specifically listed on an agenda as an action item. Comments are to be\n       made to the Planning Commission as a whole.\n6.     Approval of the October 6, 2026, Agenda [For possible action]\n7.     Approval of the September 1, 2026, Draft Minutes [For possible action]\n\n       Attachments:     090126_PC Minutes_Draft - TMP 12407\n\n8.     Public Hearings [For possible action]\n       A.      Abandonment Case Number WAB26-0009 (Project Max Abandonment) - [For Possible Action]\n\n\n\n\n                                                       Page 4",
+   "5": "Washoe County Planning Commission                                                                 October 6, 2026\n\n             For hearing, discussion, and possible action to approve an abandonment of a portion of roadway\n             reserved for dedication under Parcel Map No. 1025 and Parcel Map No. 2558, located within\n             APNs 081‑121‑53 and 081‑121‑54, to support future development of the properties. This\n             application is submitted by Project Max Land, LLC. The subject properties are located just\n             southwest of Reno Park Blvd (APN 081-121-53 and APN 081-121-54) and consists of\n             approximately 30.584 acres and 13.504 acres respectively.\n\n             The proposal is being reviewed under Development Code Article 806, Vacations and\n             Abandonments of Easements of Streets and is situated within Commission District 5. The site is\n             currently governed by the Industrial Master Plan land use designation and the Industrial\n             Regulatory Zone, within the boundaries of the Cold Springs Planning Area.\n\n             Attachments:     WAB26-0009 - Project Max Abandonment - Staff Report - TMP 12409\n\nB.    WAC26-0014 (NVSOLARWRX) for WSUP26-0008 [For possible action]\n      For hearing, discussion, and possible action to approve an amendment of conditions to add a condition\n      of approval for Special Use Permit Case Number WSUP26-0008, to prohibit construction of the solar\n      electric generating facility in the playa area of the parcel. This application is submitted by NVSolarWRX\n      on behalf of property owners Robert Simmons and Michel Luttrell. The subject property is located in\n      the Honey Lake Valley, 2 miles north of Fish Springs Road and 3 miles east of the Nevada/California\n      state line (APNs: 074-103-01 & 05, 074-451-20, & 074-452-01) and consists of a total of ±1,680 acres.\n\n      The proposal is being reviewed under Development Code Article 810, Special Use Permits and is\n      situated within Commission District 5. The site is currently governed by the Rural (R) Master Plan land\n      use designation and the General Rural (GR) Regulatory Zone zoning district, within the boundaries of\n      the High Desert Area Plan.\n\n      Attachments:    WAC26-0014 - NV Solar WRX - Staff Report - TMP 12408\n\nC.    Tentative Subdivision Map Case Number WTM25-001 (Palomino Farms) [For possible action]\n\n\n\n\n                                                    Page 5",
+   "6": "Washoe County Planning Commission                                                                  October 6, 2026\n\n      For hearing, discussion, and possible action to approve a common open space tentative subdivision\n      map for a 34-lot common open space development, on two parcels (APNs 077-090-13 and 077-090-14)\n      totaling 773.36 acres, with lots ranging in size from 2.50 acres to 2.82 acres. The project will include\n      grading of 28,500 cubic yards of material. The application was submitted by Palomino Farms, LLC. The\n      subject property is located at 0 Whiskey Springs Road and 0 Sage Flat Road (The proposal is being\n      reviewed under Development Code Article 608, Tentative Subdivision Maps, and Article 408, Common\n      Open Space. The property is situated within Commission District 5. The site is currently governed by\n      the Suburban Residential land use designation and the Public/Semi-Public Facilities (PSP), Low Density\n      Suburban (LDS), General Rural (GR), and General Commercial (GC) zoning districts, within the\n      boundaries of the Warm Springs Planning Area.\n\n      Attachments:    WTM25-001 - PALOMINO FARMS - Staff Report - TMP 12410\n\n9.    Chair and Commission Items\n      A.     Future agenda items [Non-action item]\n      B.     Requests for information from staff [Non-action item]\n10.   Director’s and Legal Counsel’s Items [Non-action item]\n      A.     Report on previous Planning Commission items\n      B.     Legal information and updates\n11.   Public Comment [Non-action item]\n\n      Comment heard under this item will be limited to three minutes per person and may pertain to matters\n      both on and off the agenda. However, action may not be taken on any matter raised during this public\n      comment period until the matter is specifically listed on an agenda as an action item. Comments are to be\n      made to the Planning Commission as a whole.\n12.   Adjournment [Non-action item]\n\n\n\n\n                                                     Page 6"
+  }
+ },
+ "downloads": {
+  "https://washoe-nv.legistar1.com/washoe-nv/attachments/6b7ebd75-b01e-4d89-a22a-75e086abefdb.pdf": {
+   "sha256": "1004944751ec311baaadc1f10e3a4cfe5c3a6656f18fc41d93f1d09b638aa02d",
+   "page_count": 44,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                    Planning Commission Staff Report\n                    Meeting Date: October 6, 2026                 Agenda Item: 8A\n\n\n    ABANDONMENT CASE NUMBER:                       WAB26-0009 (Project Max\n                                                   Abandonment)\n    BRIEF SUMMARY OF REQUEST:                      Abandonment of a portion of a\n                                                   roadway reserved to facilitate future\n                                                   development of the property.\n    STAFF PLANNER:                                 Tamzyne Romans, Senior Planner,\n                                                   775.328.3604\n                                                   tromans@washoecounty.gov\n                                                   Chris Bronczyk, Senior Planner,\n                                                   775.328.3612\n                                                   cbronczyk@washoecounty.gov\n\n    CASE DESCRIPTION\n    For hearing, discussion, and possible action to approve an abandonment of a portion\n    of roadway reserved for dedication under Parcel Map No. 1025 and Parcel Map No.\n    2558, located within APNs 081‑121‑53 and 081‑121‑54, to support future development\n    of the properties. This application is submitted by Project Max Land, LLC. The subject\n    properties are located just southwest of Reno Park Blvd (APN 081-121-53 and APN\n    081-121-54) and consists of approximately 30.584 acres and 13.504 acres\n    respectively.\n    The proposal is being reviewed under Development Code Article 806, Vacations and\n    Abandonments of Easements of Streets and is situated within Commission District 5.\n    The site is currently governed by the Industrial Master Plan land use designation and\n    the Industrial Regulatory Zone, within the boundaries of the Cold Springs Planning\n    Area.\n\n\n\n\n                       1001 E. Ninth St., Reno, NV 89512-2845\n                             Telephone: 775.328.6100\n1                 www.washoecounty.gov/csd/planning_and_development\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://washoe-nv.legistar1.com/washoe-nv/attachments/fb1d3886-6be5-4769-ad20-cb574e2e2093.pdf": {
+   "sha256": "4a4e13c98a1e84fafb7ba77d9cd0b6b6b5b4a82e6d0ba9e69459323c8ba90a59",
+   "page_count": 25,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                     Planning Commission Staff Report\n                    Meeting Date: October 6, 2026                   Agenda Item: 8B\n\n    AMENDMENT OF CONDITIONS CASE                     WAC26-0014 (NVSOLARWRX) for\n    NUMBER:                                          WSUP26-0008\n    BRIEF SUMMARY OF REQUEST:                        Amend conditions of approval to\n                                                     prohibit building in the playa area\n    STAFF PLANNER:                                   Julee Olander, Planner\n                                                     775.328.3627\n                                                     jolander@washoecounty.gov\n\n    CASE DESCRIPTION\n    For hearing, discussion, and possible action to approve an amendment of conditions\n    to add a condition of approval for Special Use Permit Case Number WSUP26-0008, to\n    prohibit construction of the solar electric generating facility in the playa area of the\n    parcel. This application is submitted by NVSolarWRX on behalf of property owners\n    Robert Simmons and Michel Luttrell. The subject property is located in the Honey Lake\n    Valley, 2 miles north of Fish Springs Road and 3 miles east of the Nevada/California\n    state line (APNs: 074-103-01 & 05, 074-451-20, & 074-452-01) and consists of a total\n    of ±1,680 acres.\n    The proposal is being reviewed under Development Code Article 810, Special Use\n    Permits and is situated within Commission District 5. The site is currently governed by\n    the Rural (R) Master Plan land use designation and the General Rural (GR) Regulatory\n    Zone zoning district, within the boundaries of the High Desert Area Plan.\n\n\n\n\n                                         Vicinity Map\n\n                                STAFF RECOMMENDATION\n\n\n\n                        1001 E. Ninth St., Reno, NV 89512-2845\n                              Telephone: 775.328.6100        WAC26-0014 NVSOLARWRX\n1                  www.washoecounty.gov/csd/planning_and_development FOR WSUP26-0008\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "json": {
+  "https://webapi.legistar.com/v1/washoe-nv/Events?$filter=EventDate%20eq%20datetime%272026-10-06%27": [
+   {
+    "EventId": 2033,
+    "EventBodyName": "Board of Fire Commissioners",
+    "EventDate": "2026-10-06T00:00:00",
+    "EventTime": "10:00 AM",
+    "EventAgendaFile": "https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/10/2033_A_Board_of_Fire_Commissioners_26-10-06_TMFPD_BOFC.pdf",
+    "EventInSiteURL": "https://washoe-nv.legistar.com/MeetingDetail.aspx?LEGID=2033&GID=601&G=84249440-C071-40A3-8231-F8E59BEF9FE7"
+   },
+   {
+    "EventId": 2157,
+    "EventBodyName": "Washoe County Planning Commission",
+    "EventDate": "2026-10-06T00:00:00",
+    "EventTime": "6:00 PM",
+    "EventAgendaFile": "https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/10/2157_A_Washoe_County_Planning_Commission_26-10-06_Boards_and_Commissions.pdf",
+    "EventInSiteURL": "https://washoe-nv.legistar.com/MeetingDetail.aspx?LEGID=2157&GID=601&G=84249440-C071-40A3-8231-F8E59BEF9FE7"
+   }
+  ],
+  "https://webapi.legistar.com/v1/washoe-nv/Events/2157/EventItems?AgendaNote=1&MinutesNote=1&Attachments=1": [
+   {
+    "EventItemId": 103063,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 40,
+    "EventItemAgendaNumber": "1.",
+    "EventItemVersion": null,
+    "EventItemTitle": "Call to Order and Determination of Quorum [Non-action item]",
+    "EventItemMatterId": null,
+    "EventItemMatterFile": null,
+    "EventItemMatterType": null,
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 103072,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 47,
+    "EventItemAgendaNumber": "7.",
+    "EventItemVersion": null,
+    "EventItemTitle": "Approval of the September 1, 2026, Draft Minutes [For possible action]",
+    "EventItemMatterId": null,
+    "EventItemMatterFile": null,
+    "EventItemMatterType": null,
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 105506,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 48,
+    "EventItemAgendaNumber": null,
+    "EventItemVersion": "1",
+    "EventItemTitle": null,
+    "EventItemMatterId": 13791,
+    "EventItemMatterFile": "TMP-12407",
+    "EventItemMatterType": "Resolution",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 37384,
+      "MatterAttachmentName": "090126_PC Minutes_Draft - TMP 12407",
+      "MatterAttachmentHyperlink": "https://washoe-nv.legistar1.com/washoe-nv/attachments/a2564554-b058-4a2b-89ca-fa6f0bf23d22.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 103075,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 49,
+    "EventItemAgendaNumber": "8.",
+    "EventItemVersion": null,
+    "EventItemTitle": "Public Hearings [For possible action]",
+    "EventItemMatterId": null,
+    "EventItemMatterFile": null,
+    "EventItemMatterType": null,
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 103076,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 50,
+    "EventItemAgendaNumber": "A.",
+    "EventItemVersion": null,
+    "EventItemTitle": "Abandonment Case Number WAB26-0009 (Project Max Abandonment) - [For Possible Action] ",
+    "EventItemMatterId": null,
+    "EventItemMatterFile": null,
+    "EventItemMatterType": null,
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 105510,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 51,
+    "EventItemAgendaNumber": null,
+    "EventItemVersion": "1",
+    "EventItemTitle": "For hearing, discussion, and possible action to approve an abandonment of a portion of roadway reserved for dedication under Parcel Map No. 1025 and Parcel Map No. 2558, located within APNs 081‑121‑53 and 081‑121‑54, to support future development of the properties. This application is submitted by Project Max Land, LLC. The subject properties are located just southwest of Reno Park Blvd (APN 081-121-53 and APN 081-121-54) and consists of approximately 30.584 acres and 13.504 acres respectively.\r\n\r\nThe proposal is being reviewed under Development Code Article 806, Vacations and Abandonments of Easements of Streets and is situated within Commission District 5. The site is currently governed by the Industrial Master Plan land use designation and the Industrial Regulatory Zone, within the boundaries of the Cold Springs Planning Area.\r\n",
+    "EventItemMatterId": 13793,
+    "EventItemMatterFile": "TMP-12409",
+    "EventItemMatterType": "Resolution",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 37388,
+      "MatterAttachmentName": "WAB26-0009 - Project Max Abandonment - Staff Report - TMP 12409",
+      "MatterAttachmentHyperlink": "https://washoe-nv.legistar1.com/washoe-nv/attachments/6b7ebd75-b01e-4d89-a22a-75e086abefdb.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 105500,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 52,
+    "EventItemAgendaNumber": "B.",
+    "EventItemVersion": null,
+    "EventItemTitle": "WAC26-0014 (NVSOLARWRX) for WSUP26-0008 [For possible action]",
+    "EventItemMatterId": null,
+    "EventItemMatterFile": null,
+    "EventItemMatterType": null,
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 105508,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 53,
+    "EventItemAgendaNumber": null,
+    "EventItemVersion": "1",
+    "EventItemTitle": "For hearing, discussion, and possible action to approve an amendment of conditions to add a condition of approval for Special Use Permit Case Number WSUP26-0008, to prohibit construction of the solar electric generating facility in the playa area of the parcel. This application is submitted by NVSolarWRX on behalf of property owners Robert Simmons and Michel Luttrell. The subject property is located in the Honey Lake Valley, 2 miles north of Fish Springs Road and 3 miles east of the Nevada/California state line (APNs: 074-103-01 & 05, 074-451-20, & 074-452-01) and consists of a total of ±1,680 acres.\r\n\r\nThe proposal is being reviewed under Development Code Article 810, Special Use Permits and is situated within Commission District 5. The site is currently governed by the Rural (R) Master Plan land use designation and the General Rural (GR) Regulatory Zone zoning district, within the boundaries of the High Desert Area Plan.\r\n",
+    "EventItemMatterId": 13792,
+    "EventItemMatterFile": "TMP-12408",
+    "EventItemMatterType": "Resolution",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 37389,
+      "MatterAttachmentName": "WAC26-0014 - NV Solar WRX - Staff Report - TMP 12408",
+      "MatterAttachmentHyperlink": "https://washoe-nv.legistar1.com/washoe-nv/attachments/fb1d3886-6be5-4769-ad20-cb574e2e2093.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 105501,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 54,
+    "EventItemAgendaNumber": "C.",
+    "EventItemVersion": null,
+    "EventItemTitle": "Tentative Subdivision Map Case Number WTM25-001 (Palomino Farms) [For possible action]",
+    "EventItemMatterId": null,
+    "EventItemMatterFile": null,
+    "EventItemMatterType": null,
+    "EventItemMatterAttachments": []
+   },
+   {
+    "EventItemId": 106655,
+    "EventItemEventId": 2157,
+    "EventItemAgendaSequence": 55,
+    "EventItemAgendaNumber": null,
+    "EventItemVersion": "1",
+    "EventItemTitle": "For hearing, discussion, and possible action to approve a common open space tentative subdivision map for a 34-lot common open space development, on two parcels (APNs 077-090-13 and 077-090-14) totaling 773.36 acres, with lots ranging in size from 2.50 acres to 2.82 acres. The project will include grading of 28,500 cubic yards of material. The application was submitted by Palomino Farms, LLC. The subject property is located at 0 Whiskey Springs Road and 0 Sage Flat Road (The proposal is being reviewed under Development Code Article 608, Tentative Subdivision Maps, and Article 408, Common Open Space.  The property is situated within Commission District 5. The site is currently governed by the Suburban Residential land use designation and the Public/Semi-Public Facilities (PSP), Low Density Suburban (LDS), General Rural (GR), and General Commercial (GC) zoning districts, within the boundaries of the Warm Springs Planning Area.",
+    "EventItemMatterId": 13794,
+    "EventItemMatterFile": "TMP-12410",
+    "EventItemMatterType": "Resolution",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 37497,
+      "MatterAttachmentName": "WTM25-001 - PALOMINO FARMS - Staff Report - TMP 12410",
+      "MatterAttachmentHyperlink": "https://washoe-nv.legistar1.com/washoe-nv/attachments/f84a58f7-3b4c-4aaa-9830-87fabb4e6622.pdf"
+     }
+    ]
+   }
+  ]
+ },
+ "expected": {
+  "1": null,
+  "7": null,
+  "8.A": {
+   "page_start": 1,
+   "page_end": 44,
+   "heading": "Agenda Item: 8A"
+  },
+  "8.B": {
+   "page_start": 1,
+   "page_end": 25,
+   "heading": "Agenda Item: 8B"
+  },
+  "8.C": null
+ }
+}

@@ -1,0 +1,227 @@
+{
+ "note": "El Dorado County Planning Commission, 2026-10-22 (Legistar event 5313). Stored agenda pages 4-6; Legistar Web API responses trimmed to the fields the rule reads; the first three pages of the \"A - Staff Report\" (item 2) and \"B - Staff Memo\" (item 3) PDFs. Item 1 is the minutes.",
+ "meeting": {
+  "id": "el-dorado-planning:1452289",
+  "agency_id": "el-dorado-planning",
+  "title": "El Dorado Planning Meeting",
+  "local_date": "2026-10-22",
+  "official_url": "https://eldorado.legistar.com/MeetingDetail.aspx?ID=1452289&GUID=94045196-802C-40EB-AF25-544045F059E0&Options=&Search="
+ },
+ "items": [
+  {
+   "id": "el-dorado-planning:1452289:1",
+   "number": "1",
+   "title": "Clerk of the Planning Commission recommending the Commission approve the MINUTES of the regular meeting of October 8, 2026.",
+   "section": "Consent Calendar",
+   "fingerprint": "8beef2828586167332e383aaa35ad804cf58f2eebc940d6756620a9133704920",
+   "citations": []
+  },
+  {
+   "id": "el-dorado-planning:1452289:2",
+   "number": "2",
+   "title": "Hearing to consider TENTATIVE SUBDIVISION MAP TIME EXTENSION, TM-E26-0001/Southpointe Meadows request for three (3) one-year discretionary time extensions to approved Southpointe Meadows Tentative Subdivision Map (TM16-1529) creating seven (7) residential lots ranging in size from 1 to 1.3 acres resulting in a new expiration date of October 26, 2029.",
+   "section": "Agenda Items",
+   "fingerprint": "c5f7abec8e9b3450e05682a9234a993596e8a33b0c9c13f15a72b47ef4b8e840",
+   "citations": []
+  },
+  {
+   "id": "el-dorado-planning:1452289:3",
+   "number": "3",
+   "title": "Hearing to consider APPEAL ADM-A26-0001 received from Richard C. Nicolos appealing the approval of Administrative Permit, ADM26-0083 Black Rice Road Gate submitted by Curt Wylde for a solar security gate at the cul-de-sac within Black Rice Road.",
+   "section": "Agenda Items",
+   "fingerprint": "1d1028019a907d14273770c00e5d65a2b157f14d2a47fca83a5bab3894d2865c",
+   "citations": []
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "el-dorado-planning:1452289:el-dorado-planning-agenda:1282572e17aa041a",
+   "source_document_id": "el-dorado-planning-agenda",
+   "title": "Agenda",
+   "url": "https://eldorado.legistar.com/View.ashx?M=A&ID=1452289&GUID=94045196-802C-40EB-AF25-544045F059E0",
+   "sha256": "1282572e17aa041a7f2d6cb5e0143e16013c475ae6147156e237b5cabd39fd53",
+   "page_count": 6,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "el-dorado-planning:1452289:el-dorado-planning-agenda:1282572e17aa041a": {
+   "4": "Planning Commission                         MEETING AGENDA                                October 22, 2026\n\n\n\n9:00 A.M. - CALL TO ORDER & ROLL CALL\n\nPLEDGE OF ALLEGIANCE\n\nPUBLIC COMMENT ON THE CONSENT CALENDAR\n\nAPPROVAL OF THE CONSENT CALENDAR\n\nAll items on the Consent Calendar are to be approved by one motion unless a Commission\nmember requests an item be removed from the Consent Calendar for discussion and a separate\nCommission action.\n\nCONSENT CALENDAR\n\n    1. 26-1604         Clerk of the Planning Commission recommending the Commission\n                       approve the MINUTES of the regular meeting of October 8, 2026.\n\n                                    END OF CONSENT CALENDAR\n\nOPEN FORUM\n\nOpen Forum is an opportunity for members of the public to address the Planning Commission on\nsubject matter that is not on their meeting agenda and within their jurisdiction. Public comments\nduring Open Forum are limited to three minutes per person. The Chair may limit public comment\nduring Open Forum.\n\n\n\n\nCounty of El Dorado                                Page 4                                  Printed on 10/9/2026",
+   "5": "Planning Commission                        MEETING AGENDA                                  October 22, 2026\n\n\n\nAGENDA ITEMS\n\n    2. 26-1601        Hearing to consider TENTATIVE SUBDIVISION MAP TIME EXTENSION,\n                      TM-E26-0001/Southpointe Meadows request for three (3) one-year\n                      discretionary time extensions to approved Southpointe Meadows Tentative\n                      Subdivision Map (TM16-1529) creating seven (7) residential lots ranging in\n                      size from 1 to 1.3 acres resulting in a new expiration date of October 26,\n                      2029.\n\n                      The property, identified by Assessor’s Parcel Number 110-450-007,\n                      consisting of 8.04 acres, is located on the east side of Castec Way,\n                      approximately 1,200 feet east of the intersection with Lakehills Drive, in the\n                      El Dorado Hills area, Supervisorial District 1, submitted by Bianchi Tillett\n                      Developers;\n\n                      Staff recommends the Planning Commission take one of the following\n                      actions:\n\n                      1. Find Tentative Subdivision Map Time Extension TM-E26-0001\n                      consistent with the Mitigated Negative Declaration adopted for the\n                      approved tentative map pursuant to Section 15162 of the California\n                      Environmental Quality Act (CEQA) Guidelines (Subsequent Environmental\n                      Impact Report [EIRs] and Negative Declarations); and\n\n                      2. Approve Tentative Subdivision Map Time Extension TM-E26-0001\n                      granting three (3) one-year discretionary time extensions to approved\n                      Tentative Map TM16-1529 (Southpointe Meadows), resulting in a new\n                      expiration date of October 26, 2029, based on the Findings and subject to\n                      the original Conditions of Approval as presented.\n\n                      (Supervisor District 1)\n\n\n\n\nCounty of El Dorado                               Page 5                                   Printed on 10/9/2026",
+   "6": "Planning Commission                          MEETING AGENDA                                October 22, 2026\n\n\n    3. 26-1602          Hearing to consider APPEAL ADM-A26-0001 received from Richard C.\n                        Nicolos appealing the approval of Administrative Permit, ADM26-0083\n                        Black Rice Road Gate submitted by Curt Wylde for a solar security gate at\n                        the cul-de-sac within Black Rice Road.\n\n                        The property, identified by Assessor’s Parcel Number 051-461-069,\n                        consisting of 5.71 acres, is located at 750 Black Rice Road in the\n                        Diamond Springs area, approximately 1,585 feet east of the intersection\n                        with Highway 49.\n\n                        staff recommends the Planning Commission deny the appeal and uphold\n                        the approval of Administrative Permit ADM26-0083, based on the\n                        Findings and subject to the Compliance Standards as approved by the\n                        Planning and Building Department Director.\n\n                        (Supervisor District 3)\n\nSTAFF AND COMMISSIONER UPDATES\n\nThis is an opportunity for planning staff and Commission members to provide short informational\nupdated on matters of concern. (May be called at any time during the meeting)\n\nADJOURNMENT\n\nIf you challenge an application in court, you may be limited to raising only those items you or\nsomeone else raised at the public hearing described in this notice, or in written correspondence\ndelivered to the Commission at, or prior to, the public hearing.\n\n\n\n\nCounty of El Dorado                                Page 6                                  Printed on 10/9/2026"
+  }
+ },
+ "downloads": {
+  "https://eldorado.legistar1.com/eldorado/attachments/22ad5e4a-80a8-44f0-b044-d851314c543a.pdf": {
+   "sha256": "59a792e6ffd5cc322a62d2aed8fd5b1272107a6208e14e0c08ae1570be052cb7",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                    COUNTY OF El DORADO\n             PLANNING AND BUILDING DEPARTMENT\n                   PLANNING COMMISSION\n                       STAFF REPORT\n                                         Date:                         October 22, 2026\n\n                                         Staff:                        Cameron Morris\n\n\n         TENTATIVE SUBDIVISION MAP TIME EXTENSION\nFILE NUMBER:               TM-E26-0001/Southpointe Meadows\n\nAPPLICANT/\nOWNER:                     Bianchi Tillett Developers\n\nENGINEER:                  Jay Goni, CNA Engineering\n\nREQUEST:                   Request for three (3) one-year discretionary time extensions to\n                           approved Southpointe Meadows Tentative Subdivision Map\n                           (TM16-1529) creating seven (7) residential lots ranging in size\n                           from 1 to 1.3 acres resulting in a new expiration date of October\n                           26, 2029.\n\nLOCATION:                  On the east side of Castec Way, approximately 1,200 feet east of\n                           the intersection with Lakehills Drive, in the El Dorado Hills area,\n                           Supervisorial District 1. (Exhibits A, B)\n\nAPN:                       110-450-007 (Exhibit C)\n\nACREAGE:                   8.04 acres\n\nGENERAL PLAN:              Medium Density Residential (MDR) (Exhibit D)\n\nZONING:                    One-acre Residential (R1A) (Exhibit E)\n\nENVIRONMENTAL DOCUMENT:                  Previously Adopted Mitigated Negative Declaration\n\nRECOMMENDATION:            Staff recommending the Planning Commission take the following\n                           actions:\n\n1.     Find Tentative Subdivision Map Time Extension TM-E26-0001 consistent with the\n       Mitigated Negative Declaration adopted for the approved tentative map pursuant to\n       Section 15162 of the California Environmental Quality Act (CEQA) Guidelines\n       (Subsequent Environmental Impact Report [EIRs] and Negative Declarations); and\n\n\n\n\n                                                                     26-1601 A Page 1 of 4\n"
+    },
+    {
+     "page_number": 2,
+     "text": "                                                                   TM-E26-0001/Southpointe Meadows\n                                                                Planning Commission/October 22, 2026\n                                                                                        Staff Report\n                                                                                              Page 2\n\n2.     Approve Tentative Subdivision Map Time Extension TM-E26-0001 granting three (3)\n       one-year discretionary time extensions to approved Tentative Map TM16-1529\n       (Southpointe Meadows), resulting in a new expiration date of October 26, 2029, based on\n       the Findings and subject to the original Conditions of Approval as presented.\n\nEXECUTIVE SUMMARY\n\nThe Southpointe Meadows Tentative Subdivision Map (TM16-1529) is an approved tentative\nmap consisting of seven (7) single-family residential lots ranging from 1 to 1.3 acres. All parcels\nwould be served with public water and sewer service from El Dorado Irrigation District (EID).\nAccess to the parcels would come from South Meadows Court, a proposed private road,\nconnecting to Villa Del Sol, an existing private road. Since approval of the Tentative Subdivision\nMap on October 26, 2017, the applicant has made diligent progress toward satisfying project\nConditions of Approval for the purpose of creation and development of these lots. The applicant\nis requesting additional time to complete all requirements before recordation of the Final Map\nand anticipates required work would be completed prior to expiration.\n\nBACKGROUND\n\nThe Southpointe Meadows Tentative Subdivision Map (TM16-1529) was originally approved by\nthe Planning Commission on October 26, 2017 (Legistar File 17-1143) (Exhibit F). This\napproval would create seven (7) residential lots ranging from 1 to 1.3 acres. The original\nexpiration date of the tentative map was October 26, 2020, and it was automatically extended to\nApril 26, 2022, by Assembly Bill (AB) 1561. A discretionary tentative map time extension\napplication (TM-E20-0005) was timely filed on October 7, 2020, requesting an additional three\n(3) years (Exhibit G), which was approved by the Planning Commission on May 27, 2021\n(Legistar File 21-0786). Finally, an additional 18-month extension was added by California AB\n2729, granting this project an expiration date of October 1026, 2026.\n\nThis second discretionary tentative map time extension application (TM-E26-0001) was timely\nfiled on May 26, 2026, and requests an additional three (3) years, extending the expiration date\nto October 26, 2029.\n\nANALYSIS\n\nSection 120.74.030 of the El Dorado County Subdivision Ordinance regulates the discretionary\ntime extension of an approved tentative map. The ordinance limits the extension to a maximum\nof six (6) one-year time extensions. The applicant previously requested a three-year extension\ndue to financial and economic concerns, particularly due to the COVID-19 pandemic and\nmeeting EID requirements regarding improvements to the water line. This second three-year\nextension request is primarily due to a change in project ownership. If the extension is approved,\nthe map would be extended to October 1026, 2029. There have been no modifications to the\napproved tentative map; therefore, the map remains consistent with the current 2017 tentative\nmap approval. All of the original Conditions of Approval and environmental mitigation measures\nremain applicable.\n\n\n\n                                                                         26-1601 A Page 2 of 4\n"
+    },
+    {
+     "page_number": 3,
+     "text": "                                                                   TM-E26-0001/Southpointe Meadows\n                                                                Planning Commission/October 22, 2026\n                                                                                        Staff Report\n                                                                                              Page 3\n\n\nBased on the aforementioned information, staff recommends the Planning Commission grant the\nrequested three (3) one-year time extensions.\n\nENVIRONMENTAL REVIEW\n\nThe Southpointe Meadows Tentative Subdivision Map is a residential project that was analyzed\nin an Initial Study, resulting in the adoption of a Mitigated Negative Declaration for the approved\nmap.\n\nThe proposed time extension would allow the continued residential development of the\nsubdivision unit consistent with the tentative map environmental mitigation measures in the\nadopted Mitigated Negative Declaration pursuant to CEQA. The time extension does not make\nany changes to the original tentative map approval, does not involve new significant\nenvironmental effects, and does not increase the severity of previously identified significant\neffects. No new information that was not known and could not have been known at the time the\nMitigated Negative Declaration was certified has since become available. Therefore, this\ntentative map time extension application is consistent with the approved Mitigated Negative\nDeclaration and is hereby exempt in accordance with Section 15162 of the CEQA Guidelines\n(Subsequent EIRs and Negative Declarations). No further environmental analysis is needed, as\nno changes have occurred in accordance with Sections 15162 and 15164 that would require any\nsupplemental or subsequent environmental documentation.\n\nA $50.00 processing fee is required by the County Recorder to file the Notice of Exemption\n(NOE) for the exemption determination made for this project by the County. This filing\nestablishes the 35-day statute of limitation during which the County’s determination can be\nchallenged.\n\n\n\n\n                                                                         26-1601 A Page 3 of 4\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://eldorado.legistar1.com/eldorado/attachments/45e85d25-d8f8-4e99-9cd1-d875c1057cec.pdf": {
+   "sha256": "f4622049d0217285224f0263cedbd59d4ea66b62abd82a671204ccc6775ae524",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "         l'-()0 C'\nQ ,:                      -Z,,\n                                      PLANNING AND BUILDING DEPARTMENT\n~✓~,                      •. ~                                        PLANNING DIVISION\n                                                                http://www.edcgov.us/Government/Planning\n  0 _,.,_ ,-,~\n       \"l£/FQ'il.._,:,.\n                                  PLACERVILLE OFFICE:                               LAKE TAHOE OFFICE:\n                                  2850 Fairlane Court, Placerville, CA 95667        924 B Emerald Bay Road\n                                  BUILDING                                          South Lake Tahoe, CA 96150\n                                  (530) 621-5315 / (530) 622-1708 Fax               (530) 573-3330\n                                  bldgdept@edcgov.us                                (530) 542-9082 Fax\n                                  PLANNING                                          tahoebuild@edcgov.us\n                                  (530) 621-5355 / (530) 642-0508 Fax\n                                  planning@edcgov.us\n\n\n\n            Date:                September 23, 2026                                             Agenda of: October 22, 2026\n\n            To:                  Planning Commission\n\n            From:                Lela Shelley, Associate Planner\n\n            Subject:             ADM-A26-0001 Appeal of Administrative Permit, ADM26-0083 Black Rice Road Gate\n\n\n\n            Recommendation\n\n            Based on the analysis of Administrative Permit ADM26-0083, staff recommends the Planning\n            Commission deny the Appeal (ADM-A26-0001) and uphold the approval of Administrative Permit\n            ADM26-0083, based on the Findings and subject to the Compliance Standards as approved by the\n            Planning and Building Department Director (Exhibit E).\n\n            Alternative Action\n\n            Grant the Appeal by Richard C. Nicolos (Appellant ADM-A26-0001), thereby denying Administrative\n            Permit, ADM26-0083, and instruct staff to return with Findings for Denial.\n\n            Background\n\n            Administrative Permit ADM26-0083 approved a solar security gate at the cul-de-sac within Black Rice\n            Road. The gate spans Black Rice Road (Exhibit B), a private road not maintained by the County, where\n            two (2) or more residential lots are granted rights of access. Both the El Dorado County Fire Protection\n            District (Fire District) and the El Dorado County Department of Transportation (DOT) reviewed ADM26-\n            0083. The Fire District approved the gate with incorporation of conditions of approval (COA’s), and DOT\n            takes no exception. Compliance Standards are incorporated within the Approval Letter (Exhibit E).\n\n            The project is located at Assessor’s Parcel Number (APN) 051-461-069 (Exhibit A), a 5.71-acre property\n            split zoned RE-5 (Residential Estate 5 acre minimum) and RM (Residential Multi-Unit) with a Planned\n            Development (PD) overlay, located at 750 Black Rice Road in the Diamond Springs area, approximately\n            1,585 feet east of the intersection with Highway 49, in Supervisorial District 3.\n\n            At time of the Appeal, section 130.51.050.1 (Public Notice Requirements and Procedures –\n            Administrative Projects) of the El Dorado County Zoning Ordinance did not include notification\n            requirements for Administrative Permits for Gates; however, Planning staff determined that the proposed\n            project is similar to the Administrative Permit requirements for Fences, Walls and Retaining Walls.\n            Therefore, the 500-foot notification requirements for Administrative Permits for Fences, Walls and\n            Retaining Walls were utilized for this project. Pursuant to Section 130.51.050.1 of the El Dorado County\n                                                                                                      26-1602 B Page 1 of 4\n"
+    },
+    {
+     "page_number": 2,
+     "text": "                                             ADM-A26-0001 Appeals of ADM26-0083 750 Black Rice Road Gate\n                                                                    Planning Commission/October 22, 2026\n                                                                          Staff Memo/September 23, 2026\n                                                                                              Page 2 of 4\n\nZoning Ordinance, Administrative Permits are either required to have a 500-foot notification, 100-foot\nnotification, or no notification, based upon Administrative Permit type. The Notice of Decision letter\nproviding notification for the approval of ADM26-0083 was mailed to all property owners within a 500-\nfoot radius on August 17, 2026 (Exhibit F). On August 18, 2026 (Legistar File 26-1256), the Board of\nSupervisors approved a Zoning Ordinance Update which went into effect September 18, 2026. This\nupdate to table 130.51.050.1 Public Notice Requirements and Procedures – Administrative Projects,\nidentifies a 500-foot radius noticing requirement specifically for gates.\n\nSection 130.30.090.C (Gates – Residential Subdivisions) of the El Dorado County Zoning Ordinance\nallows gates across non-County maintained road(s) within a residential subdivision consisting of two (2)\nor more lots with approval of an Administrative Permit when the following criteria are met: 1) The gate\nwill not impede public access to a public resource, such as a public park, or interfere with existing or\nplanned traffic circulation patterns; and 2) The project conforms to the standards of Subsection D (Design\nStandards for Gated Developments).\n\nADM26-0083 proposed a solar security gate on 750 Black Rice Road that does not impede public access\nto a public resource and conforms to applicable design standards.\n\nAdministrative Permits are a staff-level review with Director approval and appealable to the Planning\nCommission. Administrative Permit ADM26-0083 was approved on August 27, 2026. Administrative\nPermits are a ministerial project and are statutorily exempt from the California Environmental Quality Act\n(CEQA) per Section 15268 of the CEQA Guidelines. As a ministerial project, only adopted standards\nmay be applied.\n\nAppeals Filed\n\nOn September 8, 2026, one (1) appeal was submitted in a timely manner in reference to the first Notice of\nDecision. Appeal ADM-A26-0001 (Attachment 1), by Richard C. Nicolos was submitted appealing the\nDirector’s approval of Administrative Permit ADM26-0083 / Black Rice Road Gate. As stated in Appeal,\nthe appellant, Richard C. Nicolos, is objecting to the gate due to multiple concerns outlined below.\n\nStaff Response\n\nBelow is a summary of staff’s response to the concerns stated in the submitted appeal.\n\nProject Parcel and Description\n\nAppeal ADM-A26-0001 states that the Administrative Permit application misidentifies the parcel that the\nproposed gate burdens based on an inaccurate description of the project.\n\nStaff Response: The project and application was applied for on APN 051-461-069 where the existing cul-\nde-sac is located. The road easement for Black Rice Road is recorded as 50 feet wide non-exclusive Road\nand Public Utility Easement (RPUE), 25’ of which is located on 051-461-069 and 25’ recorded on APN\n051-461-022 (Appellant’s parcel) (Exhibit A and D). The proposed gate is within the recorded RPUE.\n\n\n\n\n                                                                              26-1602 B Page 2 of 4\n"
+    },
+    {
+     "page_number": 3,
+     "text": "                                              ADM-A26-0001 Appeals of ADM26-0083 750 Black Rice Road Gate\n                                                                     Planning Commission/October 22, 2026\n                                                                           Staff Memo/September 23, 2026\n                                                                                               Page 3 of 4\n\nSolid Waste Collection\n\nAppeal ADM-A26-0001 states that the neighborhood’s solid waste collection point has been relocated to\nthe cul-de-sac where residents formerly conveyed their carts to a remote location near the intersection of\nBlack Rice Road and State Route 49.\n\nStaff Response: The Black Rice Road Maintenance Agreement board is working with Waste Management\nfor a solution to the appropriate pick-up site for waste collection. This concern is not related nor relevant\nto the gate installation, however truck turnaround and access has been available in the interim within the\nexisting cul-de-sac.\n\nMinisterial vs. Discretionary Action\n\nAppeal ADM-A26-0001 states that the Administrative Permit is not characterized as ministerial project\nunder the California Environmental Quality Act (CEQA).\n\n Staff Response: Section 130.52.010 of the County of El Dorado Zoning Ordinance states that issuance of\nan Administrative Permit shall be a ministerial project pursuant to CEQA. Review of the Administrative\nPermit involves routing to applicable agencies for review to ensure application of applying fixed legal or\ntechnical standards. These objective standards are within Section 130.30.090 of the County of El Dorado\nZoning Ordinance. This Administrative Permit does not require discretionary review.\n\nPublic Notice\n\nAppeal ADM-A26-0001 states that the public notice radius was measured from the wrong parcel.\n\nStaff Response: Exhibit G shows the required 500-foot radius from the property boundary of the project\nparcel that the gate is proposed on for notification requirements. Seventy mailing labels were generated\nbased on this notification radius and the Notice of Decision letters were mailed. Three of the mailings\nwere returned unable to forward.\n\nCirculation Findings\n\nAppeal ADM-A26-0001 states that findings cannot be made that the gate will not interfere with existing\nor planned traffic circulation patterns, and that vehicles that do not have access, will stop and turn around\ndirectly in front of their parcel.\n\nStaff Response: All property owners behind the gate will be given access to the solar gate with a code,\ntherefore the proposed project will not impede access to their properties. Additionally, visitors and\ndelivery vehicles for these property owners will need to be given the code by the applicable property\nowner. The existing cul-de-sac can already be used as a turn around. The fire district approved the gate\nwith incorporation of conditions of approval and therefore should not have a significant effect on\nemergency services.\n\n\n\n\n                                                                                 26-1602 B Page 3 of 4\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "json": {
+  "https://webapi.legistar.com/v1/eldorado/Events?$filter=EventDate%20eq%20datetime%272026-10-22%27": [
+   {
+    "EventId": 5313,
+    "EventBodyName": "Planning Commission",
+    "EventDate": "2026-10-22T00:00:00",
+    "EventTime": "9:00 AM",
+    "EventAgendaFile": "https://eldorado.legistar1.com/eldorado/meetings/2026/10/5313_A_Planning_Commission_26-10-22_MEETING_AGENDA.pdf",
+    "EventInSiteURL": "https://eldorado.legistar.com/MeetingDetail.aspx?LEGID=5313&GID=57&G=1B73DE4C-938C-4A3A-92A4-CDDFE91781FE"
+   }
+  ],
+  "https://webapi.legistar.com/v1/eldorado/Events/5313/EventItems?AgendaNote=1&MinutesNote=1&Attachments=1": [
+   {
+    "EventItemId": 178188,
+    "EventItemEventId": 5313,
+    "EventItemAgendaSequence": 11,
+    "EventItemAgendaNumber": "1.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Clerk of the Planning Commission recommending the Commission approve the MINUTES of the regular meeting of October 8, 2026.",
+    "EventItemMatterId": 41329,
+    "EventItemMatterFile": "26-1604",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 128830,
+      "MatterAttachmentName": "DRAFT MINUTES",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/620958f8-8ff3-4340-a808-671601c6e23c.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 178181,
+    "EventItemEventId": 5313,
+    "EventItemAgendaSequence": 17,
+    "EventItemAgendaNumber": "2.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Hearing to consider TENTATIVE SUBDIVISION MAP TIME EXTENSION, TM-E26-0001/Southpointe Meadows request for three (3) one-year discretionary time extensions to approved Southpointe Meadows Tentative Subdivision Map (TM16-1529) creating seven (7) residential lots ranging in size from 1 to 1.3 acres resulting in a new expiration date of October 26, 2029.\r\n\r\nThe property, identified by Assessor’s Parcel Number 110-450-007, consisting of 8.04 acres, is located on the east side of Castec Way, approximately 1,200 feet east of the intersection with Lakehills Drive, in the El Dorado Hills area, Supervisorial District 1, submitted by Bianchi Tillett Developers;\r\n\r\nStaff recommends the Planning Commission take one of the following actions:\r\n\r\n1. Find Tentative Subdivision Map Time Extension TM-E26-0001 consistent with the Mitigated Negative Declaration adopted for the approved tentative map pursuant to Section 15162 of the California Environmental Quality Act (CEQA) Guidelines (Subsequent Environmental Impact Report [EIRs] and Negative Declarations); and\r\n\r\n2. Approve Tentative Subdivision Map Time Extension TM-E26-0001 granting three (3) one-year discretionary time extensions to approved Tentative Map TM16-1529 (Southpointe Meadows), resulting in a new expiration date of October 26, 2029, based on the Findings and subject to the original Conditions of Approval as presented.\r\n\r\n(Supervisor District 1)",
+    "EventItemMatterId": 41326,
+    "EventItemMatterFile": "26-1601",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 128675,
+      "MatterAttachmentName": "B - Findings",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/5530b026-1371-488d-9ec5-f01c4ea6e0f6.pdf"
+     },
+     {
+      "MatterAttachmentId": 128676,
+      "MatterAttachmentName": "C - Conditions of Approval",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/5adeaae9-7a36-4821-91ad-0d91020f83ae.pdf"
+     },
+     {
+      "MatterAttachmentId": 128677,
+      "MatterAttachmentName": "D - Staff Report Exhibits",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/8484fec9-1f1e-4986-9de2-f8899db85f0d.pdf"
+     },
+     {
+      "MatterAttachmentId": 128678,
+      "MatterAttachmentName": "F - Staff Presentation",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/ff8ac4b8-ebff-45a4-aa23-57b1447d3186.pdf"
+     },
+     {
+      "MatterAttachmentId": 128875,
+      "MatterAttachmentName": "A - Staff Report",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/22ad5e4a-80a8-44f0-b044-d851314c543a.pdf"
+     },
+     {
+      "MatterAttachmentId": 128876,
+      "MatterAttachmentName": "E - Public Noticing",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/2c908c5e-e3d2-4594-a7d6-2340c1d7e4b7.pdf"
+     }
+    ]
+   },
+   {
+    "EventItemId": 178182,
+    "EventItemEventId": 5313,
+    "EventItemAgendaSequence": 18,
+    "EventItemAgendaNumber": "3.",
+    "EventItemVersion": "1",
+    "EventItemTitle": "Hearing to consider APPEAL ADM-A26-0001 received from Richard C. Nicolos appealing the approval of Administrative Permit, ADM26-0083 Black Rice Road Gate submitted by Curt Wylde for a solar security gate at the cul-de-sac within Black Rice Road.\r\n\r\nThe property, identified by Assessor’s Parcel Number 051-461-069, consisting of 5.71 acres, is located at 750 Black Rice Road in the Diamond Springs area, approximately 1,585 feet east of the intersection with Highway 49.\r\n\r\nstaff recommends the Planning Commission deny the appeal and uphold the approval of Administrative Permit ADM26-0083, based on the Findings and subject to the Compliance Standards as approved by the Planning and Building Department Director.\r\n\r\n(Supervisor District 3)",
+    "EventItemMatterId": 41327,
+    "EventItemMatterFile": "26-1602",
+    "EventItemMatterType": "Agenda Item",
+    "EventItemMatterAttachments": [
+     {
+      "MatterAttachmentId": 128747,
+      "MatterAttachmentName": "B - Staff Memo",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/45e85d25-d8f8-4e99-9cd1-d875c1057cec.pdf"
+     },
+     {
+      "MatterAttachmentId": 128748,
+      "MatterAttachmentName": "C - Staff Memo Exhibits",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/e77853c2-7320-4aab-a5ff-5636ed3b5b7c.pdf"
+     },
+     {
+      "MatterAttachmentId": 128749,
+      "MatterAttachmentName": "A - Appeal Packet",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/40dfeb03-363b-43e3-9e80-54ded6f1a8d1.pdf"
+     },
+     {
+      "MatterAttachmentId": 128750,
+      "MatterAttachmentName": "D - Staff Presentation",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/9d866021-85bd-43f4-a2d7-7ad86aebd048.pdf"
+     },
+     {
+      "MatterAttachmentId": 128877,
+      "MatterAttachmentName": "E - Public Noticing",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/b145b17c-79a5-4307-a052-f7731b4f1e6f.pdf"
+     },
+     {
+      "MatterAttachmentId": 129031,
+      "MatterAttachmentName": "F - Supplemental Information",
+      "MatterAttachmentHyperlink": "https://eldorado.legistar1.com/eldorado/attachments/fea8e2c8-ec1c-4736-b890-e224d60c27aa.pdf"
+     }
+    ]
+   }
+  ]
+ },
+ "expected": {
+  "1": null,
+  "2": {
+   "page_start": 1,
+   "page_end": 4,
+   "heading": "TM-E26-0001"
+  },
+  "3": {
+   "page_start": 1,
+   "page_end": 4,
+   "heading": "Agenda of:"
+  }
+ }
+}

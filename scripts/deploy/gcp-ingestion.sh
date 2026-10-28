@@ -32,7 +32,8 @@ JOB_SA_NAME="${JOB_SA_NAME:-tahoe-ingest-job}"
 SCHEDULER_SA_NAME="${SCHEDULER_SA_NAME:-tahoe-ingest-scheduler}"
 BUILD_SA_NAME="${BUILD_SA_NAME:-tahoe-build}"      # Cloud Build identity, only with --cloud-build
 SCHEDULER_JOB="${SCHEDULER_JOB:-tahoe-ingest-every-6h}"
-SCHEDULE="${SCHEDULE:-0 */6 * * *}"
+# 00:01, 06:01, 12:01, 18:01 Lake Tahoe time (PST or PDT): a build lands just after midnight, so Today is current.
+SCHEDULE="${SCHEDULE:-1 */6 * * *}"
 TIME_ZONE="${TIME_ZONE:-America/Los_Angeles}"
 JOB_MEMORY="${JOB_MEMORY:-2Gi}"
 JOB_CPU="${JOB_CPU:-1}"

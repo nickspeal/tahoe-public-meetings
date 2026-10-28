@@ -79,8 +79,8 @@ alone sometimes return cache errors.
 Item summaries follow decision 0024. The export leads with the requested
 action an agenda prints under the item (`requested_actions.py`, exact page
 text, no model), else the agenda excerpt. `map-staff-reports` links items to
-their own staff reports with one rule module per agency or platform
-(`tahoe_ingest/staff_report_rules/`, 25 agencies; decision 0026) and lists SLT
+their own staff reports with one rule module per publishing format
+(`tahoe_ingest/staff_report_rules/`, chosen by each agency's `staffReports` entry; decision 0026) and lists SLT
 and TRPA attachments; `summarize-items` adds one or two sentences that Claude selects
 and trims from the report, published only when every sentence is the cited
 passage with words deleted (`item_summaries.validate`). Use `--dry-run` for
@@ -127,7 +127,7 @@ the public export carries only the latest summary text.
 
 ## Configured coverage and one-off notices
 
-See the [configuration guide](../../config/README.md). Shared topic rules and agencies live in `packages/domain/`; `ingest-one-offs --dry-run` validates `config/one-off-meetings.json`, and `ingest-one-offs` upserts notices without fabricating agendas or start times. `agencies` lists followed entries and adapter readiness. Run `init-db` after registry edits, and `reclassify` after topic edits. Entries without a `discovery` block are snapshot-only; see [source coverage](../../docs/operations/source-coverage.md).
+See the [configuration guide](../../config/README.md). Shared topic rules and agencies live in `packages/domain/`; `ingest-one-offs --dry-run` validates `config/one-off-meetings.json`, and `ingest-one-offs` upserts notices without fabricating agendas or start times. `agencies` lists followed entries as resolved (with `extends` applied), and `coverage-doc` regenerates the registry tables of `docs/operations/source-coverage.md` (`--check` only reports). Run `init-db` after registry edits, and `reclassify` after topic or `topicHints` edits. Entries without a `discovery` block are snapshot-only; see [source coverage](../../docs/operations/source-coverage.md).
 
 `learn-schedules [--agency ID] [--dry-run | --write] [--registry PATH] [--json]` infers regular meeting patterns from stored meetings. It needs 3+ matches and a 60%+ match rate, and `--write` never replaces a `configured` schedule. `export --forecast-days N` (default 90, or `TAHOE_FORECAST_DAYS`; 0 disables) adds expected meetings derived from those schedules. Forecasts are never written to the database. See [Meeting schedules and expected meetings](../../config/README.md#meeting-schedules-and-expected-meetings).
 

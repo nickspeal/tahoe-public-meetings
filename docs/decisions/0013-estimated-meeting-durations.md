@@ -20,3 +20,6 @@ An all-day or zero-length event was rejected because it misrepresents the meetin
 ## Revisit when
 
 Calibration data shows persistent error for an agency, an agency begins publishing end times, or the deferred recording-length research step is built.
+
+## Update 2026-10-28: per-agency settings in the registry
+An agency's own settings moved from the `agencies` map of `config/meeting-durations.json` to a `duration` block on its entry in `packages/domain/agencies.json` ([decision 0027](0027-agency-definitions-in-configuration.md)); the file keeps the defaults. Estimates are unchanged, and a sibling body that `extends` another entry does not inherit its meeting length.

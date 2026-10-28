@@ -13,7 +13,7 @@ The maintainer also asked, using TRPA as the example, that each item link inline
 
 ## Decision
 
-**One rule module per agency or platform**, in `workers/ingestion/tahoe_ingest/staff_report_rules/`, discovered automatically; the core (`staff_reports.py`) keeps the shared context, temporary PDF reading, storage, and export. Each rule still needs two independent signals to agree before an item is linked, and uncertain items store nothing (decision 0024). The rule package README explains how to add a rule and the fixture format.
+**One rule module per publishing format**, in `workers/ingestion/tahoe_ingest/staff_report_rules/`, discovered automatically and registered under the format's name; each agency chooses its rule and parameters in its registry entry (`staffReports`, [decision 0027](0027-agency-definitions-in-configuration.md)); the core (`staff_reports.py`) keeps the shared context, temporary PDF reading, storage, and export. Each rule still needs two independent signals to agree before an item is linked, and uncertain items store nothing (decision 0024). The rule package README explains how to add a rule and the fixture format.
 
 **Where the reports come from.** The research found five publishing patterns, and the rules follow them:
 
@@ -56,7 +56,7 @@ Downloads per scheduled run remain bounded by `--staff-report-meetings` (6 meeti
 
 ## Alternatives and consequences
 
-- A single generic rule parameterised by regexes was rejected: the five patterns differ in where the first signal lives (PDF link annotations, page markup, packet pages, an API), and a per-agency module keeps each rule's evidence explicit and testable against a real fixture.
+- A single generic rule parameterised by regexes was rejected: the five patterns differ in where the first signal lives (PDF link annotations, page markup, packet pages, an API), and a module per format keeps each rule's evidence explicit and testable against a real fixture, and agencies that share a format share its rule.
 - Resolutions and presentations that carry the item footer are mapped with the title "Staff report"; the summary model skips those with nothing to summarise. A later refinement could title them from their first line.
 - Large packets are re-downloaded when a meeting is rescanned (only when its items or documents change, or after a failed download); storing them as documents, as TRPA now does, avoids the download but grows the public export, which already ships every stored page (IDEA-014).
 

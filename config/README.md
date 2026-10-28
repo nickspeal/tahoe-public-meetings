@@ -16,7 +16,7 @@ python3 scripts/project.py worker reclassify
 python3 scripts/project.py refresh
 ```
 
-Rule classification uses each item's title, never neighboring page excerpts. Supporting-report subjects can be missed. An agency entry may add `topicHints`: title patterns that tag a topic only for that agency's items, where a word means more than it does elsewhere. TTD and its committee tag Transit from "fleet", an operating or service budget, or a service change or route number: `"topicHints": {"transit": [{"rule": "ttd-fleet", "pattern": "\\bfleet\\b"}, ...]}`. A topic's hints apply only when the catalog's own patterns did not tag it, the first matching hint counts, and its `rule` name is recorded as the tag's provenance. Hints must name catalog topics; `reclassify` applies an edit wherever it changes an item's topics.
+Rule classification uses each item's title, never neighboring page excerpts. Supporting-report subjects can be missed. An agency entry may add `topicHints`: title patterns that tag a topic only for that agency's items, where a word means more than it does elsewhere. TTD and its committee tag Transit from "fleet", an operating or service budget, or a service change or route number: `"topicHints": {"transit": [{"rule": "ttd-fleet", "pattern": "\\bfleet\\b"}, ...]}`. A topic's hints apply only when the catalog's own patterns did not tag it, the first matching hint counts, and its `rule` name is recorded as the tag's provenance. Hints must name catalog topics. Unlike a catalog edit, a hint edit does not change the classifier version, which would rewrite every item's tags: `reclassify` compares each item's stored tags and evidence with the rules, so it rewrites only the items whose tags or provenance the edit changes. The scheduled run reclassifies every run, so production applies a hint edit on the first run of a worker image that bundles it; run `reclassify --dry-run` locally to see how many items it touches (`itemsChanged`, `itemsEvidenceChanged`).
 
 ### Claude classification
 
@@ -32,9 +32,9 @@ Editing the catalog or [the prompt](../workers/ingestion/tahoe_ingest/prompts/to
 
 ## Agencies and bodies
 
-Edit [`packages/domain/agencies.json`](../packages/domain/agencies.json). Each entry has a stable `id`, display names, optional `aliases` (other names readers may type into the website's agency filter, such as acronyms and full official names), `follow`, optional operational URLs, an optional `discovery` block (see [below](#reviewed-source-configuration-and-repeatable-acquisition)), and an optional regular meeting `schedule` (see [below](#meeting-schedules-and-expected-meetings)).
+Edit [`packages/domain/agencies.json`](../packages/domain/agencies.json). It is the one place an agency is defined ([decision 0027](../docs/decisions/0027-agency-definitions-in-configuration.md)): code registers reusable discovery types, agenda layouts, and staff report rules by format name and never branches on an agency ID. Each entry has a stable `id`, display names, optional `aliases` (other names readers may type into the website's agency filter, such as acronyms and full official names), optionally `extends` (see [below](#sibling-bodies-extends)), `follow`, optional operational URLs, an optional `discovery` block (see [below](#reviewed-source-configuration-and-repeatable-acquisition)), `agenda`, `staffReports`, and `topicHints` blocks, an optional regular meeting `schedule` (see [below](#meeting-schedules-and-expected-meetings)), and an optional meeting `duration` (see [below](#meeting-durations)). An unknown key stops the registry from loading.
 
-The registry preserves **all 41 CSV rows**, plus the existing Town of Truckee entry and two explicitly requested committee entries, for **44 entries**. Six entries are disabled by the maintainer's source-review decisions with `follow: false`; they remain in the registry for provenance. Rows include distinct boards, offices, newsletters, and organizations; these are not necessarily 41 separate jurisdictions or meeting bodies. No rows were merged or dropped. `legacy` preserves all six original CSV cells, original row number, and the supplied February 1, 2023 update date. All imported metadata is explicitly unverified. It is research input only: the software never reads `legacy.meetingSchedule`. Regular meeting patterns live in the separate, validated `schedule` field. Original website and notification cells may contain broken or misplaced links.
+The registry preserves **all 41 CSV rows**, plus entries added since (the Town of Truckee, the parks bodies, and committees); [source coverage](../docs/operations/source-coverage.md) gives the current counts. Six entries are disabled by the maintainer's source-review decisions with `follow: false`; they remain in the registry for provenance. Rows include distinct boards, offices, newsletters, and organizations; these are not necessarily 41 separate jurisdictions or meeting bodies. No rows were merged or dropped. `legacy` preserves all six original CSV cells, original row number, and the supplied February 1, 2023 update date. All imported metadata is explicitly unverified. It is research input only: the software never reads `legacy.meetingSchedule`. Regular meeting patterns live in the separate, validated `schedule` field. Original website and notification cells may contain broken or misplaced links.
 
 `follow: true` selects an entry for ingestion/publication. Set it to `false` (or remove the entry) to stop accepting new records and hide its meetings on the next export, while keeping historical database records and editorial edits. Apply name/URL changes and new entries with:
 
@@ -44,6 +44,8 @@ python3 scripts/project.py refresh
 python3 scripts/project.py worker agencies
 ```
 
+`worker agencies` prints followed entries as the worker reads them, with `extends` applied. Keep the file in canonical form: two-space JSON whose entry keys follow `AGENCY_KEYS` in `tahoe_ingest/catalog.py` (`id`, `name`, `shortName`, `aliases`, `extends`, `follow`, `officialUrl`, `sourceUrl`, `participation`, `participationTypes`, `discovery`, `agenda`, `staffReports`, `topicHints`, `schedule`, `duration`, `legacy`). A test checks it, and `learn-schedules --write` writes it that way.
+
 An entry has live discovery when it carries a `discovery` block: its `type` names one of the source formats [below](#reviewed-source-configuration-and-repeatable-acquisition), and the rest of the block says where and how to read it. Adding a body whose source uses a supported format needs only that block, a fixture test, and a source-review record; code never branches on an agency ID to discover meetings. Setting `follow` alone does not implement discovery: entries without a `discovery` block remain manual sources. Body-specific filters keep unrelated commissions out. Operational URLs were verified during the source review where possible; `legacy` cells remain unverified and are never fetched automatically.
 
 An entry can also carry a standing `participation` block for details the agency publishes on its website rather than in each agenda: `watchUrl` (livestream), `url` (comment form or participation page), `email`, and `instructions`, plus a required official `sourceUrl` and `checkedOn` date (`YYYY-MM-DD`). The export uses these only when neither the source adapter nor the agenda supplies the field ([decision 0021](../docs/decisions/0021-participation-details-from-agendas.md)). Recheck them when the agency changes its process.
@@ -51,6 +53,42 @@ An entry can also carry a standing `participation` block for details the agency 
 An entry's optional `staffReports` block chooses how `map-staff-reports` links its items to their own staff reports ([decision 0026](../docs/decisions/0026-staff-reports-for-every-agency.md)): `rule` names a rule in [`staff_report_rules/`](../workers/ingestion/tahoe_ingest/staff_report_rules/README.md), and the other keys are that rule's parameters, for example `{"rule": "legistar", "client": "washoe-nv", "body": "Board of County Commissioners", "report": "staff-report"}` or `{"rule": "ttd-packet", "footer": "(?:RTCPC\\s+)?AGENDA ITEM"}`. An agency on a format that already has a rule needs only this block (plus a fixture and a source review record). Without a rule, a `note` says why, with `"published": false` when the agency publishes no reports a rule could use (`{"published": false, "note": "A one-page agenda with unnumbered items and no staff reports."}`) or `true` when reports exist but cannot be reached or attached yet. A malformed block, an unknown rule, or a missing, unknown, or invalid parameter stops the registry from loading.
 
 Public agency filters and coverage lists include followed agencies with actual stored meetings. A manually added notice's official URL is used as a source fallback when registry URLs are absent. The registry itself is not a claim of comprehensive live coverage. Existing recurring-cost constraints remain under $20/month; expanding the watchlist does not create cloud jobs or approve a larger budget.
+
+### Sibling bodies (`extends`)
+
+Bodies that publish through the same website in the same formats, such as a board and its committee, can share configuration. `"extends": "ttd"` starts an entry from the `ttd` entry, as resolved, and the entry then gives only what differs:
+
+```json
+{
+  "id": "ttd-rtcpc",
+  "name": "TTD — Regional Transit and Capital Programs Committee",
+  "aliases": ["Tahoe Transportation District", "RTCPC", "Regional and Transit Capital Programs Committee"],
+  "extends": "ttd",
+  "follow": true,
+  "discovery": {"bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs", "documentIdPrefix": "ttd"},
+  "staffReports": {"footer": "(?:RTCPC\\s+)?AGENDA ITEM"}
+}
+```
+
+- Inherited: `shortName`, the URLs, `participationTypes`, `discovery`, `agenda`, `staffReports`, and `topicHints`, which describe the publisher's website and formats.
+- Never inherited: `id`, `name`, `aliases`, `follow`, `participation`, `schedule`, `duration`, and `legacy`. They describe the body itself: who it is, whether the maintainer follows it, how readers take part, when and how long it meets, and its research record. A committee does not meet when its board does, and disabling a board does not disable its committees.
+- Objects merge key by key, recursively, and the child's value wins: the committee above keeps the board's discovery `type` and `indexUrl` and replaces `bodyPattern`. Lists and other values replace the parent's (a child's `agenda.layouts` is its whole list).
+- A child cannot delete an inherited key. When a body's blocks differ in shape and not just in values (a `discovery.title` the parent has and the child must not), give it a full entry instead.
+- The parent must be another entry; a chain resolves parent first, and a cycle stops the registry from loading. The resolved entry is validated like any other, so a parameter the inherited rule does not take is an error.
+
+The worker resolves `extends` when it loads the registry, so every consumer sees complete entries. The website reads only `id` and `aliases` from the file, and `aliases` is never inherited. Use `extends` where it removes real duplication: today the TTD committee, the TRPA Advisory Planning Commission, and the Douglas County Planning Commission extend their boards. Bodies whose blocks differ in shape (El Dorado and Washoe planning commissions lack their boards' discovery `title`; the TCPUD parks committee has no agenda layouts) keep full entries.
+
+### Adding an agency
+
+For a body whose website and documents use formats the worker already reads:
+
+1. Add an entry to `agencies.json` in canonical key order, with `"extends"` if it is a sibling of an existing entry. Give it `discovery` (a type from [the table below](#reviewed-source-configuration-and-repeatable-acquisition)), `agenda.layouts` (from [`agenda-layouts.json`](agenda-layouts.json)), and `staffReports` (a rule from the [rules README](../workers/ingestion/tahoe_ingest/staff_report_rules/README.md), or a note on why there is none). Add `schedule`, `duration`, or `topicHints` only when known.
+2. Check discovery against the live index: `worker discover ID --limit 3 --out data/live/ID.json`, then `worker capture` on a few results.
+3. Add fixtures: a saved index page under `tests/fixtures/discovery/`, an agenda under `tests/fixtures/agenda-layouts/` with the reviewed items, and, with a rule, a staff report fixture under `tests/fixtures/staff-reports/`.
+4. Record the review in [`source-reviews.json`](source-reviews.json) and, for recordings or minutes on YouTube or Laserfiche, add a feed to [`meeting-records.json`](meeting-records.json).
+5. Run `python3 scripts/project.py worker coverage-doc` to regenerate [source coverage](../docs/operations/source-coverage.md), then the tests (`python3 scripts/project.py test`), then `init-db` and `refresh` as above.
+
+Code changes are needed only for a format the worker does not read yet: a new discovery type in `source_discovery.py`, a layout the outline engine cannot describe (a parser in `agenda_custom.py`), or a new staff report rule module. Each is registered by format name, never by agency ID.
 
 ## Agenda layouts
 
@@ -177,9 +215,9 @@ A future authenticated admin page could edit these same records if this becomes 
 
 ## Meeting durations
 
-Edit [`meeting-durations.json`](meeting-durations.json). Every exported meeting gets a length so calendar events have an end time. Observed or published lengths always win; otherwise the model estimates, always rounding up and biased long, and the export and calendar label it as an estimate.
+Every exported meeting gets a length so calendar events have an end time. Observed or published lengths always win; otherwise the model estimates, always rounding up and biased long, and the export and calendar label it as an estimate.
 
-`defaults` apply to all agencies; an entry under `agencies` (by agency ID) overrides any setting, and its `sectionWeights` merge with the defaults. Settings:
+[`meeting-durations.json`](meeting-durations.json) holds the `defaults` for all agencies. An agency entry's own `duration` in `agencies.json` overrides any setting, and its `sectionWeights` merge with the defaults, for example `"duration": {"mode": "fixed", "fixedMinutes": 150, "notes": "..."}` on TTD. A sibling body never inherits it. Settings:
 
 - `mode`: `fixed` (the body keeps a roughly constant length; `fixedMinutes`) or `estimated` (`baseMinutes` plus per-item minutes).
 - `sectionWeights`: regular expression -> minutes per matching agenda item, matched case-insensitively against the item's section and title together. The heaviest match wins; items matching nothing use `perItemMinutes`. Edit these to say which kinds of items take long.
@@ -194,11 +232,11 @@ python3 scripts/project.py worker duration-report             # per-agency obser
 python3 scripts/project.py refresh
 ```
 
-See [the pacing research](../docs/research/meeting-duration-pacing-2026-10-20.md) for the initial values. Installed or container workers bundle this file; rebuild after editing.
+See [the pacing research](../docs/research/meeting-duration-pacing-2026-10-20.md) for the initial values. Installed or container workers bundle both files; rebuild after editing.
 
 ## Reviewed source configuration and repeatable acquisition
 
-The maintainer's source review is recorded in [decision 0014](../docs/decisions/0014-reviewed-sources-and-public-comment-periods.md). The registry now has 44 entries, of which 38 are followed. Disabled entries stay in the file with `follow: false`. Sources with live discovery carry a `discovery` object with a verified `type`, an `https` `indexUrl`, and an exact `bodyPattern` (a case-insensitive regular expression; without one every row qualifies). For example, the TTD committee:
+The maintainer's source review is recorded in [decision 0014](../docs/decisions/0014-reviewed-sources-and-public-comment-periods.md). Disabled entries stay in the file with `follow: false`; [source coverage](../docs/operations/source-coverage.md) lists each entry's discovery type and body filter. Sources with live discovery carry a `discovery` object with a verified `type`, an `https` `indexUrl`, and an exact `bodyPattern` (a case-insensitive regular expression; without one every row qualifies). For example, the TTD committee:
 
 ```json
 "discovery": {
@@ -276,4 +314,4 @@ Run `python3 scripts/project.py worker ingest-comment-periods` and then `refresh
 - `youtube`: `agency`, exactly one of `channelId` (`UC…`) or `playlistId`, an `include` title pattern, and optional `exclude` and `meetingPattern` (only meetings whose title matches). A video matches the agency's meeting on the date written in its title, once that date has passed. Use a channel feed unless a playlist is known to be current: several agencies' playlists stopped years ago, and their feeds return the oldest videos. Pin the channel that actually carries meetings; several agencies' obvious channels are empty or unrelated (see the [research](../docs/research/minutes-and-recordings-sources-2026-10-27.md)).
 - `laserfiche`: `agency`, `repo`, and `folderId` of a folder of year folders whose documents are named `YYYY-MM-DD - Regular`, `- Special and Joint`, and so on.
 
-`tahoe-ingest meeting-records --dry-run` reports matches without storing them.
+`tahoe-ingest meeting-records --dry-run` reports matches without storing them. Every entry must name a followed agency; the file is checked when the step loads it, and a test checks that every agency named anywhere in `config/` exists in the registry. It stays a separate file because it is read from the source root at run time, entry by entry in file order, and several bodies share one channel's feed.

@@ -39,7 +39,7 @@ All values are unverified starting guesses biased long. None is calibrated again
 
 1. Record lengths: `tahoe-ingest set-duration <meeting-id> --minutes N --source minutes|recording|manual`, or `tahoe-ingest detect-durations` then `--apply`.
 2. Run `tahoe-ingest duration-report` (add `--json` for scripts).
-3. Edit `config/meeting-durations.json`: change an agency's mode or `fixedMinutes`/`baseMinutes`, adjust keyword weights, or tweak `longBiasFactor`. Overrides merge with the defaults.
+3. Edit the agency's `duration` in `packages/domain/agencies.json` to change its mode or `fixedMinutes`/`baseMinutes`, or `config/meeting-durations.json` to adjust the default keyword weights or `longBiasFactor`. Overrides merge with the defaults.
 4. Run `python3 scripts/project.py refresh` to re-export; no re-ingest is needed.
 
 ## Deferred: research agent over recordings

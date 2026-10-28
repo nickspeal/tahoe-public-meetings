@@ -21,7 +21,7 @@ Match a video to a meeting by a per-body title pattern plus the date parsed from
 | Body | Recording | Minutes | Notes |
 | --- | --- | --- | --- |
 | TTD (all bodies) | Zoom clips, not published (see below) | Draft only, next same-body packet, consent item C, about page 5; 3–9 weeks | Packet URLs change on re-upload |
-| SLT City Council | YouTube `UC3LYne8Ih-kTPLnnuyJW9SQ`; Granicus player as fallback | Granicus row, about 2 weeks | Built-in adapter in `discovery.py`; publisher page is 4.5 MB and can take 30 s |
+| SLT City Council | YouTube `UC3LYne8Ih-kTPLnnuyJW9SQ`; Granicus player as fallback | Granicus row, about 2 weeks | Granicus row IDs (`granicus-row-ids` discovery); publisher page is 4.5 MB and can take 30 s |
 | SLT Planning Commission | Same channel | Granicus row, about 4 weeks | |
 | SLT Parks and Recreation | Granicus player only | Granicus row, 4–5 weeks | |
 | Town of Truckee Council | YouTube, Tahoe Truckee Media `UCNQLUz8QV3qa8SZDqAr129g`, playlist `PLr_DSJ6rtN1Zms9Rs8SazB8Tf1EBfhf6p` | Laserfiche minutes folder (JSON listing, documents named `YYYY-MM-DD - Regular`), 2–3 weeks | The Town's own channel has no meetings |

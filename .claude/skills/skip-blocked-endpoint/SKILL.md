@@ -23,7 +23,7 @@ Use the session scratchpad for `$SCRATCH`. Log lines are JSON with `severity`, `
 - **One-off or intermittent** (429, 5xx, timeouts, a single 403): not a candidate; leave it.
 - **Already covered** by an entry in `config/skipped-endpoints.json`: nothing to do.
 
-The failing URL may not be in the log line (discovery errors name the agency). Find it in `packages/domain/agencies.json` (`discovery.indexUrl`, `sourceUrl`) or the `documents[].url` of the agency's candidates in `config/verified-agency-meetings-*.json`.
+The failing URL may not be in the log line (discovery errors name the agency). Find it in the agency's resolved entry (`python3 scripts/project.py worker agencies` prints `discovery.indexUrl` and `sourceUrl`, including any an entry inherits through `extends` from `packages/domain/agencies.json`) or the `documents[].url` of the agency's candidates in `config/verified-agency-meetings-*.json`.
 
 ## 2. Reproduce locally
 
@@ -47,7 +47,7 @@ Add an entry to `config/skipped-endpoints.json` using the narrowest prefix that 
 
 Then:
 
-1. Update or add the issue note under `docs/issues/` and the row in `docs/operations/source-coverage.md`.
+1. Update or add the issue note under `docs/issues/`, then regenerate `docs/operations/source-coverage.md` with `python3 scripts/project.py worker coverage-doc` (its Blocked list comes from the skip file) and adjust the hand-written notes beside it.
 2. Run `cd workers/ingestion && uv run pytest -q`.
 3. Commit (the attribution trailer from the session reminder applies) and push to `origin/main`.
 4. Tell the user the job image must be rebuilt and redeployed for the change to take effect (`docs/operations/deployment.md`); do not deploy without being asked.

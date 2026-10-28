@@ -1,4 +1,4 @@
-"""The agency registry as configuration: inheritance, canonical form, references from other config."""
+"""The agency registry as configuration: inheritance, canonical form, references from other config, generated docs."""
 import json
 import re
 from functools import lru_cache
@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from tahoe_ingest import catalog, discovery, durations, source_discovery, staff_report_rules, staff_reports, topics
+from tahoe_ingest import catalog, coverage, discovery, durations, source_discovery, staff_report_rules, staff_reports, topics
 from tahoe_ingest.agenda import parse_agenda
 from tahoe_ingest.catalog import AGENCY_KEYS, OWN_KEYS, agency_catalog, registry_text, resolve_extends
 from tahoe_ingest.staff_report_rules import ttd
@@ -125,6 +125,11 @@ def test_config_files_name_registry_agencies():
 def test_meeting_durations_file_holds_only_defaults():
     assert "agencies" not in json.loads((ROOT / "config/meeting-durations.json").read_text())
     assert durations.duration_config()["agencies"]["ttd"]["mode"] == "fixed"
+
+
+def test_coverage_doc_is_current():
+    text = (ROOT / coverage.DOC).read_text()
+    assert coverage.render(text, ROOT) == text, "run `python3 scripts/project.py worker coverage-doc`"
 
 
 def test_a_new_sibling_body_needs_only_its_registry_entry(registry, monkeypatch):

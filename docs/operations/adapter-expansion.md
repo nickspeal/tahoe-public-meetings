@@ -17,7 +17,7 @@ for any that cannot.
 Entries to work, in this order (cheapest first):
 1. douglas-commissioners, douglas-planning: Douglas County Granicus publisher
    (https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1). douglas-transportation
-   already uses this with a bodyPattern; add the same adapter config with the right body filters.
+   already uses this with a bodyPattern; add the same discovery block with the right body filters.
 2. el-dorado-supervisors: El Dorado County Legistar; el-dorado-planning is the working model.
 3. washoe-commissioners: Washoe County; washoe-planning already uses Legistar, so check
    whether the Board of County Commissioners is on the same Legistar site.
@@ -55,9 +55,10 @@ Hard rules:
 - Keep requests low-volume. The job runs every 6 hours across all agencies.
 
 If an adapter cannot be built, document the blockage instead:
-- Add the entry to the "Blocked" table in docs/operations/source-coverage.md with the exact
-  symptom (status code, block page, missing data), what you tried, and a likely cause stated as a
-  hypothesis unless proven. Remove it from the "Snapshot only" table.
+- Add the refused URL prefix to config/skipped-endpoints.json with the exact symptom (status
+  code, block page, missing data) and a likely cause stated as a hypothesis unless proven, and
+  regenerate docs/operations/source-coverage.md, whose "Blocked" list comes from that file. Note
+  what you tried beside the list, and remove the entry's "why there is no discovery" note.
 - Create docs/issues/SOURCE-NNN-short-name.md (next free number) in the style of SOURCE-001 and
   SOURCE-002: affected registry entries, observed behavior with example URLs, current behavior,
   next investigation (for example an agency-supported feed, a different host, or asking the
@@ -67,9 +68,9 @@ If an adapter cannot be built, document the blockage instead:
   coverage or unfollowing, without making that decision yourself.
 
 When done:
-- Update the counts and tables in docs/operations/source-coverage.md, the coverage summary in
-  docs/planning/implementation-status.md, and the "Current coverage update" in
-  docs/planning/implementation-handoff.md.
+- Regenerate the tables in docs/operations/source-coverage.md with
+  `python3 scripts/project.py worker coverage-doc` and update the hand-written notes beside
+  them. Other documents link to that page instead of repeating counts.
 - Run the full tests and `python3 scripts/project.py worker agencies` to confirm adapter readiness.
 - Commit in small logical commits and push to origin/main. Everything committed is public: no
   secrets, personal notes, or names (say "the maintainer"/"the operator"). Never commit private/.

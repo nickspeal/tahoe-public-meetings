@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, alerts, backfill, evaluate_topics, item_summaries, participation, scheduled, staff_reports
+from . import ai_topics, alerts, backfill, coverage, evaluate_topics, item_summaries, participation, scheduled, staff_reports
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -35,6 +35,9 @@ def _parser() -> argparse.ArgumentParser:
     comments = sub.add_parser("ingest-comment-periods", help="Verify and import public comment windows from official notices")
     comments.add_argument("path", nargs="?", default="config/public-comment-periods.json")
     sub.add_parser("agencies", help="List followed agencies and discovery readiness")
+    page = sub.add_parser("coverage-doc", help="Rewrite the registry-derived tables of docs/operations/source-coverage.md")
+    page.add_argument("--root", type=Path, default=Path("."), help="Repository checkout (default: the working directory)")
+    page.add_argument("--check", action="store_true", help="Change nothing; exit 1 if the page is out of date")
     export = sub.add_parser("export")
     export.add_argument("--mode", choices=["fixture", "live"], default="fixture")
     export.add_argument("--out", required=True)
@@ -182,6 +185,19 @@ def main(argv=None) -> int:
     args = _parser().parse_args(argv)
     if args.command == "agencies":
         print(json.dumps(list(followed_agencies().values()), indent=2))
+        return 0
+    if args.command == "coverage-doc":
+        path = args.root / coverage.DOC
+        text = path.read_text()
+        current = coverage.render(text, args.root)
+        if current == text:
+            print(f"{path} is up to date")
+        elif args.check:
+            print(f"{path} is out of date: run `python3 scripts/project.py worker coverage-doc`", file=sys.stderr)
+            return 1
+        else:
+            path.write_text(current)
+            print(f"Updated {path}")
         return 0
     if args.command == "ingest-one-offs":
         bundle = load_one_offs(args.path)

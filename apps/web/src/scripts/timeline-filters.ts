@@ -16,6 +16,7 @@ const upcomingMore = document.querySelector<HTMLElement>('#upcoming-more');
 const upcomingToggle = document.querySelector<HTMLButtonElement>('#upcoming-toggle');
 const upcomingLabel = document.querySelector<HTMLElement>('#upcoming-toggle-label');
 const upcomingHint = document.querySelector<HTMLElement>('#upcoming-hint');
+rollTimelineForward();
 const rows = [...document.querySelectorAll<HTMLElement>('[data-meeting-row]')];
 const groups = [...document.querySelectorAll<HTMLElement>('[data-timeline-group]')];
 // The last topic option is "Suggest a topic…": it opens the feedback dialog instead of filtering.
@@ -159,4 +160,67 @@ if (topicSelect && agencySelect) {
     applyFilters();
   });
   applyFilters();
+}
+
+// The page is a static snapshot, so its Today is the build's date. When the reader's Lake Tahoe date is
+// later, move meetings that have since passed into Earlier and the new day's meetings under Today.
+function rollTimelineForward() {
+  const pacific = (options: Intl.DateTimeFormatOptions, locale = 'en-US') => new Intl.DateTimeFormat(locale, { timeZone: 'America/Los_Angeles', ...options });
+  const divider = document.querySelector<HTMLElement>('#today-divider');
+  const todayGroup = document.querySelector<HTMLElement>('[data-timeline-group="today"]');
+  const todayList = todayGroup?.querySelector<HTMLElement>('.timeline-meeting-list');
+  const earlierList = document.querySelector<HTMLElement>('#earlier-list');
+  const builtToday = divider?.dataset.today;
+  const now = new Date();
+  const today = pacific({ year: 'numeric', month: '2-digit', day: '2-digit' }, 'en-CA').format(now);
+  if (!divider || !todayGroup || !todayList || !earlierList || !builtToday || today <= builtToday) return;
+
+  const earlierGroupList = (key: string) => {
+    let group = earlierList.querySelector<HTMLElement>(`[data-timeline-group="earlier-${key}"]`);
+    if (!group) {
+      group = document.createElement('section');
+      group.className = 'timeline-date-group earlier-date-group';
+      group.dataset.timelineGroup = `earlier-${key}`;
+      group.dataset.date = key;
+      group.hidden = true;
+      const heading = document.createElement('h2');
+      heading.textContent = pacific({ weekday: 'long', month: 'long', day: 'numeric' }).format(new Date(`${key}T12:00:00-08:00`));
+      const list = document.createElement('div');
+      list.className = 'timeline-meeting-list';
+      group.append(heading, list);
+      earlierList.append(group);
+    }
+    return group.querySelector<HTMLElement>('.timeline-meeting-list')!;
+  };
+
+  // Today's rows, then future rows by date: newly earlier groups are appended oldest first, like the rest of Earlier.
+  const futureGroups = [...document.querySelectorAll<HTMLElement>('[data-timeline-group^="future-"]')];
+  const candidates = [todayGroup, ...futureGroups].flatMap((group) => [...group.querySelectorAll<HTMLElement>('[data-meeting-row]')]);
+  for (const row of candidates) {
+    const key = row.dataset.date;
+    if (!key || key > today) continue;
+    if (key === today) {
+      row.dataset.bucket = 'today';
+      todayList.append(row);
+    } else if (row.dataset.forecast === 'true') {
+      row.remove(); // Expected meetings are never history.
+    } else {
+      row.dataset.bucket = 'earlier';
+      row.dataset.awaitingAgenda = 'false';
+      earlierGroupList(key).append(row);
+    }
+  }
+  for (const group of futureGroups) if (!group.querySelector('[data-meeting-row]')) group.remove();
+
+  const time = divider.querySelector('time');
+  if (time) time.textContent = pacific({ weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(now);
+  let empty = todayGroup.querySelector<HTMLElement>('[data-today-empty]');
+  if (todayList.querySelector('[data-meeting-row]')) empty?.remove();
+  else if (!empty) {
+    empty = document.createElement('p');
+    empty.className = 'timeline-empty-inline';
+    empty.dataset.todayEmpty = '';
+    empty.textContent = 'No meetings scheduled today.';
+    todayGroup.append(empty);
+  }
 }

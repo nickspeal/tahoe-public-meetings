@@ -168,3 +168,37 @@ test('renders compact date badges and truthful agenda availability on a meeting 
   assert.match(canceled.textContent, /Canceled/);
   dom.window.close();
 });
+
+test('a page built yesterday moves Today to the reader’s Lake Tahoe date', async () => {
+  const html = await readFile(resolve(root, 'dist', 'index.html'), 'utf8');
+  const dom = new JSDOM(html, { url: 'http://localhost/', runScripts: 'outside-only' });
+  const { document } = dom.window;
+  const builtToday = document.querySelector('#today-divider').dataset.today;
+  const dates = [...new Set([...document.querySelectorAll('[data-meeting-row][data-bucket="upcoming"]')].map((row) => row.dataset.date))].sort();
+  // Read the page as if it were the morning of the second upcoming meeting date, Pacific time.
+  const [passed, readerToday] = dates;
+  assert.ok(passed > builtToday && readerToday, 'the fixture needs two upcoming meeting dates');
+  const builtTodayIds = [...document.querySelectorAll('[data-timeline-group="today"] [data-meeting-row]')].map((row) => row.dataset.meetingId);
+  const passedRows = [...document.querySelectorAll(`[data-meeting-row][data-date="${passed}"]`)];
+  const readerTodayIds = [...document.querySelectorAll(`[data-meeting-row][data-date="${readerToday}"]`)].map((row) => row.dataset.meetingId);
+  const RealDate = dom.window.Date;
+  const fixed = new RealDate(`${readerToday}T09:00:00-07:00`).valueOf();
+  dom.window.Date = class extends RealDate { constructor(...args) { super(...(args.length ? args : [fixed])); } static now() { return fixed; } };
+  dom.window.scrollBy = () => {};
+  dom.window.eval(filterScript);
+
+  const todayIds = [...document.querySelectorAll('[data-timeline-group="today"] [data-meeting-row]')].map((row) => row.dataset.meetingId);
+  assert.deepEqual(todayIds, readerTodayIds);
+  assert.ok(todayIds.length > 0 && !document.querySelector('[data-today-empty]'));
+  for (const id of builtTodayIds) assert.equal(document.querySelector(`[data-meeting-id="${id}"]`)?.dataset.bucket ?? 'earlier', 'earlier');
+  const passedKept = passedRows.filter((row) => row.dataset.forecast !== 'true');
+  assert.ok(passedKept.every((row) => row.isConnected && row.dataset.bucket === 'earlier' && row.dataset.awaitingAgenda === 'false'));
+  assert.ok(passedRows.filter((row) => row.dataset.forecast === 'true').every((row) => !row.isConnected), 'expected meetings are never history');
+  assert.equal(document.querySelector(`[data-timeline-group="future-${passed}"]`), null);
+  const passedGroup = document.querySelector(`#earlier-list [data-timeline-group="earlier-${passed}"]`);
+  if (passedKept.length) assert.equal(passedGroup.parentElement.lastElementChild, passedGroup, 'the newest earlier date is last');
+  const label = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(new RealDate(fixed));
+  assert.equal(document.querySelector('#today-divider time').textContent, label);
+  assert.ok(visibleRows(document).every((row) => row.dataset.bucket !== 'earlier'));
+  dom.window.close();
+});

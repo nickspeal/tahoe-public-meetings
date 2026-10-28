@@ -1,0 +1,559 @@
+{
+ "note": "Truckee Tahoe Airport District regular meeting of 2026-10-21 (board_meetings/412). The attachments page is reduced to its file list; each TAB file keeps its first three pages (non-report files only a 1,500-character excerpt of page 1). TAB 08 prints another meeting date, TAB 06 has a blank item number, and the General Manager's report (TAB 16) is headed with its TAB number, so items 6, 8 and 17 stay unmapped.",
+ "meeting": {
+  "id": "truckee-tahoe-airport:412",
+  "agency_id": "truckee-tahoe-airport",
+  "title": "Truckee Tahoe Airport District Regular Board Meeting",
+  "local_date": "2026-10-21",
+  "official_url": "https://truckeetahoeairport.com/board_meetings/412/attachments"
+ },
+ "items": [
+  {
+   "id": "truckee-tahoe-airport:412:1",
+   "number": "1",
+   "title": "Minutes: September 23, 2026, Special Meeting",
+   "section": "Consent Agenda",
+   "fingerprint": "ba72c98e18c0f39744f92b9816091b26db87b3cff22b620a67dd5afc77e2104d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Minutes: September 23, 2026, Special Meeting",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:2",
+   "number": "2",
+   "title": "Minutes: September 23, 2026, Regular Meeting",
+   "section": "Consent Agenda",
+   "fingerprint": "642143cc4350b9f7efd2cf989f0f3a46810fe6e202cf9d45b4a6db9e01e49fdf",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Minutes: September 23, 2026, Regular Meeting",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:3",
+   "number": "3",
+   "title": "Monthly Service Bills and Fees – September 2026",
+   "section": "Consent Agenda",
+   "fingerprint": "d6b16ebdb64329c910096da7a15e112638b087e61185b3610501a6edf23c0c6e",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Monthly Service Bills and Fees – September 2026",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:4",
+   "number": "4",
+   "title": "Notice of Exemption for Vegetation Maintenance – KTRK Airfield",
+   "section": "Consent Agenda",
+   "fingerprint": "7aa76aa9deeeb731c3b0f7fec856d9d6b0a7408a8f77296df619b536d8b03719",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Notice of Exemption for Vegetation Maintenance – KTRK Airfield",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:5",
+   "number": "5",
+   "title": "Truckee Tahoe Community Foundation Scholarship Program – TTAD Funding 2026",
+   "section": "Consent Agenda",
+   "fingerprint": "c92a49b4bba953c0394aae8d12aaef81f57c6cfeef49385cb33bbbf0dfc8e547",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Truckee Tahoe Community Foundation Scholarship Program – TTAD Funding 2026",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:6",
+   "number": "6",
+   "title": "Truckee Tahoe Airport District Waiver – Town of Truckee – BBK Conflict of Interest",
+   "section": "Consent Agenda",
+   "fingerprint": "307fc2883f5a6e85aa3735e57e70364808d171fda6865ab2831300ed08be5004",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Truckee Tahoe Airport District Waiver – Town of Truckee – BBK Conflict of Interest",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:7",
+   "number": "7",
+   "title": "Employee Accreditation Incentive Program Waiver",
+   "section": "Consent Agenda",
+   "fingerprint": "847c32ae7c92ffad999287c693e885c5db5ebd75b10d4193034326d67b3cd614",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Employee Accreditation Incentive Program Waiver",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:8",
+   "number": "8",
+   "title": "ASiX TTAD Contract for Situational Awareness Display – RFP",
+   "section": "Consent Agenda",
+   "fingerprint": "faef8c62df6c13a5d71edf2e21b336b840a667ac78297e5980dde5f8a6be6e61",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "ASiX TTAD Contract for Situational Awareness Display – RFP",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:9",
+   "number": "9",
+   "title": "Truckee Tahoe Airport District Budget 2027",
+   "section": "Action Items",
+   "fingerprint": "aace5a201b473238b588b75321106323241c64deb0332cc3b33875783d31ce20",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Truckee Tahoe Airport District Budget 2027",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:10",
+   "number": "10",
+   "title": "California Surplus Land Act Exemption Resolution / Purchase & Sale Agreement – Town of Truckee & Truckee Tahoe Airport District",
+   "section": "Action Items",
+   "fingerprint": "4ce626e758da2adf5978dcb19b7bf22be6bfd34b4ce178e540110e40dece3489",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "California Surplus Land Act Exemption Resolution / Purchase & Sale Agreement – Town of Truckee &",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:11",
+   "number": "11",
+   "title": "Truckee Tahoe Airport Noise and Operations Monitoring System",
+   "section": "Action Items",
+   "fingerprint": "f9c8eaf80350964db914c77560234aaf2543d5ea1392613dcee982600879d727",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Truckee Tahoe Airport Noise and Operations Monitoring System",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:12",
+   "number": "12",
+   "title": "Call for Nomination: Special District Appointment to Placer LAFCo",
+   "section": "Action Items",
+   "fingerprint": "d23605d55a342ae3180e082a2ce67d05bcc093fbb13e5bbe4a14f4d13c48e980",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Call for Nomination: Special District Appointment to Placer LAFCo",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:13",
+   "number": "13",
+   "title": "PI 204 Conflict of Interest Code Review and Approval",
+   "section": "Action Items",
+   "fingerprint": "82f6ad1c259bf3675d2ae5b1df04634b1324a9c1e6e967f297bac25473e565eb",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "PI 204 Conflict of Interest Code Review and Approval",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:14",
+   "number": "14",
+   "title": "PI 507 Discounted Rent for Warehouse Non-Profits",
+   "section": "Action Items",
+   "fingerprint": "a7dc4888754eb631b11f3451561b5eac411ec5f6468e5eaf00965dd4bccc976a",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "PI 507 Discounted Rent for Warehouse Non-Profits",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:15",
+   "number": "15",
+   "title": "Board Committee Assignments and Ad Hoc Committee Reports",
+   "section": "Discussion Items And Board Ad Hoc Committee Reports",
+   "fingerprint": "74b5850687695d04c59b80b4944195b99d9a5f0fd4c023a8d4d0d9fcd1d47ed4",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Board Committee Assignments and Ad Hoc Committee Reports",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:16",
+   "number": "16",
+   "title": "District Counsel Report",
+   "section": "Management Team Reports",
+   "fingerprint": "55696cb98e734706bdb955c3ebd00a200b15c1357d8468900214e7f624cd2659",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "District Counsel Report",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:17",
+   "number": "17",
+   "title": "General Managers' Report",
+   "section": "Management Team Reports",
+   "fingerprint": "eb74b784f805923683b49a02cb7b8a3dff39f6b10b89311b273c424947bf7180",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "General Managers' Report",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  },
+  {
+   "id": "truckee-tahoe-airport:412:18",
+   "number": "18",
+   "title": "Future Agenda Priorities and Meeting Management",
+   "section": "Management Team Reports",
+   "fingerprint": "383084c056f4eeda608753896df34dcf5fc43461485c14993c01d9b4f2473430",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Future Agenda Priorities and Meeting Management",
+     "documentId": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329",
+   "source_document_id": "truckee-tahoe-airport-agenda",
+   "title": "AGENDA OCTOBER 21 2026.pdf",
+   "url": "https://truckeetahoeairport.com/board_meetings/412/view_file?file=agenda+october+21+2026.pdf",
+   "sha256": "01da95c6570d5329f6add6782a2835086828b48cab0d65dcc7f6d4e6b47b894e",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "truckee-tahoe-airport:412:truckee-tahoe-airport-agenda:01da95c6570d5329": {
+   "1": "TRUCKEE TAHOE AIRPORT DISTRICT                                                        DIRECTORS\n               10356 Truckee Airport Rd.                                                           DAVID DIAMOND\n\n               Truckee, CA 96161                                                            MARY HETHERINGTON\n               (530) 587-4119 tel                                                                  GREG HORVATH\n               (530) 587-2984 fax                                                                 TERESA O’DETTE\n\n               W W W .T R U C K E E T A H O E A I R P O R T . C O M                               KATHRYN ROHLF\n\n\n\n\n                                          REGULAR MEETING AGENDA\n                                                   FOR\n                                              OCTOBER 21, 2026\n\nA meeting of the Truckee Tahoe Airport District will be held on Wednesday, October 21, 2026 in Community\nRooms A & B at 10356 Truckee Airport Road, Truckee, CA 96161, and via live web streaming:\nhttps://ttm.open.media/?category=458 Written public comments may be submitted to\nComments@truckeetahoeairport.com and comments received by 12:00 PM on October 20, 2026, will be\nforwarded to the Board of Directors before the meeting. No action will be taken at the meeting on any\nbusiness not appearing on the posted agenda except as permitted by Government Code Section 54954.2 No\naction will be taken at the meeting on any business not appearing on the posted agenda except as permitted\nby Government Code Section 54954.2.\n\nThe District welcomes you to its meetings. Your opinions and suggestions are encouraged. In compliance\nwith Section 202 of the Americans with Disabilities Act of 1990 and in compliance with the Ralph M. Brown\nAct, anyone requiring reasonable accommodation to participate in the meeting should contact the Truckee\nTahoe Airport District office at (530) 587-4119, at least three days prior to the meeting.\nThe Board of Directors may take action upon any item listed on the agenda at any time during the meeting.\nScheduled items will be heard at or after the time noted, but the Directors may interrupt or defer discussion\nin order to deal with other matters.\n\n                                       MISSION STATEMENT:\n The Truckee Tahoe Airport aims to provide safe, high-quality services and facilities, reduce impact on\nairport neighbors and the environment, and invest in opportunities that increase community safety and\n                    provide sustained benefit to the entire Truckee Tahoe region.\nCALL TO ORDER\nCLOSED SESSION: 3:00 PM\n   •   QUARTERLY PERFORMANCE EVALUATION\n         o Government Code 54957\n         o Title: General Manager\nREGULAR MEETING: 4:30 PM\nSTANDING ORDERS: Call the Regular Meeting to Order\nPLEDGE OF ALLEGIANCE\nROLL CALL\nSPECIAL ORDERS OF BUSINESS\n\n                                                                                  October 16, 2026 - Page 1 of 3",
+   "2": "MODIFICATION OF AGENDA: The Board President reserves the right to modify the agenda in order to most\neffectively process the agenda items. Items may be taken out of order; Items may be combined for\nconsideration by the Board of Directors; Items may be pulled or removed from the agenda at any time.\nPUBLIC COMMENT: Members of the public may make comments at this time on any items not appearing on\nthe agenda that are of interest to the public and are within the jurisdiction of the Board. Pursuant to the\nBrown Act, no discussion or action, other than a referral, shall be taken by the Board on any issue brought\nforth under Public Comment. Comments relating to items on today’s agenda are to be taken at the time the\nitem is heard. Time allotted to each speaker is determined by the Board President; however, comments will\ngenerally be limited to three minutes. Written comments may be submitted to\nComments@truckeetahoeairport.com, and comments received by 12:00 PM on October 20, 2026, will be\nforwarded to the Board of Directors prior to the meeting.\n\nCONSENT AGENDA\nConsent Action Items :\n1. Minutes: September 23, 2026, Special Meeting ----------------------------------------------------------- TAB 01\n2. Minutes: September 23, 2026, Regular Meeting ---------------------------------------------------------- TAB 02\n3. Monthly Service Bills and Fees – September 2026 -------------------------------------------------------- TAB 03\n4. Notice of Exemption for Vegetation Maintenance – KTRK Airfield ----------------------------------- TAB 04\n5. Truckee Tahoe Community Foundation Scholarship Program – TTAD Funding 2026 ------------ TAB 05\n6.   Truckee Tahoe Airport District Waiver – Town of Truckee – BBK Conflict of Interest ------------ TAB 06\n7. Employee Accreditation Incentive Program Waiver ------------------------------------------------------ TAB 07\n8. ASiX TTAD Contract for Situational Awareness Display – RFP ------------------------------------------ TAB 08\nACTION ITEMS\n9. Truckee Tahoe Airport District Budget 2027 --------------------------------------------------------------- TAB 09\n10. California Surplus Land Act Exemption Resolution / Purchase & Sale Agreement – Town of Truckee &\n    Truckee Tahoe Airport District --------------------------------------------------------------------------------- TAB 10\n11. Truckee Tahoe Airport Noise and Operations Monitoring System ------------------------------------ TAB 11\n12. Call for Nomination: Special District Appointment to Placer LAFCo ---------------------------------- TAB 12\n13. PI 204 Conflict of Interest Code Review and Approval --------------------------------------------------- TAB 13\n14. PI 507 Discounted Rent for Warehouse Non-Profits ----------------------------------------------------- TAB 14\nDISCUSSION ITEMS AND BOARD AD HOC COMMITTEE REPORTS\n15. Board Committee Assignments and Ad Hoc Committee Reports ------------------------------------- TAB 15\n    1- Truckee Tahoe Workforce Housing Joint Powers Authority - Update\n    2- Town of Truckee River Revitalization Steering Committee - Update\n    3- Climate Transformation Alliance - Update\n    4- TNT/TMA Monthly – Update\n    5- TTCF Scholarship Committee - Update\n\nMANAGEMENT TEAM REPORTS\n16. District Counsel Report\n17. General Managers' Report ------------------------------------------------------------------------------------- TAB 16\n    1- Truckee Tahoe Airport District 2026-2028 Priorities\n    2- 2026 Strategic Plan Priorities – Status Update\n    3- Aviation and Community Services Report\n            a. Quarterly Operations and Comment Report\n            b. Peak Period Runway Utilization Report - Summer\n                                                                                              October 16, 2026 - Page 2 of 3",
+   "3": "4-Quarterly Finance and Administration Report\n18. Future Agenda Priorities and Meeting Management ---------------------------------------------------- TAB 17\n    1- Review of Rolling Agenda\n\nBOARD MEMBER ANNOUNCEMENTS: Pursuant to Government Code Section 54954.2, Board members may\nmake a brief announcement or report on activities. Board members may also provide a reference to staff\nor other resources for information, or request staff to report back to the Board at a subsequent meeting\nconcerning any matter.\nSCHEDULE FOR UPCOMING MEETINGS: The Board President and General Manager shall determine the\nagenda. Scheduled meetings of the Truckee Tahoe Airport Board of Directors are as follows:\n• Regular Board Meeting – December 2, 2026, 4:30 PM, Community Room A&B, 10356 Truckee Airport Road, Truckee, CA 96161\n\nADJOURNMENT OF MEETING\nNOTE: A copy of the agenda packet and all documents related to this agenda are available for public review\nat the Airport Administration Office, 10356 Truckee Airport Road, Truckee, California 96161. Agenda items\nthat are not able to be addressed at today’s meeting may be placed on the next regularly scheduled Board\nmeeting agenda. Requests for agenda items and/or supporting background information must be submitted\nin writing to the Airport Manager or the Board President ten days prior to the next meeting.\nI declare a copy of this agenda was posted at the Truckee Tahoe Airport District Administration Office, 10356\nTruckee Airport Road, Truckee, CA, and mailed on October 16, 2026.\n\n\n\n\n                                    __________________________________________________\n                                     Lauren Tapia, HR Manager / District Clerk\n\n\n\n\n                                                                                         October 16, 2026 - Page 3 of 3"
+  }
+ },
+ "downloads": {
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+03+-+monthly+service+bills+%26+fees+-+sept+2026.pdf": {
+   "sha256": "ff7ab75b1670fb925c4087a365e3b05d828c3f8ce45aa0e0c8ffd606f0ff5edd",
+   "page_count": 7,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                       Truckee Tahoe Airport District\n                                                                                  A/P Payment History by Payment\n                                                                               September 1, 2026 - September 30, 2026\n\n\nTransaction                                                                        Bill Type      Date        Document Number        Amount Description\nBill Payment #37029 - Reliable Premium Management\n                                                                                   Bill Payment 9/1/2026                          $2,328.59\n                                                                                   Bill         8/8/2026      INV-15876          ($2,328.59) Worker's Comp Insurance - Payroll 8/8/26\nAmount Unapplied - Bill Payment #37029 - Reliable Premium Management                                                                  $0.00\nBill Payment #37028 - Principal Life Insurance Company\n                                                                                   Bill Payment 9/1/2026                          $5,795.38\n                                                                                   Bill         8/17/2026     SEP2026_INS        ($5,795.38) AUG 2026 Dental/Vision/Life\nAmount Unapplied - Bill Payment #37028 - Principal Life Insurance Company                                                "
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+04+-+staff+report+airfield+noe+2026.pdf": {
+   "sha256": "edc086ae640424aff9a0f12b57903de7a4a5d699d1d9bca7b722661706610a14",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                   AGENDA ITEM: ___04____\n\n                 TRUCKEE TAHOE AIRPORT DISTRICT\n                 BOARD OF DIRECTOR STAFF REPORT\n\n\n\n\nAGENDA TITLE:        Notice of Exemption for Vegetation Maintenance Within the Truckee\nTahoe Airport Airfield\n\nMEETING DATE:           Oct 21, 2026\nPREPARED BY:            Vince Wawrzynski, Operations Director\n\n\nRECOMMENDED ACTION: Truckee Tahoe Airport District Board of Directors approve Notice of\nExemption (NOE) for vegetation management on the airfield.\nBackground:        The Tahoe Truckee Airport District (TTAD) seeks to conduct vegetation\nmaintenance within the airfield for the purposes of airport safety. This NOE is a means of\ncomplying with California Environmental Quality Act prescriptions. The total acreage covered by\nthis NOE is approximately 915 acres (Attachment A-1). Vegetation maintenance may be\nnecessary and/or mandated by law for the safety of planes entering and exiting the airfield, and\nmay include but is not limited to herbicide application, hand cutting, chipping (tracked or tow-\nbehind), piling, burning, and/or mastication of woody fuels and live vegetation. The airfield has\nbeen highly disturbed for many years for the construction of runways and associated grading, etc.\nThese processes are covered under an existing Mitigated Negative Declaration that is unrelated\nto vegetation management (SCH No. 2015122021).\nFiscal Impact: Minor. The District will pay both Nevada and Placer Counties processing fees, less\nthan $200.00.\nMOTION:\n   (1) Via Consent\nATTACHMENTS:\nNOE_Memo_Airfield.docx\nTTAD_NOE_Airfield.pdf\n\n\n\n                                                                                      1|Page\n                                   October 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+05+-+staff+report+-+ttcf+scholarship+award+2026.pdf": {
+   "sha256": "dd3e47aa3f24ffe6dc2f5d8c4d79c7b8840a65e63cd7180a3713529f0d2d2af5",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                AGENDA ITEM: ___05____\n\n               TRUCKEE TAHOE AIRPORT DISTRICT\n               BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE:        Tahoe Truckee Community Foundation Scholarship Program –\n                     TTAD Award Funding 2026 - TTAD Aviation/STEM Career Path\n                     Scholarship\nMEETING DATE:        October 21, 2026\nPREPARED BY:         Robb Etnyre, General Manager\n\n\nRECOMMENDED ACTION: Consider payment of the attached October 4, 2026, invoice from TTCF\nfor $20,000 for the 2026 TTCF Scholarship Award - TTAD Aviation/STEM Career Path Scholarship\nfor one recommended recipient.\nBACKGROUND:\nThe Airport District Board approved a budget of $40,000 in the 2026 budget for TTAD\nAviation/STEM Career Path Scholarship with TTCF. The Airport District has no formal agreement\nwith TTCF regarding award criteria or TTAD requirements for award of TTAD public funds for a\nTTAD Aviation/STEM Career Path Scholarship. Past criteria were developed for a 2023 award\nonly, which was in conjunction with a past program which TTAD’s Board has discontinued. Below\nare the past awards and payments from the Airport District to TTCF for TTAD Aviation/STEM\nCareer Path Scholarships.\n\n\n\n\n                                                                                   1|Page\n                                  October 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "DISCUSSION: Staff recommend the Airport District Board consider the current obligation and\nfuture participation in the TTAD Aviation/STEM Career Path Scholarship with TTCF in relation to\nlegal guidance provided regarding the use and distribution and oversight of TTAD public funds.\nFuture obligations for this program should match invoices with an approved program by the\nAirport District Board with General Counsel guidance.\n\nFISCAL IMPACT: $20,000\nSAMPLE MOTION(S): I move to (approve, deny) via consent the payment of October 4, 2026,\ninvoice from TTCF for $20,000 for the 2026 TTAD Aviation/STEM Career Path Scholarship award\nto the sole recipient, Zach Conradson as the 2026 award recommendation of the Scholarship\nCommittee.\n\nATTACHMENTS:\n\nTTCF Invoice dated October 4, 2026.\n\n\n\n\n                                                                                     2|Page\n                                  October 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+06+-+staff+report+-+bbk.pdf": {
+   "sha256": "382a2403c984385b4d8dff82f4d48d269a1bffd578e5068e7821b573a2bcb0b7",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                   AGENDA ITEM: _______\n\n                TRUCKEE TAHOE AIRPORT DISTRICT\n                BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE:         Informed Written Consent to Conflict of Interest - BBK\nMEETING DATE:         October 21, 2026\nPREPARED BY:          Robb Etnyre, General Manager\n\n\nACTION RECOMMENDED: Consider approval, via consent, accepting the Written Consent to\nConflict of Interest with regard to Best, Best, Kreiger and the Town of Truckee with regard to the\nof Exempt Surplus Land Resolution - Town of Truckee (APN 019 441 11) and TTAD – Town of\nTruckee – Land Purchase Agreement for the sale of ~11 Acres of TTAD local acquired land to the\nTown of Truckee.\nBACKGROUND:\nThe Airport District Board entered in a Letter of Agreement (LOA) – attached, which established\nformal coordination between the District and the Town to proceed with the proposed sale of\napproximately 11 acres of the vacant parcel located at the northwest corner of Soaring Way and\nTruckee Airport Road (Nevada County APN 019-441-011). The Town intends to utilize this land\nfor the development of a new police station and public safety facility. Both parties acknowledged\nthe property was acquired using local funds (identified as Parcel 3d on the District’s Exhibit ‘A’\nProperty Map) and does not involve land purchased with federal FAA grant assistance.\nThe FAA has been notified by TTAD of the Notice of Intent to surplus the locally acquired vacant\nland. The FAA has responded with no objections or authority under law to regulate the sale of\nlocally procured land by the Airport District.\nDISCUSSION: Truckee Tahoe Airport District (the “District”) has asked Best Best & Krieger, LLP\n(“BBK” or the “Firm”) to represent it in reviewing a purchase and sale agreement and drafting a\nSurplus Land Act exemption resolution (the “Matter”). The Matter involves the Town of Truckee\n(the “Town”). As we have discussed, BBK represents the Town in matters unrelated to the\nMatter. Because the District’s interests in the Matter may be adverse to the Town’s, BBK’s\nhandling of that matter creates a conflict of interest for the firm under the applicable rules of\nprofessional conduct.\n\nFISCAL IMPACT: None\n                                                                                       1|Page\n                                   October 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "SAMPLE MOTION(S): I move to (approve, deny, modify) via consent, the attached Informed\nWritten Consent to Conflict of Interest, and authorize the General Manager to take actions\nnecessary to acknowledge this matter.\n\nATTACHMENTS:\n\nInformed Written Consent to Conflict of Interest\n\n\n\n\n                                                                                 2|Page\n                                  October 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+07+-+employee+accreditation+incentive+program+waiver.pdf": {
+   "sha256": "2c9d6f45d86eb659878853650628a2e683db1adb4b0a1dee52f94fe4f9bedd32",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                      AGENDA ITEM: _07__\n\n\n                  TRUCKEE TAHOE AIRPORT DISTRICT\n                  BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE: Employee Accreditation Incentive Program – Waiver\n\nMEETING DATE: October 21, 2026\n\nPREPARED BY: Jeff Menasco, Director of Aviation\n\n\nRECOMMENDED ACTION:\nBoard to approve a waiver of the one-year employment requirement under PI 117 — Employee\nAccreditation Incentive Program, authorizing a $1,000 incentive payment to Larry Finney.\nDISCUSSION:\nPI 117 provides a $1,000 incentive to TTAD employees who earn qualifying Airport Certified\nEmployee (ACE) credentials through the American Association of Airport Executives (AAAE), subject\nto a one-year employment requirement.\nMr. Larry Finney joined TTAD on August 18, 2025, as the Safety, Security, and Community Outreach\nManager, bringing seven years of experience as the Airport's Air Traffic Control Manager.\nLeveraging his extensive knowledge of airport operations and through dedicated self-study, he\nearned his ACE Safety Management Systems certification on February 13, 2026, within his first six\nmonths of employment.\nStaff recommends waiving the one-year employment requirement in recognition of Mr. Finney's\naccelerated achievement and demonstrated professional development.\nFISCAL IMPACT:\nIncentive payment of $1,000.\nPUBLIC COMMUNICATIONS:\nNone required beyond standard Board agenda posting requirements.\nSAMPLE MOTION(S):\nI move to waive the one-year employment requirement under PI 117 and authorize a $1,000\nincentive payment to Larry Finney for earning his ACE Safety Management Systems certification.\n\n\n                                        October 21, 2026\n                                                                                          1 | Page\n"
+    },
+    {
+     "page_number": 2,
+     "text": "ATTACHMENTS:\n  ● PI 117 — Employee Accreditation Incentive Program\n  ● AAAE — Airport Certified Employee (ACE) Safety Management Systems (Larry Finney)\n\n\n\n\n                                    October 21, 2026\n                                                                                  2 | Page\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+08+-+asix+ttad+agreement+staff+report+-+rfp+sai+10.15.26.pdf": {
+   "sha256": "006d4d0b74cdf8824fb2cee12c6c010c5b6593e5a527963301101454728bea4b",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                    AGENDA ITEM: ___08____\n\n                TRUCKEE TAHOE AIRPORT DISTRICT\n                BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE:         Contract approval for Situational Awareness Display RFP\nMEETING DATE:         October 13, 2026\nPREPARED BY:          Mike Cooke, IT Manager\n\n\nRECOMMENDED ACTION: Approve a 5-year contract to Airport Systems Information Exchange,\n“ASiX,” the selected vendor in a competitive bid process per TTAD’s PI 303 to provide a situational\nawareness display for KTRK ATC and staff. This continues the Airport District’s commitment to\nenhance safety by providing real-time airspace and movement area operations monitoring for\nstaff and ATC.\nBACKGROUND:\nThe existing contract for this service expired earlier this year and staff requested a 6-month\nextension, which ended Sept 30th, to review existing service needs and research new features\nand options. This also ensured that implementation of any changes could be accomplished under\noff-season and quieter traffic volumes. Situational awareness tools for staff and ATC (opened in\n2018) have been in use by the Airport District since 2011. While only available for use in an\nadvisory capacity, KTRK’s ACT and staff may use the display to track aircraft in the region and\nmonitor equipped ground targets such as snow removal equipment and operations vehicles.\nSAI displays, as they are more commonly called in larger facilities, are being embraced and\nencouraged by the FAA for their cost-effective and often more cutting-edge, modern features.\nAs an industry leader in GA technology, TTAD has provided ATC with situational awareness tools\nsince opening the airport-sponsored tower in 2018.\nVendors were requested to submit proposals for a situational awareness display to be used in an\nadvisory capacity that can enhance overall safety in the region. The selection was based on value,\noverall RFP criteria requirements, prior projects, functionality, and many additional enhanced\nfeatures.\nDISCUSSION: Staff recommend contract approval to the selected RFP bidder, ASiX for a 5-year\nterm consisting of 3 regular and 2 option years.\n\n                                                                                        1|Page\n                                   OCTOBER 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "FISCAL IMPACT:\n\nFive-year contract value at $148,096. First year savings over previous agreement of $12,000\nwith around $50k savings over full term when compared to nearest competitive bid.\nSAMPLE MOTION(S): I move to (approve, deny) the 5-year contract with ASiX to provide KTRK\nATC and staff with a real-time situational awareness display tool for use by staff and only in an\nadvisory capacity at ATC to enhance overall safety for the Truckee Tahoe Airport District at large.\n\nATTACHMENTS:\n\nContract\n\n\n\n\n                                                                                         2|Page\n                                   OCTOBER 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+09+-+2027+ttad+budget+proposed+10.21.26+for+approval.pdf": {
+   "sha256": "ca86383dda6f1ecc4c301472315f9956a760bdd66f8035354690c30a68fbe8e6",
+   "page_count": 13,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "Truckee Tahoe Airport District\nAnswers to Questions and Notes on changes from Budget Workshop #2\nBackup information for meeting 10.21.26\n\n\n- Mary asked by the variance for JetA/SAF fuel changed from the prior version. It is because the Forecast amount changed. We had an amount estimated\n           in the Forecast for what August would be, and it came in higher than our estimate. The budget didn't change - just the variance\n\n- Increased Car Rental lease revenue from 15% to 20% over '26 Budget\n\n- Separated out the Land Sale Non-Aeronautical amount on the budget summary page to show it separately\n\n- Separated out the Land Sale Non-Aeronautical amount on the 5 year ProForma page to show it separately\n\n- Left in $80K for Apron A4 Crack Repair and seal in the Reserve Expenses\n\n- Took out $2.4M for Apron A4 in PMMP expense\n\n- Took out $120K for hangar painting in 2x in the Reserve Expenses\n\n- Took out $61K for Hangar 1 door replace/repair in Reserve Expenses\n\n- Forklift amount for $70K taken out of Capital and only in Reserves\n\n- Added $2M for Library contribution tp Forecast 2026\n\n- Took away Fitness and (non-pers) Uniform reimbursements and added $1500 for a Lifestyle Café benefit for all\n          year round employees\n\n- Added $1000/mo for all year round employees to help offset cost of Truckee working environment\n\n- Added $15K expense for hotel room holds for employee emergency stayovers\n\n\n\n\n                                                                                        "
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+10+-+staff+report+-+surplus+land+sale.pdf": {
+   "sha256": "052fe94e4b4dc517f980ccd45a382dcf47fdf4e56350baa85292aecd0b80f511",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                   AGENDA ITEM: ___10____\n\n                TRUCKEE TAHOE AIRPORT DISTRICT\n                BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE:         Truckee Tahoe Airport District Surplus Land Sale\nMEETING DATE:         October 21, 2026\nPREPARED BY:          Robb Etnyre, General Manager\n\n\nACTION RECOMMENDED: Consider approval of Exempt Surplus Land Resolution - Town of\nTruckee (APN 019 441 11) and TTAD – Town of Truckee – Land Purchase Agreement for the sale\nof ~11 Acres of TTAD local acquired land to the Town of Truckee.\nBACKGROUND:\nThe Airport District Board entered in a Letter of Agreement (LOA) – attached, which established\nformal coordination between the District and the Town to proceed with the proposed sale of\napproximately 11 acres of the vacant parcel located at the northwest corner of Soaring Way and\nTruckee Airport Road (Nevada County APN 019-441-011). The Town intends to utilize this land\nfor the development of a new police station and public safety facility. Both parties acknowledged\nthe property was acquired using local funds (identified as Parcel 3d on the District’s Exhibit ‘A’\nProperty Map) and does not involve land purchased with federal FAA grant assistance.\nThe FAA has been notified by TTAD of the Notice of Intent to surplus the locally acquired vacant\nland. The FAA has responded with no objections or authority under law to regulate the sale of\nlocally procured land by the Airport District.\nDISCUSSION: Staff recommend the Airport District Board consider the approval of the attached\nExempt Surplus Land Resolution – Town of Truckee (APN 019-441-011) and the TTAD – Town of\nTruckee – Land Purchase Agreement for the surplus of ~11 Acres of vacant TTAD property at fair\nmarket value to the Town of Truckee.\n\nFISCAL IMPACT: Four Million Seven Hundred Ninety Thousand Six Hundred Fifty-Four Dollars\n($4,790,654.00) to TTAD from the sale of ~11 Acres of surplus land at Fair Market Value.\nSAMPLE MOTION(S): I move to (approve, deny, modify) the attached Exempt Surplus Land\nResolution – Town of Truckee (APN 019 441 11) and TTAD – Town of Truckee – Land Purchase\n\n\n                                                                                       1|Page\n                                   October 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "Agreement, and authorize the General Manager to take actions necessary to complete this\ntransaction.\n\nATTACHMENTS:\n\nExempt Surplus Land Resolution - Town of Truckee (APN 019 441 11)\n\nTTAD – Town of Truckee – Land Purchase Agreement\n\nLetter of Agreement – TTAD & Town of Truckee\n\n\n\n\n                                                                              2|Page\n                                 October 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+11+-+noise+operations+monitoring+systems+v1.2.pdf": {
+   "sha256": "05063fbe093d2199d364b745a34d6265cf197b85e420666f5b5e9f46a25602ba",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                  AGENDA ITEM: __11___\n\n\n                  TRUCKEE TAHOE AIRPORT DISTRICT\n                  BOARD OF DIRECTORS STAFF REPORT\n\n\n\nAGENDA TITLE: Noise Operations Monitoring System (NOMS) – RFP Decision\n\nMEETING DATE: October 21, 2026\n\nPREPARED BY: Jeff Menasco, Director of Aviation\n             Larry Finney, Safety, Security, Community Engagement Manager\n\n\nRECOMMENDED ACTION:\nBoard approve or disapprove a generic scope of work for a Request For Proposal (RFP) for\nimplementation of a Noise Operations Monitoring System (NOMS).\n\nDISCUSSION:\nThe Board has previously discussed the potential benefits and costs of implementing a Noise\nOperations Monitoring System (NOMS) at Truckee Tahoe Airport. NOMS could support three\nDistrict objectives:\n\n   1. Community Engagement: Provide additional information to help staff respond to aircraft\n      noise complaints and communicate noise impacts to the community.\n\n   2. Noise Abatement Evaluation: Evaluate the effectiveness of existing noise abatement\n      procedures and identify opportunities for improvement.\n\n   3. Long-Term Trend Analysis: Monitor changes in aircraft noise exposure over time and\n      support data-informed decisions.\n\nStaff contacted four vendors to obtain Rough Order of Magnitude (ROM) estimates for available\nnoise monitoring technologies, system capabilities, implementation requirements, and associated\ncosts.\nBecause vendors were not provided with a standardized scope of work, estimates vary in\nconfiguration and services and should not be considered as directly comparable proposals.\n\n\n\n                                       October 21, 2026\n                                                                                        1 | Page\n"
+    },
+    {
+     "page_number": 2,
+     "text": "Vendor: configuration                        Startup estimate    Annual estimate\nV1a: purchase 7 physical NMTs**              $247K               $102K\nV1b: lease 7 physical NMTs                   $72K                $147K\nV1c: virtual-only                            $42K                $97K\nV2: base software, no hardware               Not provided        From $35K\nV3: physical monitor per site                $23-33K             $1,500–$2,000 per NMT\nV4a: virtual grid reporting; 20+ locations   Not specified       $30K\nV4b: optional permanent physical NMT         ~$10K per unit      Maintenance extra\n**Noise Monitoring Terminal\nThe following alternatives reflect a combination of preliminary vendor information and staff\nestimates.\n\nOption A – Virtual NOMS / Light Hybrid (Staff Preferred)\nEstimated annual cost: $50,000–$100,000\n\nA software-based approach that models aircraft noise using flight tracking data, aircraft\ncharacteristics, and other inputs without relying on permanent physical noise monitors. This\napproach would provide modeled geographic noise exposure, historical trends, and information to\nsupport community engagement and evaluation of noise abatement procedures. Based on price\npoints and potential to re-calibrate TTAD owned NOMS sensors, there might be an opportunity to\nleverage some portable devices under option-A, though this is not guaranteed or the focus of this\noption.\n    • Lowest anticipated cost and implementation complexity.\n    • Broad geographic coverage without physical equipment installation; potentially some\n        sensors.\n    • Provides modeled rather than directly measured noise levels; potentially some sensors.\n\nOption B – Hybrid NOMS\nEstimated annual cost: $50,000–$150,000\n\nCombines virtual noise modeling with a limited number of physical noise monitors, potentially\nincluding temporary or mobile devices. This approach would allow the District to compare\nmodeled noise estimates with actual measurements at selected locations.\n    • Balances geographic coverage, physical measurements, and cost.\n    • Provides flexibility to investigate specific locations or community concerns.\n    • Requires additional equipment, maintenance, management, and potential land leasing.\n\n\n\n                                         October 21, 2026\n                                                                                          2 | Page\n"
+    },
+    {
+     "page_number": 3,
+     "text": "Option C – Comprehensive NOMS\nEstimated annual cost: $150,000–$400,000\n\nA comprehensive system combining virtual noise modeling with a network of permanent physical\nnoise monitors throughout the surrounding community. This approach would provide continuous\nmeasured noise data at selected locations, detailed trend analysis, and additional tools for\ncommunity engagement.\n    • Most extensive physical noise monitoring capability.\n    • Provides continuous measurements at selected locations.\n    • Highest anticipated acquisition, operating, potential ground leasing, and maintenance\n       costs.\nThree-Year Cost Comparison\nThe following table illustrates the estimated cost of each NOMS alternative over a three-year\nperiod. Estimates are based on preliminary vendor information and staff planning assumptions.\n\nNOMS Alternative                             Annual Cost          Three-Year Operating Cost\nOption A – Virtual NOMS             (Staff\n                                             $50K–$100K           $150K–$300K\nPreferred)\nOption B – Hybrid NOMS                       $50K–$150K           $150K–$450K\nOption C – Comprehensive NOMS                $150K–$400K          $450K–$1.2M\n\nNote: Three-year estimates assume constant annual costs and exclude one-time startup, equipment\nacquisition, and installation expenses. Actual costs would be determined through the RFP process.\nThe comparison illustrates the potential long-term financial differences between the alternatives.\nWhile more extensive physical monitoring can provide additional measured noise data, it also\nintroduces higher equipment, maintenance, and operational costs.\n\nSTAFF RECOMMENDATION\nStaff recommends Option A – Virtual NOMS as the preferred approach for developing an RFP. A\nvirtual system offers the potential to support the District's three primary objectives—community\nengagement, noise abatement evaluation, and long-term trend analysis—at a substantially lower\ncost and with less implementation complexity than a permanent physical monitoring network. It\nshould be noted that there is a “potential” to leverage TTAD owned noise sensors, however they\nwould need to be calibrated and may no longer be usable. Based on RFP, there might be low-cost\noption to deploy portable sensors for a limited amount of time.\n\nAlthough virtual systems model, rather than directly measuring noise levels, staff believe this\napproach provides an appropriate starting point to evaluate the value of a NOMS before\ncommitting to more costly physical monitoring infrastructure.\n\nStaff recommend proceeding with an RFP to establish system capabilities, limitations, and actual\ncosts. Staff would evaluate proposals and return to the Board with a recommendation for\nconsideration and approval prior to any contract award.\n\n                                         October 21, 2026\n                                                                                           3 | Page\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+12+-+2026+speical+district+election+letter+sept+29.pdf": {
+   "sha256": "1dd6daccebc62e377203510682f070c1de524186d2c558b3e4edeb1b346a6b14",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                  Placer County Local Agency Formation Commission\n                                                           110 Maple Street Auburn, CA 95603  (530) 889-4097\n\n\n\n\n                                                                               Electronic Transmittal\n  COMMISSIONERS\n                                                                                September 29, 2026\n    Joshua Alpine\n   (Special District)\n\n  Anthony DeMattei      TO: Independent Special Districts of Placer County, Presiding Officer\n      (County)\n                           c/o District Clerk\n   Whitney Eklund\n       Chair            FROM: Jason Fried, Executive Officer\n       (City)\n\n    Judy Friedman       SUBJECT: Call for Nominations: Special District Appointment to\n   (Special District)            Placer LAFCo\n   Cindy Gustafson\n        Chair\n      (County)          Dear Presiding Officer,\n\n    Susan Rohan         The term of office for one of the alternate Special District\n     Vice Chair\n      (Public)\n                        Representatives on the Placer County Local Agency Formation\n                        Commission (LAFCo), currently held by Commissioner Scott Wilson, is\n      Stephanie\n     Youngblood         becoming open due to his resignation effective October 1, 2026.\n        (City)          Pursuant to Government Code §56332, the Independent Special\n    ALTERNATE           District Selection Committee serves as the appointing authorit"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+13+-+amendment+of+the+conflict+of+interest+code+-+pursuant+to+the+political+reform+act+of+1974+-+staff+report.pdf": {
+   "sha256": "cb995ffcb9e8319db5b8dc66420161eb3cb73f6b2c1836130a4c42e81e7d642e",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                  AGENDA ITEM: __13_____\n\n                TRUCKEE TAHOE AIRPORT DISTRICT\n                BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE:         Amendment of the Conflict-of-Interest Code Pursuant to the\n                      Political Reform Act of 1974\nMEETING DATE:         October 21, 2026\nPREPARED BY:          Lauren Tapia, HR Manager/District Clerk\n\n\nRECOMMENDED ACTION: It is recommended that the Board of Directors: (1) adopt Resolution\n2026-05 adopting the District’s amended Conflict of Interest Code pursuant to the Political\nReform Act of 1974; and (2) approve Policy Instruction 204 – Conflict of Interest Policy 2026,\nwhich incorporates and codifies the same amendments.\nBACKGROUND: The Political Reform Act of 1974, Government Code Section 81000 et seq. (the\n“Act”), requires all public agencies to adopt and maintain a Conflict-of-Interest Code. The Act\nfurther requires that agencies regularly review their codes on a biennial basis and update them\nas necessary when directed by the code-reviewing body or when change is necessitated by\nchanged circumstances (Sections 87306 and 87306.5). The Fair Political Practices Commission\n(“FPPC”) is the District’s code-reviewing body and directed the District to complete its 2026\nbiennial review.\nOn September 7, 2026, the District filed its 2026 Multi-County Agency Biennial Notice with the\nFPPC, reporting that staff’s review of the code had been completed and that an amendment was\nnecessary.\nDISCUSSION: During the biennial review, staff worked with the BBK’s Public Policy and Ethics\nCompliance specialist to evaluate all positions created, retitled, or reorganized since the Code\nwas last amended on October 28, 2020. The review determined that the following amendments\nto the Code are necessary:\nNew positions to be designated:\n\n   •   Deputy General Manager – Categories 1, 2\n   •   Deputy Director of Airport Operations and Maintenance – Categories 2, 3, 5, 6\n\n                                                                                       1|Page\n                                  OCTOBER 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "   •   Facilities Maintenance Manager – Category 5\nRevision of title:\n\n   •   Airport Safety & Security Manager retitled to Airport Safety, Security, and Community\n       Engagement Manager (remains Category 5)\nPositions to be deleted:\n\n   •   Aviation & Community Services Manager – Noise/Annoyance\n   •   Aviation & Community Services Manager – Property\n   •   Aviation & Community Services Manager – Public Relations\n   •   Aviation & Community Services Program Coordinator (Safety)\n   •   Operations & Maintenance Assistant Supervisor\nOther revisions:\n\n   •   Minor language revisions to the disclosure categories in Part “B” of the Code to better\n       reflect current District programs and duties\n   •   Updated Form 700 filing requirements for §87200 filers to reflect newly enacted CA SB\n       852, which requires public officials who manage public investments to file their Statement\n       of Economic Interests (Form 700) directly with the FPPC rather than through the local\n       filing officer\nA notice of intention to amend the Code was posted on September 6, 2026, establishing a 45-day\ncomment period for District employees and the public in compliance with Title 2, California Code\nof Regulations, Section 18750, which ran through October 21, 2026. A legislative (redlined)\nversion of the proposed amended Code, showing all changes described above, is attached for the\nBoard’s review. Policy Instruction 204 – Conflict of Interest Policy 2026, also attached,\nincorporates the Code as it would read if the proposed amendments are adopted.\nFISCAL IMPACT: None.\n\nSAMPLE MOTION(S):\n\n   •   Motion #1: I motion to approve RESOLUTION 2026 – 05 ADOPTING AN AMENDED\n       CONFLICT OF INTEREST CODE PURSUANT TO THE POLITICAL REFORM ACT OF 1974, and\n       to waive the reading.\n   •   Motion #2: I motion to approve Policy Instruction 204 – Conflict of Interest Policy 2026\nATTACHMENTS:\n\nRESOLUTION 2026 – 05 ADOPTING AN AMENDED CONFLICT OF INTEREST CODE PURSUANT TO\nTHE POLITICAL REFORM ACT OF 1974\n\nPOLICY INSTRUCTION 204 – CONFLICT OF INTEREST POLICY 2026\n\nLEGISLATIVE (REDLINED) VERSION OF PROPOSED AMENDED CONFLICT OF INTEREST CODE\n\n\n                                                                                      2|Page\n                                  OCTOBER 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+14+-+pi+507+revision+staff+report+-+non-profit+use+of+airport+property+by+asset+class.pdf": {
+   "sha256": "8dfeb111459e56a44b789c7bed2333a0226c75c2e679ee2a04c7f7b00d3cf4f5",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                     AGENDA ITEM: __14___\n\n\n                  TRUCKEE TAHOE AIRPORT DISTRICT\n                  BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE: Adoption of Revised Policy Instruction (PI) 507 — Non-Profit Use\n              of Airport Non-Aviation Lease Space and Post-Occupancy Rent\n              Discount Policy by Asset Class\n\nMEETING DATE: October 21, 2026\n\nPREPARED BY: Jeff Menasco, Director of Aviation\n\n\nRECOMMENDED ACTION:\nAdopt revised Policy Instruction (PI) 507, Non-Profit Use of Airport Non-Aviation Lease Space —\nCommunity Benefit Selection Criteria, Lease Process, and Post-Occupancy Rent Discount Policy by\nAsset Class.\n\nDISCUSSION:\nPI 507 currently establishes criteria and procedures for selecting community benefit tenants for\nvacant non-aeronautical space but does not expressly address rent discount treatment following\noccupancy. Historically, certain warehouse tenants have received rent discounts of approximately\nsixty percent (60%). The proposed revision establishes a framework for future Board consideration\nof rent discounts by District asset class, while preserving Board discretion to approve, modify, or\ndiscontinue discounts.\n\nThe revised PI 507 retains and clarifies existing tenant-selection criteria and lease procedures\n(Sections 1–3), and adds a post-occupancy rent discount framework (Section 4) addressing five\ncategories:\n\n   ● Warehouse Building — historical discounts of approximately sixty percent (60%) serve as\n     nonbinding guidance, not a ceiling, standard rate, or entitlement. The Board may approve\n     a lesser or greater discount, or no discount.\n   ● Non-Aeronautical Open Land / Shipping Container Sites (approximately 12 sites) — CAM-\n     only treatment, with no base rent, is identified as guidance for qualifying community\n     benefit tenants, subject to Board discretion.\n\n\n                                     October 21, 2026                                  1 | Page\n"
+    },
+    {
+     "page_number": 2,
+     "text": "   ● Aeronautical (Airside) Land and Facilities — no rent discounts on property designated for\n     aeronautical use under the proposed policy, consistent with the District’s federal\n     compliance objectives.\n   ● Civil Air Patrol, Phoenix Hangar (Standing Exception) — continued no-rent occupancy is\n     expressly authorized by the policy without recurring Board reauthorization; future\n     modification, termination, or expansion requires Board action.\nSection 5 requires Board review and reauthorization of discounts at each lease renewal; no\ndiscount carries forward automatically. The Board also retains authority to review, modify, or\nrevoke a discount between renewals, consistent with the applicable lease agreement.\n\nFISCAL IMPACT:\nDiscounts approved for non-aeronautical warehouse space and open land/container sites may\nreduce lease revenue relative to market rates. The proposed policy provides that such reductions\nare offset using the District’s non-airport ad valorem property tax revenue, rather than\naeronautical or other airport revenue. Adoption alone does not establish a new discount or amend\nan existing lease; any fiscal effect will depend on future Board actions and applicable lease terms.\nThe proposed policy prohibits discounts on aeronautical land and facilities. Federal compliance\nconsiderations should be reviewed with District counsel, including FAA Grant Assurance 24 (Fee\nand Rental Structure), Grant Assurance 25 (Airport Revenues), and Grant Assurance 22 (Economic\nNondiscrimination).\n\nPUBLIC COMMUNICATIONS:\nNone required beyond standard Board agenda posting requirements.\n\nSAMPLE MOTION(S):\nI move to adopt/deny/revise (as stated) Policy Instruction (PI) 507 as presented.\n\nATTACHMENTS:\n   ● PI 507 — Redline (Original vs. Revised)\n   ● PI 507 — Clean Copy (Revised)\n\n\n\n\n                                      October 21, 2026                                  2 | Page\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+15++-+board+and+staff+committee+reports+staff+report.pdf": {
+   "sha256": "47582136f053d531aa45927302f28547314117c668656285203ad7a0dd48fd41",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                   AGENDA ITEM: __15___\n\n                 TRUCKEE TAHOE AIRPORT DISTRICT\n                 BOARD OF DIRECTORS STAFF REPORT\n\n\n\n\nAGENDA TITLE:         Board and Staff Committee Assignments and Ad Hoc\n                      Committee Updates\nMEETING DATE:         October 21, 2026\nPREPARED BY:          Robb Etnyre, General Manager\n\n\n1. Truckee Tahoe Workforce Housing Joint Powers Authority (TTWHA) Update – Lauren Tapia\n                                 https://ttjpa.org/\n                                 CSG Advisors recommended that TTWHA explore transitioning\n                                 from its existing JPA structure to a Regional Housing Finance\nAuthority (RHFA) under SB 440. An RHFA could provide dedicated regional housing funding,\nexpand workforce housing opportunities, and strengthen collaboration among member\nagencies. The Board discussed funding, governance, political support, and the preservation of\nexisting programs. The Board unanimously directed staff to gauge interest from the jurisdiction’s\nelected officials and report back in January 2027. This action does not authorize formation of an\nRHFA, but allows further exploration of its feasibility. The Board also received Sierra Business\nCouncil’s final Policy Platform.\n\n2. Town of Truckee River Revitalization Steering Committee – Jeff Menasco\n\n\n               Downtown River Revitalization Strategy\n\nNo update\n\n3. Climate Transformation Alliance - Greg Horvath, Robb Etnyre\n\n\n\n   •   October 23 - Deep Dive Project Incubator Workshop\n          o This workshop will focus on developing select projects identified during our April\n             Incubator Workshop through hands-on Deep Dive Breakout Work Sessions.\n\n                                                                                      1|Page\n                                  OCTOBER 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "             During the Deep Dive Work Sessions attendees will have the opportunity to learn\n             about the Deep Dive projects, ask questions, and provide valuable input,\n             resources, connections, and suggestions to help strengthen the selected project.\n   •   CTA Wildfire Risk Reduction & Insurance Forum\n          o Wednesday, November 18 | 5:30–7:30 PM\n          o Truckee Town Council Chambers + Truckee Tahoe Media Livestream\n\n\n4. Truckee North Tahoe Transportation Management Association – Larry Finney\n\n\n\n\nLarry Finney was unable to attend the October 1 meeting due to unexpected travel\ncommitments.\n\nThe next meeting is scheduled for November 5, 2026.\n\n5. Tahoe Truckee Community Foundation Scholarship Committee – Kat Rohlf\n\n\n\n\n                                                                                   2|Page\n                                 OCTOBER 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+16+-+general+manager%27s+report++-+october+21+2026.pdf": {
+   "sha256": "42472c3c8bac990313827835a6e5a22e2451211aa00288d1470b0f628ebeb71a",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                  AGENDA ITEM: ___16___\n\n                TRUCKEE TAHOE AIRPORT DISTRICT\n                GENERAL MANAGER REPORT\n\n\n\n\nAGENDA TITLE:         General Manager’s Monthly Update\nMEETING DATE:         October 21, 2026\nPREPARED BY:          Robb Etnyre, General Manager\n\n\nItem 1. Truckee Tahoe Airport District 2026-2028 Strategic Plan Priorities & 2027 Priorities:\n\n\n\n\n                                              19          30\n\n\n\n\n                                             14             15\n\n\n\n\n                                                                                     1|Page\n                                  OCTOBER 21, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": "Item 2. 2026 Strategic Plan Priorities – Status Update\nSix objectives previously labeled in “Yellow” as not started have moved to “Green” - On Track -\nwith the NOMS system presented at the October 21, 2026, Board Meeting. One item remains\nbehind “Red” - 2.C.I.a. Annually review with the Board their interest in conducting team building\nprograms.\n\n\n\n\nItem 3. Board Topics Next 30 Days\nDecember 2, 2026, Board Meeting will be focused on the annual updates from organizations and\npublic agencies who have received Airport District Public Funds and the progress / impact of\nthose programs.\n\n\n\n\n                                                                                      2|Page\n                                  OCTOBER 21, 2026\n"
+    },
+    {
+     "page_number": 3,
+     "text": "Item 4. Truckee High School Paid Internship Program\nTwo interns have been funded by the Youth Jobs Core program in the State of California via\nConnecting Point, we expect them to begin in November 2026. This program expanded to East\nNevada County and offering Truckee High School students who meet the requirements to work\na 3–6-month, 20 hour a week, paid internship (paid by Connecting Point) with new participating\nentities in the area (Truckee Library, Truckee Tahoe Helping Hands, Town of Truckee, and Truckee\nAirport). This will be a new program we will be offering to help develop general aviation skill sets\nof interns for future potential employment with the District - as opportunities become available.\n\n\n\n\nItem 5. Warehouse Fire Sprinklers Installation\nInstallation of the Warehouse fire sprinklers starts on 10/20/26 and will likely continue into early\nJanuary. The contractor is starting with the west side Non-Profit tenants first, which is expected\nto take about 5 to 6 weeks or through the late part of November. The east side warehouse\ninstallation will be from late November to early January.\n\n\nItem 6. Flight Awareness Display\nWe are transitioning from “Airboss” to “ASiX” flight awareness displays. This is primarily used by\nour ATC tower controllers for aircraft awareness but also used in dispatch. This new situational\nawareness information system has multiple upgrades to include: an Expanded Surveillance\nCoverage Area, Target and Clutter Management Tools, Operation Mapping, replay capability,\nMap in Map functions for monitoring critical areas, pavement area management to highlight\nclosed and NOTAM’d segments, and dedicated human support during tower hours.\n\n\n\n\n                                                                                         3|Page\n                                   OCTOBER 21, 2026\n"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://truckeetahoeairport.com/board_meetings/412/view_file?file=tab+17+-+rolling+agenda+-+time+frames.pdf": {
+   "sha256": "6e708cc12f952cf63b91e4e76714ec4f9b43be1273c4b1d54fe5f26b5afc07ac",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                         TTAD Rolling Agenda\n Month\n December 2, 2026\n Consent\n • October Minutes (C)\n • Monthly Service Bills and Fees (C)\n SPECIAL PRESENTATION\n • Truckee Donner Rec and Park District Annual Review\n • Aviation STEAM Programs Annual Review\n • Wildfire Mitigation Projects Annual Review\n • BGCNLT Annual Review\n Action\n Information\n • Board and Staff Committee Assignment Report (I)\n        • FLY SAFE (November): Winter Operations 2026-27\n • Management Team Reports (G)\n Closed Session\n • GM Quarterly Performance Review (CS)\n Special Action Item\n • Assignment of Board President, Vice President, and Internal Auditor (A) – Pro Tem on Election Years\n January 2027\n Consent\n  • November/December Minutes (C)\n  • Monthly Service Bills and Fees (C)\n  • Board Policy Instructions Review and Approval – Maintenance & Operations Policies (C)\n Special Presentation\n  • Annual Board of Directors Training - BBK (Brown Act, FPPC Form 700, Conflict of Interest)\n Action\n Information\n • Annual Operations and Comment Report (I)\n • Board and Staff Committee Assignment Report (I)\n • Management Team Reports (G)\n     • FLY SAFE:\n February 2027\n Consent\n • January Minutes (C)\n • Monthly Service Bills and Fees (C)\n • Annual Reporting of Reimbursements and Disclosure Report (C)\n Action\n Information\n • Monthly Financial Report (I)\n • Board and Staff Committee Assignment Report (I)\n Guidance\n • Management Team Reports (G)\n    • FLY SAFE Meeting:\n March 2027\n Cons"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://truckeetahoeairport.com/board_meetings/412/attachments": "<html><body><h1>Board Meeting Attachments</h1><ul>\n<li><a href=\"/board_meetings/412/view_file?file=agenda+october+21+2026.pdf\">AGENDA OCTOBER 21 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=october+21+2026+written+public+comment.pdf\">October 21 2026 Written Public Comment.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+01+-+september+23%2C+2026+special+meeting+minutes.pdf\">TAB 01 - SEPTEMBER 23, 2026 SPECIAL MEETING MINUTES.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+02+-+september+23%2C+2026+regular+meeting+minutes.pdf\">TAB 02 - SEPTEMBER 23, 2026 REGULAR MEETING MINUTES.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+03+-+monthly+service+bills+%26+fees+-+sept+2026.pdf\">TAB 03 - Monthly Service Bills &amp; Fees - Sept 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+04+-+staff+report+airfield+noe+2026.pdf\">TAB 04 - Staff Report Airfield NOE 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+04a+-+noe_memo_airfield.pdf\">TAB 04a - NOE_Memo_Airfield.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+04b+-+ttad_noe_airfield.pdf\">TAB 04b - TTAD_NOE_Airfield.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+05+-+staff+report+-+ttcf+scholarship+award+2026.pdf\">TAB 05 - Staff Report - TTCF Scholarship Award 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+05a+-+ttcf+invoice-ttad+scholarship+10.4.26.pdf\">TAB 05a - TTCF Invoice-TTAD Scholarship 10.4.26.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+06+-+staff+report+-+bbk.pdf\">TAB 06 - Staff Report - BBK.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+06a+-+truckee+tahoe+airport+district+waiver+re+town+of+truckee+1026-c1.pdf\">TAB 06a - Truckee Tahoe Airport District Waiver re Town of Truckee 1026-c1.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+07+-+employee+accreditation+incentive+program+waiver.pdf\">Tab 07 - Employee Accreditation Incentive Program Waiver.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+07a+-+pi+117+employee+accreditation+incentive+program.pdf\">Tab 07a - PI 117 Employee Accreditation Incentive Program.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+07b+-+airport+certified+employee+%28ace%29+safety+management+systems+%28finney%29.pdf\">Tab 07b - Airport Certified Employee (ACE) Safety Management Systems (Finney).pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+08+-+asix+ttad+agreement+staff+report+-+rfp+sai+10.15.26.pdf\">TAB 08 - ASiX TTAD AGREEMENT Staff Report - RFP SAI 10.15.26.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+08a+-+asix_ttad_contract+-+draft+09292026.pdf\">TAB 08a - ASiX_TTAD_Contract - DRAFT 09292026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+09+-+2027+ttad+budget+proposed+10.21.26+for+approval.pdf\">TAB 09 - 2027 TTAD Budget proposed 10.21.26 for Approval.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+10+-+staff+report+-+surplus+land+sale.pdf\">TAB 10 - Staff Report - Surplus Land Sale.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+10a+-+exempt+surplus+land+resolution+-+town+of+truckee+%28apn+019+441+11%29-c1.pdf\">TAB 10a - Exempt Surplus Land Resolution - Town of Truckee (APN 019 441 11)-c1.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+10b+-+ttad_town+-+land+purchase+agreement-c1.pdf\">TAB 10b - TTAD_Town - Land Purchase Agreement-c1.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+10c+-+complete_with_docusign_letter_of_agreement_-.pdf\">TAB 10c - Complete_with_Docusign_LETTER_OF_AGREEMENT_-.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+11+-+noise+operations+monitoring+systems+v1.2.pdf\">Tab 11 - Noise Operations Monitoring Systems v1.2.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+12+-+2026+speical+district+election+letter+sept+29.pdf\">TAB 12 - 2026 Speical District Election Letter Sept 29.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+13+-+amendment+of+the+conflict+of+interest+code+-+pursuant+to+the+political+reform+act+of+1974+-+staff+report.pdf\">TAB 13 - Amendment of the Conflict of Interest Code - Pursuant to the Political Reform Act of 1974 - Staff Report.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+13a+-+resolution+2026-05+-+amendment+to+conflict+of+interest+code.pdf\">TAB 13a - RESOLUTION 2026-05 - AMENDMENT TO CONFLICT OF INTEREST CODE.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+13b+-+pi+204+-+conflict+of+interest+2026.pdf\">TAB 13b - PI 204 - Conflict of Interest 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+13c+-+ttad_2026+cic+amendment+%28legislative%29-c1.pdf\">TAB 13c - TTAD_2026 CIC AMENDMENT (Legislative)-c1.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+13d+-+ttad_2026+cic+amendment+%28final%29-c1.pdf\">TAB 13d - TTAD_2026 CIC AMENDMENT (Final)-c1.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+14+-+pi+507+revision+staff+report+-+non-profit+use+of+airport+property+by+asset+class.pdf\">Tab 14 - PI 507 revision Staff Report - Non-Profit Use of Airport Property by Asset Class.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+14a+-+pi_507_redline_%28original_vs_revised%29+v1.1.pdf\">TAB 14a - PI_507_REDLINE_(Original_vs_Revised) v1.1.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+14b+-+pi507v1.1+-+final+clean+copy.pdf\">TAB 14b - PI507v1.1 - Final Clean Copy.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+14c+-+pi507v1.1+-+final+clean+copy+--+modified.pdf\">TAB 14c - PI507v1.1 - Final Clean Copy -- MODIFIED.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+15++-+board+and+staff+committee+reports+staff+report.pdf\">TAB 15  - Board and Staff Committee Reports Staff Report.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16+-+general+manager%27s+report++-+october+21+2026.pdf\">TAB 16 - General Manager&#39;s Report  - October 21 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16a+-+staff++2026-2028+strategic+plan+update+2025+staff.pdf\">TAB 16a - Staff  2026-2028 Strategic Plan Update 2025 Staff.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16b+-+avcom+report+--+oct+2026.pdf\">Tab 16b - AVCOM Report -- Oct 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16c+-+ktrk+-+operations+and+community+comment+tracking+2026+q3.pdf\">Tab 16c - KTRK - Operations and Community Comment Tracking 2026 Q3.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16d+-+runway+utilization+report+summer+2026.pdf\">Tab 16d - Runway Utilization Report Summer 2026.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16e+-+financial+staff+report+10.21.26.pdf\">TAB 16e - Financial Staff Report 10.21.26.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+16f+-+9.2026+financials.pdf\">TAB 16f - 9.2026 Financials.pdf</a></li>\n<li><a href=\"/board_meetings/412/view_file?file=tab+17+-+rolling+agenda+-+time+frames.pdf\">TAB 17 - ROLLING AGENDA - TIME FRAMES.pdf</a></li>\n</ul></body></html>"
+ },
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: ___04____"
+  },
+  "5": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: ___05____"
+  },
+  "6": null,
+  "7": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: _07__"
+  },
+  "8": null,
+  "9": null,
+  "10": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: ___10____"
+  },
+  "11": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: __11___"
+  },
+  "12": null,
+  "13": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: __13_____"
+  },
+  "14": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: __14___"
+  },
+  "15": {
+   "page_start": 1,
+   "heading": "AGENDA ITEM: __15___"
+  },
+  "16": null,
+  "17": null,
+  "18": null
+ }
+}

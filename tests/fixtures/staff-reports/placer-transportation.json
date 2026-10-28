@@ -1,0 +1,429 @@
+{
+ "note": "PCTPA board meeting of 2026-10-28: the stored agenda is the 105-page packet. Agenda pages 1-3, each memo's pages, and the pages its Pg. stamps land on are kept; attachment pages after each memo and the consent memo (stamp 4) and TAC minutes (stamp 77) pages are trimmed to their first and last lines, which carry the stamp.",
+ "meeting": {
+  "id": "placer-transportation:2026-10-28",
+  "agency_id": "placer-transportation",
+  "title": "Placer County Transportation Planning Agency Board of Directors Meeting",
+  "local_date": "2026-10-28",
+  "official_url": "https://www.pctpa.net/files/398e30392/A.+PCTPA+Board+Agenda+-+October+28%2C+2026.pdf"
+ },
+ "items": [
+  {
+   "id": "placer-transportation:2026-10-28:A",
+   "number": "A",
+   "title": "Flag Salute",
+   "section": null,
+   "fingerprint": "737751e9ed988531405dc188bb66c56fda0e9021f03693ea379f34c2ca298305",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Flag Salute",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:B",
+   "number": "B",
+   "title": "Roll Call",
+   "section": null,
+   "fingerprint": "fd4dc701d82b8497a0af1411578561a65c45483bdbce15bf6dae53865c0a2c7e",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Roll Call",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:C",
+   "number": "C",
+   "title": "Meeting Procedures",
+   "section": null,
+   "fingerprint": "9a2f78d7a6d1293c4b7fc8a30abeae26eda6433f0c34e37f8d2ffbf03947c1d8",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Meeting Procedures",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:D",
+   "number": "D",
+   "title": "Agenda Review",
+   "section": null,
+   "fingerprint": "d2685c61c267cd784a7fea69f52f16e8450b79f8b417d6d66024e350b979ef34",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Agenda Review:",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:E",
+   "number": "E",
+   "title": "Approval of Minutes: September 23, 2026",
+   "section": null,
+   "fingerprint": "7db1e5ced2a83e3a00c04f52e51844a7c73d2773a575c72c7a37de667606a3d6",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approval of Minutes: September 23, 2026",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:F",
+   "number": "F",
+   "title": "Public Comment",
+   "section": null,
+   "fingerprint": "7e73cf8dd78fe24c1ea7f3de459074c73a81b5e607495b02df284380c5c5365c",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Public Comment",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:G.1",
+   "number": "G.1",
+   "title": "Authorize the Executive Director to Submit a Caltrans 2027/28 Sustainable Planning Grant Application for the Smart 65 Feasibility Study – Estimate $555,520",
+   "section": "Consent Calendar: Placer County Transportation Planning Agency",
+   "fingerprint": "d1ba92402c5f22ec34abb54a83be6e0a193c0c2e74617a8b0d1814da70ff46d2",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Authorize the Executive Director to Submit a Caltrans 2027/28 Sustainable\n           Planning Grant Application for the Smart 65 Feasibility Study – Estimate\n           $555,520",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:G.2",
+   "number": "G.2",
+   "title": "Approve Health Contribution Resolution",
+   "section": "Consent Calendar: Placer County Transportation Planning Agency",
+   "fingerprint": "2c6b302e3fe3eedc923698b6f4581148f1a8d02fe9702a082b942d229b91ef5d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approve Health Contribution Resolution",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:G.3",
+   "number": "G.3",
+   "title": "Approve Amendment to PCTPA Administrative Operating Procedures",
+   "section": "Consent Calendar: Placer County Transportation Planning Agency",
+   "fingerprint": "d34d0e958a59974274b0a972d936e7d916e0daee73df1f2f69dfd1dc99f36a57",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approve Amendment to PCTPA Administrative Operating Procedures —",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:G.4",
+   "number": "G.4",
+   "title": "Approve FY 2025/26 Cycle B Low Carbon Transit Operations Program (LCTOP) Fund Allocation Estimate: $398,846",
+   "section": "Consent Calendar: Placer County Transportation Planning Agency",
+   "fingerprint": "42c4a3651dff6d0dcad854a91aadea1a4203a7c8dec7e9bb8f2cac841a517202",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approve FY 2025/26 Cycle B Low Carbon Transit Operations Program",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:G.5",
+   "number": "G.5",
+   "title": "Approve the Corrected 2026 Conflict of Interest Code Amendment Pg. 12A",
+   "section": "Consent Calendar: Placer County Transportation Planning Agency",
+   "fingerprint": "c537df38ae66294f1ad1aa329fd6874ff7bb984f78760bd684c3a045da766dfd",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approve the Corrected 2026 Conflict of Interest Code Amendment                Pg. 12A",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:H.1",
+   "number": "H.1",
+   "title": "Approve WPCTSA FY 2026/27 Budget Amendment #1",
+   "section": "Consent Calendar: Western Placer Consolidated Transportation Services Agency (WPCTSA)",
+   "fingerprint": "aadd1d853cbe18cf0a71d3784364da45d7213fb0f0fe0b4754d40707011a3d29",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approve WPCTSA FY 2026/27 Budget Amendment #1",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:H.2",
+   "number": "H.2",
+   "title": "Authorize filing FY 2026/27 WPCTSA Claim for Local Transportation Funds (LTF) - $1,604,510",
+   "section": "Consent Calendar: Western Placer Consolidated Transportation Services Agency (WPCTSA)",
+   "fingerprint": "718eff7e37fcadbac180125743aef34d75c89932af3fc4556e1deb061843b652",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Authorize filing FY 2026/27 WPCTSA Claim for Local Transportation Funds",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:H.3",
+   "number": "H.3",
+   "title": "Authorize filing FY 2026/27 WPCTSA Claim for State Transit Assistance (STA) - $183,225",
+   "section": "Consent Calendar: Western Placer Consolidated Transportation Services Agency (WPCTSA)",
+   "fingerprint": "2f29242c9040de0b0227804f5790619e9d5eac67727aab97c8ec800c5740e02f",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Authorize filing FY 2026/27 WPCTSA Claim for State Transit Assistance (STA)",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:H.4",
+   "number": "H.4",
+   "title": "Execute WPCTSA Memorandum of Understanding with the City of Roseville Regarding Funding to Support the Promotion and Implementation of the Rapid Link Service - $350,000",
+   "section": "Consent Calendar: Western Placer Consolidated Transportation Services Agency (WPCTSA)",
+   "fingerprint": "f66c9acf50ab74ba253e975ee603be27739ec16f9196dd2b9ce4ccea4ed3bdb8",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Execute WPCTSA Memorandum of Understanding with the City of Roseville",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:I",
+   "number": "I",
+   "title": "9:00 AM – PUBLIC HEARING: 2026 Unmet Transit Needs Assessment and Public Engagement Efforts",
+   "section": null,
+   "fingerprint": "6e040ed4646ad7d1ac1eb909fac926dfa39cacc127ec3e769d44641a7861bcbe",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "9:00 AM – PUBLIC HEARING: 2026 Unmet Transit Needs Assessment and",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:J",
+   "number": "J",
+   "title": "Service Policy Revisions for the Placer Rides Program",
+   "section": null,
+   "fingerprint": "e773bf1b27c8682954514aaef229edf6e51aec21a644c17045c558019b5b9961",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Service Policy Revisions for the Placer Rides Program",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:K",
+   "number": "K",
+   "title": "SR 65 Phase 1 Project Construction Funding and Agreement Approvals",
+   "section": null,
+   "fingerprint": "06b2e3fc7b03f999ad7a227fa9ebc218ab58d982f74fac59f6ce38b6674e903b",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "SR 65 Phase 1 Project Construction Funding and Agreement Approvals",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:L.1",
+   "number": "L.1",
+   "title": "Adopt Resolution No. 26-36 accepting the Placer-Sacramento Gateway Plan Update.",
+   "section": "Placer-Sacramento Gateway Plan Update",
+   "fingerprint": "f1beb5c2b09401edb70905b44eeb66a883a2cc1ed8704969e17dc486783e5ca8",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Adopt Resolution No. 26-36 accepting the Placer-Sacramento Gateway Plan\n            Update.",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:L.2",
+   "number": "L.2",
+   "title": "Authorize the Executive Director to submit the Solutions for Congested Corridors Program (SCCP) Cycle 5 grant application to the California Transportation Commission (CTC), in partnership with Caltrans, the Sacramento Area Council of",
+   "section": "Placer-Sacramento Gateway Plan Update",
+   "fingerprint": "974b235162f413ef81183876403e352824ffc78a1c30ad77fe21422092c9971b",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Authorize the Executive Director to submit the Solutions for Congested Corridors\n            Program (SCCP) Cycle 5 grant application to the California Transportation\n            Commission (CTC), in partnership with Caltrans, the Sacramento Area Council of",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:M",
+   "number": "M",
+   "title": "Executive Director’s Report",
+   "section": null,
+   "fingerprint": "7cb4edc692fd70b5b3211d055a219915951916b4fe3126f751976658d8453bed",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Executive Director’s Report",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:N",
+   "number": "N",
+   "title": "Board Reports / Board Direction to Staff",
+   "section": null,
+   "fingerprint": "ce431e087f7debed306f405f3b1708290451a8e4cba3c9365ac409218d64f686",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Board Reports / Board Direction to Staff",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:O.1",
+   "number": "O.1",
+   "title": "Technical Advisory Committee (TAC) Minutes – October 13, 2026",
+   "section": "Informational Items",
+   "fingerprint": "2efb4d602a0968f3e828dd08abff27d16c2980814b1612b4a58dba0049432dc0",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Technical Advisory Committee (TAC) Minutes – October 13, 2026",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  },
+  {
+   "id": "placer-transportation:2026-10-28:O.2",
+   "number": "O.2",
+   "title": "Status Reports",
+   "section": "Informational Items",
+   "fingerprint": "21721e7ce4c7eb97534b43b20237e77aa6f58b640b4f3c95ccae4f81a040b36b",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Status Reports",
+     "documentId": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e",
+   "source_document_id": "placer-transportation-agenda",
+   "title": "Agenda",
+   "url": "https://www.pctpa.net/files/398e30392/A.+PCTPA+Board+Agenda+-+October+28%2C+2026.pdf",
+   "sha256": "a6c1812fe881009ed4090c968cd886f10635ec652cf56bea53fb0a8b6dcb83a0",
+   "page_count": 105,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "placer-transportation:2026-10-28:placer-transportation-agenda:a6c1812fe881009e": {
+   "1": "A        G        E       N        D        A\n                   PLACER COUNTY TRANSPORTATION PLANNING AGENCY\n                     PLACER COUNTY AIRPORT LAND USE COMMISSION\n             WESTERN PLACER CONSOLIDATED TRANSPORTATION SERVICES AGENCY\n                   PLACER COUNTY LOCAL TRANSPORTATION AUTHORITY\n                                Wednesday, October 28, 2026\n                                           9:00 AM\n                         Placer County Board of Supervisors Chambers\n                           175 Fulweiler Avenue, Auburn, CA 95603\n\nPUBLIC PARTICIPATION INSTRUCTIONS: This meeting will be conducted as an in-person meeting at\nthe locations noted above. A remote teleconference Zoom address is listed for the public’s convenience\nand in the event a Board Member requests remote participation due to just cause or emergency\ncircumstances pursuant to Government Code section 54953(f). Please be advised that if a Board\nMember is not participating in the meeting remotely, remote participation for members of the public is\nprovided for convenience only and in the event that the Zoom connection malfunctions for any reason,\nthe Board of Directors reserves the right to conduct the meeting without remote access. By participating\nin this meeting, you acknowledge that you are being recorded.\n\nSi necesita servicios de traducción para otro lenguaje, aparte de Ingles, Por favor llamar al 530.823.4030\npara asistencia. Kung nangangailangan po ng tulong o interpretasyon sa ibang wika liban sa inglés,\ntumawag lang po sa 530.823.4030.\n\n\nAgendas, Supplemental Materials and Minutes of the Board of Directors are available on the internet\nat:.https://www.pctpa.net/pctpa-board-meetings. Public records related to an agenda item that are\ndistributed less than 72 hours before this meeting are available for public inspection during normal business\nhours at the Agency office located at 2260 Douglas Blvd., Suite 130, Roseville, and will be made available to\nthe public on the Agency website.\nWebinar access: https://placer-ca-gov.zoom.us/j/93167978777\nYou can also dial in using your phone: +1 877 853 5247 US Toll Free or 888 788 0099 US Toll Free\nWebinar ID: 931 6797 8777\n\n A.    Flag Salute\n\n B.    Roll Call\n\n C.    Meeting Procedures\n       Solvi Sabol, Clerk to the Board\n\n D.    Agenda Review:\n       Matt Click, Executive Director\n                              PLACER COUNTY TRANSPORTATION PLANNING AGENCY\n                       2260 Douglas Blvd., Suite 130, Roseville, CA 95661 ∙ (530) 823-4030 (tel)\n                                                     www.pctpa.net",
+   "2": "BOARD OF DIRECTORS MEETING AGENDA\nOctober 28, 2026\nPage 2\n\n\n E.   Approval of Minutes: September 23, 2026                                            Action\n                                                                                         Pg. 1\n F.   Public Comment\n      Persons may address the Board on items not on this agenda. Please limit\n      comments to three (3) minutes.\n\n G.   Consent Calendar: Placer County Transportation Planning Agency                     Action\n      These items are expected to be routine and noncontroversial. They will be acted    Pg. 4\n      upon by the Board with one action, without discussion. Any Board member, staff\n      member, or interested citizen may request an item be removed from the consent\n      calendar for discussion.\n      1.   Authorize the Executive Director to Submit a Caltrans 2027/28 Sustainable\n           Planning Grant Application for the Smart 65 Feasibility Study – Estimate\n           $555,520\n      2.   Approve Health Contribution Resolution                                        Pg. 7\n      3.   Approve Amendment to PCTPA Administrative Operating Procedures —              Pg. 9\n           Section II. B.2, Preparation of RFP\n      4.   Approve FY 2025/26 Cycle B Low Carbon Transit Operations Program              Pg. 10\n           (LCTOP) Fund Allocation Estimate: $398,846\n      5.   Approve the Corrected 2026 Conflict of Interest Code Amendment                Pg. 12A\n\n H.   Consent Calendar: Western Placer Consolidated Transportation Services              Action\n      Agency (WPCTSA)                                                                    Pg. 13\n      These items are expected to be routine and noncontroversial. They will be acted\n      upon by the Board with one action, without discussion. Any Board member, staff\n      member, or interested citizen may request an item be removed from the consent\n      calendar for discussion.\n      1.   Approve WPCTSA FY 2026/27 Budget Amendment #1                                 Pg. 15\n      2.   Authorize filing FY 2026/27 WPCTSA Claim for Local Transportation Funds       Pg. 16\n           (LTF) - $1,604,510\n      3.   Authorize filing FY 2026/27 WPCTSA Claim for State Transit Assistance (STA)   Pg. 20\n           - $183,225\n      4.   Execute WPCTSA Memorandum of Understanding with the City of Roseville         Pg. 24\n           Regarding Funding to Support the Promotion and Implementation of the\n           Rapid Link Service - $350,000\n\n\n I.   9:00 AM – PUBLIC HEARING: 2026 Unmet Transit Needs Assessment and                  Action\n      Public Engagement Efforts                                                          Pg. 27\n      Mike Costa, Principal Transportation Planner\n       Conduct a public hearing to solicit and obtain public testimony on potential\n          unmet transit needs that may exist in Placer County.\n\n J.   Service Policy Revisions for the Placer Rides Program                              Action\n      Mike Costa, Principal Transportation Planner                                       Pg. 31",
+   "3": "BOARD OF DIRECTORS MEETING AGENDA\nOctober 28, 2026\nPage 3\n\n\n             Approve the revisions to the Placer Rides Program service policies, as\n              provided.\n\n K.     SR 65 Phase 1 Project Construction Funding and Agreement Approvals                                                    Action\n        David Melko, Principal Transportation Planner                                                                         Pg. 40\n         Adopt Resolution No. 26-38 for the SR 65 Phase 1 Project: (1) conditionally\n            approve a Caltrans Cooperative Agreement; (2) execute the $22.48 million BUILD\n            Grant Agreement; (3) recommend SPRTA approve a $10 million allocation; (4)\n            negotiate and execute the Cooperative Agreement; and (5) negotiate and execute\n            a mitigation agreement.\n\n L.     Placer-Sacramento Gateway Plan Update                                                                                 Action\n        David Melko, Principal Transportation Planner                                                                         Pg. 70\n        1. Adopt Resolution No. 26-36 accepting the Placer-Sacramento Gateway Plan\n            Update.\n        2. Authorize the Executive Director to submit the Solutions for Congested Corridors\n            Program (SCCP) Cycle 5 grant application to the California Transportation\n            Commission (CTC), in partnership with Caltrans, the Sacramento Area Council of\n            Governments (SACOG), and the Sacramento Transportation Authority (STA).\n\n M.     Executive Director’s Report                                                                                          Info\n\n N.     Board Reports / Board Direction to Staff\n\n O.     Informational Items                                                                                                  Info\n        1. Technical Advisory Committee (TAC) Minutes – October 13, 2026                                                     Pg. 77\n        2. Status Reports\n             a. PCTPA                                                                                                        Pg. 81\n             b. Dodd and Chaaban Strategies – October 2026                                                                   Pg. 95\n             c. The Ferguson Group – October 2026                                                                            Pg. 98\n             d. PCTPA Receipts and Expenditures – September 2026                                                             Separate\n                                                                                                                             cover\n                                   Next Board Meeting – December 9, 2026\n\n                                     Board of Directors Meetings – 2026\n                          Wednesday, January 28        Wednesday, July 22\n                          Wednesday February 25        Wednesday, August 26\n                          Wednesday, March 25          Wednesday, September 23\n                          Wednesday, April 22 29       Wednesday, October 28\n                          Wednesday, May 27            Wednesday, December 2 9\n                          Wednesday, June 24\nThe Placer County Transportation Planning Agency is accessible to the disabled. If requested, this agenda, and documents in the agenda\npacket can be made available in appropriate alternative formats to persons with a disability, as required by Section 202 of the Americans\nwith Disabilities Act of 1990 and the Federal Rules and Regulations adopted in implementation thereof. People seeking an alternative\nformat should contact PCTPA for further information. In addition, a person with a disability who requires a modification or accommodation,\nincluding auxiliary aids or services, in order to participate in a public meeting should contact PCTPA by phone at 530-823-4030, email\n(ssabol@pctpa.net) or in person as soon as possible and preferably at least 72 hours prior to the meeting.",
+   "33": "MEMORANDUM\n ATO:           PCTPA Board of Directors                                       DATE: October 28, 2026\n\nFROM:           Mike Costa, Principal Transportation Planner\n\n SUBJECT:       9:00 AM - PUBLIC HEARING: 2026 UNMET TRANSIT NEEDS\n                ASSESSMENT AND PUBLIC ENGAGEMENT EFFORTS\n\nACTION REQUESTED\nConduct a public hearing to solicit and obtain public testimony on potential unmet transit needs\nthat may exist in Placer County.\n\nBACKGROUND\nPursuant to the Transportation Development Act (TDA), the Unmet Transit Needs (UTN)\nAssessment is one of PCTPA’s key annual administrative responsibilities as the Regional\nTransportation Planning Agency (RTPA) for Placer County (excluding the Tahoe Basin). The\nTDA provides two funding sources for public transit: Local Transportation Funds (LTF) and State\nTransit Assistance (STA) funds. While STA funding is solely restricted to supporting public\ntransit service needs (e.g., operational expenses, capital fleet/equipment purchases, and other\nadministrative support), LTF can be used by Placer County’s incorporated cities/town and\nunincorporated jurisdictions for other purposes, such as bicycle/pedestrian infrastructure and/or\nstreet and road maintenance/repair, if it is determined that there are no unmet transit needs that are\nreasonable to meet within the region encompassing those jurisdictions.\n\nEach year, PCTPA conducts an extensive outreach process to solicit public comments regarding\npotential unmet transit needs throughout the urban and rural areas of Placer County. While the\nTahoe Regional Planning Agency (TRPA) administers the UTN Assessment process for the\nimmediate Tahoe Basin, PCTPA works closely with TRPA to identify any potential transit need(s)\nthat may be located immediately outside of the Basin within the portions of Placer County that are\nunder PCTPA’s administrative authority (i.e., unincorporated areas between the Tahoe Basin and\nCity of Truckee, including the Donner Lake, Olympic Valley, Alpine Meadows and Northstar\nresort areas). Comments received during this process are then evaluated by PCTPA staff,\nPCTPA’s Transit Operators Working Group (TOWG) and the Social Services Transportation\nAdvisory Council (SSTAC), which collectively consist of the region’s transit operators, staff\nrepresentatives from each incorporated city/town within Placer County, including the County of\nPlacer, and other social service transportation providers, advocates, and public stakeholders.\nSpecific “unmet transit need” and “reasonable to meet” definitions and criteria that have been\nadopted by PCTPA’s Board of Directors are used to make unmet transit needs findings (refer to\nAttachment 1 for the current definitions and criteria, adopted in February 2022). Following the\nevaluation of all public comments, PCTPA staff prepares a report with findings for the PCTPA\nBoard’s review and adoption. Should there be findings regarding unmet transit needs that are\nreasonable to meet, the PCTPA Board must direct LTF revenues to those needs before local\njurisdictions can claim them for other purposes described previously, above.\n\n                      2260 Douglas Blvd. Suite 130 ∙ Roseville, CA 95661 ∙ (530) 823-4030\n                                                                                                         27\n                                                 www.pctpa.net",
+   "34": "PCTPA Board of Directors\nPublic Hearing: 2026 Unmet Transit Needs Assessment and Public Engagement Efforts\nOctober 28, 2026\nPage 2\n\nDISCUSSION\nFor this year’s UTN Assessment process, PCTPA released an online public survey (available in\nEnglish, Spanish and Tagalog) on September 1st, which will be available through October 31st.\nAdditionally, per TDA requirements, at least one public hearing is being held to solicit comments\nregarding potential unmet transit needs in Placer County, which will occur at the October 28th\nPCTPA Board meeting held in Auburn. The public hearing has been noticed in the Auburn local\nnewspaper and advertised with the survey’s availability through informational materials that\nPCTPA has released to local and regional media networks, each TOWG stakeholder, and through\nits e-mail contact lists and social media platforms. Additionally, PCTPA staff submitted\ninformational materials to each local jurisdiction to help further promote the UTN Assessment\nprocess and available survey during scheduled public meetings of their respective governing\nbodies (i.e., Town/City Council or Board of Supervisor meeting) occurring in September and\nOctober. Lastly, as part of other agency outreach efforts, UTN materials were provided at pop-\nevents PCTPA held in several of the Placer region’s local jurisdictions during September and early\nOctober.\n\nPublic comments regarding potential unmet transit needs can be submitted during the October 28th\npublic hearing, via phone at (530) 823-4029, via e-mail at mcosta@pctpa.net, and through the on-\nline survey available at Unmet_Transit_Needs_Survey. The public comment period for this year’s\nUTN Assessment process will conclude on October 31, 2026. Following the closure of the public\ncomment period, PCTPA staff will summarize and evaluate the comments received with the\nTOWG and SSTAC members and then prepare a report identifying findings regarding any unmet\ntransit needs that are reasonable to meet. That report with findings will formally be presented to\nthe PCTPA Board of Directors for adoption in February 2027.\n\nMC:mbc:ss\n\n\n\n\n                 2260 Douglas Blvd. Suite 130 ∙ Roseville, CA 95661 ∙ (530) 823-4030 (tel/fax)\n                                                                                                     28\n                                                www.pctpa.net",
+   "37": "MEMORANDUM\n TO:             WPCTSA Board of Directors                                         DATE: October 28, 2026\n\n FROM:           Mike Costa, Principal Transportation Planner\n\n SUBJECT:        SERVICE POLICY REVISIONS FOR THE PLACER RIDES PROGRAM\n\nACTION REQUESTED\nApprove the revisions to the Placer Rides Program service policies, as provided.\n\nBACKGROUND\nIn October 2025, the WPCTSA Board of Directors approved revisions to the Placer Rides\nProgram service policies that became effective on July 1, 2026, concurrent with the start of\nWPCTSA’s new administrative agreement with MOVE Stanislaus Transportation, Inc. (MOVE).\nA general review of the Placer Rides Program’s service policies and past mileage reimbursement\npractices was conducted following MOVE’s assumption of all administrative responsibilities\nfrom the prior program administrator. From the review, WPCTSA staff learned that current\nparticipants had received mileage reimbursement benefits that did not fully align with past and/or\npresent service policies for trip purposes not defined as essential (e.g., church, visits with friends,\nsenior activity centers, etc.). Subsequent conversations with participants receiving these benefits\nrevealed that these trip purposes were still very important for a participant’s well-being despite\ntheir exclusion from present policies. WPCTSA staff then re-examined how the current service\npolicies align with the Placer Rides Program’s overall mission/goal, which is to provide Placer\nresidents with a transportation assistance program that meets their needs when all other\ntransportation options are unavailable.\n\nDISCUSSION\nAttachment 1 identifies proposed changes that staff recommends for the Placer Rides Program’s\nservice policies to better align them with the Program’s mission/goal and the needs of Placer’s\nresidents. Significant proposed policy changes are summarized below:\n\n    •   For “Rider (now defined as “Participant”) and Trip Eligibility”, a participant’s\n        demographic qualifications (i.e., age, disability, and income) no longer define their\n        eligibility and the proposed policies base eligibility on a participant’s unique\n        transportation need that cannot be met with existing transit services and/or other\n        transportation options available. Participants still must be residents of Placer County and\n        unable to reasonably drive themselves to their destination.\n    •   Additional trip purposes have been defined under “Essential Trips” to cover\n        transportation needs that WPCTSA’s review highlighted were essential and undefined\n        under current service policies.\n    •   “Quality of Life Trips” has been added as a new category of allowable trip purposes for\n        mileage reimbursement, defined as a destination visited for social, recreational,\n        community, cultural, spiritual, or other life-enriching purposes. Up to five (5) of these\n                     2260 Douglas Blvd., Suite 130 ∙ Roseville, CA 95661 ∙ (530) 823-4030                   31\n                                                www.pctpa.net",
+   "38": "WPCTSA Board of Directors\nApproval of Service Policy Changes to the Placer Rides Program\nOctober 28, 2026\nPage 2\n\n        trip destinations are allowable for reimbursement each month provided overall mileage\n        reimbursement combined with other allowable essential trips does not exceed 200 miles\n        per month.\n    •   Transportation to medical facilities outside of Placer County may now be eligible for\n        Placer Rides Program mileage reimbursement, along with other essential or quality of\n        life trip subject to Placer Rides staff’s discretion. However, participants are still limited\n        to a monthly cap of 200 miles for reimbursement.\n\nStaff recommends that the WPCTSA Board of Directors approve the attached revisions (refer to\nAttachment 2 for a clean version of the revised service policies with proposed changes\nincorporated) to the Placer Rides Program service policies, which would become effective\nimmediately upon approval. If approved, WPCTSA staff will work with MOVE to update all\napplication materials, administrative documents, and communication pieces to reflect the\nupdated service policies. The revised service policies were presented to and received\nconcurrence from PCTPA’s Transit Operators Working Group (TOWG) and Technical Advisory\nCommittee (TAC) for the WPCTSA Board’s approval.\n\nMC:ss\n\n\n\n\n                                                                                                        32",
+   "46": "MEMORANDUM\nTO:            PCTPA Board of Directors                                     DATE: October 28, 2026\n\nFROM:          David Melko, Principal Transportation Planner\n\nSUBJECT:       SR 65 PHASE 1 PROJECT CONSTRUCTION FUNDING AND\n               AGREEMENT APPROVALS\n\nACTIONS REQUESTED\nAdopt Resolution No. 26-38 as follows:\n1. Conditionally approves entering into a Cooperative Agreement with Caltrans for construction of\n   the SR 65 Phase 1 Project, with a not-to-exceed amount of $28,752,875, subject to SPRTA\n   action on the local funding commitment.\n2. Authorizes the Executive Director to execute the federal 2025 BUILD Grant Agreement for\n   $22.48 million, designating Caltrans as the grant recipient and PCTPA as the subrecipient.\n3. Recommends that the SPRTA Board approve the PCTPA allocation request in an amount not-\n   to-exceed $10 million for construction and mitigation of the SR 65 Phase 1 Project.\n4. Authorizes the Executive Director to negotiate the Construction Cooperative Agreement with\n   Caltrans and authorizes the Chair and Executive Director to execute the Agreement.\n5. Authorizes the Executive Director to negotiate and execute a mitigation credit purchase\n   agreement with a U.S. Fish and Wildlife Service-approved conservation bank for the full SR 65\n   Capacity and Operational Improvement Project, including Phase 1.\n\nBACKGROUND\nPCTPA, in cooperation with Caltrans, Placer County, and the Cities of Roseville, Rocklin, and\nLincoln, plans to widen approximately 6.3 miles of SR 65 in Placer County, from north of the\nGalleria Boulevard/Stanford Ranch Road interchange to Lincoln Boulevard (post miles 6.5–12.8).\nThe project will address existing congestion, which occurs in both directions from approximately 7\na.m. to 7 p.m., and accommodate growing travel demand on SR 65, I-80, and the regional roadway\nnetwork. Improvements will enhance traffic operations, safety, and mobility while supporting\njurisdiction economic development goals.\n\nThe Project Report was approved on March 6, 2018. The CEQA Initial Study/Mitigated Negative\nDeclaration was adopted on December 11, 2017, and the NEPA Categorical Exclusion was signed\non March 27, 2018.\n\nImplementation of the approved 6.3-mile project will be phased in accordance with the approved\nplanning documents and coordinated with delivery of the I-80/SR 65 Interchange Improvements\nProject.\n\n\n\n                     2260 Douglas Blvd, Ste 130  Roseville, CA 95661  (530) 823-4030\n                                              www.pctpa.net                                                   40\n                                                                                            Rev. 10/21/2026",
+   "47": "PCTPA Board of Directors\nSR 65 Project Construction Funding and Agreement Approvals\nOctober 2026\nPage 2\n\nPhase 1 includes adding a third southbound lane between the Blue Oaks Boulevard and Galleria\nBoulevard/Stanford Ranch Road interchanges, constructing an auxiliary lane from the Pleasant\nGrove Boulevard on-ramp to the Galleria Boulevard off-ramp, and widening the Galleria Boulevard\noff-ramp from one lane to two lanes.\n\nDISCUSSION\n\nSR 65 Phase 1 Advertisement Schedule\nThe project is scheduled for advertisement in December 2026, with construction anticipated to\nbegin in spring 2027. The schedule is tight: Caltrans requires an executed Construction Cooperative\nAgreement to complete the Ready to List (RTL) process, and SPRTA’s funding commitment must\nbe secured before advertisement. To maintain the December schedule, the construction bid package\nand all required agreements must be completed by the end of November.\n\nIf advertisement slips to January 2027 or later, the 100% design plans must be updated to comply\nwith the Manual for Assessing Safety Hardware (MASH). Caltrans has indicated that no\nexemptions will be available beginning in 2027. Updating the final design plans, including Caltrans\nreview and approval, is expected to take at least six months, increasing design and construction\ncosts that PCTPA would ultimately need to cover with SPRTA funds.\n\nTimely execution of the Construction Cooperative Agreement is therefore critical to maintaining the\nproject schedule and avoiding significant additional costs to PCTPA.\n\nSR 65 Phase 1 Funding Plan\nPhase 1 of the Project (PLA25529) is programmed for right-of-way acquisition and construction in\nSACOG’s federally approved 2025–15 Metropolitan Transportation Improvement Program (MTIP).\nFunding includes a $22.48 million federal BUILD grant awarded to PCTPA on July 15, 2025, and\n$5.62 million in SPRTA funds for the local match, based on an estimated total project cost of $28.1\nmillion.\n\nCaltrans Department Furnished Materials (DFM) are unfortunately ineligible for federal funding,\nDFM includes enhanced California Highway Patrol enforcement, traffic management plan, the\nresident engineer’s office, and construction permits. Consequently, SPRTA’s local funding\ncommitment must increase by $652,875, from $5,620,000 to $6,272,875, to cover these costs.\n\nCooperative Agreement\nThe Construction Cooperative Agreement, including the funding and expenditure tables, is in final\ndraft form (Attachment 1) and under review by Caltrans Headquarters. Because the construction\ncost estimate, including contingency, remains under review, construction costs in the funding table\nhave been increased by an additional five percent to provide the Executive Director flexibility in\n\n\n\n                                                                                                           41\n                                                                                         Rev. 10/21/2026",
+   "48": "PCTPA Board of Directors\nSR 65 Project Construction Funding and Agreement Approvals\nOctober 2026\nPage 3\n\nnegotiating the final Agreement with Caltrans. Accordingly, construction costs are capped at a not-\nto-exceed amount of $28,752,875.\n\n                     SR 65 PHASE 1 PROJECT FUNDING TABLE\n                                               CALTRANS\n                                          CONST.      CONST.\n   SOURCE         PARTY     FUND TYPE                                              TOTALS\n                                         SUPPORT     CAPITAL\n FED BUILD        PCTPA      FEDERAL       2,157,966  20,322,034                    22,480,000\n SPRTA            PCTPA        Local         539,492   5,080,509                     5,620,000\n SPRTA            PCTPA        Local               0     652,875                       652,875\n                                  Totals   2,697,458  26,055,418                    28,752,875\n\nThe corresponding project expenditure table is provided below.\n\n                     SR 65 PHASE 1 PROJECT SPENDING TABLE\n                          CONST.                 CONST.\n                                                                                  TOTALS\n  FUND TYPE              SUPPORT                CAPITAL\n                    CALTRANS     PCTPA    CALTRANS      DFM\n FED BUILD             2,157,966        0   20,322,034        0                      22,480,000\n SPRTA                         0  539,492    5,080,509        0                       5,620,000\n SPRTA                         0        0            0  652,875                         652,875\n       Totals          2,157,966  539,492   25,402,543  652,875                      28,752,875\n\nMitigation Compensation\nCaltrans has indicated that required mitigation compensation must be secured before the project is\nadvertised for construction. However, it remains unclear whether mitigation compensation can be\nprovided incrementally for Phase 1 or must be secured for the entire SR 65 Capacity and\nOperational Improvement Project. Accordingly, staff recommend including $3,727,125 in the\nPCTPA allocation request to SPRTA to cover potential mitigation costs for the full project,\nincluding Phase 1, should compensation for the entire project be required before construction\nadvertisement. This amount is preliminary and should be considered a planning-level estimate.\nBecause mitigation credits cannot be purchased through the Placer County Conservation Program\n(PCCP), staff will purchase the required credits from a U.S. Fish and Wildlife Service-approved\nconservation bank.\n\nRecommendation\nStaff recommend that the Board conditionally approve and authorize negotiation and execution of\nthe SR 65 Phase 1 Construction Cooperative Agreement with Caltrans, subject to SPRTA’s funding\ncommitment; authorize execution of the $22.48 million federal BUILD Grant Agreement; and\nrecommend that SPRTA approve PCTPA’s funding allocation request for $10 million; and\n\n                                                                                                           42\n                                                                                         Rev. 10/21/2026",
+   "49": "PCTPA Board of Directors\nSR 65 Project Construction Funding and Agreement Approvals\nOctober 2026\nPage 4\n\nauthorize negotiation and execution of a project mitigation credit purchase agreement with a U.S.\nFish and Wildlife Service-approved conservation bank. The PCTPA and SPRTA Technical\nAdvisory Committees concur with these recommendations.\n\nAttachment: Final Draft Cooperative Agreement No. 03-0895\n\nDM:ss:mbc\n\n\n\n\n                                                                                                           43\n\n                                                                                         Rev. 10/21/2026",
+   "76": "MEMORANDUM\n TO:             PCTPA Board of Directors                                       DATE: October 28, 2026\n\n FROM:           David Melko, Principal Transportation Planner\n\n SUBJECT:        PLACER-SACRAMENTO GATEWAY PLAN UPDATE\n\nACTION REQUESTED\n1. Adopt Resolution No. 26-36 accepting the Placer-Sacramento Gateway Plan Update.\n2. Authorize the Executive Director to submit the Solutions for Congested Corridors Program (SCCP)\n   Cycle 5 grant application to the California Transportation Commission (CTC), in partnership with\n   Caltrans, the Sacramento Area Council of Governments (SACOG), and the Sacramento\n   Transportation Authority (STA).\n\nBACKGROUND\nThe Placer–Sacramento Gateway Plan (PSGP) encompasses approximately 70 miles of Interstate 80,\nState Route 65, and Business 80, serving a vital regional corridor that supports half of the Sacramento\nregion’s jobs and one-third of its residents, as well as freight, tourism, commuting, and economic\ndevelopment.\n\nThe California Transportation Commission’s (CTC) 2025 Comprehensive Corridor Guidelines\nrecommend evaluating corridor plans in air quality nonattainment areas every four years. The original\nPSGP, developed in 2019–2020, supported SB 1 funding nominations that secured nearly $133.4 million\nin 2020 Solutions for Congested Corridors Program (SCCP) and Trade Corridor Enhancement Program\n(TCEP) awards and $50 million in 2022 SCCP funding.\n\nIn July 2025, PCTPA received a Sustainable Transportation Competitive Planning Grant to fund the\nupdate. In January 2026, the PCTPA Board approved a contract with Jacobs to prepare the PSGP\nUpdate and authorized a Cooperative Agreement with the Sacramento Transportation Authority (STA)\nto share the required local match.\n\nThe 2020 PSGP established a coordinated, regional investment strategy addressing corridor congestion,\nimproving safety and travel reliability, and strengthening multimodal mobility. The plan Update\nreassessed project priorities, incorporated current transportation needs and conditions, and identified\ncompetitive, implementation-ready improvements to position the region for future SB 1 funding\nopportunities.\n\n\n\n\n                      2260 Douglas Blvd, Ste 130  Roseville, CA 95661  (530) 823-4030\n                                               www.pctpa.net\n                                                                                                          70",
+   "77": "PCTPA Board of Directors\nPLACER-SACRAMENTO GATEWAY PLAN UPDATE\nOctober 2026\nPage 2\n\nDISCUSSION\n\nPlacer-Sacramento Gateway Plan Update\nA public review draft of the Placer–Sacramento Gateway Plan was released in September 2026. Staff\nreceived one public favorable comment and acknowledged it in the final document, as appropriate. The\nfinal Plan will be posted before the Board meeting at: https://www.pctpa.net/placer-sacramento-\ngateway-plan-update. An Executive Summary is provided as Attachment 1. PCTPA staff and Jacobs\nwill present the final Plan, including projects proposed for the 2026 Solutions for Congested Corridors\nProgram (SCCP) Cycle 5 grant application.\n\nThe 10-month planning process culminated in an updated comprehensive multimodal corridor plan\naddressing congestion, expanding travel choices, and improving environmental and quality-of-life\noutcomes. The Plan identifies over 300 projects and 80 priority multimodal transportation projects\nexpected to be construction-ready by 2032, reinforcing regional collaboration. These priority projects\nwill improve corridor operations, expand travel options, and close gaps in the existing transportation\nnetwork.\n\nTo be eligible for SCCP funding, projects must be included in the Gateway Plan and demonstrate\nbenefits across key performance measures, including safety, congestion relief, accessibility, economic\ndevelopment, job creation and retention, air quality, greenhouse gas emissions reduction, and efficient\nland use. The California Transportation Commission (CTC) uses these measures to evaluate grant\napplications. SCCP funds may support only non-capacity-increasing projects and the construction phase\nof eligible improvements.\n\nProjects for SCCP Cycle 5 Grant Application\nThe Gateway Plan prioritizes projects that effectively address corridor needs, are construction-ready,\nand align with SCCP objectives. Four priority projects are recommended for inclusion in the SCCP\nCycle 5 grant application, due to the CTC in mid-November, and will be presented to the Board for\nconsideration.\n\nSubsequent SCCP Grant Application Cycles\nImplementation of the Gateway Plan will continue with preparation for future SCCP grant cycles, which\noccur every two years, with the next cycle (Cycle 6) in 2028. Pre-Cycle 6 planning will prioritize\nprojects and advance their development and readiness to strengthen their competitiveness for SCCP\nfunding.\n\nStaff Recommendation\nStaff recommends that the Board accept the Placer–Sacramento Gateway Plan Update and authorize\nsubmission of the SCCP Cycle 5 grant application to the CTC, in partnership with Caltrans, SACOG,\nand STA, for projects identified in the Plan. The PCTPA TAC concurs with the staff recommendation.\n\nAttachment 1: PSGP Executive Summary\nDM:ss:mbc\n\n\n\n\n                                                                                                          71",
+   "35": "Agenda Item I\n                                                                                                           Attachment 1\n\n        PLACER COUNTY TRANSPORTATION PLANNING AGENCY\n                                          TDA DEFINITIONS\n                                    Pursuant to PUC Section 99401.5(c)\n                                             Adopted 11/8/92\n                                            Amended 3/23/94\n[...]\namended.\n2\n  Fare revenues and local support are defined in California Administrative Code Sections 6611.2 and 6611.3\n                                                                                                                          29",
+   "39": "Agenda Item J\n                                                                                                       Attachment 1\n\n                 Placer Rides Program Service Policies\n                                                                      Transportation Assistance Program\n\n\n\n[...]\nPage 1                                                                        October 2025 – Placer Rides Service Policies\n\n\n                                                                                                                             33",
+   "50": "Agenda Item K, Attachment 1\n\n                                                                            Agreement No. 03-0895\n                                                                            Project No.: 0300001103\n                                                                                     EA: 03-1F171\n                                                                                03-PLA-65-6.5/12.8\n\n\n[...]\n                         Agreement No. 03-0895 | 03-PLA-65 | EA: 03-1F171\n\n                                             Page | 1\n                                                                                                       44",
+   "78": "What is the Placer-Sacramento\n Gateway Plan?\n The Placer-Sacramento Gateway Plan is a comprehensive multimodal\n corridor plan for the Gateway Corridor, which connects Sacramento\n and Placer Counties via Interstate 80, State Route 65, Business 80, and\n supporting transit, rail, bicycle, and pedestrian networks.\n                                                                               Why This Plan Matters\n Developed through a partnership of two counties and 15 local, regional,\n[...]\n                              ¨5\n72                            ¦                                                                PLACER-SACRAMENTO GATEWAY PLAN\n                                                                                                                                      Attachment 1\n                                                                                                                                    vii",
+   "83": "12\n\n\n            Technical Advisory Committee Meeting Summary\n                                  October 13, 2026 – 3:00 PM\n                                          ATTENDANCE\n                Technical Advisory Committee (TAC)             Staff\n                Greg Bowen, City of Auburn                     Matt Click\n[...]\n\n\n                                                                                                 Page 1\n                                                                                                     77",
+   "7": "MEMORANDUM\n TO:           PCTPA Board of Directors                                          DATE: October 28, 2026\n\n FROM:         Matt Click, Executive Director\n\n SUBJECT:      CONSENT CALENDAR\n\nBelow are the Consent Calendar items for October 28, 2026 agenda for your review and action.\n[...]\n\n\n                     2260 Douglas Blvd. Suite 130 ∙ Roseville, CA 95661 ∙ (530) 823-4030                  4\n                                                www.pctpa.net"
+  }
+ },
+ "downloads": {},
+ "expected": {
+  "A": null,
+  "B": null,
+  "C": null,
+  "D": null,
+  "E": null,
+  "F": null,
+  "G.1": null,
+  "G.2": null,
+  "G.3": null,
+  "G.4": null,
+  "G.5": null,
+  "H.1": null,
+  "H.2": null,
+  "H.3": null,
+  "H.4": null,
+  "I": {
+   "page_start": 33,
+   "page_end": 34,
+   "heading": "SUBJECT:       9:00 AM - PUBLIC HEARING"
+  },
+  "J": {
+   "page_start": 37,
+   "page_end": 38,
+   "heading": "SERVICE POLICY REVISIONS FOR THE PLACER RIDES PROGRAM"
+  },
+  "K": {
+   "page_start": 46,
+   "page_end": 49,
+   "heading": "SR 65 PHASE 1 PROJECT CONSTRUCTION FUNDING AND"
+  },
+  "L.1": {
+   "page_start": 76,
+   "page_end": 77,
+   "heading": "PLACER-SACRAMENTO GATEWAY PLAN UPDATE"
+  },
+  "L.2": {
+   "page_start": 76,
+   "page_end": 77,
+   "heading": "PLACER-SACRAMENTO GATEWAY PLAN UPDATE"
+  },
+  "M": null,
+  "N": null,
+  "O.1": null,
+  "O.2": null
+ }
+}

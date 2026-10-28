@@ -1,0 +1,438 @@
+{
+ "note": "South Tahoe PUD regular meeting of 2026-10-15. The packet is stored twice under two URLs with one hash; agenda pages, every memo page, the closed-session memos (56-60) and the page after each memo are kept, other attachment pages trimmed. Unnumbered items (adjournment) dropped.",
+ "meeting": {
+  "id": "stpud:2026-10-15",
+  "agency_id": "stpud",
+  "title": "South Tahoe Public Utility District Board Meeting",
+  "local_date": "2026-10-15",
+  "official_url": "https://www.stpud.us/files/11d99329b/2026.10.15+District+Board+Agenda+Packet.pdf"
+ },
+ "items": [
+  {
+   "id": "stpud:2026-10-15:1",
+   "number": "1",
+   "title": "CALL TO ORDER REGULAR MEETING – PLEDGE OF ALLEGIANCE",
+   "section": null,
+   "fingerprint": "f8a7d668f6fb74758fd91e80a6d489a04212b863afc4a3fd8ba4f3fc23cd1059",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CALL TO ORDER REGULAR MEETING – PLEDGE OF ALLEGIANCE (At this time, please silence phones and\n          other electronic devices so as not to disrupt the business of the meeting.)",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:2",
+   "number": "2",
+   "title": "COMMENTS FROM THE PUBLIC",
+   "section": null,
+   "fingerprint": "6e3548b1df7d74e45a42ded2ccee4604cd21b75e9966869f276baefa9469618e",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "COMMENTS FROM THE PUBLIC (This is an opportunity for members of the public to address the Board on\n          any short non-agenda items that are within the subject matter jurisdiction of the District. No discussion or action can\n          be taken on matters not listed on the agenda, per the Brown A",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:3",
+   "number": "3",
+   "title": "CORRECTIONS TO THE AGENDA OR CONSENT CALENDAR",
+   "section": null,
+   "fingerprint": "cc91125a3d528e8298fae0aaafe209902f382f7a9bafa9f089f2ae754b2ca8a9",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CORRECTIONS TO THE AGENDA OR CONSENT CALENDAR (For purposes of the Brown Act, all Action and\n          Consent items listed give a brief description of each item of business to be transacted or discussed.\n          Recommendations of the staff, as shown, do not prevent the Board from taking other ac",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:4.a",
+   "number": "4.a",
+   "title": "ENVIRONMENTAL SCIENCE RESEARCH INSTITUTE GEOGRAHIC INFORMATION SYSTEM SMALL UTILITY ENTERPRISE LICENSE AGREEMENT RENEWAL",
+   "section": "Adoption Of Consent Calendar",
+   "fingerprint": "76af5fa9518feb0304df9c37ffc2e991bc72db254bb89eeab0fbea57904d0761",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "ENVIRONMENTAL SCIENCE RESEARCH INSTITUTE GEOGRAHIC INFORMATION SYSTEM SMALL\n     UTILITY ENTERPRISE LICENSE AGREEMENT RENEWAL",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:4.b",
+   "number": "4.b",
+   "title": "ESTABLISH DISTRICT SOFTWARE SUBSCRIPTION-BASED INFORMATION TECHNOLOGY ARRANGEMENT CAPITLIZATION POLICY",
+   "section": "Adoption Of Consent Calendar",
+   "fingerprint": "03df8c66cc90c1abd09f240bbba681452ffc377ff25d374dd44f4a48e9930794",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "ESTABLISH DISTRICT SOFTWARE SUBSCRIPTION-BASED INFORMATION TECHNOLOGY\n     ARRANGEMENT CAPITLIZATION POLICY",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:4.c",
+   "number": "4.c",
+   "title": "CALPERS REQUIRED PAY LISTING BY POSITION",
+   "section": "Adoption Of Consent Calendar",
+   "fingerprint": "3150d988759062c561c45cff5ff266396d13f087e18da071e46d50727ff4b45c",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "CALPERS REQUIRED PAY LISTING BY POSITION",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:4.d",
+   "number": "4.d",
+   "title": "RECEIVE AND FILE PAYMENT OF CLAIMS",
+   "section": "Adoption Of Consent Calendar",
+   "fingerprint": "3df32e48fb97726a4593d149e95c056183d537f24e586f46b862f401135f7e7c",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "RECEIVE AND FILE PAYMENT OF CLAIMS (Greg Dupree, Accounting Manager)",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:4.e",
+   "number": "4.e",
+   "title": "REGULAR BOARD MEETING MINUTES: September 17, September 23, and October 1, 2026",
+   "section": "Adoption Of Consent Calendar",
+   "fingerprint": "6c41684ef6292c20c85c35a134910c1751d602187631264449fb9cd26d4e0444",
+   "citations": [
+    {
+     "page": 4,
+     "quote": "REGULAR BOARD MEETING MINUTES: September 17, September 23, and October 1, 2026",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:5",
+   "number": "5",
+   "title": "CONSENT ITEMS BROUGHT FORWARD FOR SEPARATE DISCUSSION/ACTION",
+   "section": null,
+   "fingerprint": "4f5eb14ffc0d37fe1e2c97a8bcd719f55359bcba9078acd92e5b065a6e559bfa",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CONSENT ITEMS BROUGHT FORWARD FOR SEPARATE DISCUSSION/ACTION",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:6.a",
+   "number": "6.a",
+   "title": "Capital Outlay Rollover Accounts",
+   "section": "Items For Board Action",
+   "fingerprint": "6d128fb4473cbc670c5b9a8753c3aa17c573800914e09289427099f6bcd9f101",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Capital Outlay Rollover Accounts",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:6.b",
+   "number": "6.b",
+   "title": "Cash Rounding Authorization",
+   "section": "Items For Board Action",
+   "fingerprint": "19bebb4668de00ced84fd4f68f322fbc6c8d6ac5fc7a6560c41b973d4d8231e5",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Cash Rounding Authorization",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:6.c",
+   "number": "6.c",
+   "title": "2026 Water Meter Installation Project",
+   "section": "Items For Board Action",
+   "fingerprint": "dc9861f761983ce713d0fca81d496ac52d1a862a389af428f521f8a48538f45c",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "2026 Water Meter Installation Project",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:6.d",
+   "number": "6.d",
+   "title": "Asphalt Patching and Trench Paving Services",
+   "section": "Items For Board Action",
+   "fingerprint": "58280d113c6a3aab0dcce68df341e466824fff202027f53009e05f4eb23bfa6e",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Asphalt Patching and Trench Paving Services",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:7",
+   "number": "7",
+   "title": "STANDING AND AD-HOC COMMITTEES AND LIAISON REPORTS",
+   "section": null,
+   "fingerprint": "27b8110890c1837c575abdafbce055cecd2d30e93107ccd3aaa14d8714f18a6a",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "STANDING AND AD-HOC COMMITTEES AND LIAISON REPORTS (Discussions may take place; however,\n         no action will be taken.)",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:8",
+   "number": "8",
+   "title": "BOARD MEMBER REPORTS",
+   "section": null,
+   "fingerprint": "ddbb9365096a68b56acce6565b2411ccd5b12035ca0e38cd31e244cfc6bcfe38",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "BOARD MEMBER REPORTS (Discussions may take place; however, no action will be taken.)",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:9.a",
+   "number": "9.a",
+   "title": "CAPIO Star Award (Lauren Benefield, Water Conservation Specialist)",
+   "section": "Staff/attorney Reports",
+   "fingerprint": "e7d3d8543b7989a23e7a5af41d5751efb629df644c773088738e63ca3c7bda24",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "CAPIO Star Award (Lauren Benefield, Water Conservation Specialist)",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:10.a",
+   "number": "10.a",
+   "title": "Candidate Forum Update",
+   "section": "General Manager Report",
+   "fingerprint": "d54f387662c17ae6cb616bb720cfe2a5abd6cdf747b2f61a0e2281356060eade",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Candidate Forum Update",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:11",
+   "number": "11",
+   "title": "NOTICE OF PAST AND FUTURE MEETINGS/EVENTS",
+   "section": null,
+   "fingerprint": "9d59e1b9068695b3a11b9d66c3dd031f0ccc43b8b247f96adb02eb9f6225b150",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "NOTICE OF PAST AND FUTURE MEETINGS/EVENTS",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:12.a",
+   "number": "12.a",
+   "title": "Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed Session may be held for conference with legal counsel regarding potential litigation.",
+   "section": "Items For Closed Session",
+   "fingerprint": "ec82e0782bb67320dd35547cf334f908137c0b89bbf6feca07e90d6b7977f481",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed Session may\n            be held for conference with legal counsel regarding potential litigation.",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:12.b",
+   "number": "12.b",
+   "title": "Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed Session may be held for conference with legal counsel regarding potential litigation.",
+   "section": "Items For Closed Session",
+   "fingerprint": "ec82e0782bb67320dd35547cf334f908137c0b89bbf6feca07e90d6b7977f481",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed Session may\n            be held for conference with legal counsel regarding potential litigation.",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:12.c",
+   "number": "12.c",
+   "title": "Pursuant to Section 54956.9(d)(1) of the California Government code, Closed Session may be held for conference with legal counsel regarding existing litigation: Yolo County Superior Court Case CV 2021-1686, Alpine County vs. South Tahoe Public Utility District; et al.",
+   "section": "Items For Closed Session",
+   "fingerprint": "c46c8b00268b974c84daac5cd2eb2856930fd1bcc26aae6bece8a00867656392",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Pursuant to Section 54956.9(d)(1) of the California Government code, Closed Session may\n            be held for conference with legal counsel regarding existing litigation: Yolo County\n            Superior Court Case CV 2021-1686, Alpine County vs. South Tahoe Public Utility District; et al.",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:12.d",
+   "number": "12.d",
+   "title": "Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public employee (Interim General Manager). Provide staff with recruitment direction.",
+   "section": "Items For Closed Session",
+   "fingerprint": "1907732bbff29768eba1873cb54e5bcb85d3ee2191d84a9894dc5a9494cc14d0",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public\n            employee (Interim General Manager). Provide staff with recruitment direction.",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  },
+  {
+   "id": "stpud:2026-10-15:12.e",
+   "number": "12.e",
+   "title": "Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public employee (General Manager). Provide staff with recruitment direction.",
+   "section": "Items For Closed Session",
+   "fingerprint": "d0693ebc42d8cd84ede3608c362be10fea94d9822443ea0e148e8ade467f72b6",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public\n            employee (General Manager). Provide staff with recruitment direction.",
+     "documentId": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "stpud:2026-10-15:stpud-agenda-2026-10-15:f42d09a4c263f04f",
+   "source_document_id": "stpud-agenda-2026-10-15",
+   "title": "Official board agenda packet",
+   "url": "https://www.stpud.us/files/11d99329b/2026.10.15%2BDistrict%2BBoard%2BAgenda%2BPacket.pdf",
+   "sha256": "f42d09a4c263f04f73245bda08fa50cbb4ed265b698941408a69a817e6661f19",
+   "page_count": 60,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f",
+   "source_document_id": "stpud-agenda-packet",
+   "title": "Agenda",
+   "url": "https://www.stpud.us/files/11d99329b/2026.10.15+District+Board+Agenda+Packet.pdf",
+   "sha256": "f42d09a4c263f04f73245bda08fa50cbb4ed265b698941408a69a817e6661f19",
+   "page_count": 60,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "stpud:2026-10-15:stpud-agenda-packet:f42d09a4c263f04f": {
+   "1": "SOUTH TAHOE PUBLIC UTILITY DISTRICT\n                                    REGULAR BOARD MEETING AGENDA\n                               Thursday, October 15, 2026 - 2:00 p.m.\n                                        District Board Room\n                        1275 Meadow Crest Drive, South Lake Tahoe, California\n\n     Joel Henderson, Director                           BOARD MEMBERS                            Kelly Sheehan, Director\n     Nick Haven, Vice President                      Shane Romsos, President                        Nick Exline, Director\n\n     Ryan Lee, Acting General Manager                                           Andrea Salazar, Chief Financial Officer\n\n\n1.        CALL TO ORDER REGULAR MEETING – PLEDGE OF ALLEGIANCE (At this time, please silence phones and\n          other electronic devices so as not to disrupt the business of the meeting.)\n\n2.        COMMENTS FROM THE PUBLIC (This is an opportunity for members of the public to address the Board on\n          any short non-agenda items that are within the subject matter jurisdiction of the District. No discussion or action can\n          be taken on matters not listed on the agenda, per the Brown Act. Each member of the public who wishes to\n          comment shall be allotted five minutes, subject to modification by the Board President.)\n\n3.        CORRECTIONS TO THE AGENDA OR CONSENT CALENDAR (For purposes of the Brown Act, all Action and\n          Consent items listed give a brief description of each item of business to be transacted or discussed.\n          Recommendations of the staff, as shown, do not prevent the Board from taking other action.)\n\n4.        ADOPTION OF CONSENT CALENDAR (Any item can be removed to be discussed and considered separately\n          upon request. Comments and questions from members of the public, staff or Board can be taken when the\n          comment does not necessitate separate action.)\n\n5.        CONSENT ITEMS BROUGHT FORWARD FOR SEPARATE DISCUSSION/ACTION\n\n6.        ITEMS FOR BOARD ACTION\n\n          a.      Capital Outlay Rollover Accounts\n                  (Greg Dupree, Accounting Manager)\n                  Authorize staff to direct rollover funds budgeted in 2025/2026 Fiscal Year to the\n                  2026/2027 Fiscal Year.\n\n          b.      Cash Rounding Authorization\n                  (Sara Nelson, Customer Service Supervisor)\n                  Approve Resolution No. 3347-26, authorizing rounding of certain cash payments to the\n                  nearest five cents and establishing related administrative procedures.\n\n          c.      2026 Water Meter Installation Project\n                  (Laura Hendrickson, Associate Engineer)\n                  1) Approve Change Order No. 2 to White Rock Construction, Inc. in the amount of\n                  $28,137.76; and 2) Authorize the Acting General Manager to execute Change Order\n                  No. 2.",
+   "2": "REGULAR BOARD MEETING AGENDA – October 15, 2026                                                                       PAGE – 2\n\n         d.       Asphalt Patching and Trench Paving Services\n                  (Adrian Combes, Director of Operations)\n                  1) Approve Change Order No. 1 in the amount of $132,875 to Alcorn General\n                  Engineering; and 2) Authorize the Acting General Manager to execute Change Order\n                  No. 1.\n\n7.       STANDING AND AD-HOC COMMITTEES AND LIAISON REPORTS (Discussions may take place; however,\n         no action will be taken.)\n\n8.       BOARD MEMBER REPORTS (Discussions may take place; however, no action will be taken.)\n\n9.       STAFF/ATTORNEY REPORTS (Discussions may take place; however, no action will be taken.)\n         a.    CAPIO Star Award (Lauren Benefield, Water Conservation Specialist)\n\n10.      GENERAL MANAGER REPORT (Discussion may take place; however, no action will be taken.)\n         a.   Candidate Forum Update\n\n11.      NOTICE OF PAST AND FUTURE MEETINGS/EVENTS\n         Past Meetings/Events\n         10/01/2026 – 2:00 p.m. Regular Board Meeting at the District\n         10/06/2026 – 3:30 p.m. Operations Committee Meeting at the District\n\n         Future Meetings/Events\n         10/28/2026 – 3:30 p.m. System Efficiency and Sustainability Committee Meeting at the District\n         11/05/2026 - 2:00 p.m. Regular Board Meeting at the District\n\n12.      ITEMS FOR CLOSED SESSION (The Board will adjourn to Closed Session to discuss items identified below. Closed\n         Session is not open to the public; however, an opportunity will be provided at this time if members of the public\n         would like to comment on any item listed – three minute limit, subject to modification by the Board President.)\n\n         a. Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed Session may\n            be held for conference with legal counsel regarding potential litigation.\n\n         b. Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed Session may\n            be held for conference with legal counsel regarding potential litigation.\n\n         c. Pursuant to Section 54956.9(d)(1) of the California Government code, Closed Session may\n            be held for conference with legal counsel regarding existing litigation: Yolo County\n            Superior Court Case CV 2021-1686, Alpine County vs. South Tahoe Public Utility District; et al.\n\n         d. Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public\n            employee (Interim General Manager). Provide staff with recruitment direction.\n\n         e. Pursuant to Government Code Section 54957(b)(1) consider the appointment of a public\n            employee (General Manager). Provide staff with recruitment direction.\n\nADJOURNMENT (The next Regular Board Meeting is Thursday, November 5, 2026, at 2:00 p.m.)\nThe South Tahoe Public Utility District Board of Directors regularly meets the first and third Thursday of each month. A complete Agenda\npacket is available for review at the meeting and at the District office during the hours of 8:00 a.m. and 5:00 p.m., Monday through Friday.\nA recording of the meeting is retained for 30 days after Minutes of the meeting have been approved. Items on the Agenda are numbered\nfor identification purposes only and will not necessarily be considered in the order in which they appear. Designated times are for particular\nitems only. Public Hearings will not be called to order prior to the time specified, but may occur slightly later than the specified time.\n\nPublic participation is encouraged. Public comments on items appearing on the Agenda will be taken at the same time the Agenda items\nare heard; comments should be brief and directed to the specifics of the item being considered. Please provide the Clerk of the Board with\na copy of all written materials presented at the meeting. Comments on items not on the Agenda can be heard during “Comments from",
+   "5": "Acting General Manager\n                                                                                               Ryan Lee\n\n                                                                                              Directors\n                                                                                            Nick Haven\n                                                                                         Shane Romsos\n                                                                                        Joel Henderson\n                                                                                         Kelly Sheehan\n                                                                                            Nick Exline\n\n\n\n\n                                    BOARD AGENDA ITEM 4a\n\nTO:                         Board of Directors\n\nFROM:                       Chris Skelly, Information Technology Manager\n\nMEETING DATE:               October 15, 2026\n\nITEM – PROJECT NAME:        Environmental Science Research Institute Geographic\n                            Information System Small Utility Enterprise License Agreement\n                            Renewal\n\nREQUESTED BOARD ACTION: Authorize staff to renew the Small Utility Enterprise License\nAgreement for three additional years with the Environmental Science Research Institute\nfor access to the ESRI term license software in the amount of $112,800.\n\nDISCUSSION: As indicated in the attached proposed contract from Environmental\nScience Research Institute (ESRI), the annual cost for the Small Utility Enterprise License\nAgreement (SUELA) will be $37,600 per year, for a total Contract value of $112,800 over\na three-year term. The agreement will be billed annually.\n\nThe SUELA provides the District with enterprise access to ESRI Geographic Information\nSystem (GIS) software and licensing needed to support District operations. This licensing\nmodel has enabled staff to expand GIS editing capabilities, improve the accuracy and\navailability of maps for field staff and inspectors, and develop web-based GIS tools for\nDistrict-wide use. Tablet-based GIS applications allow crews to access GIS information in\nthe field and integrate with the District’s Nexgen Enterprise Asset Management (EAM)\napplication. The agreement also supports the continued development of customer-\nfacing interactive maps for water outages, project status, and other timely District\ninformation.\n\nThe annual cost is included in and will be funded through the Fiscal Year 2029\nInformation Technology Service Contracts budget. As a renewal of the District’s existing\nESRI Enterprise Licensing Agreement, the SUELA maintains continuity for District GIS\nsystems, staff workflows, field applications, and public-facing mapping services.\n\nStaff recommends that the Board authorize staff to renew the Small Utility Enterprise\nLicense Agreement with ESRI for an additional three-year term, at a total cost not to\nexceed $112,800, for continued access to ESRI term-license software and related GIS\ncapabilities.",
+   "6": "Chris Skelly\nPage 2\nOctober 15, 2026\n\n\n\n\nSCHEDULE: Upon Board Approval\nCOSTS: $112,800\nACCOUNT NO: 10.56.6030; 20.56.6030\nBUDGETED AMOUNT AVAILABLE: $112,800\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes     ☐ No    ☒ N/A\nATTACHMENTS: ESRI Small Utility License Enterprise License Agreement Renewal Quote\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                        CATEGORY: Sewer/Water\nGENERAL MANAGER:           YES             NO\nCHIEF FINANCIAL OFFICER:   YES             NO______________",
+   "14": "Acting General Manager\n                                                                                              Ryan Lee\n\n                                                                                               Directors\n                                                                                             Nick Haven\n                                                                                          Shane Romsos\n                                                                                         Joel Henderson\n                                                                                          Kelly Sheehan\n                                                                                             Nick Exline\n\n\n\n\n                                   BOARD AGENDA ITEM 4b\n\n\nTO:                         Board of Directors\n\nFROM:                       Greg Dupree, Accounting Manager\n\nMEETING DATE:               October 15, 2026\n\nITEM – PROJECT NAME:        Establish District Software Subscription-Based Information\n                            Technology Arrangement Capitalization Policy\n\nREQUESTED BOARD ACTION: Adopt Resolution No. 3346-26 in accordance with\nGovernmental Accounting Standards Board Statement No. 96, to establish District\nsoftware subscription-based information technology arrangement capitalization policy.\n\nDISCUSSION: The purpose of this Policy is to establish accounting and reporting\nprocedures for Subscription-Based Information Technology Arrangements (SBITAs) in\naccordance with Governmental Accounting Standards Board (GASB) Statement No.\n96. The policy is intended to ensure consistent application of capitalization requirements\nwhile balancing the administrative effort associated with recording and tracking SBITAs.\nThe District currently reports subscription assets and liabilities associated with software\narrangements in our financial statements. Beginning in Fiscal Year 2027, The District will\nset its capitalization requirement for these arrangements at $100,000. SBITAs that do not\nmeet the capitalization threshold shall be recorded as expenditures or expenses in the\nperiod incurred.\n\n\nSCHEDULE: Upon Board Approval\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE:        N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes         ☐ No    ☒ N/A\nATTACHMENTS: Resolution No. 3346-26; SBITA Policy\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                             CATEGORY: Sewer/Water\nGENERAL MANAGER:            YES                NO\nCHIEF FINANCIAL OFFICER:    YES                NO______________",
+   "18": "Acting General Manager\n                                                                                            Ryan Lee\n\n                                                                                           Directors\n                                                                                         Nick Haven\n                                                                                      Shane Romsos\n                                                                                     Joel Henderson\n                                                                                      Kelly Sheehan\n                                                                                         Nick Exline\n\n\n\n\n                                 BOARD AGENDA ITEM 4c\n\n\nTO:                        Board of Directors\n\nFROM:                      Greg Dupree, Accounting Manager\n\nMEETING DATE:              October 15, 2026\n\nITEM – PROJECT NAME:       CalPERS Required Pay Listing by Position\n\nREQUESTED BOARD ACTION: Adopt Resolution No. 3348-26 which incorporates the Pay\nListing by Position for the pay listing effective September 2, 2026.\n\nDISCUSSION: California Public Employee’s Retirement System (CalPERS) requires each\nrevision of a combined salary schedule listing all positions at the District be formally\nadopted by the Board of Directors. The listing must be retained by the District and must be\navailable for public inspection for not less than five years. This revision includes the\nfollowing changes: Added position, Acting General Manager.\n\n\n\n\nSCHEDULE: Post Pay Listing effective September 2, 2026 on website upon approval\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes        ☐ No    ☒ N/A\nATTACHMENTS: Resolution No. 3348-26; CalPERS Pay Listing by Position 090226\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                           CATEGORY: Sewer/Water\nGENERAL MANAGER:           YES                NO\nCHIEF FINANCIAL OFFICER:   YES                NO",
+   "38": "Acting General Manager\n                                                                                             Ryan Lee\n\n                                                                                            Directors\n                                                                                          Nick Haven\n                                                                                       Shane Romsos\n                                                                                      Joel Henderson\n                                                                                       Kelly Sheehan\n                                                                                          Nick Exline\n\n\n\n\n                                 BOARD AGENDA ITEM 6a\n\n\nTO:                        Board of Directors\n\nFROM:                      Greg Dupree, Accounting Manager\n\nMEETING DATE:              October 15, 2026\n\nITEM – PROJECT NAME:       Capital Outlay Rollover Accounts\n\nREQUESTED BOARD ACTION: Authorize staff to direct rollover funds budgeted in\n2025/2026 Fiscal Year to the 2026/2027 Fiscal Year.\n\nDISCUSSION: Each year budgeted funds that were not expended on capital projects,\nthat will be needed to complete these projects in the new Fiscal Year (FY), are\ntransferred (or rolled over) from the old budget to the new one.\n\nThe attached spreadsheet lists, by fund and department, the various rollovers and\ntransfers of eligible amounts from FY 2025/2026 projects for FY 2026/2027 projects. The\ntotal amount of Capital Rollovers requested from FY2026 to FY2027 is $14,618,510, an\napproximate $3.325 million decrease from the previous year’s rollover.\n\n\n\n\nSCHEDULE:    N/A\nCOSTS: As listed on accompanying spreadsheet\nACCOUNT NO: As listed on accompanying spreadsheet\nBUDGETED AMOUNT AVAILABLE:        As listed on accompanying spreadsheet\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes         ☐ No    ☒ N/A\nATTACHMENTS: Capital Outlay Account Rollover Spreadsheet\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                            CATEGORY: Sewer/Water\nGENERAL MANAGER:           YES                NO\nCHIEF FINANCIAL OFFICER:   YES                NO",
+   "42": "Acting General Manager\n                                                                                                   Ryan Lee\n\n                                                                                                   Directors\n                                                                                                 Nick Haven\n                                                                                             Shane Romsos\n                                                                                            Joel Henderson\n                                                                                              Kelly Sheehan\n                                                                                                 Nick Exline\n\n\n\n\n                                    BOARD AGENDA ITEM 6b\n\n\nTO:                         Board of Directors\n\nFROM:                       Sara Nelson, Customer Service Supervisor\n\nMEETING DATE:               October 15, 2026\n\nITEM – PROJECT NAME:        Cash Rounding Authorization\n\nREQUESTED BOARD ACTION: Approve Resolution No. 3347-26, authorizing the rounding\nof certain cash payments to the nearest five cents and establishing related\nadministrative procedures.\n\nDISCUSSION: Following the United States Mint’s cessation of the production of one-cent\ncoins and the reduced availability of pennies, it is necessary that the District implement\na cash rounding practice for customer payments made wholly or partly in cash. That\nproposed would allow the District, to the extent permitted by California law, to round\ncash-payment amounts to the nearest five cents when exact change is unavailable or\nimpractical, while preserving the exact underlying amount of each District bill, rate, fee,\ncharge, deposit, penalty, or other obligation. Any rounding difference would be\nrecorded as a small credit or balance on the applicable customer account and would\nnot independently result in late fees, collection activity, shutoff notices, or other adverse\naccount action. Resolution No. 3347-26 also authorizes the General Manager or\ndesignee to establish administrative procedures for system configuration, cashier\nreconciliation, customer communications, internal controls, and periodic monitoring,\nwith implementation occurring after required staff training, customer notice, and system\nupdates are complete.\n\n\nSCHEDULE: N/A\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes ☐ No ☒ N/A\nATTACHMENTS: Resolution No. 3347-26\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                               CATEGORY: Water\nGENERAL MANAGER:          YES                NO\nCHIEF FINANCIAL OFFICER: YES                 NO",
+   "46": "Acting General Manager\n                                                                                               Ryan Lee\n\n                                                                                              Directors\n                                                                                            Nick Haven\n                                                                                         Shane Romsos\n                                                                                        Joel Henderson\n                                                                                         Kelly Sheehan\n                                                                                            Nick Exline\n\n\n\n\n                                 BOARD AGENDA ITEM 6c\n\nTO:                         Board of Directors\n\nFROM:                       Laura Hendrickson, Associate Engineer\n\nMEETING DATE:               October 15, 2026\n\nITEM – PROJECT NAME:        2026 Water Meter Installation Project\n\nREQUESTED BOARD ACTION: 1) Approve Change Order No. 2 to White Rock\nConstruction, Inc. in the amount of $28,137.76; and 2) Authorize the Acting General\nManager to execute Change Order No. 2.\n\nDISCUSSION: The 2026 Advanced Metering Infrastructure (AMI) Water Meter Installation\nProject began construction on July 7, 2026. The Project will install meters at seventy-two\n(72) remaining residential properties within the District’s service area that do not\ncurrently have meters, the majority of which are located in the Loop Road area. The\nremaining 72 properties were previously skipped due to various difficulties with locating\nor accessing the services.\n\nThe majority of this Change Order, totaling $23,674.28, is for Time-and-Materials (T&M)\nwork to locate previously unidentified water services at 1685 Choctaw Street, 1411 June\nWay, and 2209 Chiapa Drive. These services could not be located due to inaccurate or\nincomplete records and the lack of visible features that could be used to identify their\nlocations. District staff and the contractor initially attempted to locate the services using\ntraditional methods, including the use of a thumper. While the thumper was helpful in\nnarrowing down the potential locations, additional investigation and excavation were\nrequired to locate the services. Two of the three services have been located and\nmeters have been installed at those properties.\n\nSeparately, an unmarked sewer lateral was encountered and damaged during\nconstruction, requiring repairs totaling $3,829.21. The lateral was not identified in\navailable records and was part of a previously unknown configuration in which multiple\nindividual laterals connect to a common “main” lateral. The Change Order also\nincludes $634.27 to relocate a water meter to the District’s side of a customer shutoff\nvalve.\n\nThe total T&M work included in this Change Order is $28,137.76. Including Change Order\nNos. 1 and 2, the revised Contract total is $968,870.98. The additional work is necessary",
+   "47": "Laura Hendrickson\nPage 2\nOctober 15, 2026\n\n\n\n\nto address conditions encountered in the field and allow the District to continue\ncompleting the remaining meter installations.\n\nThis Change Order also amends the Contract Time. Intermediate Milestone No. 1 will be\nextended from October 1 to October 15 to allow time for District-directed additional\nwork. The total Contract Time will also be extended to allow for District-directed\nadditional work and project closeout activities, establishing a new Contract end date\nof November 8, 2026.\n\n\n\n\nSCHEDULE: Upon Board Approval\nCOSTS: $28,137.76\nACCOUNT NO: 20.30.8279 (AMIMTR)\nBUDGETED AMOUNT AVAILABLE: $29,415 (includes Fiscal Year 2026 rollover and budget\ntransfers)\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☒ Yes        ☐ No   ☐ N/A\nATTACHMENTS: Change Order No. 2\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                           CATEGORY: Water\nGENERAL MANAGER:           YES               NO\nCHIEF FINANCIAL OFFICER:   YES               NO",
+   "50": "Acting General Manager\n                                                                                               Ryan Lee\n\n                                                                                                 Directors\n                                                                                               Nick Haven\n                                                                                            Shane Romsos\n                                                                                           Joel Henderson\n                                                                                            Kelly Sheehan\n                                                                                               Nick Exline\n\n\n\n\n                                    BOARD AGENDA ITEM 6d\n\n\nTO:                         Board of Directors\n\nFROM:                       Adrian Combes, Director of Operations\n\nMEETING DATE:               October 15, 2026\n\nITEM – PROJECT NAME:        Asphalt Patching and Trench Paving Services\n\nREQUESTED BOARD ACTION: 1) Approve Change Order No. 1 in the amount of\n$132,875 to Alcorn General Engineering; and 2) Authorize the Acting General Manager\nto execute Change Order No. 1.\n\nDISCUSSION: Change Order No. 1 includes six items associated with Bid Schedule A\nand B of the patch paving Contract for paving amounts beyond the original Contract\nquantity based on work completed and projected work through the Contract period.\n\nItem 1A.1 is to increase Bid Item No. 2 by 3,500 square feet. The increase results in an\nincrease of $55,125 to the Contract.\n\nItem 1A.2 is to increase Bid Item No. 3 by 4,000 square feet. The increase results in an\nincrease of $42,000 to the Contract.\n\nItem 1A.3 is to increase the Contract time by 45 calendar days to allow for additional\nwork to be completed prior to winter.\n\nItem 1B.1 is to increase Bid Item No. 7 by 500 square feet. The increase results in an\nincrease of $7,000 to the Contract.\n\nItem 1B.2 is to increase Bid Item No. 8 by 1,000 square feet. The increase results in an\nincrease of $10,250 to the Contract.\n\nItem 1B.3 is to increase Bid Item No. 9 by 2,000 square feet. The increase results in an\nincrease of $18,500 to the Contract.\n\nStaff recommends approving Change Order No. 1 for $132,875 for both work\ncompleted and anticipated work which will increase the Contract amount from\n$332,175 to $465,050. The Change Order will also add 45 days to the Contract,\nincreasing it from 168 calendar days to 213 calendar days.",
+   "51": "Adrian Combes\nOctober 15, 2026\nPage 2\n\n\n\n\nSCHEDULE:     Upon Approval\nCOSTS: $132,875\nACCOUNT NO: 20.24.6030\nBUDGETED AMOUNT AVAILABLE: $365,558\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☒ Yes     ☐ No    ☐ N/A\nATTACHMENTS: Change Order No. 1\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                        CATEGORY: Water\nGENERAL MANAGER:           YES             NO\nCHIEF FINANCIAL OFFICER:   YES             NO______________",
+   "56": "Acting General Manager\n                                                                                                   Ryan Lee\n\n                                                                                                  Directors\n                                                                                                Nick Haven\n                                                                                             Shane Romsos\n                                                                                            Joel Henderson\n                                                                                             Kelly Sheehan\n                                                                                                Nick Exline\n\n\n\n\n                                     BOARD AGENDA ITEM 12a\n\n\nTO:                         Board of Directors\n\nFROM:                       Megan Colvey, Director of Engineering\n                            Mark Seelos, Water Resources Manager\n\nMEETING DATE:               October 15, 2026\n\nITEM – PROJECT NAME:        Conference with Legal Counsel – Potential Litigation\n\nREQUESTED BOARD ACTION: Direct Staff\n\nDISCUSSION: Pursuant to Section 54956.9(d)(2) of the California Government Code, Closed\nSession may be held for conference with legal counsel regarding potential litigation.\n\n\n\n\nSCHEDULE: N/A\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes           ☐ No    ☒ N/A\nATTACHMENTS: N/A\n______________________________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                                          CATEGORY: Water/Sewer\nGENERAL MANAGER:            YES                NO\nCHIEF FINANCIAL OFFICER:    YES                NO",
+   "57": "Acting General Manager\n                                                                                           Ryan Lee\n\n                                                                                          Directors\n                                                                                        Nick Haven\n                                                                                     Shane Romsos\n                                                                                    Joel Henderson\n                                                                                     Kelly Sheehan\n                                                                                        Nick Exline\n\n\n\n\n                                 BOARD AGENDA ITEM 12b\n\n\n\nTO:                        Board of Directors\n\nFROM:                      Liz Kauffman, Director of Human Resources\n\nMEETING DATE:              October 15, 2026\n\nITEM – PROJECT NAME:       Conference with Legal Counsel – Potential Litigation\n\nREQUESTED BOARD ACTION: Direct Staff\n\nDISCUSSION: Pursuant to Section 54956.9(d)(2) of the California Government Code,\nClosed Session may be held for conference with legal counsel regarding potential\nlitigation.\n\n\n\n\nSCHEDULE: N/A\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes       ☐ No    ☒ N/A\nATTACHMENTS: N/A\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                          CATEGORY: General\nGENERAL MANAGER:           YES                NO\nCHIEF FINANCIAL OFFICER:   YES                NO",
+   "58": "Acting General Manager\n                                                                                               Ryan Lee\n\n                                                                                              Directors\n                                                                                            Nick Haven\n                                                                                         Shane Romsos\n                                                                                        Joel Henderson\n                                                                                         Kelly Sheehan\n                                                                                            Nick Exline\n\n\n\n\n                                 BOARD AGENDA ITEM 12c\n\n\n\nTO:                        Board of Directors\n\nFROM:                      Shane Romsos, Board President\n\nMEETING DATE:              October 15, 2026\n\nITEM – PROJECT NAME:       Conference with Legal Counsel – Existing Litigation\n\nREQUESTED BOARD ACTION: Direct Staff\n\nDISCUSSION: Pursuant to Section 54956.9(d)(1) of the California Government code,\nClosed Session may be held for conference with legal counsel regarding existing\nlitigation: Yolo County Superior Court Case CV 2021-1686, Alpine County vs. South\nTahoe Public Utility District; et al.\n\n\n\n\nSCHEDULE: N/A\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes        ☐ No   ☒ N/A\nATTACHMENTS: N/A\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                           CATEGORY: General\nGENERAL MANAGER:           YES                NO\nCHIEF FINANCIAL OFFICER:   YES                NO",
+   "59": "Acting General Manager\n                                                                                          Ryan Lee\n\n                                                                                           Directors\n                                                                                         Nick Haven\n                                                                                      Shane Romsos\n                                                                                     Joel Henderson\n                                                                                      Kelly Sheehan\n                                                                                         Nick Exline\n\n\n\n\n                                  BOARD AGENDA ITEM 12d\n\n\nTO:                        Board of Directors\n\nFROM:                      Liz Kauffman, Human Resources Director\n\nMEETING DATE:              October 15, 2026\n\nITEM – PROJECT NAME:       Interim General Manager Recruitment\n\nREQUESTED BOARD ACTION: Direct Staff\n\nDISCUSSION: Pursuant to Government Code Section 54957(b)(1) consider the\nappointment of public employee (Interim General Manager). Provide staff with\nrecruitment direction.\n\n\n\n\nSCHEDULE: N/A\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes        ☐ No   ☒ N/A\nATTACHMENTS: None\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                           CATEGORY: Sewer/Water\nGENERAL MANAGER:           YES                NO\nCHIEF FINANCIAL OFFICER:   YES                NO______________",
+   "60": "Acting General Manager\n                                                                                          Ryan Lee\n\n                                                                                           Directors\n                                                                                         Nick Haven\n                                                                                      Shane Romsos\n                                                                                     Joel Henderson\n                                                                                      Kelly Sheehan\n                                                                                         Nick Exline\n\n\n\n\n                                  BOARD AGENDA ITEM 12e\n\n\nTO:                        Board of Directors\n\nFROM:                      Liz Kauffman, Human Resources Director\n\nMEETING DATE:              October 15, 2026\n\nITEM – PROJECT NAME:       General Manager Recruitment\n\nREQUESTED BOARD ACTION: Direct Staff\n\nDISCUSSION: Pursuant to Government Code Section 54957(b)(1) consider the\nappointment of public employee (General Manager). Provide staff with\nrecruitment direction.\n\n\n\n\nSCHEDULE: N/A\nCOSTS: N/A\nACCOUNT NO: N/A\nBUDGETED AMOUNT AVAILABLE: N/A\nIDENTIFIED CAPITAL IMPROVEMENT PROJECT (CIP): ☐ Yes        ☐ No   ☒ N/A\nATTACHMENTS: None\n___________________________________________________________________________________\nCONCURRENCE WITH REQUESTED ACTION:                           CATEGORY: Sewer/Water\nGENERAL MANAGER:           YES                NO\nCHIEF FINANCIAL OFFICER:   YES                NO______________",
+   "3": "REGULAR BOARD MEETING AGENDA – October 15, 2026                                                                      PAGE – 3\n\nthe Audience;” however, action cannot be taken on items not on the Agenda.\n\nBackup materials relating to an open session item on this Agenda, which are not included with the Board packet, will be made available\nfor public inspection at the same time they are distributed or made available to the Board, and can be viewed at the District office, at the\nBoard meeting and upon request to the Clerk of the Board.\n\nThe meeting location is accessible to people with disabilities. Every reasonable effort will be made to accommodate participation of the\ndisabled in all of the District’s public meetings. If particular accommodations are needed, please contact the Clerk of the Board at (530)\n544-6474, extension 6203. All inquiries must be made at least 48 hours in advance of the meeting.",
+   "4": "REGULAR BOARD MEETING AGENDA – October 15, 2026                                      PAGE – 4\n\n\n\n\n                        SOUTH TAHOE PUBLIC UTILITY DISTRICT\n                                          CONSENT CALENDAR\n                                     Thursday, October 15, 2026\n[...]\n\n  e. REGULAR BOARD MEETING MINUTES: September 17, September 23, and October 1, 2026\n     (Melonie Guttry, Executive Services Manager/Clerk of the Board)\n     Approve September 17, September 23 and October 1, 2026, Minutes.",
+   "7": "Quotation # Q-583836\n                                                                                                     Date: September 22, 2026\n\nEnvironmental Systems Research Institute, Inc.                                                       Customer # 162283                  Contract # ENTERPRISE\n380 New York St                                                                                      AGREEMENT\nRedlands, CA 92373-8100\nPhone: (909) 793-2853                                                                                South Tahoe Utility District\nDUNS Number: 06-313-4175 CAGE Code: 0AMS3                                                            Information Systems\n[...]\n information may not be given to outside parties or used for any other purpose without consent from Esri. Delivery is FOB Origin for customers located\n in the USA.\n\nHOFFMANJ                    This offer is limited to the terms and conditions incorporated and attached herein.",
+   "15": "1\n                                      RESOLUTION NO. 3346-26\n\n2                        A RESOLUTION BY THE BOARD OF DIRECTORS\n             OF THE SOUTH TAHOE PUBLIC UTILITY DISTRICT ADOPTING THE SOFTWARE\n3           SUBSCRIPTION-BASED INFORMATION TECHNOLOGY ARRANGEMENT (SBITA)\n                                  CAPITALIZATION POLICY\n4\n[...]\n28   ATTEST: ___________________________________________\n            Melonie Guttry, Executive Services Manager/\n            Clerk of the Board\n            South Tahoe Public Utility District",
+   "19": "1\n                                     RESOLUTION NO. 3348-26\n\n2                          A RESOLUTION BY THE BOARD OF DIRECTORS\n                     OF THE SOUTH TAHOE PUBLIC UTILITY DISTRICT FORMALLY\n3\n                           ADOPTING PAY LISTING BY POSITION FOR THE\n4                            EFFECTIVE DATE OF September 02, 2026\n[...]\n27   ATTEST: ______________________________________\n            Melonie Guttry, Clerk of the Board/\n28          Executive Services Manager\n            South Tahoe Public Utility District",
+   "39": "SEWER\n                                         CAPITAL OUTLAY ACCOUNT ROLLOVERS\n                                       From 2025 - 2026 to 2026 - 2027 Fiscal Year\n\nDEPARTMENT                        ACCOUNT         DESCRIPTION                                       AMOUNT\n10 - Operations                 8204              Replace Chemical Storage Tank                     $      25,000\n10 - Operations                 8535              Submersible Pump, EP Station                      $      51,667\n10 - Operations                 8601              ERB Flow Meter                                    $      15,000\n[...]\n30 - Engineering                8477              FLL ES 1-3 & Stanford Camp Rehab                  $     144,194\n30 - Engineering                8478              WWTP Ballast Ponds                                $     100,600\n30 - Engineering                8479              RAS Building Rehab                                $      94,363\n30 - Engineering                8486              FLL FM Shorezone Stabilization                    $     120,417",
+   "43": "1\n                                      RESOLUTION NO. 3347-26\n\n2                           A RESOLUTION BY THE BOARD OF DIRECTORS\n3       OF THE SOUTH TAHOE PUBLIC UTILITY DISTRICT AUTHORIZING ROUNDING OF CERTAIN\n             CASH PAYMENTS TO THE NEAREST FIVE CENTS AND ESTABLISHING RELATED\n4                              ADMINISTRATIVE PROCEDURES\n5\n[...]\n26\n     C. This Resolution does not require the District to accept cash for a transaction when\n27   cash is not otherwise an authorized payment method.\n28",
+   "48": "CCO #002\n\nSouth Tahoe Public Utility District                                                              Project: AMIMTR - 2026 Water Meter Installation Project\n1275 Meadow Crest Dr                                                                                                         1275 Meadow Crest Drive\nSouth Lake Tahoe, California 96150                                                                                  South Lake Tahoe, California 96150\nPhone: (530) 544-6474\n\n\n[...]\n\n\n\nSouth Tahoe Public Utility District                                    Page 1 of 2                                       Printed On: 10/7/2026 11 :58 AM",
+   "52": "Change Order #:               1 Summary\n\n\n                   Project: Asphalt Patching & Trench Paving Services\n\n                       Date: 10/10/2026                         Purchase Order No. : 2026-1425\n\n\n[...]\n\n\n\n\\\\STPUD-FS\\Public\\Board Meetings\\Admin's Working File\\6dd CO#01 10.10.2026 [Summary]                      10/8/2026"
+  }
+ },
+ "downloads": {},
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4.a": {
+   "page_start": 5,
+   "page_end": 6,
+   "heading": "BOARD AGENDA ITEM 4a"
+  },
+  "4.b": {
+   "page_start": 14,
+   "page_end": 14,
+   "heading": "BOARD AGENDA ITEM 4b"
+  },
+  "4.c": {
+   "page_start": 18,
+   "page_end": 18,
+   "heading": "BOARD AGENDA ITEM 4c"
+  },
+  "4.d": null,
+  "4.e": null,
+  "5": null,
+  "6.a": {
+   "page_start": 38,
+   "page_end": 38,
+   "heading": "BOARD AGENDA ITEM 6a"
+  },
+  "6.b": {
+   "page_start": 42,
+   "page_end": 42,
+   "heading": "BOARD AGENDA ITEM 6b"
+  },
+  "6.c": {
+   "page_start": 46,
+   "page_end": 47,
+   "heading": "BOARD AGENDA ITEM 6c"
+  },
+  "6.d": {
+   "page_start": 50,
+   "page_end": 51,
+   "heading": "BOARD AGENDA ITEM 6d"
+  },
+  "7": null,
+  "8": null,
+  "9.a": null,
+  "10.a": null,
+  "11": null,
+  "12.a": null,
+  "12.b": null,
+  "12.c": null,
+  "12.d": null,
+  "12.e": null
+ }
+}

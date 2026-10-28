@@ -112,7 +112,7 @@ def test_douglas_oversized_packet_is_uncertain_not_retried():
     del data["downloads"][DOUGLAS_PACKET]
 
     def too_large(url, **kwargs):
-        raise staff_reports.FetchFailed(f"{url}: source exceeds 104857600 byte limit")
+        raise staff_reports.TooLarge(f"{url}: source exceeds 104857600 byte limit")
     m = data["meeting"]
     ctx = Context(lambda v: {int(n): t for n, t in data["stored"].get(v, {}).items()},
                   Meeting(m["id"], m["agency_id"], m["title"], date.fromisoformat(m["local_date"]),

@@ -35,7 +35,7 @@ def test_source_limits_and_s3_path_style(monkeypatch):
         headers={'Content-Type':'text/html'}
         def geturl(self):return 'https://example.gov'
     monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:Response(b'abcdef'))
-    with pytest.raises(ValueError,match='byte limit'):http.fetch_bytes('https://example.gov',max_bytes=5)
+    with pytest.raises(http.SourceTooLarge,match='byte limit'):http.fetch_bytes('https://example.gov',max_bytes=5)
 
 
 def test_html_section_is_not_a_pdf_and_scripts_cannot_become_agenda_text(monkeypatch):

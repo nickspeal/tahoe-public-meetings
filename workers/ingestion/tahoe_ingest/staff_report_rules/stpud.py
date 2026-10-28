@@ -27,27 +27,21 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from ..staff_reports import MIN_TITLE_OVERLAP, Context, Mapping, Uncertain, leading, norm_number, title_overlap
+from ..staff_reports import (MIN_TITLE_OVERLAP, PRINTED_DATE, Context, Mapping, Uncertain, leading, norm_number,
+                             parse_printed_date, stored_pdf_packets, title_overlap)
 
 MAX_MEMO_PAGES = 6
 _HEADER = re.compile(r"^\s*BOARD AGENDA ITEM\s+(\d+\s*[A-Za-z]?)\s*$", re.M)
-_DATE = re.compile(r"MEETING DATE:\s*([A-Z][a-z]+)\s+(\d{1,2}),\s*(\d{4})")
+_DATE = re.compile(rf"MEETING DATE:\s*({PRINTED_DATE})")
 _NAME = re.compile(r"ITEM\s*[–-]\s*PROJECT NAME:[ \t]*(.*(?:\n[ \t]{20,}\S.*){0,2})")
 _MEMO_END = re.compile(r"CONCURRENCE WITH REQUESTED ACTION")
 _CLOSED = re.compile(r"closed session", re.I)
-_MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
-           "november", "december"]
 
 
 def memo_date(text: str) -> date | None:
     """The memo's "MEETING DATE:" ("September 03, 2026" is allowed), or None."""
     found = _DATE.search(text)
-    if not found or found.group(1).casefold() not in _MONTHS:
-        return None
-    try:
-        return date(int(found.group(3)), _MONTHS.index(found.group(1).casefold()) + 1, int(found.group(2)))
-    except ValueError:
-        return None
+    return parse_printed_date(found.group(1)) if found else None
 
 
 def _header_number(text: str) -> str | None:
@@ -60,18 +54,14 @@ def map_stpud(ctx: Context) -> list[Mapping]:
     for item in ctx.meeting.items:
         if item.number.strip() and _CLOSED.search(item.section or "") and item.id not in ctx.skipped:
             ctx.skip(item, "closed session")
-    pdfs = {}
-    for document in sorted(ctx.meeting.documents, key=lambda d: ("%2B" in d.url, d.source_document_id)):
-        if document.media_type == "application/pdf" and document.sha256 not in pdfs:
-            if any(_header_number(text) for text in ctx.stored_pages(document.version_id).values()):
-                pdfs[document.sha256] = document
+    pdfs = stored_pdf_packets(ctx, _HEADER)
     if len(pdfs) > 1:
         raise Uncertain("more than one agenda packet")
     if not pdfs:
         for item in items:
             ctx.skip(item, "no agenda packet with board memos")
         return []
-    packet = next(iter(pdfs.values()))
+    packet = pdfs[0]
     pages = ctx.stored_pages(packet.version_id)
     headed: dict[str, list] = {}
     for number, text in pages.items():

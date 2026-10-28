@@ -78,7 +78,7 @@ def _from_gav(ctx: Context, agenda) -> list[Attachments] | None:
     if not clip or not view:
         return None
     host = re.match(r"https://[^/]+", agenda.url).group()
-    page = _granicus.markup(ctx, f"{host}/GeneratedAgendaViewer.php?view_id={view}&clip_id={clip}")
+    page = ctx.html(f"{host}/GeneratedAgendaViewer.php?view_id={view}&clip_id={clip}")
     rows = gav_rows(page, clip)
     if not rows:
         return None

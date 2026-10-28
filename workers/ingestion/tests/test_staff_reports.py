@@ -1,4 +1,5 @@
 """Staff report mapping (IDEA-013) and verbatim summary validation (IDEA-016); no network or model calls."""
+import base64
 import copy
 import re
 import json
@@ -19,7 +20,9 @@ def load(agency):
 
 
 def run_rule(data):
-    """Run the fixture's agency rule offline: ``downloads`` (url -> PDF) feed the PDF reader, ``html`` (url -> markup) the link reader."""
+    """Run the fixture's agency rule offline from its maps of URL to content: ``downloads`` (PDF reads), ``html``
+    (markup), ``json`` (API responses), and ``word`` (base64 file bytes). Returns the mappings by item number, the
+    context, and every URL fetched, in order. A URL missing from its map fails as a download."""
     m = data["meeting"]
     meeting = Meeting(m["id"], m["agency_id"], m["title"], date.fromisoformat(m["local_date"]),
                       [Item(i["id"], i["number"], i["title"], i["section"], i["fingerprint"], i["citations"]) for i in data["items"]],
@@ -37,13 +40,16 @@ def run_rule(data):
     def stored(version_id):
         return {int(n): text for n, text in data["stored"].get(version_id, {}).items()}
 
-    def fetch_html(url):
-        read.append(url)
-        if url not in data.get("html", {}):
-            raise staff_reports.FetchFailed(f"{url}: not in fixture")
-        return data["html"][url]
+    def served(key, decode=copy.deepcopy):
+        def fetch(url, **_):
+            read.append(url)
+            if url not in data.get(key, {}):
+                raise staff_reports.FetchFailed(f"{url}: not in fixture")
+            return decode(data[key][url])
+        return fetch
 
-    ctx = Context(stored, meeting, reader, fetch_html=fetch_html)
+    ctx = Context(stored, meeting, reader, fetch_html=served("html"), fetch_json=served("json"),
+                  fetch_bytes=served("word", base64.b64decode))
     mappings = {m.item_id: m for m in RULES[m["agency_id"]](ctx)}
     return {i["number"]: mappings.get(i["id"]) for i in data["items"]}, ctx, read
 
@@ -421,6 +427,64 @@ def test_html_links_default_fetch_stays_offline_in_tests():
         Context(lambda v: {}, meeting(), None).html_links("https://example.gov/m")
 
 
+def test_json_bytes_and_markup_fetches_are_cached_counted_and_delayed(monkeypatch):
+    pauses, fetched = [], []
+    monkeypatch.setattr(staff_reports.time, "sleep", pauses.append)
+
+    def fetcher(value):
+        def fetch(url, **kwargs):
+            fetched.append((url, kwargs))
+            return value
+        return fetch
+    ctx = Context(lambda v: {}, meeting(), None, delay=2, fetch_html=fetcher("<p>x</p>"), fetch_json=fetcher({"a": 1}),
+                  fetch_bytes=fetcher(b"PK"))
+    for _ in range(2):
+        assert ctx.fetch_json("https://api.example/v1/x") == {"a": 1}
+        assert ctx.fetch_bytes("https://example.gov/r.docx", accept="*/*", max_bytes=10) == b"PK"
+        assert ctx.html("https://example.gov/m") == "<p>x</p>"
+    assert fetched == [("https://api.example/v1/x", {}), ("https://example.gov/r.docx", {"accept": "*/*", "max_bytes": 10}),
+                       ("https://example.gov/m", {})]
+    assert ctx.downloads == 3 and pauses == [2, 2]
+
+
+def test_fetch_failures_retry_later_except_oversized_files():
+    def broken(url, **_):
+        raise OSError("connection refused")
+
+    def too_big(url, **_):
+        raise staff_reports.http.SourceTooLarge("source exceeds 10 byte limit")
+    with pytest.raises(staff_reports.FetchFailed, match="connection refused"):
+        Context(lambda v: {}, meeting(), None, fetch_json=broken).fetch_json("https://api.example/v1/x")
+    with pytest.raises(staff_reports.TooLarge, match="byte limit"):
+        Context(lambda v: {}, meeting(), None, fetch_bytes=too_big).fetch_bytes("https://example.gov/r.docx", accept="*/*", max_bytes=10)
+    # Defaults are looked up per call, so conftest keeps them offline.
+    with pytest.raises(staff_reports.FetchFailed, match="offline test"):
+        Context(lambda v: {}, meeting(), None).fetch_json("https://api.example/v1/x")
+    with pytest.raises(staff_reports.FetchFailed, match="offline test"):
+        Context(lambda v: {}, meeting(), None).fetch_bytes("https://example.gov/r.docx", accept="*/*", max_bytes=10)
+
+
+def test_read_report_skips_an_oversized_report_for_good():
+    def reader(url, **_):
+        if "big" in url:
+            raise staff_reports.TooLarge(f"{url}: source exceeds 83886080 byte limit")
+        raise staff_reports.FetchFailed(f"{url}: HTTP 503")
+    ctx = Context(lambda v: {}, meeting(), reader)
+    big, flaky = item("1", "Big report"), item("2", "Flaky report")
+    assert ctx.read_report(big, "https://example.gov/big.pdf") is None and ctx.fetch_failures == []
+    assert ctx.skipped[big.id] == "report is larger than the download limit"
+    assert ctx.read_report(flaky, "https://example.gov/flaky.pdf") is None
+    assert ctx.skipped[flaky.id] == "download failed" and ctx.fetch_failures == ["https://example.gov/flaky.pdf: HTTP 503"]
+
+
+def test_read_pdf_raises_too_large_for_an_oversized_source(monkeypatch):
+    def fetch(url, **kwargs):
+        raise staff_reports.http.SourceTooLarge(f"source exceeds {kwargs['max_bytes']} byte limit")
+    monkeypatch.setattr(staff_reports.http, "fetch_bytes", fetch)
+    with pytest.raises(staff_reports.TooLarge):
+        staff_reports.read_pdf("https://example.gov/big.pdf", max_bytes=5)
+
+
 def test_report_names_item_needs_number_title_and_date():
     page = ("TAHOE REGIONAL PLANNING AGENCY\nGoverning Board Meeting: October 28, 2026\n\n"
             "Agenda Item No. 7.B\nAquatic Invasive Species Program Update\n\nSummary and Staff Recommendation: ...")
@@ -450,6 +514,26 @@ def test_report_names_item_needs_number_title_and_date():
 ])
 def test_printed_meeting_dates(text, dates):
     assert staff_reports.printed_meeting_dates(text) == dates
+
+
+@pytest.mark.parametrize("text,day", [
+    ("October 21, 2026", date(2026, 10, 21)), ("  Oct. 21, 2026", date(2026, 10, 21)), ("JUNE 24, 2026", date(2026, 6, 24)),
+    ("September 03, 2026", date(2026, 9, 3)), ("Sept 3 2026", date(2026, 9, 3)), ("Smarch 3, 2026", None),
+    ("February 30, 2026", None), ("Meeting of October 21, 2026", None)])
+def test_parse_printed_date(text, day):
+    assert staff_reports.parse_printed_date(text) == day
+
+
+def test_stored_pdf_packets_keep_one_copy_per_file():
+    docs = [Document("v2", "b", "Packet", "https://example.gov/A%2BB.pdf", "s1", 40, "application/pdf"),
+            Document("v1", "a", "Packet", "https://example.gov/A+B.pdf", "s1", 40, "application/pdf"),
+            Document("v3", "c", "Agenda", "https://example.gov/agenda.pdf", "s2", 2, "application/pdf"),
+            Document("v4", "d", "Agenda", "https://example.gov/agenda", "s3", 1, "text/html")]
+    pages = {"v1": {1: "x", 30: "BOARD AGENDA ITEM 6a"}, "v2": {30: "BOARD AGENDA ITEM 6a"}, "v3": {1: "AGENDA"}, "v4": {1: "x"}}
+    ctx = Context(lambda v: pages[v], meeting(documents=docs), None)
+    assert [d.version_id for d in staff_reports.stored_pdf_packets(ctx)] == ["v1", "v3"]
+    assert [d.version_id for d in staff_reports.stored_pdf_packets(ctx, r"BOARD AGENDA ITEM")] == ["v1"]
+    assert [d.version_id for d in staff_reports.stored_pdf_packets(ctx, documents=docs[:1])] == ["v2"]
 
 
 def test_linked_reports_reads_a_shared_report_once_and_maps_every_item_it_covers():
@@ -539,13 +623,20 @@ def test_by_title_needs_a_unique_match_both_ways():
 @pytest.mark.parametrize("label", [
     "Required Motions:", "Required Motion(s):", "Summary and Staff Recommendation:", "Requested Board Action:", "Recommended Board Action:",
     "Recommended Motion:", "Proposed Motion:", "Board Action Requested:", "Action Required:", "Recommended Actions:",
-    "Recommended Action(s):", "Staff Recommends:", "Requested Action / Suggested Motions:"])
+    "Recommended Action(s):", "Staff Recommends:", "Requested Action / Suggested Motions:", "Recommendation for Action:",
+    "Recommendations for Action:", "Possible Motion:", "Possible Motion(s):", "Action Recommended:", "Actions Recommended:"])
 def test_requested_action_labels_agencies_print(label):
     from tahoe_ingest.requested_actions import for_meeting
     page = f"4.   Wastewater Rate Study.\n     {label} Approve the 2026 wastewater rate study and set a public hearing.\n\n5.   Adjournment\n"
     items = [{"id": "a", "citations": [{"documentId": "v", "page": 1, "quote": "Wastewater Rate Study."}]},
              {"id": "b", "citations": [{"documentId": "v", "page": 1, "quote": "Adjournment"}]}]
     assert for_meeting(items, {("v", 1): page})["a"]["text"] == "Approve the 2026 wastewater rate study and set a public hearing."
+
+
+def test_the_longest_printed_label_is_dropped_whole():
+    from tahoe_ingest.requested_actions import ACTION_LABEL
+    for label in ("Recommendation for Action:", "Actions Recommended:", "Possible Motions:"):
+        assert ACTION_LABEL.match(f"  {label} Approve the plan.").group().strip() == label
 
 
 def test_staff_recommends_sentence_is_kept_whole_and_alone():

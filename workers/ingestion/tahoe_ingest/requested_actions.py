@@ -35,8 +35,9 @@ ACTION_LABELS: tuple[str, ...] = (
     rf"Required Motion{_PLURAL}",
     rf"Requested Board Action{_PLURAL}", rf"Recommended Board Action{_PLURAL}", rf"Board Action{_PLURAL} Requested",
     rf"Requested Action{_PLURAL}", rf"Recommended Action{_PLURAL}", rf"Action{_PLURAL} Requested", rf"Action{_PLURAL} Required",
-    rf"Recommended Motion{_PLURAL}", rf"Proposed Motion{_PLURAL}", rf"Suggested Motion{_PLURAL}",
-    rf"Staff Recommendation{_PLURAL}", r"Staff Recommends", rf"Recommendation{_PLURAL}",
+    rf"Action{_PLURAL} Recommended",
+    rf"Recommended Motion{_PLURAL}", rf"Proposed Motion{_PLURAL}", rf"Suggested Motion{_PLURAL}", rf"Possible Motion{_PLURAL}",
+    rf"Staff Recommendation{_PLURAL}", r"Staff Recommends", rf"Recommendation{_PLURAL} for Action", rf"Recommendation{_PLURAL}",
 )
 # A labelled action: "Recommended Action: That Council ..." (the label is dropped).
 ACTION_LABEL = re.compile(rf"^[ \t]*(?:{'|'.join(ACTION_LABELS)})[ \t]*:[ \t]*", re.I | re.M)

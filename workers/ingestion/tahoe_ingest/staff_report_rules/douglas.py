@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import re
 
-from ..staff_reports import Context, FetchFailed, Mapping, Uncertain, leading, long_date, norm_number, title_overlap, words
+from ..staff_reports import Context, Mapping, TooLarge, Uncertain, leading, long_date, norm_number, title_overlap, words
 from . import _granicus
 
 MAX_BYTES = 100 * 1024 * 1024  # Douglas packets reach 98 MB …
@@ -85,10 +85,8 @@ def _read_packet(read):
     """Run a packet download, turning "too large" into Uncertain: retrying the same oversized file would never succeed."""
     try:
         return read()
-    except FetchFailed as exc:
-        if "byte limit" in str(exc):
-            raise Uncertain(f"the agenda packet is larger than {MAX_BYTES // (1024 * 1024)} MB") from exc
-        raise
+    except TooLarge as exc:
+        raise Uncertain(f"the agenda packet is larger than {MAX_BYTES // (1024 * 1024)} MB") from exc
 
 
 def _listed_packet(ctx: Context, agendas: list) -> tuple[str, dict, int, str]:

@@ -423,7 +423,7 @@ class Supporting:
     def __init__(self, conn):
         self.rows = {r["item_id"]: r for r in conn.execute(
             """SELECT i.id AS item_id,s.item_id IS NOT NULL AS has_report,s.kind,s.title,s.url,s.page_start,s.page_end,
-              s.page_count,s.sha256,s.pages,s.mapped_at,a.text AS summary_text,a.citations AS summary_citations,a.summarized_at,
+              s.page_count,s.sha256,s.pages,s.media_type,s.mapped_at,a.text AS summary_text,a.citations AS summary_citations,a.summarized_at,
               t.files AS attachments
             FROM agenda_items i
             LEFT JOIN item_staff_reports s ON s.item_id=i.id AND s.source_fingerprint=i.source_fingerprint

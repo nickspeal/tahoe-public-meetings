@@ -33,20 +33,19 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from ..staff_reports import MIN_TITLE_OVERLAP, Context, Item, Mapping, Uncertain, leading, norm_number, title_overlap
+from ..staff_reports import (MIN_TITLE_OVERLAP, PRINTED_DATE, Context, Item, Mapping, Uncertain, leading, norm_number,
+                             parse_printed_date, stored_pdf_packets, title_overlap)
 
 MAX_MEMO_PAGES = 12
 _PG = re.compile(r"\S\s{2,}(?:(?:Action|Info)\s+)?Pg\.\s*(\d{1,3}[A-Z]?)\s*$")
 _LETTER = re.compile(r"^\s{0,3}([A-Z])\.\s+(\S.*)$")
 _SUB = re.compile(r"^\s{3,12}(\d{1,2})\.\s+(\S.*)$")
 _LIST = re.compile(r"^\s*[a-z]\.\s")  # "a. PCTPA   Pg. 81": a status report's own entry, not the line above it
-_DATE = re.compile(r"\bDATE:\s*([A-Z][a-z]+)\.?\s+(\d{1,2}),\s*(\d{4})")
+_DATE = re.compile(rf"\bDATE:\s*({PRINTED_DATE})")
 _SUBJECT = re.compile(r"SUBJECT:[ \t]*(.*(?:\n[ \t]{10,}\S.*){0,2})")
 _CONTINUATION = re.compile(r"^\s*Page \d+\s*$", re.M)
 _ATTACHMENT = re.compile(r"^\s*Agenda Item [A-Z]\b[\s,]*(?:\n\s*)?Attachment", re.M)
 _CONSENT = re.compile(r"^\s*Consent Calendar", re.I)
-_MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
-           "november", "december"]
 
 
 def packet_stamp(text: str) -> str | None:
@@ -96,13 +95,9 @@ def agenda_rows(pages: dict[int, str]) -> dict[str, dict]:
 
 
 def memo_date(text: str) -> date | None:
+    """The memo's "DATE:", or None."""
     found = _DATE.search(text)
-    if not found or found.group(1).casefold() not in _MONTHS:
-        return None
-    try:
-        return date(int(found.group(3)), _MONTHS.index(found.group(1).casefold()) + 1, int(found.group(2)))
-    except ValueError:
-        return None
+    return parse_printed_date(found.group(1)) if found else None
 
 
 def _target(item: Item, rows: dict, numbers: set) -> tuple[str, str, str] | str:
@@ -132,10 +127,10 @@ def _target(item: Item, rows: dict, numbers: set) -> tuple[str, str, str] | str:
 def map_pctpa(ctx: Context) -> list[Mapping]:
     candidates = ctx.numbered()
     cited = {c["documentId"] for item in ctx.meeting.items for c in item.citations}
-    packets = {d.sha256: d for d in ctx.meeting.documents if d.media_type == "application/pdf" and d.version_id in cited}
+    packets = stored_pdf_packets(ctx, documents=[d for d in ctx.meeting.documents if d.version_id in cited])
     if len(packets) != 1:
         raise Uncertain("no single agenda packet")
-    packet = next(iter(packets.values()))
+    packet = packets[0]
     agenda_pages = {int(c["page"]) for item in ctx.meeting.items for c in item.citations if c["documentId"] == packet.version_id}
     stored = ctx.stored_pages(packet.version_id)
     rows = agenda_rows({n: stored.get(n, "") for n in range(1, max(agenda_pages, default=0) + 1)})

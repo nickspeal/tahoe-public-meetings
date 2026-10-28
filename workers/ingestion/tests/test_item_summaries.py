@@ -171,6 +171,19 @@ def test_links_and_summaries_publish_and_survive_reprocessing(conn, monkeypatch)
     assert staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)["meetingsPending"] == 1
 
 
+def test_a_report_that_is_not_a_pdf_exports_its_media_type(conn, monkeypatch):
+    import dataclasses
+    from tahoe_ingest import staff_report_rules
+    rule = staff_report_rules.RULES["slt"]
+    monkeypatch.setitem(staff_report_rules.RULES, "slt",
+                        lambda ctx: [dataclasses.replace(m, media_type="text/html") if m.url.endswith("Item_5-_Executive_Summary.pdf")
+                                     else m for m in rule(ctx)])
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    exported = items(conn)
+    assert exported["5"]["staffReport"]["mediaType"] == "text/html" and exported["9"]["staffReport"]["mediaType"] == "application/pdf"
+    assert check_export(export_public(conn))[0] == []
+
+
 def test_a_replaced_staff_report_falls_back_to_the_excerpt(conn):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": StubModel("claude-haiku-5-5")}, today=TODAY)

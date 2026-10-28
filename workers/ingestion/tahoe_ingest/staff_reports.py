@@ -1,32 +1,4 @@
-"""Map agenda items to their own staff reports (IDEA-013), one verified rule per agency.
-
-This module is the shared core: the data model, temporary PDF and HTML reading, text
-checks, generic matching helpers, and the run that stores results. Each agency's rule
-lives in its own module under ``staff_report_rules/`` (see its README), which exposes
-``RULES = {"agency-id": rule}``; the package merges every module's rules, so
-``RULES`` and ``SUPPORTED`` here cover every agency with a rule. A rule takes a
-``Context`` and returns ``Mapping`` rows, for example:
-
-- South Lake Tahoe (``slt``): the agenda PDF links "Item N- Executive Summary.pdf" for
-  each item, a file that opens by naming the item number and title (``linked_reports``).
-- Tahoe Transportation District (``ttd``): the agenda's Page column refers to the
-  packet's stamped "~ Page N ~" footer, and every page of a staff memo carries an
-  "AGENDA ITEM: IV.A." footer (``agenda_page_column``).
-- Truckee (``truckee``): staff report pages in the agenda packet carry an "Item 5.1"
-  header (``packet_reports``).
-
-A mapping is stored only when two independent signals agree (the agenda's link or
-page reference, and the item number printed on the staff report itself), plus a
-title check where the report repeats the title. Anything uncertain stores nothing
-for that item, so no link or summary is shown.
-
-PDFs are temporary inputs (decision 0004). Only the official URL, page range,
-document hash, the evidence used, and the text of the report's first pages (for
-summary citations) are kept, in ``item_staff_reports``. A row is used only while
-the item's source fingerprint is unchanged. ``staff_report_scans`` remembers which
-version of each meeting's items was scanned, so an unchanged meeting is never
-downloaded again; every hosted statement is a billed operation (decision 0020).
-"""
+"""Shared core for mapping agenda items to their own staff reports (IDEA-013); the per-agency rules and their guide are in ``staff_report_rules/`` (README.md)."""
 from __future__ import annotations
 
 import hashlib
@@ -40,12 +12,14 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
-from .http import EndpointSkipped, fetch_bytes
+from . import http
+from .http import EndpointSkipped
 
 METHOD_VERSION = "staff-report-map-v1"
 LEADING_PAGES = 3  # pages of each report kept for summaries and their citations
 MAX_PAGE_CHARS = 8_000
 MAX_PDF_BYTES = 80 * 1024 * 1024
+MAX_JSON_BYTES = 16 * 1024 * 1024
 MAX_PDF_PAGES = 800
 RETRY_HOURS = 24  # a meeting whose downloads failed is scanned again after this long
 DEFAULT_MAX_MEETINGS = 6  # per scheduled run, nearest to today first; bounds downloads and statements
@@ -68,6 +42,11 @@ class Uncertain(Exception):
 
 class FetchFailed(Exception):
     """A download failed; the meeting is scanned again after ``RETRY_HOURS``."""
+
+
+class TooLarge(FetchFailed):
+    """A download exceeded its byte limit. Fetching it again would fail the same way, so ``Context.read_report``
+    skips the item for good instead of retrying the meeting."""
 
 
 @dataclass
@@ -104,6 +83,7 @@ class Mapping:
     sha256: str
     evidence: dict
     pages: list = field(default_factory=list)  # [(page number, text)] in the document at ``url``
+    media_type: str = "application/pdf"  # of the document at ``url``: "text/html" or a Word type when not a PDF
 
 
 @dataclass
@@ -183,9 +163,11 @@ def read_pdf(url: str, *, last_page: int | None = None, links: bool = False, max
     agency's known packet sizes. Nothing is kept after the call returns.
     """
     try:
-        raw, _ = fetch_bytes(url, max_bytes=max_bytes, accept="application/pdf")
+        raw, _ = http.fetch_bytes(url, max_bytes=max_bytes, accept="application/pdf")
     except EndpointSkipped:
         raise
+    except http.SourceTooLarge as exc:
+        raise TooLarge(f"{url}: {exc}") from exc
     except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
         raise FetchFailed(f"{url}: {exc}") from exc
     if not raw.startswith(b"%PDF-"):
@@ -237,24 +219,65 @@ def _fetch_html(url: str) -> str:
     return discovery.fetch_text(url)
 
 
-class Context:
-    """What a rule may use: the meeting, its stored pages (``stored(version_id) -> {page: text}``), a temporary PDF
-    reader, and an HTML link reader (``fetch_html(url) -> markup``; tests pass fixture markup)."""
+def _connection_reset(exc: Exception) -> bool:
+    return isinstance(exc, ConnectionResetError) or isinstance(getattr(exc, "reason", None), ConnectionResetError)
 
-    def __init__(self, stored, meeting: Meeting, reader, delay: float = 0.0, fetch_html=None):
+
+def _fetch_json(url: str):
+    """One JSON response (``Accept: application/json``), parsed; a reset connection is retried once."""
+    for attempt in (1, 2):
+        try:
+            raw, _ = http.fetch_bytes(url, max_bytes=MAX_JSON_BYTES, accept="application/json")
+            return json.loads(raw.decode("utf-8-sig"))
+        except Exception as exc:
+            if attempt == 2 or not _connection_reset(exc):
+                raise
+
+
+def _fetch_bytes(url: str, *, accept: str, max_bytes: int) -> bytes:
+    raw, _ = http.fetch_bytes(url, max_bytes=max_bytes, accept=accept)
+    return raw
+
+
+class Context:
+    """What a rule may use: the meeting, its stored pages (``stored(version_id) -> {page: text}``), and temporary reads.
+
+    ``reader`` is the PDF reader (``read_pdf``). ``fetch_html(url) -> markup``, ``fetch_json(url) -> object``, and
+    ``fetch_bytes(url, *, accept, max_bytes) -> bytes`` replace the network fetchers (tests pass fixture data);
+    left out, the module's own fetchers are looked up at call time.
+    """
+
+    def __init__(self, stored, meeting: Meeting, reader, delay: float = 0.0, fetch_html=None, fetch_json=None,
+                 fetch_bytes=None):
         self._stored, self.meeting, self._reader, self.delay = stored, meeting, reader, delay
-        self._fetch_html = fetch_html or _fetch_html
+        self._fetchers = {"html": fetch_html, "json": fetch_json, "bytes": fetch_bytes}
         self.downloads = 0
         self.skipped: dict[str, str] = {}
         self.fetch_failures: list[str] = []
         self.attachments: list[Attachments] = []
         self._cache: dict[str, dict] = {}
         self._html: dict[str, list] = {}
+        self._fetched: dict[tuple, object] = {}
 
     def _pause(self) -> None:
         if self.downloads and self.delay:
             time.sleep(self.delay)
         self.downloads += 1
+
+    def _fetch(self, kind: str, url: str, fetch):
+        """One download of ``url``, cached per kind and URL: counted, delayed, and with failures mapped to ours."""
+        key = (kind, url)
+        if key not in self._fetched:
+            self._pause()
+            try:
+                self._fetched[key] = fetch()
+            except (EndpointSkipped, FetchFailed, Uncertain):
+                raise
+            except http.SourceTooLarge as exc:
+                raise TooLarge(f"{url}: {exc}") from exc
+            except Exception as exc:  # Network, HTTP, TLS, size, and parse failures are all retried later.
+                raise FetchFailed(f"{url}: {exc}") from exc
+        return self._fetched[key]
 
     def read(self, url: str, *, max_bytes: int | None = None, max_pages: int | None = None, **kwargs) -> dict:
         """A temporary PDF read (``read_pdf``); ``max_bytes``/``max_pages`` replace its default limits when given."""
@@ -263,11 +286,17 @@ class Context:
         return self._reader(url, **kwargs, **limits)
 
     def read_report(self, item: Item, url: str) -> dict | None:
-        """One item's own report, or None (the item is skipped) when it cannot be read."""
+        """One item's own report, or None (the item is skipped) when it cannot be read.
+
+        A report over the download limit (``TooLarge``) is skipped for good; other download
+        failures are recorded so the meeting is retried after ``RETRY_HOURS``.
+        """
         try:
             return self.read(url, last_page=LEADING_PAGES)
         except Uncertain as exc:
             self.skip(item, str(exc))
+        except TooLarge:
+            self.skip(item, "report is larger than the download limit")
         except (FetchFailed, EndpointSkipped) as exc:
             self.skip(item, "download failed")
             self.fetch_failures.append(str(exc)[:300])
@@ -275,28 +304,41 @@ class Context:
             self.skip(item, "report PDF could not be read")
         return None
 
-    def html_links(self, url: str) -> list[dict]:
-        """Every http(s) link on an HTML page, absolute and in document order: ``[{"url", "text"}]``.
+    def html(self, url: str) -> str:
+        """The raw markup of an HTML page (``""`` for an empty one).
 
-        Counts as a download and honours the delay; each URL is fetched at most once per
-        context. A failed fetch raises ``FetchFailed`` (the meeting is retried later), a
-        skipped endpoint ``EndpointSkipped``, and markup with no links at all ``Uncertain``.
+        Counts as a download, honours the delay, and is fetched at most once per context. A
+        failed fetch raises ``FetchFailed`` (the meeting is retried later) and a skipped
+        endpoint ``EndpointSkipped``.
+        """
+        return self._fetch("html", url, lambda: (self._fetchers["html"] or _fetch_html)(url))
+
+    def html_links(self, url: str) -> list[dict]:
+        """Every http(s) link on an HTML page (``html``), absolute and in document order: ``[{"url", "text"}]``.
+
+        Markup with no links at all raises ``Uncertain``.
         """
         if url not in self._html:
             from .discovery import anchors
-            self._pause()
-            try:
-                markup = self._fetch_html(url)
-            except (EndpointSkipped, FetchFailed, Uncertain):
-                raise
-            except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
-                raise FetchFailed(f"{url}: {exc}") from exc
-            links = [{"url": href, "text": text} for href, text in anchors(markup, url)
+            links = [{"url": href, "text": text} for href, text in anchors(self.html(url), url)
                      if re.match(r"https?://", href, re.I)]
             if not links:
                 raise Uncertain(f"{url} has no links")
             self._html[url] = links
         return [dict(link) for link in self._html[url]]
+
+    def fetch_json(self, url: str):
+        """A JSON API response, parsed (one retry on a reset connection); same accounting and failures as ``html``.
+
+        The cached object is returned on later calls for the same URL: don't modify it.
+        """
+        return self._fetch("json", url, lambda: (self._fetchers["json"] or _fetch_json)(url))
+
+    def fetch_bytes(self, url: str, *, accept: str, max_bytes: int) -> bytes:
+        """A file's bytes (a Word report, say); same accounting and failures as ``html``. Over ``max_bytes`` raises
+        ``TooLarge``."""
+        return self._fetch("bytes", url, lambda: (self._fetchers["bytes"] or _fetch_bytes)(url, accept=accept,
+                                                                                          max_bytes=max_bytes))
 
     def stored_pages(self, version_id: str) -> dict[int, str]:
         if version_id not in self._cache:
@@ -436,6 +478,45 @@ def printed_meeting_dates(text: str) -> list[tuple[date, date]]:
         except ValueError:
             continue
     return found
+
+
+_MONTH_NAMES = [m.casefold() for m in _MONTHS.split("|")]
+# A date as reports print it after a label: "October 21, 2026", "Oct. 21, 2026", "JUNE 24, 2026", "September 03, 2026".
+PRINTED_DATE = r"[A-Za-z]{3,9}\.?\s+\d{1,2}(?:,\s*|\s+)\d{4}"
+_PRINTED_DATE = re.compile(r"\s*([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:,\s*|\s+)(\d{4})\b")
+
+
+def parse_printed_date(text: str) -> date | None:
+    """The date ``text`` starts with (``PRINTED_DATE``: a full or three-letter month name, any case, "Sept", and
+    zero-padded days allowed), or None. Rules find it after their own label, e.g.
+    ``re.search(rf"MEETING DATE:\s*({PRINTED_DATE})", page)``."""
+    found = _PRINTED_DATE.match(text)
+    if not found:
+        return None
+    name = found.group(1).casefold()
+    month = next((n for n, full in enumerate(_MONTH_NAMES, 1) if name in (full, full[:3]) or (name == "sept" and n == 9)), None)
+    try:
+        return date(int(found.group(3)), month, int(found.group(2))) if month else None
+    except ValueError:
+        return None
+
+
+def stored_pdf_packets(ctx: "Context", pattern=None, *, documents=None) -> list[Document]:
+    """The meeting's captured PDFs, one per file (sha256), that look like a packet.
+
+    ``documents`` defaults to the meeting's current documents. Discovery may store one file
+    under two URLs; the copy kept is the first by (URL with an encoded "+", source document
+    ID), so a plain URL wins. With ``pattern`` (a regex), only files whose stored pages match it
+    somewhere are kept.
+    """
+    found: dict[str, Document] = {}
+    for document in sorted(ctx.meeting.documents if documents is None else documents,
+                           key=lambda d: ("%2B" in d.url, d.source_document_id)):
+        if document.media_type != "application/pdf" or document.sha256 in found:
+            continue
+        if pattern is None or any(re.search(pattern, text) for text in ctx.stored_pages(document.version_id).values()):
+            found[document.sha256] = document
+    return list(found.values())
 
 
 def report_names_item(first_page_text: str, item: Item, *, number_patterns, meeting_date: date | None = None,
@@ -692,22 +773,24 @@ def _store(conn, meeting: Meeting, mappings: list[Mapping], status: str, detail:
     """One statement per meeting: replace its mappings and attachment lists and record the scan (decision 0020)."""
     rows = [{"item_id": m.item_id, "source_fingerprint": m.fingerprint, "kind": m.kind, "title": m.title, "url": m.url,
              "page_start": m.page_start, "page_end": m.page_end, "page_count": m.page_count, "sha256": m.sha256,
-             "evidence": m.evidence, "pages": [{"number": n, "text": t} for n, t in m.pages]} for m in mappings]
+             "evidence": m.evidence, "pages": [{"number": n, "text": t} for n, t in m.pages], "media_type": m.media_type}
+            for m in mappings]
     # A retried scan keeps mappings it could not recheck; a completed one removes those it no longer verifies.
     conn.execute("""WITH incoming AS (
             SELECT * FROM jsonb_to_recordset(%(rows)s::jsonb) AS r(item_id text,source_fingerprint text,kind text,title text,
-              url text,page_start int,page_end int,page_count int,sha256 text,evidence jsonb,pages jsonb)),
+              url text,page_start int,page_end int,page_count int,sha256 text,evidence jsonb,pages jsonb,media_type text)),
         removed AS (
             DELETE FROM item_staff_reports s USING agenda_items i
             WHERE %(complete)s AND s.item_id=i.id AND i.meeting_id=%(meeting)s AND s.item_id NOT IN (SELECT item_id FROM incoming)),
         stored AS (
             INSERT INTO item_staff_reports(item_id,source_fingerprint,method,kind,title,url,page_start,page_end,page_count,
-              sha256,evidence,pages)
-            SELECT item_id,source_fingerprint,%(method)s,kind,title,url,page_start,page_end,page_count,sha256,evidence,pages FROM incoming
+              sha256,evidence,pages,media_type)
+            SELECT item_id,source_fingerprint,%(method)s,kind,title,url,page_start,page_end,page_count,sha256,evidence,pages,media_type
+            FROM incoming
             ON CONFLICT(item_id) DO UPDATE SET source_fingerprint=excluded.source_fingerprint,method=excluded.method,
               kind=excluded.kind,title=excluded.title,url=excluded.url,page_start=excluded.page_start,page_end=excluded.page_end,
               page_count=excluded.page_count,sha256=excluded.sha256,evidence=excluded.evidence,pages=excluded.pages,
-              mapped_at=CASE WHEN item_staff_reports.sha256 IS DISTINCT FROM excluded.sha256
+              media_type=excluded.media_type,mapped_at=CASE WHEN item_staff_reports.sha256 IS DISTINCT FROM excluded.sha256
                 OR item_staff_reports.pages IS DISTINCT FROM excluded.pages THEN now() ELSE item_staff_reports.mapped_at END),
         files AS (
             SELECT * FROM jsonb_to_recordset(%(files)s::jsonb) AS f(item_id text,source_fingerprint text,files jsonb,evidence jsonb)),
@@ -739,6 +822,6 @@ def public_report(item_id: str, row: dict, cited_pages: set[int], iso) -> dict:
     """The item's staff report for the public export, carrying only the pages its summary cites."""
     pages = row["pages"] if isinstance(row["pages"], list) else json.loads(row["pages"])
     return {"id": report_document_id(item_id), "kind": row["kind"], "title": row["title"], "url": row["url"],
-            "mediaType": "application/pdf", "page": row["page_start"], "pageEnd": row["page_end"],
+            "mediaType": row.get("media_type") or "application/pdf", "page": row["page_start"], "pageEnd": row["page_end"],
             "pageCount": row["page_count"], "sha256": row["sha256"], "fetchedAt": iso(row["mapped_at"]),
             "pages": [{"number": p["number"], "text": clean_text(p["text"])} for p in pages if p["number"] in cited_pages]}

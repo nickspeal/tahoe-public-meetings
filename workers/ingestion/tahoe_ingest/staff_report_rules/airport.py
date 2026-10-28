@@ -29,7 +29,8 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from ..staff_reports import Context, Item, Mapping, Uncertain, linked_reports, norm_number, title_overlap
+from ..staff_reports import (PRINTED_DATE, Context, Item, Mapping, Uncertain, linked_reports, norm_number, parse_printed_date,
+                             title_overlap)
 
 TITLE_FALLBACK = 0.8
 MAX_REPORTS = 40  # downloads per meeting; items beyond this are skipped
@@ -40,19 +41,13 @@ _AGENDA_TAB = re.compile(r"-{3,}\s*TAB\s*(\d{1,2})\s*$", re.I)
 _FILE_TAB = re.compile(r"^\s*TAB\s*(\d{1,2})\s*-", re.I)  # "TAB 04 - ...", not "TAB 04a - ..."
 _ITEM = re.compile(r"^[ \t]*AGENDA ITEM:?[ \t_]*(\d{1,2})?[ \t_]*$", re.M | re.I)  # also "Agenda Item___09____"
 _TITLE = re.compile(r"AGENDA TITLE:\s*(.+?)(?=\n\s*\n|\n\s*MEETING DATE:|\Z)", re.S)
-_DATE = re.compile(r"MEETING DATE:\s*([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})")
-_MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+_DATE = re.compile(rf"MEETING DATE:\s*({PRINTED_DATE})")
 
 
 def meeting_date(text: str) -> date | None:
     """The report's "MEETING DATE:" ("October 21, 2026", "Oct 21, 2026", "JUNE 24, 2026"), or None."""
     found = _DATE.search(text)
-    if not found or found.group(1)[:3].casefold() not in _MONTHS:
-        return None
-    try:
-        return date(int(found.group(3)), _MONTHS.index(found.group(1)[:3].casefold()) + 1, int(found.group(2)))
-    except ValueError:
-        return None
+    return parse_printed_date(found.group(1)) if found else None
 
 
 def agenda_tabs(pages: dict[int, str]) -> dict[str, list]:

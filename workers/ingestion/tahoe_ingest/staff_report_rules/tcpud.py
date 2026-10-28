@@ -90,7 +90,7 @@ def _agenda(ctx: Context):
 
 def map_tcpud(ctx: Context) -> list[Mapping]:
     agenda = _agenda(ctx)
-    markup = _granicus.markup(ctx, agenda.url)
+    markup = ctx.html(agenda.url)
     if not markup.strip():
         raise Uncertain("the agenda page is empty now (Granicus moves an event's agenda to its video clip)")
     if hashlib.sha256(markup.encode("utf-8")).hexdigest() != agenda.sha256:

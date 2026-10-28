@@ -2,31 +2,13 @@
 
 Granicus agenda pages (``GeneratedAgendaViewer.php``) carry each item's number in a table
 cell beside its title, which ``Context.html_links`` drops, so these rules read the page's
-markup itself. ``markup`` fetches it through the context (same delay, download count, and
-failure handling as ``html_links``).
+markup itself (``Context.html``).
 """
 from __future__ import annotations
 
 import html
 import re
 from urllib.parse import parse_qs, urlparse
-
-from ..http import EndpointSkipped
-from ..staff_reports import Context, FetchFailed, Uncertain
-
-
-def markup(ctx: Context, url: str) -> str:
-    """The raw markup of an HTML page, fetched once per context; an empty page is returned as ``""``."""
-    cache = ctx.__dict__.setdefault("_granicus_markup", {})
-    if url not in cache:
-        ctx._pause()
-        try:
-            cache[url] = ctx._fetch_html(url)
-        except (EndpointSkipped, FetchFailed, Uncertain):
-            raise
-        except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
-            raise FetchFailed(f"{url}: {exc}") from exc
-    return cache[url]
 
 
 def text(fragment: str) -> str:

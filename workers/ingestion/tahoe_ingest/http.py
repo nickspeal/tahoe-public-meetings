@@ -20,6 +20,10 @@ class EndpointSkipped(RuntimeError):
     """The URL is listed in the skip configuration, so no request was made."""
 
 
+class SourceTooLarge(ValueError):
+    """The response is larger than the caller's ``max_bytes``; fetching it again would fail the same way."""
+
+
 def _skip_file() -> Path:
     return Path(os.environ.get('TAHOE_SOURCE_ROOT', '.')) / SKIPPED_ENDPOINTS
 
@@ -64,10 +68,12 @@ def _native_fetch(url: str, max_bytes: int, accept: str, payload: bytes | None =
             '--max-filesize', str(max_bytes), '--user-agent', USER_AGENT,
             '--header', 'Accept: ' + accept, '--output', str(output), '--write-out', '%{content_type}', *extra, url],
             capture_output=True, text=True, timeout=65)
+        if run.returncode == 63:  # curl: --max-filesize exceeded
+            raise SourceTooLarge(f'source exceeds {max_bytes} byte limit')
         if run.returncode:
             raise RuntimeError(f'Public source download failed: {run.stderr.strip()[:400]}')
         if output.stat().st_size > max_bytes:
-            raise ValueError(f'source exceeds {max_bytes} byte limit')
+            raise SourceTooLarge(f'source exceeds {max_bytes} byte limit')
         return output.read_bytes(), run.stdout.strip()
 
 
@@ -85,7 +91,7 @@ def fetch_bytes(url: str, *, max_bytes: int, accept: str = '*/*', payload: bytes
                 raise ValueError('source redirected outside HTTPS')
             data = response.read(max_bytes + 1)
             if len(data) > max_bytes:
-                raise ValueError(f'source exceeds {max_bytes} byte limit')
+                raise SourceTooLarge(f'source exceeds {max_bytes} byte limit')
             return data, response.headers.get('Content-Type', '')
     except urllib.error.HTTPError as exc:
         # One attempt with native transport may work on public DocAccess sites.

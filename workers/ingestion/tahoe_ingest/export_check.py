@@ -17,6 +17,10 @@ PACIFIC = ZoneInfo("America/Los_Angeles")
 SUPPRESSION_DAYS = 3  # Matches tahoe_ingest.schedules: a nearby real record replaces a forecast.
 
 
+# What an item's own staff report may be (packages/domain/public.ts StaffReport.mediaType).
+STAFF_REPORT_TYPES = ("application/pdf", "text/html", "application/msword",
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
 def check(data):
     errors = []
     def require(condition, message):
@@ -111,6 +115,7 @@ def check(data):
                 url(report.get("url"), f"{iid}.staffReport.url")
                 require(rid not in docs, f"{iid}: staff report ID repeats a meeting document")
                 require(bool(re.fullmatch(r"[0-9a-f]{64}", report.get("sha256", ""))), f"{iid}: invalid staff report hash")
+                require(report.get("mediaType") in STAFF_REPORT_TYPES, f"{iid}: unsupported staff report format")
                 require(0 < report.get("page", 0) <= report.get("pageEnd", 0) <= report.get("pageCount", 0),
                         f"{iid}: invalid staff report page range")
                 require(all(0 < p["number"] <= report["pageCount"] for p in report.get("pages", [])), f"{iid}: invalid staff report page")

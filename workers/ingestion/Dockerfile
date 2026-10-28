@@ -8,8 +8,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# pdfinfo/pdftotext for extraction; curl + CA certificates for the verified-TLS fallback.
-RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils curl ca-certificates \
+# pdfinfo/pdftotext for extraction; antiword for legacy .doc staff reports (Washoe);
+# curl + CA certificates for the verified-TLS fallback.
+RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils antiword curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

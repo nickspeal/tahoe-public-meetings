@@ -155,6 +155,8 @@ CREATE TABLE IF NOT EXISTS item_staff_reports (
   page_count integer NOT NULL, sha256 text NOT NULL, evidence jsonb NOT NULL, pages jsonb NOT NULL,
   mapped_at timestamptz NOT NULL DEFAULT now()
 );
+-- The report's own format: most are PDFs; some are agency webpages (text/html) or Word files.
+ALTER TABLE item_staff_reports ADD COLUMN IF NOT EXISTS media_type text NOT NULL DEFAULT 'application/pdf';
 -- Which version of a meeting's items and documents was last scanned for staff reports.
 CREATE TABLE IF NOT EXISTS staff_report_scans (
   meeting_id text PRIMARY KEY REFERENCES meetings(id), items_sha256 text NOT NULL,

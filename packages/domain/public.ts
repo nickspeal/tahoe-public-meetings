@@ -31,16 +31,21 @@ export interface ItemAttachment {
   label: string;
 }
 /**
- * An agenda item's own staff report: a separate official PDF (`page` 1) or a page range of the
- * agenda packet. Summaries with method `claude-staff-report-v1` cite it by `id`; `pages` holds
- * only the pages those citations quote.
+ * An agenda item's own staff report: a separate official PDF (`page` 1), a page range of the
+ * agenda packet, an agency webpage (a Legistar file's legislation text), or a Word file. Summaries
+ * with method `claude-staff-report-v1` cite it by `id`; `pages` holds only the pages those
+ * citations quote (numbered text sections when the report is not a PDF).
  */
 export interface StaffReport {
   id: string;
   kind: 'executive-summary' | 'staff-report' | 'staff-memo';
   title: string;
   url: string;
-  mediaType: 'application/pdf';
+  mediaType:
+    | 'application/pdf'
+    | 'text/html'
+    | 'application/msword'
+    | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
   /** First page of the report in the document at `url`. */
   page: number;
   pageEnd: number;

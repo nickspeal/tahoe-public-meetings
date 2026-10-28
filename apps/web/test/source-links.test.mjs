@@ -74,6 +74,20 @@ test('a verified staff report gets its own card: a separate PDF, or its pages in
     { href: `${report.url}#page=1`, label: 'Read the executive summary', detail: 'Official PDF' });
   const memo = { ...report, kind: 'staff-memo', url: 'https://example.gov/packet.pdf', page: 21, pageEnd: 36, pageCount: 197 };
   assert.deepEqual(links.staffReportLink({ staffReport: memo }),
-    { href: 'https://example.gov/packet.pdf#page=21', label: 'Read the staff report', detail: 'Pages 21–36 of the agenda packet · official PDF' });
+    { href: 'https://example.gov/packet.pdf#page=21', label: 'Read the staff memo', detail: 'Pages 21–36 of the agenda packet · official PDF' });
+  assert.deepEqual(links.staffReportLink({ staffReport: { ...memo, kind: 'staff-report' } }).label, 'Read the staff report');
   assert.equal(links.staffReportLink({}), null);
+});
+
+test('a staff report that is a webpage or a Word file links without a page fragment', () => {
+  const text = { id: 'i:staff-report', kind: 'staff-report', title: 'Legislation text', mediaType: 'text/html',
+    url: 'https://eldorado.legistar.com/LegislationDetail.aspx?ID=8296509&GUID=X', page: 1, pageEnd: 2, pageCount: 2,
+    sha256: 'a'.repeat(64), fetchedAt: '2026-10-27T00:00:00Z', pages: [] };
+  assert.deepEqual(links.staffReportLink({ staffReport: text }),
+    { href: text.url, label: 'Read the legislation text', detail: 'Official agency webpage' });
+  const word = { ...text, title: 'Staff report', url: 'https://legistar.granicus.com/washoe-nv/attachments/x.docx',
+    mediaType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+  assert.deepEqual(links.staffReportLink({ staffReport: word }),
+    { href: word.url, label: 'Read the staff report', detail: 'Official Word document' });
+  assert.equal(links.staffReportLink({ staffReport: { ...word, mediaType: 'application/msword' } }).detail, 'Official Word document');
 });

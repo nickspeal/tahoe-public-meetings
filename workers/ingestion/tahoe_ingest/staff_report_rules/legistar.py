@@ -9,9 +9,9 @@ agencies; ``AGENCIES`` says which report each one publishes and how it is checke
 - El Dorado Board of Supervisors: the file's own Legislation Text (``/Matters/{id}/Versions``
   then ``/Texts/{id}``), the department's memo. The agenda prints "7. 26-1680" and the
   text carries that file and the agenda item's own title. It is linked at the file's
-  LegislationDetail page (from the meeting page, else the agenda's gateway link) and
-  kept as pseudo-pages; its hash is of the text, since the rendered PDF prints the day
-  it was rendered.
+  LegislationDetail page (from the meeting page, else the agenda's gateway link), so its
+  media type is text/html, and kept as pseudo-pages; its hash is of the text, since the
+  rendered PDF prints the day it was rendered.
 - El Dorado Planning Commission: the attachment named "A - Staff Report" or
   "B - Staff Memo", whose first page prints the meeting date ("Date:" or "Agenda of:")
   and a case number from the item title; otherwise the Legislation Text as above.
@@ -23,34 +23,33 @@ agencies; ``AGENCIES`` says which report each one publishes and how it is checke
   prints "Meeting Date: <date>  Agenda Item: 8A". Agendas from before Legistar
   (washoecounty.gov) are out of reach.
 
-API responses and Word files come through ``fetch_json`` and ``fetch_word`` (tests replace
-them); each counts as a download and honours the context's delay. At most
-``MAX_REPORTS`` reports are read per meeting.
+API responses and Word files come through ``Context.fetch_json`` and ``Context.fetch_bytes``;
+each counts as a download and honours the context's delay. Per meeting, at most
+``MAX_REPORTS`` PDF or Word reports are downloaded and at most ``MAX_TEXTS`` Legislation
+Texts (two small API calls each) are read; later items are skipped.
 """
 from __future__ import annotations
 
 import hashlib
 import io
-import json
 import re
 import shutil
 import subprocess
 import tempfile
-import time
 import urllib.parse
 import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from .. import http
 from ..http import EndpointSkipped
-from ..staff_reports import (LEADING_PAGES, MAX_PAGE_CHARS, MIN_TITLE_OVERLAP, Context, FetchFailed, Item, Mapping, Uncertain,
+from ..staff_reports import (MAX_PAGE_CHARS, MIN_TITLE_OVERLAP, Context, FetchFailed, Item, Mapping, TooLarge, Uncertain,
                              clean_text, leading, long_date, norm_number, title_overlap)
 
 API = "https://webapi.legistar.com/v1"
-MAX_JSON_BYTES = 16 * 1024 * 1024
 MAX_WORD_BYTES = 30 * 1024 * 1024
-MAX_REPORTS = 40  # report reads per meeting (a Legislation Text is two API calls); later items are skipped
+MAX_REPORTS = 40  # PDF and Word report downloads per meeting; later items are skipped
+MAX_TEXTS = 100  # Legislation Text reads per meeting (two small API calls each); later items are skipped
+WORD_TYPES = {"doc": "application/msword", "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
 TEXT_TITLE_OVERLAP = 0.8  # the Legislation Text repeats the agenda title word for word
 
 # client: the Legistar site and API name (the discovery indexUrl host); body: EventBodyName.
@@ -62,58 +61,19 @@ AGENCIES = {
 }
 
 
-# --- Fetch hooks (tests replace these) ---------------------------------------------
-
-def _connection_reset(exc: Exception) -> bool:
-    return isinstance(exc, ConnectionResetError) or isinstance(getattr(exc, "reason", None), ConnectionResetError)
-
-
-def fetch_json(url: str):
-    """One Legistar API response, parsed; a reset connection is retried once."""
-    for attempt in (1, 2):
-        try:
-            raw, _ = http.fetch_bytes(url, max_bytes=MAX_JSON_BYTES, accept="application/json")
-            return json.loads(raw.decode("utf-8-sig"))
-        except Exception as exc:
-            if attempt == 2 or not _connection_reset(exc):
-                raise
-
-
-def fetch_word(url: str) -> bytes:
-    """A Word attachment's bytes."""
-    raw, _ = http.fetch_bytes(url, max_bytes=MAX_WORD_BYTES)
-    return raw
-
-
 def antiword_available() -> bool:
-    """Whether legacy .doc files can be read (the worker image has only poppler unless antiword is added)."""
+    """Whether legacy .doc files can be read (the worker image installs antiword)."""
     return shutil.which("antiword") is not None
 
 
-def _pause(ctx: Context) -> None:
-    """The same accounting ``Context.read`` does: a delay between downloads, and a count."""
-    if ctx.downloads and ctx.delay:
-        time.sleep(ctx.delay)
-    ctx.downloads += 1
-
-
 class _Api:
-    """Cached Legistar API calls for one meeting; failures raise ``FetchFailed``."""
+    """Legistar API calls for one meeting through ``Context.fetch_json`` (cached, counted; failures raise ``FetchFailed``)."""
 
     def __init__(self, ctx: Context, client: str):
-        self.ctx, self.client, self._cache = ctx, client, {}
+        self.ctx, self.client = ctx, client
 
     def get(self, path: str):
-        url = f"{API}/{self.client}/{path}"
-        if url not in self._cache:
-            _pause(self.ctx)
-            try:
-                self._cache[url] = fetch_json(url)
-            except (EndpointSkipped, FetchFailed, Uncertain):
-                raise
-            except Exception as exc:  # Network, HTTP, TLS, size, and JSON failures are all retried later.
-                raise FetchFailed(f"{url}: {exc}") from exc
-        return self._cache[url]
+        return self.ctx.fetch_json(f"{API}/{self.client}/{path}")
 
 
 # --- Agenda side --------------------------------------------------------------------
@@ -283,15 +243,23 @@ class _Run:
 
     def __init__(self, ctx: Context, agency: dict, api: _Api, blocks: dict):
         self.ctx, self.agency, self.api, self.blocks = ctx, agency, api, blocks
-        self.reports = 0
+        self.reports = self.texts = 0
         self._detail_links = None
 
     def spend(self, item: Item) -> bool:
-        """Count one report read; False (the item skipped) once ``MAX_REPORTS`` were read."""
+        """Count one PDF or Word download; False (the item skipped) once ``MAX_REPORTS`` were made."""
         if self.reports >= MAX_REPORTS:
             self.ctx.skip(item, f"more than {MAX_REPORTS} reports in one meeting")
             return False
         self.reports += 1
+        return True
+
+    def spend_text(self, item: Item) -> bool:
+        """Count one Legislation Text read; False (the item skipped) once ``MAX_TEXTS`` were read."""
+        if self.texts >= MAX_TEXTS:
+            self.ctx.skip(item, f"more than {MAX_TEXTS} legislation texts in one meeting")
+            return False
+        self.texts += 1
         return True
 
     def failed(self, item: Item, exc: Exception) -> None:
@@ -306,10 +274,12 @@ class _Run:
             return None
         if not self.spend(item):
             return None
-        _pause(self.ctx)
         try:
-            raw = fetch_word(url)
-        except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
+            raw = self.ctx.fetch_bytes(url, accept="*/*", max_bytes=MAX_WORD_BYTES)
+        except TooLarge:  # Retrying would download the same oversized file every day.
+            self.ctx.skip(item, "report is larger than the download limit")
+            return None
+        except (FetchFailed, EndpointSkipped) as exc:
             self.failed(item, exc)
             return None
         try:
@@ -319,23 +289,8 @@ class _Run:
             return None
 
     def pdf(self, item: Item, url: str) -> dict | None:
-        """The PDF's leading pages (``Context.read_report``), except that a file over the size limit is skipped for good."""
-        if not self.spend(item):
-            return None
-        try:
-            return self.ctx.read(url, last_page=LEADING_PAGES)
-        except FetchFailed as exc:
-            if "byte limit" in str(exc):  # Retrying would download the same oversized file every day.
-                self.ctx.skip(item, "staff report PDF is larger than the download limit")
-                return None
-            self.failed(item, exc)
-        except Uncertain as exc:
-            self.ctx.skip(item, str(exc))
-        except EndpointSkipped as exc:
-            self.failed(item, exc)
-        except subprocess.SubprocessError:
-            self.ctx.skip(item, "report PDF could not be read")
-        return None
+        """The PDF's leading pages (``Context.read_report``), counted against ``MAX_REPORTS``."""
+        return self.ctx.read_report(item, url) if self.spend(item) else None
 
     def detail_url(self, file_number: str, matter_id: int) -> str:
         """The file's LegislationDetail page from the meeting page's links, else the agenda's own gateway link to it."""
@@ -364,7 +319,7 @@ def legislation_text(run: _Run, item: Item, row: dict, block: dict) -> Mapping |
     if re.search(r"\bapprove the (?:draft )?minutes\b", item.title, re.I):
         ctx.skip(item, "minutes")
         return None
-    if not run.spend(item):
+    if not run.spend_text(item):
         return None
     try:
         versions = run.api.get(f"Matters/{matter}/Versions")
@@ -397,7 +352,7 @@ def legislation_text(run: _Run, item: Item, row: dict, block: dict) -> Mapping |
     return Mapping(item.id, item.fingerprint, "staff-report", "Legislation text", run.detail_url(file_number, matter), 1, len(pages),
                    len(pages), hashlib.sha256(composed.encode()).hexdigest(),
                    {"agendaLine": _FILE.match(block["line"]).group().strip(), "agendaPage": block["page"], "fileNumber": file_number,
-                    "reportHeading": heading, "titleOverlap": round(overlap, 2)}, leading(pages, 1, len(pages)))
+                    "reportHeading": heading, "titleOverlap": round(overlap, 2)}, leading(pages, 1, len(pages)), "text/html")
 
 
 def _file_line(run: _Run, item: Item, row: dict, block: dict | None) -> bool:
@@ -493,12 +448,13 @@ def washoe_commissioners(run: _Run, item: Item, row: dict, block: dict | None) -
         if read is None:
             return None
         text, raw = read
-        pages, sha, count = pseudo_pages(text), hashlib.sha256(raw).hexdigest(), None
+        pages, sha, count, media_type = pseudo_pages(text), hashlib.sha256(raw).hexdigest(), None, WORD_TYPES[ext]
     elif ext == "pdf":
         report = run.pdf(item, url)
         if report is None:
             return None
         pages, sha, count = {p["page_number"]: p["text"] for p in report["pages"]}, report["sha256"], report["page_count"]
+        media_type = "application/pdf"
         text = "\n".join(pages[n] for n in sorted(pages))
     else:
         run.ctx.skip(item, f"staff report is a .{ext or '?'} file")
@@ -524,7 +480,7 @@ def washoe_commissioners(run: _Run, item: Item, row: dict, block: dict | None) -
                    {"attachment": name, "agendaPage": block["page"], "fileNumber": row.get("EventItemMatterFile"),
                     "reportHeading": f"BOARD MEETING DATE: {long_date(run.ctx.meeting.local_date)}",
                     "titleOverlap": round(overlap, 2), "meetingDate": run.ctx.meeting.local_date.isoformat()},
-                   leading(pages, 1, count))
+                   leading(pages, 1, count), media_type)
 
 
 def washoe_planning(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:

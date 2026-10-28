@@ -39,11 +39,24 @@ export function itemSourceLink(meeting: Pick<Meeting, 'documents'>, item: Pick<A
     : { href: document.url, label, detail: 'Official agency webpage' };
 }
 
+const WORD_TYPES = new Set([
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]);
+
 /** Direct link to the item's own staff report (IDEA-013), shown as a second card beside the agenda link. */
 export function staffReportLink(item: Pick<AgendaItem, 'staffReport'>) {
   const report = item.staffReport;
   if (!report) return null;
-  const label = report.kind === 'executive-summary' ? 'Read the executive summary' : 'Read the staff report';
+  const label = report.title === 'Legislation text' ? 'Read the legislation text'
+    : report.kind === 'executive-summary' ? 'Read the executive summary'
+    : report.kind === 'staff-memo' ? 'Read the staff memo'
+    : 'Read the staff report';
+  const mediaType = report.mediaType ?? 'application/pdf';
+  if (mediaType !== 'application/pdf') {
+    const detail = WORD_TYPES.has(mediaType) ? 'Official Word document' : 'Official agency webpage';
+    return { href: report.url, label, detail };
+  }
   const inPacket = report.page > 1 || report.pageEnd < report.pageCount;
   const detail = inPacket
     ? `${report.pageEnd > report.page ? `Pages ${report.page}–${report.pageEnd}` : `Page ${report.page}`} of the agenda packet · official PDF`

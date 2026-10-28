@@ -1,0 +1,682 @@
+{
+ "note": "California Fish and Game Commission, Wildlife Resources Committee, 2026-09-10. The 2026 year page is reduced to this meeting's links and the next meeting's agenda; the Meeting Documents Index keeps its first page (text and link boxes); each staff summary keeps its first three pages trimmed to 30 lines. Item 7 (general public comment) is procedural.",
+ "meeting": {
+  "id": "california-fish-game:2026-09-10",
+  "agency_id": "california-fish-game",
+  "title": "Wildlife Resources Committee",
+  "local_date": "2026-09-10",
+  "official_url": "https://fgc.ca.gov/Meetings/2026"
+ },
+ "items": [
+  {
+   "id": "california-fish-game:2026-09-10:1",
+   "number": "1",
+   "title": "Approve Agenda and Order of items",
+   "section": null,
+   "fingerprint": "01db584fdb815ef678abcf70a78f4681e7d11e0d9b66c3562f30c732b6e07881",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Agenda and Order of items",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:2",
+   "number": "2",
+   "title": "Private Lands Management Program",
+   "section": null,
+   "fingerprint": "ae67ae2a066a78740a744f6691813c1f8682aad9401e33edacfe08e3ce72181c",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Private Lands Management Program",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:3",
+   "number": "3",
+   "title": "Annual Regulation Changes",
+   "section": null,
+   "fingerprint": "a2cdcf22cd56321afa21e46eb80654b6b6ebb5b7cac56c9544e01e634e040895",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Annual Regulation Changes",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:4",
+   "number": "4",
+   "title": "Periodic Regulation Changes",
+   "section": null,
+   "fingerprint": "dea6c4e6ec09975a6e76ee9784a30d9119a9aa6fe80a8391ba59bd278ae31007",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Periodic Regulation Changes",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:5",
+   "number": "5",
+   "title": "Inland Sport Fishing",
+   "section": null,
+   "fingerprint": "1d83a804c1adc10fb34ef2f6e5a9c567bd940764819010114fd1b71dc20f9a73",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Inland Sport Fishing",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:6",
+   "number": "6",
+   "title": "Department Updates",
+   "section": null,
+   "fingerprint": "5f386ee6ee6cde4bc38d7f3c52dd8b9ff6856006f524ddb6cb7433332d3ef401",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Department Updates",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:7",
+   "number": "7",
+   "title": "General Public Comment for Items Not on the Agenda",
+   "section": null,
+   "fingerprint": "8806e0d81113571f30859d4512568f07329ff80dee0e25c8e015e2d848b2b87e",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "General Public Comment for Items Not on the Agenda",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:8",
+   "number": "8",
+   "title": "Future Agenda Items",
+   "section": null,
+   "fingerprint": "c6daf2dd6793535cd9eeb5549ff25d9c5b9c6c847245c200252f6ba90b4b8d4d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Future Agenda Items",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  },
+  {
+   "id": "california-fish-game:2026-09-10:unnumbered-9",
+   "number": "",
+   "title": "Adjourn",
+   "section": null,
+   "fingerprint": "951ab83b8b7ea388a3b81df8ede6317ce7d244f4cfc36acf16cbf2af87392789",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Adjourn",
+     "documentId": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "california-fish-game:2026-09-10:california-fish-game-agenda:38e84bd8978fc3ed",
+   "source_document_id": "california-fish-game-agenda",
+   "title": "Agenda (PDF)",
+   "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=246931&inline",
+   "sha256": "38e84bd8978fc3ed3d2a8b7f42d3c8f6cc93318f1adc5d2184f5e79c4f1635f4",
+   "page_count": 6,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {},
+ "downloads": {
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=246933&inline": {
+   "sha256": "a135263020b8c8ae2a3d5940c1961684df9c7e804291139b6dce017a67ff360f",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "         Commissioners                             STATE OF CALIFORNIA                         Melissa A. Miller-Henson\n       Eric Sklar, President                       Gavin Newsom, Governor                         Executive Director\n           Saint Helena                                                                            P.O. Box 944209\n                                                                                              Sacramento, CA 94244-2090\nDarius W. Anderson, Vice President\n             Kenwood                  Fish and Game Commission                                      (916) 653-4899\nJacque Hostler-Carmesin, Member                                                                     fgc@fgc.ca.gov\n           McKinleyville\n                                                                                                   www.fgc.ca.gov\n    Samantha Murray, Member\n              La Jolla\n     Erika Zavaleta, Member\n            Santa Cruz\n\n\n                                             Wildlife Heritage and Conservation\n                                                         Since 1870\n\n\n                                     Wildlife Resources Committee\n\n                                         Meeting Documents Index\n                                           September 10, 2026\n\n Meeting Binder (7 MB)\n\n 1.       Approve Agenda and Order of items\n\n 2.       Private Lands Management Program\n\n 3.       Annual Regulation Changes\n\n 4.       Periodic Regulation Changes\n\n 5.       Inland Sport Fishing\n\n 6.       Department Updates\n\n 7.       General Public Comment for Items Not on the Agenda\n\n 8.       Future Agenda Items\n\n\n\n\n                                             California Natural Resources Building\n                                     715 P Street, 16th Floor, Sacramento, California 95814\n"
+    }
+   ],
+   "links": [
+    {
+     "page": 1,
+     "top": 127,
+     "left": 703,
+     "url": "mailto:fgc@fgc.ca.gov",
+     "text": "fgc@fgc.ca.gov"
+    },
+    {
+     "page": 1,
+     "top": 150,
+     "left": 702,
+     "url": "http://www.fgc.ca.gov/",
+     "text": "www.fgc.ca.gov"
+    },
+    {
+     "page": 1,
+     "top": 410,
+     "left": 81,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=246934&inline",
+     "text": "Meeting Binder"
+    },
+    {
+     "page": 1,
+     "top": 410,
+     "left": 211,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=246934&inline",
+     "text": "(7 MB)"
+    },
+    {
+     "page": 1,
+     "top": 487,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247297&inline",
+     "text": "Private Lands Management Program"
+    },
+    {
+     "page": 1,
+     "top": 526,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247300&inline",
+     "text": "Annual Regulation Changes"
+    },
+    {
+     "page": 1,
+     "top": 563,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247305&inline",
+     "text": "Periodic Regulation Changes"
+    },
+    {
+     "page": 1,
+     "top": 600,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247292&inline",
+     "text": "Inland Sport Fishing"
+    },
+    {
+     "page": 1,
+     "top": 638,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247301&inline",
+     "text": "Department Updates"
+    },
+    {
+     "page": 1,
+     "top": 675,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247293&inline",
+     "text": "General Public Comment for Items Not on the Agenda"
+    },
+    {
+     "page": 1,
+     "top": 713,
+     "left": 135,
+     "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247304&inline",
+     "text": "Future Agenda Items"
+    }
+   ],
+   "boxes": [
+    {
+     "page": 1,
+     "top": 54,
+     "left": 128,
+     "url": null,
+     "text": "Commissioners"
+    },
+    {
+     "page": 1,
+     "top": 54,
+     "left": 394,
+     "url": null,
+     "text": "STATE OF CALIFORNIA"
+    },
+    {
+     "page": 1,
+     "top": 58,
+     "left": 674,
+     "url": null,
+     "text": "Melissa A. Miller-Henson"
+    },
+    {
+     "page": 1,
+     "top": 68,
+     "left": 392,
+     "url": null,
+     "text": "Gavin Newsom, Governor"
+    },
+    {
+     "page": 1,
+     "top": 71,
+     "left": 116,
+     "url": null,
+     "text": "Eric Sklar,"
+    },
+    {
+     "page": 1,
+     "top": 71,
+     "left": 175,
+     "url": null,
+     "text": "President"
+    },
+    {
+     "page": 1,
+     "top": 72,
+     "left": 692,
+     "url": null,
+     "text": "Executive Director"
+    },
+    {
+     "page": 1,
+     "top": 85,
+     "left": 138,
+     "url": null,
+     "text": "Saint Helena"
+    },
+    {
+     "page": 1,
+     "top": 85,
+     "left": 699,
+     "url": null,
+     "text": "P.O. Box 944209"
+    },
+    {
+     "page": 1,
+     "top": 99,
+     "left": 666,
+     "url": null,
+     "text": "Sacramento, CA 94244-2090"
+    },
+    {
+     "page": 1,
+     "top": 100,
+     "left": 73,
+     "url": null,
+     "text": "Darius W. Anderson,"
+    },
+    {
+     "page": 1,
+     "top": 100,
+     "left": 192,
+     "url": null,
+     "text": "Vice President"
+    },
+    {
+     "page": 1,
+     "top": 100,
+     "left": 319,
+     "url": null,
+     "text": "Fish and Game Commission"
+    },
+    {
+     "page": 1,
+     "top": 113,
+     "left": 703,
+     "url": null,
+     "text": "(916) 653-4899"
+    },
+    {
+     "page": 1,
+     "top": 114,
+     "left": 148,
+     "url": null,
+     "text": "Kenwood"
+    },
+    {
+     "page": 1,
+     "top": 129,
+     "left": 75,
+     "url": null,
+     "text": "Jacque Hostler-Carmesin,"
+    },
+    {
+     "page": 1,
+     "top": 129,
+     "left": 223,
+     "url": null,
+     "text": "Member"
+    },
+    {
+     "page": 1,
+     "top": 143,
+     "left": 138,
+     "url": null,
+     "text": "McKinleyville"
+    },
+    {
+     "page": 1,
+     "top": 158,
+     "left": 97,
+     "url": null,
+     "text": "Samantha Murray,"
+    },
+    {
+     "page": 1,
+     "top": 158,
+     "left": 205,
+     "url": null,
+     "text": "Member"
+    },
+    {
+     "page": 1,
+     "top": 172,
+     "left": 152,
+     "url": null,
+     "text": "La Jolla"
+    },
+    {
+     "page": 1,
+     "top": 188,
+     "left": 107,
+     "url": null,
+     "text": "Erika Zavaleta,"
+    },
+    {
+     "page": 1,
+     "top": 188,
+     "left": 191,
+     "url": null,
+     "text": "Member"
+    },
+    {
+     "page": 1,
+     "top": 201,
+     "left": 143,
+     "url": null,
+     "text": "Santa Cruz"
+    },
+    {
+     "page": 1,
+     "top": 237,
+     "left": 357,
+     "url": null,
+     "text": "Wildlife Heritage and Conservation"
+    },
+    {
+     "page": 1,
+     "top": 253,
+     "left": 427,
+     "url": null,
+     "text": "Since 1870"
+    },
+    {
+     "page": 1,
+     "top": 293,
+     "left": 308,
+     "url": null,
+     "text": "Wildlife Resources Committee"
+    },
+    {
+     "page": 1,
+     "top": 338,
+     "left": 338,
+     "url": null,
+     "text": "Meeting Documents Index"
+    },
+    {
+     "page": 1,
+     "top": 360,
+     "left": 368,
+     "url": null,
+     "text": "September 10, 2026"
+    },
+    {
+     "page": 1,
+     "top": 448,
+     "left": 81,
+     "url": null,
+     "text": "1."
+    },
+    {
+     "page": 1,
+     "top": 448,
+     "left": 135,
+     "url": null,
+     "text": "Approve Agenda and Order of items"
+    },
+    {
+     "page": 1,
+     "top": 487,
+     "left": 81,
+     "url": null,
+     "text": "2."
+    },
+    {
+     "page": 1,
+     "top": 526,
+     "left": 81,
+     "url": null,
+     "text": "3."
+    },
+    {
+     "page": 1,
+     "top": 563,
+     "left": 81,
+     "url": null,
+     "text": "4."
+    },
+    {
+     "page": 1,
+     "top": 600,
+     "left": 81,
+     "url": null,
+     "text": "5."
+    },
+    {
+     "page": 1,
+     "top": 638,
+     "left": 81,
+     "url": null,
+     "text": "6."
+    },
+    {
+     "page": 1,
+     "top": 675,
+     "left": 81,
+     "url": null,
+     "text": "7."
+    },
+    {
+     "page": 1,
+     "top": 713,
+     "left": 81,
+     "url": null,
+     "text": "8."
+    },
+    {
+     "page": 1,
+     "top": 1131,
+     "left": 359,
+     "url": null,
+     "text": "California Natural Resources Building"
+    },
+    {
+     "page": 1,
+     "top": 1148,
+     "left": 313,
+     "url": null,
+     "text": "715 P Street, 16th Floor, Sacramento, California 95814"
+    }
+   ]
+  },
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247297&inline": {
+   "sha256": "f1fd3f1fd243adabc8ccf63ddb98d49be3bab9dcec98a981daf677f0e68fca49",
+   "page_count": 14,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                       Item No. 2\n                  Committee Staff Summary for September 10, 2026 WRC\n\n\n2.       Private Lands Management Program\n\nToday’s Item                             Information ☐                      Action ☒\nReceive and discuss Department recommended regulatory amendments, and develop\npotential recommendation related to private lands wildlife habitat enhancement and\nmanagement licenses and plans.\n\nSummary of Previous/Future Actions\n                             Action                                            Date\n\n     •   Initial vetting                                         May 14, 2026; WRC\n     •   Today’s discussion and potential                        September 10, 2026; WRC\n         recommendation\n     •   Present recommendations to the Commission               October 13-16, 2026\n\nBackground\nThe Private Lands Management (PLM) Program, administered by the Department, encourages\nprivate property owners within California to develop and implement wildlife habitat\nenhancement and management plans that actively encourage the propagation, conservation\nand wise use of the fish and wildlife species on their property, as well as to protect and\nenhance wildlife habitat.\n\nPursuant to California Fish and Game Code Section 3400 et seq, and California Code of\nRegulations, Title 14, Section 601, applicants develop a management plan that is reviewed\nand approved by the Department, after which the Commission may approve the plan and grant\na license for a period of five years. Each licensee is required to submit an annual report to the\nDepartment documenting that various requirements have been met, after which the\nDepartment provides the Commission with a recommendation for each license and whether it\nshould be continued.\n\nCurrently, the PLM Program protects over one-million acres of habitat statewide.\n\nUpdates\nOn August 19, 2026, the Department held a meeting with PLM licensees and stakeholders to\ndiscuss the Department’s recommendations to the Wildlife Resources Committee (WRC). The\n\nAuthor: Ari Cornman                                                                             1"
+    },
+    {
+     "page_number": 2,
+     "text": "                                                                                   Item No. 2\n                  Committee Staff Summary for September 10, 2026 WRC\n\nSignificant Public Comments\nA PLM operator from Monterey County extolls the PLM Program, agrees that the Department\nneeds access to PLM properties and that the PLM Program should foster more access to\nhunting opportunities for the public. He disagrees that PLM hunters should be limited to one\ntag because it may discourage hunters from spending money in California. (Exhibit 2)\n\nRecommendation\nCommission staff: Recommend the Commission support a future rulemaking regarding the\nPLM Program, based on today’s discussion.\nDepartment: Support a future rulemaking regarding the PLM Program, as recommended.\n\nExhibits\n   1.    Department presentation\n   2.    Email from Doug Roth, received August 24, 2026\n\nCommittee Direction/Recommendation\nThe Wildlife Resources Committee recommends that the Commission support a future\nrulemaking regarding the PLM Program, based on the Department’s recommendation and\ntoday’s discussion.\n\n\n\n\nAuthor: Ari Cornman                                                                            2"
+    },
+    {
+     "page_number": 3,
+     "text": "PRIVATE LAND\nMANAGEMENT\nRECOMMENDATIONS\n\nPresented to the\nWildlife Resources Committee of the\nCalifornia Fish and Game Commission\nSeptember 10, 2026\n\n\nPRESENTED BY: VICTORIA BARR\nCalifornia Department of Fish and Wildlife"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247300&inline": {
+   "sha256": "ab3ce628b8c150ffc0a22fd33a417b4d79ed0fd376add978d0795bc5e39f943d",
+   "page_count": 19,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                     Item No. 3\n                  Committee Staff Summary for September 10, 2026 WRC\n\n\n3.       Annual Regulation Changes\n\nToday’s Item                             Information ☐                     Action ☒\nReceive and discuss Department recommended regulatory amendments, and develop\npotential recommendations, for 2027-28 seasons related to:\n(A) Waterfowl hunting\n(B) Central Valley sport fishing\n(C) Klamath River Basin sport fishing\n\nSummary of Previous/Future Actions\n                            Action                                         Date\n\n     •   Initial vetting                                      May 14, 2026; WRC\n     •   Today’s discussion and potential                     September 10, 2026; WRC\n         recommendations\n     •   Present recommendations to the Commission            October 13-16, 2026\n\nBackground\nThis item provides the public an opportunity to engage in discussions with the Wildlife\nResources Committee (WRC) and Department about potential regulation changes for waterfowl\nhunting, Central Valley sport fishing, and Klamath River sport fishing.\n\nWaterfowl Hunting (2027-28)\nAnnually, the Commission amends waterfowl hunting regulations to conform State regulations\nwith federal regulations. The U.S. Fish and Wildlife Service adopts federal regulations each\nOctober based, in part, on recommendations from four regional flyway councils. Migratory\nwaterfowl include American coot, common moorhen, ducks, black brant, and geese, among\nothers.\n\nCentral Valley Sport Fishing (2028)\nThe Commission adopts Central Valley sport fishing regulations on an annual basis to align\nState regulations with federal regulations for the American, Feather, Sacramento and\nMokelumne rivers. The National Marine Fisheries Service (NMFS) adopts federal Central\nValley salmon escapement goals each April based, in large part, on recommendations from\n\nAuthor: Ari Cornman                                                                            1"
+    },
+    {
+     "page_number": 2,
+     "text": "                                                                                     Item No. 3\n                  Committee Staff Summary for September 10, 2026 WRC\n\nPFMC, after which the Department proposes State regulation changes based upon those\nallocations and the status of the stock.\n\nPFMC does not make recommendations for Klamath River Basin spring-run Chinook salmon;\nbeginning last year (2025), the Department makes recommendations for Klamath River Basin\nspring-run Chinook salmon seasons and bag and possession limits based on stock status,\nenvironmental conditions, and fisheries management outcomes for the Klamath River Basin\nfall-run Chinook salmon fishery.\n\nToday, the Department will present its proposed regulatory options for Klamath River Basin\n2027 spring-run and fall-run Chinook salmon fisheries (Exhibit 2).\n\nToday’s Meeting\nThis meeting is an opportunity for interested parties to make suggestions to WRC regarding\npotential regulation changes for each of the three topics. WRC may make recommendations to\nthe Commission for consideration for each rulemaking.\n\nSignificant Public Comments (N/A)\n\nRecommendation\nCommission staff: Recommend the Commission support future rulemakings regarding\nwaterfowl hunting, Central Valley sport fishing, and Klamath River Basin sport fishing, based\non today’s discussion.\nDepartment: Support future rulemakings regarding waterfowl hunting, Central Valley sport\nfishing, and Klamath River Basin sport fishing, as recommended.\n\nExhibits\n   1.    Department presentation, Central Valley sport fishing\n   2.    Department presentation, Klamath River Basin sport fishing\n\nCommittee Direction/Recommendation\nThe Wildlife Resources Committee recommends that the Commission support future\nrulemakings regarding waterfowl hunting, Central Valley sport fishing, and Klamath River Basin\nsport fishing, based on the Department’s recommendations and today’s discussion.\n\n\n\n\nAuthor: Ari Cornman                                                                             2"
+    },
+    {
+     "page_number": 3,
+     "text": "                     CENTRAL VALLEY CHINOOK\n                     SALMON SPORT FISHING\n                     REGULATIONS – 2027 OPTIONS\n                     Presentation to the\n                     Wildlife Resources Committee of the\n                     California Fish and Game Commission\n\n\n\n\n                     September 10, 2026\n                     Jonathan Nelson\n                     Anadromous Fisheries Program Manager\n                     Fisheries Branch\n                                                            1\nPhoto credit: CDFW"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247305&inline": {
+   "sha256": "bce0710a4b64187b5772f8f2cbf05c005164ecc5a75a098332b1adbb5b032258",
+   "page_count": 37,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                       Item No. 4\n                  Committee Staff Summary for September 10, 2026 WRC\n\n\n4.     Periodic Regulation Changes\n\nToday’s Item                             Information ☐                      Action ☒\nReceive and discuss Department recommended regulatory amendments, and develop\npotential recommendations, for 2027-28 seasons related to:\n(A) Upland (resident) game bird hunting\n(B) Big game hunting\n         I.     Deer\n         II.    Elk\n         III.   Bighorn sheep\n         IV.    Pronghorn antelope\n         V.     Black bear\n\nSummary of Previous/Future Actions\n                             Action                                            Date\n\n •   Initial vetting                                             May 14, 2026; WRC\n •   Today’s discussion and potential                            September 10, 2026; WRC\n     recommendation\n •   Present any recommendations to the Commission               October 13-16, 2026\n\nBackground\nWhen amendments to regulations are regularly sought for a particular subject (e.g., deer\nhunting), but are not required every year, they are referred to as “periodic” rulemakings. This\nitem is an opportunity to engage in initial discussions with the Wildlife Resources Committee\n(WRC), staff, and Department staff about recommended regulation changes for periodic\nrulemakings.\n\n(A) Upland (Resident) Game Bird Hunting (2027-28)\n     Resident upland game bird species include, among others, California quail, pheasant,\n     wild turkey, chukar, and Eurasian collared-dove. Greater sage-grouse is also a resident\n     game bird, though hunting has been disallowed since June of 2023 when it was declared\n     a candidate species under the California Endangered Species Act.\n\nAuthor: Ari Cornman                                                                               1"
+    },
+    {
+     "page_number": 2,
+     "text": "                                                                                       Item No. 4\n                  Committee Staff Summary for September 10, 2026 WRC\n\n     Seasons, quotas, bag and possession limits, hunt zones, Shared Habitat Alliance for\n     Recreational Enhancement (SHARE) Program tags, the tag drawing system, disease\n     management, etc. are defined for each species in sections 351 through 367.5, sections\n     554 through 555.1, and sections 708.1 through 708.19.\n\nThis meeting is an opportunity for interested parties to make suggestions to WRC and the\nDepartment regarding potential regulation changes for each of the six subjects identified under\nthis agenda topic.\n\nToday’s Meeting\nToday, the Department will present recommendations for rulemakings, including new\nrecommendations for deer hunting (Exhibit 1) and updated concepts for elk hunting (Exhibit 2).\nDiscussion will continue on the other subjects, including previous recommendations for bighorn\nsheep (Exhibit 3) and black bear (Exhibit 4). WRC potentially will develop recommendations for\nthe Commission to consider in the context of potential rulemakings.\n\nSignificant Public Comments (N/A)\n\nRecommendation\nCommission staff: Recommend the Commission support future rulemakings related to deer,\nelk, bighorn sheep, and black bear hunting, based on today’s discussion.\nDepartment: Support future rulemakings regarding deer, elk, bighorn sheep, and black bear\nhunting, as recommended.\n\nExhibits\n   1.      Department presentation for deer\n   2.      Department presentation for elk\n   3.      Department presentation for bighorn sheep\n   4.      Department presentation for black bear\n\nCommittee Direction/Recommendation\nThe Wildlife Resources Committee recommends that the Commission support future\nrulemaking related to deer, elk, bighorn sheep, and black bear hunting, based on the\nDepartment’s recommendation and today’s discussion.\n\nAuthor: Ari Cornman                                                                            2"
+    },
+    {
+     "page_number": 3,
+     "text": "                            DEER HUNTING\n                            RECOMMENDATION\n\n                            Presented to the\n                            Wildlife Resources Committee of the\n                            California Fish and Game Commission\n                            September 10, 2026\n\n\n                            PRESENTED BY:\n                            Brian Leo, Statewide Deer Coordinator\n                            California Department of Fish and Wildlife\n\n\n\n                                                                         1\nPhoto Credit: J. Schulgen"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247292&inline": {
+   "sha256": "0a34902c39df790aabb4ce8c3f3420323737021434d00f7c55e7071a97b6f79f",
+   "page_count": 11,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                         Item No. 5\n                   Committee Staff Summary for September 10, 2026 WRC\n\n\n5.        Inland Sport Fishing\n\nToday’s Item                               Information ☒                     Action ☐\nReceive and discuss Department recommended regulatory amendments related to inland\nsport fishing.\n\nSummary of Previous/Future Actions\n                               Action                                             Date\n\n •       Today’s initial vetting                                 September 10, 2026; WRC\n •       Discussion and potential recommendation                 January 13, 2027; WRC\n •       Present recommendation to the Commission                February 10-11, 2027\n\nBackground\nAnnually, the Department presents to WRC recommendations for changes to inland sport\nfishing regulations; when recommended changes are not urgently necessary, they may be held\nto combine with future recommendations.\n\nToday, the Department will present and discuss its initial recommendations for changes to\nsport fishing regulations, suggested to become effective in January 2028. Initial\nrecommendations include:\n     •    Barrett Reservoir (also known as Barrett Lake) special regulation removal for black bass\n          to simplify the regulation and increase opportunity\n     •    Silver Creek (Mono County) opening for trout catch-and-release\n     •    Seasonal closure of the Middle Fork Eel River to protect summer steelhead and\n          increase consistency with other forks of the Eel River\n     •    Removal of Sespe Creek from Trout Waters with Special Fishing Regulations due to the\n          determination of the mainstem as anadromous waters for southern California steelhead\n     •    Seasonal closure of the Eel River 1000 feet above and below the Van Duzen mouth to\n          protect Chinook salmon\n     •    South Central Coast District steelhead season adjustment to correct misalignment with\n          peak steelhead run\n     •    Add Manzanita Lake to Special Trout Waters and close Manzanita Creek to create\n\nAuthor: Ari Cornman                                                                               1"
+    },
+    {
+     "page_number": 2,
+     "text": "                                                                       Item No. 5\n                  Committee Staff Summary for September 10, 2026 WRC\n\nRecommendation (N/A)\n\nExhibits\n   1.      Department presentation\n\nCommittee Direction/Recommendation (N/A)\n\n\n\n\nAuthor: Ari Cornman                                                            2"
+    },
+    {
+     "page_number": 3,
+     "text": "                                                          Photo Credit: CDFW\n\n\n\n\nSPORT FISHING REGULATIONS\n          Recommended Changes for 2028\n\nPresentation to the Wildlife Resources Committee of the\n        California Fish and Game Commission\n       September 10, 2026 | Maggie McCann\n                 Fisheries Branch"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247301&inline": {
+   "sha256": "2fb98c616d055472c1aa8f8c0ad8458354018495f37402de9d14e805db32ec02",
+   "page_count": 25,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                       Item No. 6\n                      Committee Staff Summary for September 10, 2026 WRC\n\n\n6.      Department Updates\n\nToday’s Item                              Information ☒                     Action ☐\nThe Department will highlight items of note since the last committee meeting.\n\nSummary of Previous/Future Actions (N/A)\n\nBackground\nThis is a standing agenda item for the Department to provide updates on activities of interest\nrelated to wildlife and inland fisheries. Verbal updates are expected from:\n     (A) Department presentation on hunting and inland fishing statistics\n     (B) Wildlife Branch\n     (C) Fisheries Branch\n     (D) Law Enforcement Division\n\nTwo news releases of interest are provided, highlighting grants for restoration and public access\n(Exhibit 2) and a Department report giving guidance on four bee species that are candidates\nunder the California Endangered Species Act and that may be present on the landscape,\nproviding examples of measures that may help avoid or minimize impacts to them (Exhibit 3).\n\nSignificant Public Comments (N/A)\n\nRecommendation (N/A)\n\nExhibits\n     1. Department presentation (hunting and inland fishing statistics)\n     2. Department news release: WCB Approves $80.4 Million for Wildlife Connectivity,\n        Salmon Recovery, Biodiversity and Public Access Projects, dated May 28, 2026\n     3. Department news release: CDFW Publishes Guidance on Conserving CESA Candidate\n        Bumble Bees, dated August 19, 2026\n\nCommittee Direction/Recommendation (N/A)\n\n\n\n\nAuthor: Ari Cornman                                                                              1"
+    },
+    {
+     "page_number": 2,
+     "text": "Recent Trends in Hunting\nand Fishing License Sales\n Presented September 10, 2026 to the Wildlife Resources\n Committee of the California Fish and Game Commission\n                   Taylor Williams – R3 Manager\n             California Department of Fish and Wildlife"
+    },
+    {
+     "page_number": 3,
+     "text": "What is R3?\n          Recruit.\n          Retain.\n        Reactivate.\n             -\n   CDFW’s R3 Initiative\n     aims to increase\nstatewide participation\n    in hunting, fishing,\n foraging and shooting\n  sports by enhancing\n    opportunities and\n     fostering lifelong\n      connections to\n   outdoor recreation\n   and conservation."
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247304&inline": {
+   "sha256": "42f42ffe91dd2e9f626949fa8eb895ee66dc78dc540525e015f661ff85fa09ea",
+   "page_count": 5,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                                       Item No. 8\n                  Committee Staff Summary for September 10, 2026 WRC\n\n\n8.        Future Agenda Items\n\nToday’s Item                             Information ☐                    Action ☒\n(A) Review work plan agenda topics and timeline\n(B) Potential new agenda topics for Commission consideration\n\nSummary of Previous/Future Actions\n                             Action                                         Date\n\n •    Commission approved Wildlife Resources                   August 12-13, 2026\n      Committee (WRC) agenda and work plan\n •    Today’s discussion                                       September 10, 2026; WRC\n •    Next WRC meeting                                         January 13, 2027; WRC\n\nBackground\nWRC work plan topics are referred by the Commission and scheduled as appropriate.\nCommission-referred topics and the current schedule are shown in the work plan (Exhibit 1).\n\n(A) WRC Work Plan and Timeline\n      Topics anticipated to be proposed for the January 2027 WRC meeting are shown in the\n      last column of the work plan in Exhibit 1. Readiness considerations may lead to changes\n      in proposed timing and type of anticipated action for Commission consideration at its\n      December 2026 meeting, when it is scheduled to approve the January 2027 WRC\n      meeting agenda. WRC may make recommendations to the Commission regarding\n      scheduling specific topics in the work plan.\n\n(B) Discuss and Recommend New WRC Topics\n      Today’s meeting is an opportunity to identify any potential new agenda topics to\n      recommend the Commission refer to WRC. Staff has not identified any new topics for\n      potential referral at this time.\n\nSignificant Public Comments (N/A)\n\nRecommendation\nCommission staff: Review and approve for recommendation the topics in the work plan\nidentified by staff as potential agenda items for the January 2027 WRC meeting (inland sport\n\nAuthor: Ari Cornman                                                                             1"
+    },
+    {
+     "page_number": 2,
+     "text": "                                                                            Item No. 8\n                  Committee Staff Summary for September 10, 2026 WRC\n\nCommittee Direction/Recommendation\nThe Wildlife Resources Committee recommends that the Commission update the Committee\nwork plan with the proposed change(s) identified today.\n\n\n\n\nAuthor: Ari Cornman                                                                    2"
+    },
+    {
+     "page_number": 3,
+     "text": "                      California Fish and Game Commission\n                 Wildlife Resources Committee (WRC) Work Plan\n             Scheduled Topics and Timeline for Items Referred to WRC\n                                       Updated August 31, 2026\n\nNote: Proposed changes to topics/timing are shown in blue underscore or strike-out font.\n\n                    Topics                           Category         May 2026    Sep 2026   Jan 2027\n\nPeriodic and Annual Regulations\n\nUpland (Resident) Game Bird Hunting                 Regulatory            X          X/R\nBig Game Hunting (deer, elk, pronghorn\n                                                    Regulatory            X          X/R\nantelope, black bear, Nelson bighorn sheep)\n                                                     Annual\nWaterfowl Hunting                                                         X          X/R\n                                                    Regulatory\n                                                     Annual\nCentral Valley Sport Fishing                                              X          X/R\n                                                    Regulatory\n                                                     Annual\nKlamath River Basin Sport Fishing                                         X          X/R\n                                                    Regulatory\nInland Sport Fishing                                Regulatory                         X       X/R\n\nDepartment Lands                                    Regulatory           X/R\n\nRegulations & Legislative Mandates\n\nMammal Trapping                                     Regulatory           X/R\n\nPrivate Lands Management Program                                          X          X/R\n\nRestricted Species                                  Regulatory\n                                                    Referral for\nTake of Coyotes\n                                                     Review\nKEY: X = Vetting/Discussion     X/R = Discussion/Potential Recommendation to Commission"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://fgc.ca.gov/Meetings/2026": "<html><body>\n<a href=\"https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=245612&amp;inline\">How to Join the Meeting (PDF)</a>\n<a href=\"https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=246931&amp;inline\">Agenda (PDF)</a>\n<a href=\"https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=246933&amp;inline\">Meeting Documents (PDF)</a>\n<a href=\"https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247178&amp;inline\">Agenda (PDF)</a>\n<a href=\"https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247180&amp;inline\">Meeting Documents (PDF)</a>\n</body></html>"
+ },
+ "expected": {
+  "1": null,
+  "": null,
+  "7": null,
+  "2": {
+   "page_start": 1,
+   "page_end": 14,
+   "heading": "Item No. 2",
+   "url_end": "247297&inline"
+  },
+  "3": {
+   "page_start": 1,
+   "heading": "Item No. 3",
+   "url_end": "247300&inline"
+  },
+  "4": {
+   "page_start": 1,
+   "heading": "Item No. 4",
+   "url_end": "247305&inline"
+  },
+  "5": {
+   "page_start": 1,
+   "heading": "Item No. 5",
+   "url_end": "247292&inline"
+  },
+  "6": {
+   "page_start": 1,
+   "heading": "Item No. 6",
+   "url_end": "247301&inline"
+  },
+  "8": {
+   "page_start": 1,
+   "heading": "Item No. 8",
+   "url_end": "247304&inline"
+  }
+ }
+}

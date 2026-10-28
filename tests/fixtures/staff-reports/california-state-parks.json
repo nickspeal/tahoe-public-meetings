@@ -1,0 +1,461 @@
+{
+ "note": "California State Park and Recreation Commission, 2026-03-05. Meeting page links reduced to this meeting's files; each staff report keeps its first three pages trimmed to 30 lines, without the staff-name line. Item 14's posted file is the July 2, 2026 meeting's report (a reused link), so it stays unmapped; item 7's one bundle covers sub-items 7.a-7.d.",
+ "meeting": {
+  "id": "california-state-parks:sprc-2026-03-05",
+  "agency_id": "california-state-parks",
+  "title": "California State Park and Recreation Commission Meeting",
+  "local_date": "2026-03-05",
+  "official_url": "https://www.parks.ca.gov/?page_id=31042"
+ },
+ "items": [
+  {
+   "id": "california-state-parks:sprc-2026-03-05:1",
+   "number": "1",
+   "title": "CALL TO ORDER and ROLL CALL",
+   "section": null,
+   "fingerprint": "a384a82a41a6f2dac2260bba175baf02f1867ca1091d34f97e412890c20c6ae8",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CALL TO ORDER and ROLL CALL",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:2",
+   "number": "2",
+   "title": "AGENDA MANAGEMENT (1), (2a-c), and (3)",
+   "section": null,
+   "fingerprint": "ad1fa2f7900d9f054766794f97fbe21de5a8657d19e2ae0283452986c31291a5",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "AGENDA MANAGEMENT (1), (2a-c), and (3)",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:3",
+   "number": "3",
+   "title": "DIRECTOR’S REPORT",
+   "section": null,
+   "fingerprint": "2f43c624bebdec37e7bd4d533e963279c376779e4b2fd821e2bce336b33cc119",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "DIRECTOR’S REPORT",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:4",
+   "number": "4",
+   "title": "CHAIRPERSON’S REPORT",
+   "section": null,
+   "fingerprint": "482169780c126453fa83e4122be263f25742d4f9b249b4e247406386d6895aab",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CHAIRPERSON’S REPORT",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:5",
+   "number": "5",
+   "title": "PUBLIC COMMENT PERIOD FOR ITEMS NOT ON THE AGENDA (2b)(2c)",
+   "section": null,
+   "fingerprint": "e99ce6532cbc57baa5515384261dec41878454f5f875ef9d45ff6f2c9fe28124",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "PUBLIC COMMENT PERIOD FOR ITEMS NOT ON THE AGENDA (2b)(2c)",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:6",
+   "number": "6",
+   "title": "ACTION ITEM: ELECTIONS FOR CHAIRPERSON/VICE CHAIRPERSON",
+   "section": null,
+   "fingerprint": "d27e1641e21d3786aae5d5d54928b9f8a878efaf046dbf687b73e0d18ff903e2",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "ACTION ITEM: ELECTIONS FOR CHAIRPERSON/VICE CHAIRPERSON",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:7.a",
+   "number": "7.a",
+   "title": "OPERATIONS COMMITTEE",
+   "section": "Subcommittee Updates",
+   "fingerprint": "c4a851e55517db31d360b02c28c12451d3e9bc8597f1771e66b040ecd716a620",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "OPERATIONS COMMITTEE",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:7.b",
+   "number": "7.b",
+   "title": "PROGRAMING & ADVOCACY COMMITTEE",
+   "section": "Subcommittee Updates",
+   "fingerprint": "876e5f3bc19f341c58787d6ff67a66aaf45f1d9ba68e6455a8037ad4ce3f8925",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "PROGRAMING & ADVOCACY COMMITTEE",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:7.c",
+   "number": "7.c",
+   "title": "PUBLIC ENGAGEMENT & COMMUNICATIONS COMMITTEE",
+   "section": "Subcommittee Updates",
+   "fingerprint": "12ce7a07d0d5b1f017d396525df9f75d3fb152985d98b1576698750f1569a2a9",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "PUBLIC ENGAGEMENT & COMMUNICATIONS COMMITTEE",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:7.d",
+   "number": "7.d",
+   "title": "NEW SUBCOMMITTEES",
+   "section": "Subcommittee Updates",
+   "fingerprint": "c4d147557c85cccb16f67d211f4e71556eb19fe928b01b949a67a2b720adfcac",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "NEW SUBCOMMITTEES",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:8",
+   "number": "8",
+   "title": "ACTION ITEM: REVIEW AND APPROVE ANNUAL REPORT",
+   "section": null,
+   "fingerprint": "1a76a4155a5f034980baaa3c97866a27482dfdc4f9a9119378c95bc30609af40",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "ACTION ITEM: REVIEW AND APPROVE ANNUAL REPORT",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:9",
+   "number": "9",
+   "title": "BUDGET REPORT",
+   "section": null,
+   "fingerprint": "bfa026c46e76b1673cc7772a0669c57db2c57914ca85f42aaf6631b35796da11",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "BUDGET REPORT",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:10",
+   "number": "10",
+   "title": "NORTHERN BUTTES DISTRICT UPDATE",
+   "section": null,
+   "fingerprint": "57972ccf087207a7e62c37dc63ccda97ecfa487b61a9c493e0861d280b9c9f49",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "NORTHERN BUTTES DISTRICT UPDATE",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:11",
+   "number": "11",
+   "title": "TRAILS UPDATE",
+   "section": null,
+   "fingerprint": "cc7f3439e6c84a7dd518a14606d034488abffa1948f190ebbc2d0d684743685c",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "TRAILS UPDATE",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:12",
+   "number": "12",
+   "title": "SB-630 STATE PARKS: REAL PROPERTY: ACQUISITIONS AND LEASES REPORT",
+   "section": null,
+   "fingerprint": "2d2be49f7b0ea57f1d34e4ce46891273270636400cc9dafa2c7b7e718eb88654",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "SB-630 STATE PARKS: REAL PROPERTY: ACQUISITIONS AND LEASES\n    REPORT",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:13.a",
+   "number": "13.a",
+   "title": "APPROVAL OF THE FOLLOWING MEMORIAL GROVE RESOLUTIONS",
+   "section": "Action Items: Consent Calendar (3)",
+   "fingerprint": "ae495179c8ccd8f5cc7f16a31bf2ade503c3ce308b620b556573ad3ca05175da",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "APPROVAL OF THE FOLLOWING MEMORIAL GROVE RESOLUTIONS",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:14",
+   "number": "14",
+   "title": "COMMISSIONER BUSINESS",
+   "section": null,
+   "fingerprint": "f69f8f74009cf4d5a355fd0d15d66de52343951154872b0f9752c667879f628e",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "COMMISSIONER BUSINESS",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  },
+  {
+   "id": "california-state-parks:sprc-2026-03-05:15",
+   "number": "15",
+   "title": "ADJOURNMENT",
+   "section": null,
+   "fingerprint": "bbea4492341ee231d31f58939790fb61cc4e229b8942d6240c7cb1045a541e86",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "ADJOURNMENT",
+     "documentId": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "california-state-parks:sprc-2026-03-05:sprc-agenda-2026-03-05:efa8ebebb864e539",
+   "source_document_id": "sprc-agenda-2026-03-05",
+   "title": "Official commission meeting agenda",
+   "url": "https://www.parks.ca.gov/pages/29247/files/SPRC%20March%20Meeting%20Agenda.pdf",
+   "sha256": "efa8ebebb864e539efbfcf929f5871fe45f462e4f7ae6fdb2bf8ae684dce4b5f",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {},
+ "downloads": {
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Annual%20Report%20Bundle%20for%20Website.pdf": {
+   "sha256": "0bd2c3e6592b479ead4fd616244c1f4daa0d996b4bef706b8e03af0db1484b40",
+   "page_count": 15,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                                 Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                         Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                            Santa Rosa, CA\n                                            March 5, 2026\n\n\nAGENDA ITEM:              08 – Review and Approve Annual Report\n\n\nSUBJECT:                  State Park and Recreation Commission Annual Report\n\n______________________________________________________________________\n\n  I.      STAFF RECOMMENDATION\n\nReview Annual Report for clarity and accuracy and make recommendations and/or\napprove Annual Report.\n\n\n  II.     BACKGROUND/SUMMARY\n\n       Per California Public Resource Code Section 535, the State Park and\n       Recreation Commission must submit an Annual Report to the Governor. The\n       Annual Report for review and approval is for the period of January 1, 2023\n       through December 31, 2025.\n\n\n III.     ATTACHMENTS\n\n          •   Staff Report\n          •   Draft Annual Report"
+    },
+    {
+     "page_number": 2,
+     "text": "   State of California • Natural Resources Agency                                   Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                             Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                           STAFF REPORT\n\n                                            Santa Rosa, CA\n                                             March 5, 2026\n\n   STAFF REPORT:                 Review and Approve Annual Report\n\n\n   SUBJECT:                      Annual Report to Governor\n\n\n\nINTRODUCTION\n\nPer California Public Resource Code 535, “the commission shall report annually to\nthe Governor, through the director, on existing and operating recreational facilities,\nprograms and activities of the state park system, and on the needs of the state and\nthe local subdivisions thereof for recreational facilities, programs, and activities, and\nshall make recommendations for programs and activities to meet future needs of the\nstate for parks and recreation.\n\n\nDESCRIPTION\n\nThe Annual Report to the Governor before the State Park and Recreation Commission is\nfor the period of January 1, 2023, and December 31, 2025. The Annual Report\nsummarizes all the Commission’s actions during that period along with the Commission’s\npriorities.\n\nNEXT STEPS\n\nOnce approved, the final version will be sent to the Governor’s Office.\n\nRECOMMENDATION\n\nRecommend approval of the Annual Report.\n\nCOMMISSION ACTION(S)\n\nUpon review, the Commission may suggest updates, approve, or send back to\nsubcommittee for additional work.\n\n\n\n\n                                                                                                1"
+    },
+    {
+     "page_number": 3,
+     "text": "State Park and Recreation Commission\n            Annual Report\n\n\n\n\n                 Reporting Period:\n        January 1, 2023 – December 31, 2025"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Staff%20Report%20-%2009%20Budget%20Report.pdf": {
+   "sha256": "36c77e75b411afe4d8687e06131d6d5c927a7b8002f8eab0986d684e164ebd63",
+   "page_count": 9,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                                    Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                              Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                            Santa Rosa, CA\n                                             March 5, 2026\n\n\nAGENDA ITEM:              09 Budget Report\n\n\nSUBJECT:                  2026-27 Governor’s Budget\n\n______________________________________________________________________\n\n  I.     STAFF RECOMMENDATION\n\n         No action needed, informational only.\n\n\n  II.    BACKGROUND/SUMMARY\n\n         The Governor’s proposed budget was released on January 9th, 2026, for\n         the 2026-27 fiscal year.\n\n\n III.    ATTACHMENTS\n\n         •   Staff Report"
+    },
+    {
+     "page_number": 2,
+     "text": "   State of California • Natural Resources Agency                                      Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                                Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                           STAFF REPORT\n\n                                               Santa Rosa, CA\n                                                March 5, 2026\n\n   STAFF REPORT:                 Budget Report\n\n\n   SUBJECT:                      2026-27 Governor’s Budget\n\n\n\nOBJECTIVE\nUpdate on Department of Parks and Recreation (State Parks) 2026 Proposed Budget.\nINTRODUCTION\n\nThe Governor released his proposed budget for the 2026-27 fiscal year on January 9th,\n2026.\n\nDESCRIPTION\n\nOverview\n\nThe 2026-27 Governor’s Budget includes $1.008 billion to support the Department of Parks\nand Recreation. Of this amount, $860.9 million is available for state operations, $135.6\nmillion is available for local assistance, and $11.03 million is available for Capital Outlay\nprojects. The proposed budget includes $223.8 million General Fund (GF) and $296.3\nmillion State Parks and Recreation Fund (SPRF) to support operations and local\nassistance.\n\nOverall, the 2026 proposed budget reflects a $451 million decrease from the 2025 enacted\nbudget. The majority of this reduction is attributable to one-time Proposition 4 funds that\nwere appropriated in the prior year for local assistance grants and various projects. The\nremaining decrease is associated with statewide budget adjustments and the expiration of\nvarious one-time Budget Change Proposals (BCPs).\n\nClimate Bond Update\n\nThe proposed budget includes Proposition 4 funding for the 2026-27 fiscal year, which\nallocates funds to the following five programs:\n\n   •   Deferred Maintenance: $400,000\n\n       $33,400,000"
+    },
+    {
+     "page_number": 3,
+     "text": "   State of California • Natural Resources Agency                              Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                        Armando Quintero, Director\n\n\n   •   Sea Level Rise Adaptation Strategy: $250,000\n   •   Statewide Park Program: $1,900,000\n   •   Reduction of Climate Impacts on Disadvantaged Communities & Expansion of\n       Outdoor Recreation: $5,800,000\n\nBudget Change Proposals\n\nState Operations & Local Assistance\n\nCalifornia Indian Heritage Center — Access and Community\n\nFunding Request: $842,000 one-time funding, 3.0 Permanent positions (2.0 Park and\nRecreation Specialist, 1.0 Staff Services Manager I), and $805,000 ongoing from the\nGeneral Fund.\n\nRequest Summary:\n  • Supports staff to plan and run public programs, tribal events, and community\n     partnerships at the CIHC.\n  • Helps deliver culturally meaningful education and interpretation shaped by Native\n     communities.\n  • Grows programs over time to build steady visitation and increase public awareness.\n  • Ensures staff are in place to handle logistics, contracts, and ongoing coordination\n     with Tribal partners as the CIHC opens.\n\nCalifornia State Parks Library Pass Program\n\nFunding Request: $6.75 million ongoing transfer from General Fund to State Parks\nRecreation Fund.\n\nRequest Summary:\n  • Converts from one-time funding to ongoing transfer.\n  • Partners with the State Library and local libraries to provide free state park day-use\n     passes, especially for communities with limited access to parks.\n  • Ensures Tribal and rural communities can continue accessing passes through\n     participating libraries.\n\nChaptered Legislation Proposals — Off-Highway Electric Motorcycles (SB 586)\n\n     statewide electrification and sustainable recreation goals."
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Staff%20Report%20-%2010%20Northern%20Buttes%20District%20Update.pdf": {
+   "sha256": "853f9964bc6af7550ff277e6ff60d78a64c499341833eb9703a913bfde5dabb0",
+   "page_count": 7,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                                     Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                             Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                            Santa Rosa, CA\n                                            March 5, 2026\n\n\nAGENDA ITEM:              10 – Northern Buttes District Update\n\n\n\nSUBJECT:                  Northern Buttes District Update\n\n______________________________________________________________________\n\n  I.     STAFF RECOMMENDATION\n\n         For information only.\n\n\n  II.    BACKGROUND/SUMMARY\n\n         Northern Buttes District Superintendent Matthew Allen will present a report\n         that provides an overview of the District.\n\n\n III.    ATTACHMENTS\n\n         •   Staff Report\n         •   Map of Northern Buttes District\n         •   Northern Buttes Website link\n         •   Reimagine Bidwell Mansion SHP | MyInput"
+    },
+    {
+     "page_number": 2,
+     "text": "   State of California • Natural Resources Agency                                    Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                              Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                           STAFF REPORT\n\n                                            Santa Rosa, CA\n                                             March 5, 2026\n\n   STAFF REPORT:                 Northern Buttes District Update\n\n\n   SUBJECT:                      Northern Buttes District Update\n\n\n\nOBJECTIVE\nTo provide the State Park and Recreation Commission with a high-level administrative and\noperational overview of the Northern Buttes District (NBD or District), featuring unit\nstatistics, significant cultural and natural resources, and District highlights.\n\nINTRODUCTION\n\nThe Northern Buttes District (NBD) is a sprawling and diverse landscape encompassing\nnine northern California counties. Our jurisdiction stretches across the northern\nSacramento River valley, the rugged northern Sierra foothills, the volcanic Cascade\nmountains, and the ancient basin of Clear Lake, encompassing more than 27,000 square\nmiles. The total State parkland within that area is approximately 45,700 acres.\n\nFrom the roaring 129-foot cascades of McArthur-Burney Falls—famously dubbed the\n\"eighth wonder of the world\"—to the iconic silhouettes of the Sutter Buttes, often called the\n\"smallest mountain range in the world,\" our district offers a tapestry of California’s most\nremarkable landmarks. We manage a total of 15 units, including six State Parks (SP), five\nState Historic Parks (SHP), three State Recreation Areas (SRA), and one State Vehicular\nRecreation Area (SVRA).\n\nThe recreation opportunities within the district are as varied as the terrain itself. Visitors can\nenjoy world-class trout fishing in the upper Sacramento River, explore 90 miles of multi-use\ntrails at Lake Oroville, boat into the volcanic wilderness of Ahjumawi, or experience\ncenturies of cultural history at the oldest continuously used Chinese temple in California.\nWhether it is backcountry camping among 6,000-foot granite spires or staying the night on\na floating campsite, NBD provides a premier destination for every type of outdoor\n\n                                                                                                 1"
+    },
+    {
+     "page_number": 3,
+     "text": "       State of California • Natural Resources Agency                                Gavin Newsom, Governor\n\n       DEPARTMENT OF PARKS AND RECREATION                                          Armando Quintero, Director\n\n\n\n\n    Cascade Sector: Volcanic Spires and Sacred Springs\n\n•   Castle Crags State Park: Named for the dramatic 6,000-foot glacier-polished crags, this\n    3,904-acre park offers 28 miles of trails, 76 developed campsites and historic CCC-built\n    infrastructure. Swimming and fishing in the upper Sacramento River are popular activities.\n    The park is located just south of the community of Dunsmuir and is supported by the\n    McArthur-Burney Falls Interpretive Association through their Friends of Castle Crags group.\n\n•   McArthur-Burney Falls Memorial SP: Centered on the spectacular 129-foot Burney Falls,\n    which is fed by an underground spring and holds deep sacred significance for the Pit River\n    Tribe. The 1,013-acre park offers 116 campsites, a group campground, primitive sites, and\n    cabins, along with five miles of hiking trails and a section of the Pacific Crest Trail (PCT).\n    Fun fact: Section O of the PCT is an 80-mile link between McArthur-Burney Falls MSP and\n    Castle Crags SP. The park is located near the gateway community of Burney and is\n    supported by the McArthur-Burney Falls Interpretive Association. In 2024, the park signed a\n    MOU with the Pit River Tribe to promote shared stewardship of their ancestral lands. The\n    park also has a long-standing concession that operates the camp store, cabins, and\n    marina.\n\n•   Ahjumawi Lava Springs SP: This 6,400-acre park is accessible only by boat and protects\n    one of the nation's largest freshwater spring systems. The park is named for the Ahjumawi\n    people, an indigenous band of the Pit River Tribe who have lived there for thousands of\n    years and still maintain cultural ties to the land. Camping is available at 3 designated\n    environmental campgrounds with pit toilets with 3 campsites at each location. The park is\n    nearest the communities of Fall River Mills and McArthur. The park was also included in the\n    2024 MOU with Pit River Tribe.\n\n•   Shasta SHP: Preserves the brick ruins of the \"Queen City\" of the northern mining district,\n    featuring the restored 1861 Courthouse Museum and California artwork. The centerpiece of\n    the park is the restored 1861 Courthouse Museum, which houses a visitor center, historical\n    exhibits, and a large collection of California artwork, tours and interpretive programs. The\n    park is located just east of Redding and is supported by the Town of Shasta Interpretive\n\n                                                                                                 1"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Staff%20Report%20-%2011%20Trails%20Update.pdf": {
+   "sha256": "455627fde34f0c2c7e2c9d7594d944f9cf2b01175c32e4f1b032f7d2a5dfec75",
+   "page_count": 5,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                                      Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                                 Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                            Santa Rosa, CA\n                                            March 5, 2026\n\n\nAGENDA ITEM:              11 Trails Update\n\n                          Planning and Recreation Services Division\n\nSUBJECT:                  Trails Planning Updates\n\n______________________________________________________________________\n\n  I.     STAFF RECOMMENDATION\n\n         No Action Needed, Informational Only\n\n\n  II.    BACKGROUND/SUMMARY\n\n         Noelle Breitenbach with the Department’s Strategic Planning and\n         Recreation Services Division will discuss Trail Planning updates including\n         Road and Trail Management Plans as well as the Recreational Trails Plan\n         effort.\n\n\n III.    ATTACHMENTS\n\n         •   Staff Report\n         •   Trione-Annadel State Park Road and Trail Management Plan before\n             map\n         •   Trione-Annadel State Park Road and Trail Management Plan proposed\n             map"
+    },
+    {
+     "page_number": 2,
+     "text": "   State of California • Natural Resources Agency                                      Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                                Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                           STAFF REPORT\n\n                                            Santa Rosa, CA\n                                             March 5, 2026\n\n   STAFF REPORT:                 Trails Planning Updates\n\n                                 and Recreation Services Division\n\n   SUBJECT:                      Status of various Trail Plans\n\n\n\nOBJECTIVE\nTo update the State Park and Recreation Commission on the various Trail Plans as well as\nother projects that are happening within the State Park System and the State.\nINTRODUCTION\n\nThis report describes the purpose and goals of current Trail Plans and other projects that\nare underway within the Statewide Trails Office.\n\nDESCRIPTION\n\nTrione-Annadel State Park Road and Trail Management Plan\n\nThis Road and Trail Management Plan (RTMP) is a comprehensive planning document that\nexamines Trione-Annadel State Park’s existing road and trail system to provide direction for\nlong-term planning, design, construction, maintenance, and management. It considers\ncurrent and potential public use, park operations, and the protection and enhancement of\ncultural and natural resources to ensure recreational trail opportunities are available to their\nfullest potential while protecting vital resources. The Draft Plan was released on January\n29, 2026, with the second public meeting held on February 4, 2026. Public comments were\ndue by February 27, 2026. Staff is reviewing the public comments received and working\ntowards the Environmental Document. The RTMP should be completed by early 2027.\nPlease visit the Trione-Annadel RTMP website for more information and send any other\nproject-related questions or concerns to trails@parks.ca.gov.\n\nBig Basin Regional Road and Trail Management Plan\n\nThe Santa Cruz District is in the beginning stages of developing their Regional Road and\n\n                                                                                                   1"
+    },
+    {
+     "page_number": 3,
+     "text": "   State of California • Natural Resources Agency                                  Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                            Armando Quintero, Director\n\n\nCalifornia Trails & Greenways Training\n\nCalifornia Trails & Greenways provides high-quality education and networking opportunities\nfor urban, rural, and backcountry trail professionals. Join leading trail experts for training\nand discussions on the latest advances in trail design, construction, maintenance,\ninterpretation, volunteerism, and management. Explore new, collaborative opportunities\nand engage in productive, meaningful, and inspiring dialogue.\n\nAll activities are designed to increase the knowledge of trail, recreation, and wild land\nmanagement to improve trail systems and programs throughout California.\n\nThis training will be provided April 14 – 17, 2026 at the Marriott San Ramon.\n\nRecreational Trails Plan Update\n\nThe Statewide Trails Office has partnered with the California Natural Resources Agency to\nlaunch a statewide effort to improve access to recreational trails, like hiking, biking, and\nhorseback riding routes, especially for communities that have historically had less access\nto them. This effort is part of a larger plan to make the outdoors more inclusive and\naccessible, support climate resilience, honor tribal priorities, and help meet California’s\n30x30 goal of protecting 30% of land and coastal water by 2030.\n\nThe are currently two surveys available. One survey is for community members to be able\nto provide feedback regarding need and access and the other survey is for trail\nprofessionals to be able to share their knowledge and experience within their local area.\n\nInformation gained from this community outreach will help inform the Recreation Trails\nPlan. The Plan will include a new section based on regions of the state, with ideas and\nconsiderations for providing local access to communities.\n\nNEXT STEPS\n\nFor information only\n\nRECOMMENDATION\n\nN/A\n\nCOMMISSION ACTION(S)\n\nN/A\n\n                                                                                               1"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Staff%20Report%20-%2012%20%20SB630%20Land%20Acquisition.pdf": {
+   "sha256": "82b12f716e475528a30d39b4d7db53b9711fe25837b56b7e2803226533b58465",
+   "page_count": 11,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                                     Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                               Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                            Santa Rosa, CA\n                                            March 5, 2026\n\n\nAGENDA ITEM:              12 SB-630 State Parks: Real Property: Acquisitions and\n                          Leases Report\n\n                          Services\n\nSUBJECT:                  New Authorities for Land Acquisition\n\n______________________________________________________________________\n\n  I.     STAFF RECOMMENDATION\n\n         Informational item: no recommendation offered.\n\n\n  II.    BACKGROUND/SUMMARY\n\n         Department of Parks and Recreation (DPR) acquires land to create and expand\n         the State Park units. Until January 1, 2026, DPR has not held authority to\n         acquire land without the review and approval of the State Public Works Board,\n         Department of General Services and Department of Finance. As of January 1,\n         2026, DPR has been granted two new authorities to acquire land.\n\n\n\n III.    ATTACHMENTS\n\n         •   Staff Report\n         •   PowerPoint Presentation"
+    },
+    {
+     "page_number": 2,
+     "text": "State of California • The Natural Resources Agency                         Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                        Armando Quintero, Director\nState Park and Recreation Commission                                             COMMISSION MEMBERS\nP.O. Box 942896                                                                       Phil Ginsburg, Chair\nSacramento, California 94296-0001                                              Francesca Vietor, Vice Chair\nTelephone: (916) 902-8651                                                                    David Galaviz\n                                                                                       Thomas Huntington\n                                                                                        Christina Jaromay\n\n                                    This page intentionally left blank.                    Jeffrey Williams\n\n\n\n\n                                                                                            2"
+    },
+    {
+     "page_number": 3,
+     "text": "      State of California • Natural Resources Agency                                    Gavin Newsom, Governor\n\n      DEPARTMENT OF PARKS AND RECREATION                                               Armando Quintero, Director\n\n\n\n           CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                              STAFF REPORT\n\n                                                Clear Lake, CA\n                                                March 5, 2026\n\n      STAFF REPORT:                 Agenda Item 12: SB-630 State Parks: Real Property:\n                                    Acquisitions and Leases Report\n\n\n      SUBJECT:                      New Authorities for Land Acquisition\n\n\n\nOBJECTIVE\nTo share information about new authorities granted to Department of Parks and Recreation\n(DPR) to acquire new lands.\n\nINTRODUCTION\n\nDPR acquires land to create and expand the State Park units. Until January 1, 2026, DPR\nhas not held authority to acquire land without the review and approval of the State Public\nWorks Board, Department of General Services and Department of Finance. As of January\n1, 2026, DPR has been granted two new authorities to acquire land.\nDESCRIPTION\n\nA PowerPoint presentation describing the three pathways by which DPR can acquire land,\nincluding the two new authorities.\nNEXT STEPS\n\nDPR’s Acquisition and Real Property Services Division are acquiring land to expand\nexisting park units using the new authorities. Public announcements will be made as\nacquisitions are completed. The first biennial report will be submitted by December 31,\n2027, to the California Legislature regarding properties acquired with the new authorities.\n\nRECOMMENDATION\n\nThe agenda item is informational; no recommendation offered.\n\nCOMMISSION ACTION(S)\n\nn/a\n\nADDITIONAL RESOURCES\n\n                                                                                                     1"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Staff%20Report%20-%2013A%20Consent%20Calendar%20Memorial%20Grove%20Resolutions.pdf": {
+   "sha256": "7d5ef510d9e1cc1dd75981b8e078f6cdf9f8df4f3b8411739ab2d2ecb5bd9bff",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                              Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                         Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                            Santa Rosa, CA\n                                            March 5, 2026\n\n\nAGENDA ITEM:              13A Consent Calendar\n\n\nSUBJECT:                  Memorial Grove Resolutions\n\n______________________________________________________________________\n\n  I.     STAFF RECOMMENDATION\n\n         Recommend the State Park and Recreation Commission approve the Memorial\n         Grove Resolutions\n\n\n  II.    BACKGROUND/SUMMARY\n\n         Save the Redwoods League is requesting two resolutions to receive\n         approval and Sempervirens Fund is requesting one resolution to receive\n         approval from the State Park and Recreation Commission.\n\n\n III.    ATTACHMENTS\n\n         •   Staff Report"
+    },
+    {
+     "page_number": 2,
+     "text": "   State of California • Natural Resources Agency                                 Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                            Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                           STAFF REPORT\n\n                                            Santa Rosa, CA\n                                             March 5, 2026\n\n   STAFF REPORT:                 Memorial Grove Resolutions\n\n\n   SUBJECT:                      State Park and Recreation Commission Approval of Memorial\n                                 Groves\n\n\n\nINTRODUCTION\n\nThe State Park and Recreation Commission (SPRC or Commission) has specific authority\nand responsibility to approve resolutions accepting and naming memorial redwood groves\nand memorial trails in units of the State Park System. (Commission Policy 11.2)\n\nDESCRIPTION\n\nSempervirens Fund is requesting approval from SPRC for the following Memorial Grove:\n\n            •   01-2026 Peter Rieman’s Redwood Grove\n\nSave the Redwoods League is requesting approval from SPRC for the following Memorial\nGroves:\n\n            •   02-2026 Calflin Generations\n            •   03-2026 Shelley and Nick Robinson\n\nRESULT OF NO ACTION BY COMMISSION\n\nIf there is no action by the Commission, these requests to recognize the memorial groves\nwill be delayed until the next Commission meeting.\n\nRECOMMENDATION\n\nRecommend the Commission approve the Memorial Grove Resolution.\n\nCOMMISSION ACTION(S)\n\nCommission to approve via the consent calendar or remove from the consent calendar for\nfurther discussion. Commission may approve, deny, or reschedule the hearing at a future\nCommission Meeting.\n\n                                                                                               1"
+    },
+    {
+     "page_number": 3,
+     "text": ""
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.parks.ca.gov/pages/29247/files/SPRC%20Staff%20Report%20-%2014%20Commission%20Business.pdf": {
+   "sha256": "1ea6f76d19372f8166be44e3fe482b594ac15776c1449f810532d2ae83f9a928",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "State of California • Natural Resources Agency                               Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                         Armando Quintero, Director\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                       STAFF REPORT COVER PAGE\n\n                                           Scotts Valley, CA\n                                             July 2, 2026\n\n\nAGENDA ITEM:              14 Commission Business\n\n\nSUBJECT:                  Commission Business\n\n______________________________________________________________________\n\n   I.    STAFF RECOMMENDATION\n\n         Information only.\n\n\n  II.    BACKGROUND/SUMMARY\n\n         Commissioners of the California State Park and Recreation Commission\n         (Commission) may use this time to discuss any further items they would\n         like to discuss or parks they would like to visit for future Commission\n         meetings.\n\n\n III.    ATTACHMENTS\n\n         •   Staff Report"
+    },
+    {
+     "page_number": 2,
+     "text": "State of California • Natural Resources Agency                     Gavin Newsom, Governor\n\nDEPARTMENT OF PARKS AND RECREATION                                Armando Quintero, Director\n\n\n\n                            This page intentionally left blank.\n\n\n\n\n                                                                                1"
+    },
+    {
+     "page_number": 3,
+     "text": "   State of California • Natural Resources Agency                                      Gavin Newsom, Governor\n\n   DEPARTMENT OF PARKS AND RECREATION                                              Armando Quintero, Director\n\n\n\n\n        CALIFORNIA STATE PARK AND RECREATION COMMISSION MEETING\n                           STAFF REPORT\n\n                                           Scotts Valley, CA\n                                             July 2, 2026\n\n   STAFF REPORT:                 Commission Business\n\n\n   SUBJECT:                      Information Requests and Potential Agenda Item List\n\n\n\nOBJECTIVE\nCalifornia Department of Parks and Recreation (State Parks) staff will create and maintain\non behalf of the State Park and Recreation Commission (SPRC) a list documenting\ninformational requests and potential future agenda items. The list will include items and\ntopics that individual Commissioners have raised at previous meetings. These items will be\naddressed and prioritized in coordination with upcoming SPRC meeting locations,\nscheduled and standing agenda items, and authorities of the SPRC and State Parks. Any\nitem brought for action will be agendized and posted as required by the Bagley-Keene\nOpen Meeting Act. (California Government Code Sections 11120-11133.)\nREQUEST FOR INFORMATIONAL UPDATES\n\n            •   Reservation System Visitation Data (lottery system, who are users)\n            •   Workforce Development Strategies through Contracting\n            •   Overview of Prop 4 (utilizing, dispersing, reference to CEQA exemption)\n            •   Discussion/Info on Coastal Waters and marine protected database and\n                integrating that data into 30x30 goals.\n            •   Hiring data updated requested including data for department’s vacancies vs.\n                vacancies in other agencies and exploring apprenticeship options for\n                maintenance positions (July 2026)\n            •   Highlight/Feature Parks California as our statutory non-profit partner (July\n                2026)\n\n\nTOUR RECOMMENDATIONS/SUGGESTION\n\n            •   North Coast Redwoods District\n\n                                                                                                  1"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://www.parks.ca.gov/?page_id=31042": "<html><body>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Tour and Meeting Public Notice.pdf\">Tour and Meeting Notice</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/State Park and Recreation Commission Tour Agenda.pdf\">Tour Agenda</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC March Meeting Agenda.pdf\">Meeting Agenda</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/Resolution Bundle for website CA Coastal Act.pdf\">Agenda Item 07 Subcommittee Updates</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Annual Report Bundle for Website.pdf\">Agenda Item 08 Annual Report</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - 09 Budget Report.pdf\">Agenda Item 09 Budget Report</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - 10 Northern Buttes District Update.pdf\">Agenda Item 10 Northern Buttes District Update</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - 11 Trails Update.pdf\">Agenda Item 11 Trails Update</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - 12  SB630 Land Acquisition.pdf\">Agenda Item 12 SB-630</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - 13A Consent Calendar Memorial Grove Resolutions.pdf\">Agenda Item 13 Consent Calendar Memorial Grove Resolutions</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - 14 Commission Business.pdf\">Agenda Item 14 Commission Business</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/SPRC Staff Report - Planning Update March 2026.pdf\">Planning Update</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/TK State Park Commission Comments DRAFT.pdf\">Allensworth Progressive Association</a>\n<a href=\"https://www.parks.ca.gov/pages/29247/files/Will Harris.pdf\">Will Harris</a>\n</body></html>"
+ },
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4": null,
+  "5": null,
+  "6": null,
+  "7.a": null,
+  "7.b": null,
+  "7.c": null,
+  "7.d": null,
+  "8": {
+   "page_start": 1,
+   "heading": "08 – Review and Approve Annual Report",
+   "url_end": "Annual%20Report%20Bundle%20for%20Website.pdf"
+  },
+  "9": {
+   "page_start": 1,
+   "heading": "09 Budget Report"
+  },
+  "10": {
+   "page_start": 1,
+   "heading": "10 – Northern Buttes District Update"
+  },
+  "11": {
+   "page_start": 1,
+   "heading": "11 Trails Update"
+  },
+  "12": {
+   "page_start": 1,
+   "heading": "12 SB-630 State Parks"
+  },
+  "13.a": {
+   "page_start": 1,
+   "heading": "13A Consent Calendar",
+   "url_end": "13A%20Consent%20Calendar%20Memorial%20Grove%20Resolutions.pdf"
+  },
+  "14": null,
+  "15": null
+ }
+}

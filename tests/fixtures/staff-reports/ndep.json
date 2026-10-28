@@ -1,0 +1,531 @@
+{
+ "note": "NDEP Board for Financing Water Projects, 2026-08-19. Meeting page links reduced to the board's Agenda/Minutes/Material/Presentation rows; the Material packet (61 pages) keeps page 1 (the agenda), the program-update pages, and every project section and resolution page, each trimmed to its first 20 lines and footer.",
+ "meeting": {
+  "id": "ndep:2026-08-19",
+  "agency_id": "ndep",
+  "title": "Nevada Board for Financing Water Projects Meeting",
+  "local_date": "2026-08-19",
+  "official_url": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/"
+ },
+ "items": [
+  {
+   "id": "ndep:2026-08-19:1",
+   "number": "1",
+   "title": "Call to Order – Chair Bruce Scott",
+   "section": null,
+   "fingerprint": "1dc17a29f1ebe81751e1b5af3def056381f13dd52d32e2b33aeb60b2e40c3bed",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Call to Order – Chair Bruce Scott",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:2",
+   "number": "2",
+   "title": "Introduction / Establish Quorum (Discussion)",
+   "section": null,
+   "fingerprint": "2f373bf4a864aac2ae0abe955f83304f60122cc8d1d9f9fdf5d8b7d793fd4ac1",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Introduction / Establish Quorum (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:3",
+   "number": "3",
+   "title": "Public Comment (Discussion)",
+   "section": null,
+   "fingerprint": "18177c4f46a561a7eb28086294ce73414a0e42b45474741bea7ead22a93ee7a8",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Public Comment (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:4",
+   "number": "4",
+   "title": "Approval of Minutes – May 20, 2026, Meeting (For Possible Action)",
+   "section": null,
+   "fingerprint": "48502fe7f5f3b82dc5e40a14ff0e4df16f062b8a238afacbc1ae25db20ec1203",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approval of Minutes – May 20, 2026, Meeting (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:5",
+   "number": "5",
+   "title": "Approval of Minutes – June 3, 2026, Meeting (For Possible Action)",
+   "section": null,
+   "fingerprint": "630bf59416893d255df1b89f9b041f1a5f9747a6d92371aba607c44e7dcf57a7",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approval of Minutes – June 3, 2026, Meeting (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:6",
+   "number": "6",
+   "title": "Capital Improvements Grant Program Update (Discussion)",
+   "section": null,
+   "fingerprint": "877d9817322c6991de4e4c679ddb876853caa07245362dad0f49aacc168dcf64",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Capital Improvements Grant Program Update (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:7",
+   "number": "7",
+   "title": "Drinking Water State Revolving Fund (DWSRF) Update (Discussion)",
+   "section": null,
+   "fingerprint": "3091436586b04f932d6b1d6f38218d819b282e60e8880e30d89593e2749c1acb",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Drinking Water State Revolving Fund (DWSRF) Update (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:8",
+   "number": "8",
+   "title": "Elk Point Country Club HOW (For Possible Action)",
+   "section": null,
+   "fingerprint": "c9668ab21b2f188bf7cb38dc739f0e1d7301dc9879d9bb027036fc2c8229a20d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Elk Point Country Club HOW (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:9",
+   "number": "9",
+   "title": "Moapa Valley Water District (For Possible Action)",
+   "section": null,
+   "fingerprint": "66a9eec3e9cb106ad6de6a369c770601bbd25994762698f7b10518f0f0bdd75f",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Moapa Valley Water District (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:10",
+   "number": "10",
+   "title": "Virgin Valley Water District (For Possible Action)",
+   "section": null,
+   "fingerprint": "bf60c00567a02b6f9e9f3b3b99eb4fd2e43e85968a0cd4d539e086169889a12b",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Virgin Valley Water District (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:11",
+   "number": "11",
+   "title": "Pershing County Water Conservation District (For Possible Action)",
+   "section": null,
+   "fingerprint": "4c7e69a22a122a87aa56d81072b2a53faf4e096134bbb206171aece9f27399fd",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Pershing County Water Conservation District (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:12",
+   "number": "12",
+   "title": "Nye County – Gabbs Water System (For Possible Action)",
+   "section": null,
+   "fingerprint": "a807370216539c1416327462bd10b0707c883716e89968b2a7269af87becbf98",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Nye County – Gabbs Water System (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:13",
+   "number": "13",
+   "title": "Las Vegas Valley Water District – Blue Diamond Water System (For Possible Action)",
+   "section": null,
+   "fingerprint": "99b85d653029560310d83f5beaf70c4187145f0d373f6b25900ee847259569ad",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Las Vegas Valley Water District – Blue Diamond Water System (For Possible Action)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:15",
+   "number": "15",
+   "title": "2027 Meeting Schedule (Discussion)",
+   "section": null,
+   "fingerprint": "68a1e99afe21af448fa6f622f63889d9136f7a3e8a96c3af7c02643790897385",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "2027 Meeting Schedule (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:16",
+   "number": "16",
+   "title": "Board Comments (Discussion)",
+   "section": null,
+   "fingerprint": "f6f190ded99285068b2d5ce85267b9d8658856563ccc67cc0073f52f701a3b91",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Board Comments (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:17",
+   "number": "17",
+   "title": "Public Comments (Discussion)",
+   "section": null,
+   "fingerprint": "b2d25c566bd42594de8d288f0d8aa96146ca0a2fdd199d92bebdc92e1f9fde0b",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Public Comments (Discussion)",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  },
+  {
+   "id": "ndep:2026-08-19:18",
+   "number": "18",
+   "title": "Adjourn",
+   "section": null,
+   "fingerprint": "992138a05c645fd6dce22553c144124eb6e3b33d696f795f28d377b05d6f6cd0",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Adjourn",
+     "documentId": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "ndep:2026-08-19:bfwp-agenda-2026-08-19:1b1804c7dfc38e3c",
+   "source_document_id": "bfwp-agenda-2026-08-19",
+   "title": "Official board agenda",
+   "url": "https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda.pdf",
+   "sha256": "1b1804c7dfc38e3cf13289db29fee0cf7adcecce75aba3aeb12f214cb914be74",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "ndep:2026-08-19:ndep-agenda:1b1804c7dfc38e3c",
+   "source_document_id": "ndep-agenda",
+   "title": "Agenda (PDF)",
+   "url": "https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda.pdf",
+   "sha256": "1b1804c7dfc38e3cf13289db29fee0cf7adcecce75aba3aeb12f214cb914be74",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "ndep:2026-08-19:bfwp-agenda-2026-08-19:1b1804c7dfc38e3c": {
+   "1": "Board Members:\n Joe Lombardo                               STATE OF NEVADA                 Bruce Scott, Chair\n Governor                                                                   Andrew Belanger, Vice Chair\n                                                                            Abigail Yacoben\n Melissa Starr\n                                                                            Mike Workman\n Board Advisor\n                                                                            Jeremy Hutchings\n Katie Armstrong\n Senior Deputy Attorney General                                             Non-Voting Member:\n                                                                            Linh Kieu\n\n\n                                            AGENDA\n\n                 STATE BOARD FOR FINANCING WATER PROJECTS\n                               August 19, 2026\n                                  9:30 AM\n                                              Location:\n                                    The Richard H. Bryan Building\n                                  Bonnie B. Bryan Conference Room\n                                  901 South Stewart Street, 1st Floor\n                                       Carson City, NV 89701\n\n                                     Join the Meeting virtually at:\n\n                                          Microsoft Teams:\n                                    Meeting ID: 235 559 107 094 73\n                                        Passcode: v4aD2GD2\n\n                                    Call in by Phone (audio only)\n                                   United States: +1 (775) 321-6111\n                                   Meeting extension: 460 092 575#\n\n\nFor information: Contact: Melissa Starr (775) 687-9531, ndep-ofa@ndep.nv.gov.\n\nNote: Items on this agenda may be taken out of order, may be combined for consideration by the public\nbody, and may be pulled or removed from the agenda at any time. Public comment will be solicited prior\nto action on agenda items.\n\n\n\n  1     Call to Order – Chair Bruce Scott\n  2     Introduction / Establish Quorum (Discussion)\n  3     Public Comment (Discussion)\n        Members of the public will be invited to speak before the board; however, no action may be taken\n        on a matter during public comment until the matter itself has been included on an agenda as an\n        item for possible action. Public comment may be limited to three (3) minutes per person at the\n        discretion of the chair. Additional comments may be submitted to the board for inclusion in the\n        minutes.\n  4     Approval of Minutes – May 20, 2026, Meeting (For Possible Action)\n  5     Approval of Minutes – June 3, 2026, Meeting (For Possible Action)"
+  }
+ },
+ "downloads": {
+  "https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Material.pdf": {
+   "sha256": "f37ee73b07fab080e13e70139921f83914d94e784c5b3da080477afaaa5bcd05",
+   "page_count": 61,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                                            Board Members:\n Joe Lombardo                               STATE OF NEVADA                 Bruce Scott, Chair\n Governor                                                                   Andrew Belanger, Vice Chair\n                                                                            Abigail Yacoben\n Melissa Starr\n                                                                            Mike Workman\n Board Advisor\n                                                                            Jeremy Hutchings\n Katie Armstrong\n Senior Deputy Attorney General                                             Non-Voting Member:\n                                                                            Linh Kieu\n\n\n                                            AGENDA\n\n                 STATE BOARD FOR FINANCING WATER PROJECTS\n                               August 19, 2026\n                                  9:30 AM\n                                              Location:\n                                    The Richard H. Bryan Building\n                                  Bonnie B. Bryan Conference Room\n                                  901 South Stewart Street, 1st Floor\n                                       Carson City, NV 89701\n\n                                     Join the Meeting virtually at:\n\n                                          Microsoft Teams:\n                                    Meeting ID: 235 559 107 094 73\n                                        Passcode: v4aD2GD2\n\n                                    Call in by Phone (audio only)\n                                   United States: +1 (775) 321-6111\n                                   Meeting extension: 460 092 575#\n\n\nFor information: Contact: Melissa Starr (775) 687-9531, ndep-ofa@ndep.nv.gov.\n\nNote: Items on this agenda may be taken out of order, may be combined for consideration by the public\nbody, and may be pulled or removed from the agenda at any time. Public comment will be solicited prior\nto action on agenda items.\n\n\n\n  1     Call to Order – Chair Bruce Scott\n  2     Introduction / Establish Quorum (Discussion)\n  3     Public Comment (Discussion)\n        Members of the public will be invited to speak before the board; however, no action may be taken\n        on a matter during public comment until the matter itself has been included on an agenda as an\n        item for possible action. Public comment may be limited to three (3) minutes per person at the\n        discretion of the chair. Additional comments may be submitted to the board for inclusion in the\n        minutes.\n  4     Approval of Minutes – May 20, 2026, Meeting (For Possible Action)\n  5     Approval of Minutes – June 3, 2026, Meeting (For Possible Action)\n"
+    },
+    {
+     "page_number": 13,
+     "text": "                            Board for Financing Water Projects\n                            Capital Improvement Grant Program\n                                        August 2026\n\n\nCapital Improvements Grant Program Funding Updates as of August 10, 2026\n\n\n\n           Current Cash Balance:                                        17,043,414.33\n           Reserved for Administration (service fees)                       32,240.00\n           Committed funds not yet disbursed:                           17,568,912.11\n           Pending Disbursements                                                  -\n           Bond proceeds for Administration                                       -\n           Un-committed (over-committed) bond proceeds                    (557,737.78)\n\n           FY27 PENDING Bond Issuance Year 2                            16,200,000.00\n           Forecased Interest for Bond 7075 through Dec 2026               817,094.99\n           Forecasted uncommited balance Dec 2026                       16,459,357.21\n\n                          Bond Series              2026C\n                          Legislative    SB502 (83rd Session)\n                          Authority      $17,700,000\n                          Date of\n                          Issuance            February 24, 2026\n                          Initial\n                          Proceeds       $              17,700,214.75\n\n                          Proceeds       $    17,012,674.33    96.12%"
+    },
+    {
+     "page_number": 14,
+     "text": "                                                                                                     Last Draw\n           Entity              Contract    Date        Amount          Drawn         Outstanding\n                                                                                                       Date\nTopaz Ranch Estates GID        GP2203     05/17/22   $1,645,520.00   $1,605,613,88     $39,906.12     06/10/25\n\nCarlin, City of                GP2601     03/18/26    $874,478.68           $0.00     $874,478.68      None\nClark County Water\n                               GP2602     04/06/26   $2,106,000.00          $0.00    $2,106,000.00     None\nReclamation District\nEly, City of                   GP2603     03/18/26    $260,340.00           $0.00     $260,340.00      None\n\nHawthorne Utilities            GP2604     03/25/26    $303,778.00           $0.00     $303,778.00      None\n\nHawthorne Utilities            GP2605     03/25/26    $151,184.88           $0.00     $151,184.88      None\n\nHenderson, City of             GP2606     04/06/26   $2,191,595.56          $0.00    $2,191,595.56     None\nMoapa Valley Water\n                               GP2607     03/18/26   $2,252,640.00      $5,088.39    $2,247,551.61   07/31/2026\nDistrict\nMoapa Valley Water\n                               GP2608     03/18/26     $26,838.00           $0.00      $26,838.00      None\nDistrict\nMoapa Valley Water\n                               GP2609     03/18/26     $50,859.90           $0.00      $50,859.90      None\n\n                                              Page 2 of 2"
+    },
+    {
+     "page_number": 15,
+     "text": "                                                 Board for Financing Water Projects\n                                                Drinking Water State Revolving Fund\n                                                            August 2026\n\n\nDrinking Water Program Funding Updates as of August 10, 2026\n\n                                                                           DWSRF\n                                                        DWSRF Base                       DWSRF Lead       Total DWSRF\nProgram Cash Balances                                    Program\n                                                                          Emerging\n                                                                                         Service Lines      Funding\n                                                                         Contaminants\nCash in the State Account                                 $148,080,491              $0               $0      $148,080,491\nLess bond debt service reserves                            -$6,764,250              $0               $0       -$6,764,250\nAdd Federal Cash Available for Loans                       $44,959,602     $29,641,583      $25,212,000       $99,813,185\nAdd pending federal grants (FY26 appropriation)            $20,553,720      $7,921,000               $0       $28,474,720\nCash Available for Loans                                  $206,829,563     $37,562,583      $25,212,000      $269,604,146\nCommitted funds not yet disbursed                         $142,748,271      $7,325,178               $0      $150,073,449\nAdd commitments for Board consideration                        $78,000              $0               $0           $78,000\nTotal committed funds after Board Approval               $142,826,271      $7,325,178               $0     $150,151,449\nAdd projects in discussion with OFA                        $12,820,749     $29,385,000       $3,875,000       $46,080,749\nTotal committed and potential project loans A             $155,647,020     $36,710,178       $3,875,000      $196,232,198\n\nrequirements for Nevada to distribute a portion of the available cash as PF loans."
+    },
+    {
+     "page_number": 16,
+     "text": "Drinking Water Cash Flow Projections (Base Program Only) 1\n\nValues include federal grants received with\nprojected FY26 Allotment\n                                                                     Jul 01,2026        Jul 01,2027     Jul 01,2028       Jul 01,2025\n                                                                       Year 1             Year 2           Year 3           Year 4          Net Change\nCash balance forward                                                  $182,880,019       $61,295,405     $27,802,864        $31,508,024\nReceipts from grants awarded                                            20,553,720                  0                0                 0       20,553,720\nTransfer to the CWSRF program 2                                        (60,000,000)                 0                0                 0      (60,000,000)\nReceipts from bonds issued                                                        0         1,000,000                0                 0        1,000,000\nReceipts from treasurer's interest3                                       5,123,391         5,182,817        5,182,817         5,182,817       20,671,842\nReceipts from loan principal                                              6,497,654       13,299,835       13,682,398        13,392,547        46,872,434\nReceipts from loan interest                                               1,440,974         2,656,490        2,352,454         2,049,154        8,499,072\nPayments for debt service on bonds                                       (3,926,325)      (3,986,850)       (3,482,025)       (3,383,625)     (14,778,825)\nPayments for loan recipients 3                                         (91,476,453)      (52,324,558)     (15,519,584)        (3,212,329)    (162,532,924)\nChange in debt service reserves                                             202,425           679,725        1,489,100                 0        2,371,250\nCash balance forward                                                   $61,295,405       $27,802,864     $31,508,024        $45,536,588     ($137,343,431)\n2\n    Transfer to CWSRF is dependent upon budget approval and EPA consent                                                   Beginning Cash     $182,880,019\n3\n    Estimated at 3% A.P.R. on undisbursed cash in the fund. Subject to change.                                              Ending Cash       $45,536,588\n\n                                                                                 Page 2 of 2"
+    },
+    {
+     "page_number": 17,
+     "text": "                                    Loan Commitment from the\n                             Drinking Water State Revolving Fund\n                                    Board for Financing Water Projects\n                                               August 2026\n\n\nElk Point Country Club HOA\n Total Commitment      Recommendation\n $78,000.00            The Nevada Division of Environmental Protection (NDEP) recommends that the\n                       Board for Financing Water Projects (Board) approve a loan commitment to Elk Point\n                       Country Club Homeowners Association (HOA) for Surface Water System-Preliminary\n                       Engineering Report (PER).\n Amount                Resolution         Program and Terms\n\n $78,000.00            D08-0826           DWSRF Principal Forgiveness\n\nManagement and Structure\n\n    Loan Recipient Elk Point Country Club HOA\n     and Structure\n                   Elk Point Country Club HOA is a public water system per NRS 445A.235.\n   System Number NV0000271\n\n\nSystem Information\n\n                County Douglas\n    System Population 325\n\nPage 1 of 6                               Elk Point                             August 2026"
+    },
+    {
+     "page_number": 18,
+     "text": "                     frequently than standard practice. These factors have prompted the Elk Point HOA to\n                     propose surface water as an alternate water source to their existing well supply.\n         Project Funding is requested to develop a Preliminary Engineer Report (PER) to evaluate the\n        Narrative system’s infrastructure and alternative treatment options for uranium reduction.\n          Project This project will evaluate alternatives, including consolidation, groundwater reliance with\n     Alternatives system upgrades, and rehabilitation and expanded use of surface water supply\n       Evaluated infrastructure.\n\n\nMaps and Exhibits\n\nIn accordance with NRS 239C.210 and Executive Order 2020-01 dated February 4, 2020, drawings, maps,\nplans, or records that reveal the locations of critical infrastructure, including primary buildings, facilities, and\nother structures used for storing, transporting, or transmitting water, are deemed confidential and not subject to\nsubpoena or discovery, and therefore not subject to inspection by the general public.\nNDEP is able to provide the following information for further clarification on the project location, need, or scope:\n\n\n\n\nTimeline\n              Loan Closing: 9/15/2026\n\n\n\n\nPage 2 of 6                                  Elk Point                                 August 2026"
+    },
+    {
+     "page_number": 19,
+     "text": "Sources of Project Funding\n\n                                              DWSRF             Local         Other Source         Total Costs\n    Preplanning costs already incurred              $0.00             $0.00             $0.00            $ 0.00\n    Planning costs including PER              $78,000.00        $19,500.00              $0.00        $97,500.00\n    Design and Engineering including\n                                                    $0.00             $0.00             $0.00            $ 0.00\n    inspection\n    Land Acquisition                                $0.00             $0.00             $0.00            $ 0.00\n    Capital asset materials and\n                                                    $0.00             $0.00             $0.00            $ 0.00\n    equipment\n    Construction costs                              $0.00             $0.00             $0.00            $ 0.00\n    Financing including bond costs                  $0.00             $0.00             $0.00            $ 0.00\n    Construction contingency                        $0.00             $0.00             $0.00            $ 0.00\n    Other                                           $0.00             $0.00             $0.00            $ 0.00\n    Totals                                    $78,000.00        $19,500.00            $ 0.00         $97,500.00\n    Other Source:\n\nEnvironmental Review\n\nAn environmental review will not be required during the development of this PER. Once the PER is developed\nand a proposed project is determined, the level of the environmental review can be determined. The\n\nPage 3 of 6                                   Elk Point                              August 2026"
+    },
+    {
+     "page_number": 20,
+     "text": "                           Elk Point Country Club HOA has a certified operator Grade D1/T1 in current good\n                           standing.\n                           Elk Point Country Club HOA has the technical capacity for NDEP to recommend\n                           funding support.\n    Managerial Capacity “Managerial capability” means the ability of a public water system to conduct its\n                        administrative affairs in a manner that ensures compliance with all applicable\n                        standards based on 2:\n                            1. The accountability, responsibility and authority of the owner or operator of\n                               the system; and\n                            2. The personnel and organization of the system; and\n                            3. The ability of the persons who manage the system to work with:\n                                   (a) Jurisdictional, regulatory and other governmental agencies; and\n                                   (b) Trade and industry organizations; and\n                                   (c) The persons served by the system.\n\n                           Elk Point Country Club HOA has demonstrated managerial capacity for NDEP to\n                           recommend funding support.\n      Financial Capacity “Financial capability” means the ability of a public water system to:\n                             1. Pay the costs related to maintenance, operations, depreciation and capital\n                                expenses; and\n                             2. Maintain creditworthiness; and\n\nPage 4 of 6                                 Elk Point                              August 2026"
+    },
+    {
+     "page_number": 21,
+     "text": "                       implementation meets DWSRF requirements. The balance as of June 2026 was\n                       $666,980.\n    DWSRF Principal Elk Point Country Club HOA does not qualify as disadvantaged. DWSRF can fund\n         Forgiveness the PER for this project with an 80/20 match using additional subsidy that is\n    Eligibility Criteria currently available.\n\n\nSystem Previous Commitments and Studies\n\nProject I.D. ElkPt1; Executed June 2009; Loan Amount $110,578.86\nUranium Compliance\n\n\n\n\nPage 5 of 6                            Elk Point                           August 2026"
+    },
+    {
+     "page_number": 22,
+     "text": "DWSRF Authority and Purpose\nThe 1996 amendments to the Safe Drinking Water Act (SDWA) authorized the DWSRF. The DWSRF is a\nnational program to assist public water systems in financing the cost of drinking water infrastructure projects\nneeded to achieve or maintain compliance with the SDWA and to further the public health objectives of the\nSDWA. The SDWA authorizes the U.S. Environmental Protection Agency (EPA) to award capitalization grants\nto states that have established DWSRF programs. The Nevada Legislature passed legislation that authorizes\nNDEP to administer the DWSRF under the Nevada Revised Statutes (NRS) 445A.200 to 445A.295, inclusive.\nIn addition to the authorizing statute, Nevada has adopted Nevada Administrative Code (NAC) 445A.6751 to\n445A.67644, inclusive, which describes the program requirements. Federal regulations for implementing the\nDWSRF are found in 40 CFR, part 35. Other program directives include the Operating Agreement between\nNDEP and EPA, the annual Intended Use Plan, EPA guidance and policies, and conditions of each grant\naward.\nOne of the requirements of the NRS pertaining to the DWSRF is that NDEP shall not “commit any money in the\naccount for the revolving fund for expenditure … without obtaining the prior approval of the board for financing\nwater projects” (NRS 445A.265(3)).\n\nDWSRF Loan Conditions\n\n$78,000.00             D08-0826             DWSRF principal forgiveness loan. Qualifies as a loan incentive.\nThe above-referenced loan will contain the following conditions:\n\n   •   100% of the principal will be forgiven.\n   •   Review user rates at least every three (3) years for the life of the loan.\n\nPage 6 of 6                                 Elk Point                                 August 2026"
+    },
+    {
+     "page_number": 23,
+     "text": "                          RESOLUTION D08-0826\n                Elk Point Country Club HOA Project Loan Commitment\n\n\n WHEREAS:     The Board for Financing Water Projects (Board) of the State of Nevada is authorized by\n              Nevada Revised Statutes (NRS) chapter 445A.265 to approve the Nevada Division of\n              Environmental Protection (NDEP) prioritized lists of water projects and to commit loans from\n              the revolving fund account to help community water systems and non-transient water\n              systems pay for capital improvements and debt refinancing, both of which are required and\n              made necessary under NRS 445A.800 to 445A.955, inclusive, by the Safe Drinking Water\n              Act (42 U.S.C. §§ 300f et seq.), and by corresponding regulations; and\n WHEREAS:     NDEP has the responsibility of administering the Drinking Water State Revolving Fund\n              program; and\n WHEREAS:     On May 20, 2026, the Board, under NRS 445A.265(3), approved the Priority List Effective\n              May 2026, which ranks water projects that are eligible for loans from the Drinking Water\n              State Revolving Fund account; and\n WHEREAS:     <<Loan Recipient>> (Recipient) owns and operates a public community water system in\n              Nevada; and\n WHEREAS:     The Recipient submitted a pre-application to NDEP for funding a project to <<project>>\n              (Project); and\n WHEREAS:     The Project is included as project #21 on the Priority List Effective May 2026 of water\n              projects; and\n\nPage 1 of 2                             Elk Point                                August 2026"
+    },
+    {
+     "page_number": 24,
+     "text": "IT IS RESOLVED by the Board for Financing Water Projects of the State of Nevada:\n\n       Section 1: This resolution shall be known as the “D08-0826 Elk Point Country Club HOA Project Loan\n       Commitment”\n\n       Section 2: The loan for the Project shall be negotiated between the Recipient and NDEP. The loan will\n       include terms and conditions as outlined in the staff report dated August 19, 2026, and must comply\n       with applicable provisions in the Nevada Drinking Water Intended Use Plan.\n\n       Section 3: Based on NDEP’s review of the application and recommendation to the Board concerning\n       the Project, and subject to the provisions of Section 2 and 4 of this resolution, the Board approves a\n       commitment of funds in the amount not to exceed $78,000.00 from the revolving fund account\n       consistent with NRS 445A.265(3).\n\n       Section 4: The Board further recommends that NDEP take all other necessary and appropriate actions\n       to advance the provisions of this resolution consistent with NRS 445A.200 to 445A.295, inclusive, and\n       with corresponding regulations.\n\n       Section 5: This resolution shall be effective on its passage and approval.\n\nPASSED, ADOPTED, AND SIGNED August 19, 2026\n\n\nSigned:____________________________________\n\n      Chair\n      Board for Financing Water Projects\n\n\n\n\nAttest:____________________________________\n\n      Advisor\n\nPage 2 of 2                                Elk Point                                August 2026"
+    },
+    {
+     "page_number": 25,
+     "text": "                                     Letter of Intent from the\n                              Capital Improvements Grant Program\n                                     Board for Financing Water Projects\n                                                August 2026\n\n\nMoapa Valley Water District\n Estimated Project      Recommendation\n Cost                   The Nevada Division of Environmental Protection (NDEP) recommends that the\n $1,267,300.00          Board for Financing Water Projects (Board) approve a Letter of Intent to fund Moapa\n                        Valley Water District for a capital improvement project for Supervisory Control and\n                        Data Acquisition (SCADA) improvements.\n Grant Percent          Resolution          Program and Terms\n\n 38                     G09-0826           Grant Funds\n\nManagement and Structure\n\n      Grant Recipient Moapa Valley Water District is a purveyor of water per NRS 349.980(10).\n       and Structure\n   System Number NV0000160\n\n\n\nSystem Information\n\n                  County Clark\n      System Population 8,500\n\n         System Service 2,623\n\nPage 1 of 6                     Moapa Valley Water District                       August 2026"
+    },
+    {
+     "page_number": 26,
+     "text": "                     District faces a significant risk of prolonged service outages, during which critical repairs\n                     could not be completed. The SCADA system needs to be updated to more current\n                     technology with a new service provider that can serve the District in the future.\n         Project The Moapa Valley Water District proposes to improve the existing SCADA system. The\n        Narrative existing system is dated, inefficient, and will soon be unserviceable. The project will\n                  replace and install over 140 SCADA system components, including flow meters, pumps,\n                  valves, sensors, and switches across 38 different sites.\n\n\nMaps and Exhibits\n\nIn accordance with NRS 239C.210 and Executive Order 2020-01 dated February 4, 2020, drawings, maps,\nplans, or records that reveal the locations of critical infrastructure, including primary buildings, facilities, and\nother structures used for storing, transporting, or transmitting water are deemed confidential and not subject to\nsubpoena or discovery, and therefore not subject to inspection by the general public.\nNDEP is able to provide the following information for further clarification on the project location, need, or scope:\n\n\n\n\nPage 2 of 6                         Moapa Valley Water District                        August 2026"
+    },
+    {
+     "page_number": 27,
+     "text": "Proposed Project Costs\n\n   Cap Grant (38%)          Matching Funds (72%)          Total Cost           Matching Funds Source\n              $481,574.00              $785,726.00       $ 1,267,300.00                  DWSRF PF Loan\n\n\nGrant Recipient Information\n\n        Possibility for Consolidation is not considered due to the isolated location.\n        Consolidation\n\nPage 3 of 6                      Moapa Valley Water District                      August 2026"
+    },
+    {
+     "page_number": 28,
+     "text": "     Water Conservation Moapa Valley Water District has a Water Conservation Plan on file dated April 2024.\n                   Plan\n      Technical Capacity “Technical capability” means the ability of a public water system to:\n                            1. Obtain an adequate and reliable source of water that is necessary to provide\n                                the quantity and quality of water required by the system; and\n                            2. Establish and maintain an adequate infrastructure for the treatment, storage\n                                and distribution of the quantity and quality of water required by the system;\n                                and\n\n                           Moapa Valley Water District has a certified operator Grade D3-T2 in current good\n                           standing.\n                           Moapa Valley Water District has the technical capacity for NDEP to recommend\n                           funding support.\n    Managerial Capacity “Managerial capability” means the ability of a public water system to conduct its\n                        administrative affairs in a manner that ensures compliance with all applicable\n                        standards based on 1:\n                            1. The accountability, responsibility and authority of the owner or operator of\n                               the system; and\n                            2. The personnel and organization of the system; and\n                            3. The ability of the persons who manage the system to work with:\n                                   (a) Jurisdictional, regulatory and other governmental agencies; and\n\nPage 4 of 6                        Moapa Valley Water District                        August 2026"
+    },
+    {
+     "page_number": 29,
+     "text": "                                   o   6,001 to 18,000 gallons: $4.16 per k/gal\n                                   o   18,001 to 70,000 gallons: $4.55 per k/gal\n                                   o   70,001 gallons and over: $5.78 per k/gal\n                            •   Average Water Rate/Use for System: $112.00\n                        The water rates established sufficiently cover current operation, maintenance, debt\n                        service, and reserves of the system.\n       Drinking Water The system is fully metered.\n               Meters\n   Asset Management The Asset Management Plan was updated in August 2025.\n            or Fiscal\n   Sustainability Plan\n Capital Replacement Capital Replacement Reserve Account is funded and meets DWSRF requirements.\n    Reserve Account The balance as of June 30, 2026, was $859,106.\n            Capital Based on our current information for Capital Grant Scale, this project is qualified for\n Improvements Grant 38% funding. Moapa Valley Water District will be requesting Principal Forgiveness\n              Scale funding from the DWSRF to meet the match requirement for this project.\n\n\n\n\nPage 5 of 6                      Moapa Valley Water District                       August 2026"
+    },
+    {
+     "page_number": 30,
+     "text": "Capital Improvements Grant Program Authority and Purpose\nNevada Revised Statute (NRS) 349.980 to 349.987 describes the Capital Improvements Grant Program and\nthe powers and duties of the Board for Financing Water Projects (Board). NDEP administers the Capital\nImprovements Grant Program on behalf of the Board as per NRS 349.982 and NAC 349.430 to 349.574,\ninclusive. If the Board determines to provide a grant from the Capital Improvements Grant Program, one of the\nrequirements of the Nevada Administrative Code (NAC) is that the Board will adopt a resolution that includes a\nstatement of approval of the Board that sets forth its findings of fact (NAC 349.535, subsection 1).\n\n\nRECOMMENDED MOTION FOR THE CAPITAL IMPROVEMENT GRANT\n\nI move to approve the resolution titled “G09-0826 Moapa Valley Water District Letter of Intent Approval,” as\nrequired per NAC 349.485. The terms and conditions as outlined in the staff report and resolution shall apply\nto this approval.\n\n\n\n\nPage 6 of 6                       Moapa Valley Water District                      August 2026"
+    },
+    {
+     "page_number": 31,
+     "text": "                          RESOLUTION G09-0826\n                   Moapa Valley Water District Project Letter of Intent\n\n\n WHEREAS:     Nevada Revised Statutes (NRS) 349.980 to 349.987, establishes a program to provide\n              grants of money to purveyors of water, eligible recipients, or local governments to pay for\n              eligible capital improvement costs and water resource plans; and\n\n WHEREAS:     The Board for Financing Water Projects (Board) administers the program and establishes\n              regulations for requirements to participate in the program in conformance with NRS\n              349.982; and\n\n WHEREAS:     Moapa Valley Water District, (“Recipient”) is a (purveyor of water/eligible recipient/governing\n              body) seeking funding for a qualified project in conformance with NRS 349.981; and\n\n WHEREAS:     The Recipient has submitted to the Board a Letter of Intent per Nevada Administrative Code\n              (NAC) 349.475; and\n WHEREAS:     The Division of Environmental Protection has satisfied the requirements in conformance\n              with NAC 349.480; and\n WHEREAS:     NAC 349.485 provides in relevant part, as follows:\n              If the Board determines the Letter of Intent for the grant meets the requirements pursuant to\n              NAC 349.480, it will adopt a resolution.\n\n\n\n\nPage 1 of 2                    Moapa Valley Water District                       August 2026"
+    },
+    {
+     "page_number": 32,
+     "text": "IT IS RESOLVED by the Board for Financing Water Projects of the State of Nevada:\n\n       Section 1: This resolution shall be known as the “G09-0826 Moapa Valley Water District”\n\n       Section 2: In connection with the findings of fact set forth in Section 3 of this Resolution and subject to\n       the provisions of Section 4 of this Resolution, the Board has determined, and does hereby declare, that\n       it approves the Letter of Intent submitted by the Applicant\n\n       Section 3: Based on its review of the Letter of Intent, and based on the records and documents\n       submitted to the Board concerning the Project, the Board hereby makes the following findings of fact in\n       support of its determination to approve the Letter of Intent:\n\n          (a) The proposed capital improvement is economically justified and financially feasible;\n          (b) The proposed capital improvement complies with the provisions of the NRS 349.980 to 349.987,\n              inclusive;\n          (c) The plan for development of the proposed capital improvement is satisfactory;\n          (d) The Applicant is able to obtain the financing required to complete the capital improvement;\n          (e) The Applicant has made sufficient and reasonable efforts to determine whether the proposed\n              capital improvement conflicts with any regional master plan of any local, state or federal\n              governing authority, and those efforts have not revealed such a conflict; and\n          (f) The proposed capital improvement will not use or waste excessive quantities of water.\n\n       Section 4: The Letter of Intent, on file with the State and by this reference incorporated herein, is a true\n       and correct copy of the Letter of Intent filed by the Applicant with the Board.\n\n       Section 5: This resolution shall be effective on its passage and approval.\n\nPage 2 of 2                        Moapa Valley Water District                        August 2026"
+    },
+    {
+     "page_number": 33,
+     "text": "                                    Letter of Intent from the\n                             Capital Improvements Grant Program\n                                     Board for Financing Water Projects\n                                                 August 2026\n\n\nVirgin Valley Water District\n Estimated Project     Recommendation\n Cost                  The Nevada Division of Environmental Protection (NDEP) recommends that the\n $2,304,924.00         Board for Financing Water Projects (Board) approve a Letter of Intent to fund Virgin\n                       Valley Water District for a capital improvement project to design and construct a\n                       distribution line, upgrade exiting meters, and install a pressure reducing valve (PRV)\n                       station.\n Grant Percent         Resolution           Program and Terms\n\n 51%                   G10-0826            Grant Funds\n\nManagement and Structure\n\n    Grant Recipient Virgin Valley Water District is a purveyor of water per NRS 349.980(10).\n     and Structure\n   System Number NV0000167\n\n\n\nSystem Information\n\n                 County Clark\n    System Population 26,000\n\nPage 1 of 5                                 VVWD                                    August 2026"
+    },
+    {
+     "page_number": 34,
+     "text": "                     this aging infrastructure improves system reliability and helps the district reach water\n                     conservation goals.\n         Project This project consists of replacing aging 10\" and 14\" water lines, upgrading a meter, and\n        Narrative installing a pressure-reducing valve station for the Virgin River Casino.\n\n\nMaps and Exhibits\n\nIn accordance with NRS 239C.210 and Executive Order 2020-01 dated February 4, 2020, drawings, maps,\nplans, or records that reveal the locations of critical infrastructure, including primary buildings, facilities, and\nother structures used for storing, transporting, or transmitting water are deemed confidential and not subject to\nsubpoena or discovery, and therefore not subject to inspection by the general public.\nNDEP is able to provide the following information for further clarification on the project location, need, or scope:\n\n\n\n\nPage 2 of 5                                    VVWD                                    August 2026"
+    },
+    {
+     "page_number": 35,
+     "text": "Proposed Project Costs\n\n      Cap Grant (51%)         Matching Funds (49%)           Total Cost            Matching Funds Source\n            $1,175,511.24               $1,129,412.76        $ 2,304,924.00                         Local Funds\n\n\nGrant Recipient Information\n\n           Possibility for Due to the size and location of the system, consolidation is not an option.\n           Consolidation\n     Water Conservation Completed 01/01/2023, the Water Conservation Plan has been implemented and\n                   Plan details the conservation efforts of the district.\n      Technical Capacity “Technical capability” means the ability of a public water system to:\n                            1. Obtain an adequate and reliable source of water that is necessary to provide\n                                the quantity and quality of water required by the system; and\n                            2. Establish and maintain an adequate infrastructure for the treatment, storage\n                                and distribution of the quantity and quality of water required by the system;\n                                and\n\n                            Virgin Valley Water District has a certified operator Grade D3-T3 in current good\n                            standing.\n                            Virgin Valley Water District has the technical capacity for NDEP to recommend\n                            funding support.\n    Managerial Capacity “Managerial capability” means the ability of a public water system to conduct its\n                        administrative affairs in a manner that ensures compliance with all applicable\n\nPage 3 of 5                                    VVWD                                   August 2026"
+    },
+    {
+     "page_number": 36,
+     "text": "                                                             Days cash on hand       940\n                                                               Outstanding debt      $23,041,940\n                                                  Net Income before depreciation     $10,707,033\n                                                                    Current ratio    9.10\n                                                                 Debt coverage       5.69\n\n                          The recipient has demonstrated to NDEP that they will remain viable upon\n                          completion of the proposed improvement (NAC 349.475(2)(h)(4)(i)).\n\n\n              User Rates Water user rates were adopted in October 2025.\n                              •   Residential base rate per user per month: $30.25\n                              •   Commodity Rate per k/gal\n                                     o 0 to 2,999 gallons: included in base rate\n                                     o 3,000 – 6,999 gallons: $2.41 per k/gal\n                                     o 7,000 – 18,999 gallons: $3.03 per k/gal\n                                     o 19,000 – 54,999 gallons: $4.21 per k/gal\n                                     o 55,000 gallons and over: $6.05 per k/gal\n                              •   Debt Service Charge: $5.30\n                              •   Average Water Rate/Use for System: $47.34\n                          The water rates established sufficiently cover current operation, maintenance, debt\n                          service, and reserves of the system.\n       Drinking Water The system is fully metered.\n\nPage 4 of 5                                  VVWD                                    August 2026"
+    },
+    {
+     "page_number": 37,
+     "text": "Capital Improvements Grant Program Authority and Purpose\nNevada Revised Statute (NRS) 349.980 to 349.987 describes the Capital Improvements Grant Program and\nthe powers and duties of the Board for Financing Water Projects (Board). NDEP administers the Capital\nImprovements Grant Program on behalf of the Board as per NRS 349.982 and NAC 349.430 to 349.574,\ninclusive. If the Board determines to provide a grant from the Capital Improvements Grant Program, one of the\nrequirements of the Nevada Administrative Code (NAC) is that the Board will adopt a resolution that includes a\nstatement of approval of the Board that sets forth its findings of fact (NAC 349.535, subsection 1).\n\n\nRECOMMENDED MOTION FOR THE CAPITAL IMPROVEMENT GRANT\n\nI move to approve the resolution titled “G10-0826 Virgin Valley Water District Letter of Intent Approval,” as\nrequired per NAC 349.485. The terms and conditions as outlined in the staff report and resolution shall apply\nto this approval.\n\n\n\n\nPage 5 of 5                                 VVWD                                   August 2026"
+    },
+    {
+     "page_number": 38,
+     "text": "                          RESOLUTION G10-0826\n                    Virgin Valley Water District Project Letter of Intent\n\n\n WHEREAS:     Nevada Revised Statutes (NRS) 349.980 to 349.987, establishes a program to provide\n              grants of money to purveyors of water, eligible recipients, or local governments to pay for\n              eligible capital improvement costs and water resource plans; and\n\n WHEREAS:     The Board for Financing Water Projects (Board) administers the program and establishes\n              regulations for requirements to participate in the program in conformance with NRS\n              349.982; and\n\n WHEREAS:     Virgin Valley Water District, (“Recipient”) is a (purveyor of water/eligible recipient/governing\n              body) seeking funding for a qualified project in conformance with NRS 349.981; and\n\n WHEREAS:     The Recipient has submitted to the Board a Letter of Intent per Nevada Administrative Code\n              (NAC) 349.475; and\n WHEREAS:     The Division of Environmental Protection has satisfied the requirements in conformance\n              with NAC 349.480; and\n WHEREAS:     NAC 349.485 provides in relevant part, as follows:\n              If the Board determines the Letter of Intent for the grant meets the requirements pursuant to\n              NAC 349.480, it will adopt a resolution.\n\n\n\n\nPage 1 of 2                               VVWD                                     August 2026"
+    },
+    {
+     "page_number": 39,
+     "text": "IT IS RESOLVED by the Board for Financing Water Projects of the State of Nevada:\n\n       Section 1: This resolution shall be known as the “G10-0826 Virgin Valley Water District”\n\n       Section 2: In connection with the findings of fact set forth in Section 3 of this Resolution and subject to\n       the provisions of Section 4 of this Resolution, the Board has determined, and does hereby declare, that\n       it approves the Letter of Intent submitted by the Applicant\n\n       Section 3: Based on its review of the Letter of Intent, and based on the records and documents\n       submitted to the Board concerning the Project, the Board hereby makes the following findings of fact in\n       support of its determination to approve the Letter of Intent:\n\n          (a) The proposed capital improvement is economically justified and financially feasible;\n          (b) The proposed capital improvement complies with the provisions of the NRS 349.980 to 349.987,\n              inclusive;\n          (c) The plan for development of the proposed capital improvement is satisfactory;\n          (d) The Applicant is able to obtain the financing required to complete the capital improvement;\n          (e) The Applicant has made sufficient and reasonable efforts to determine whether the proposed\n              capital improvement conflicts with any regional master plan of any local, state or federal\n              governing authority, and those efforts have not revealed such a conflict; and\n          (f) The proposed capital improvement will not use or waste excessive quantities of water.\n\n       Section 4: The Letter of Intent, on file with the State and by this reference incorporated herein, is a true\n       and correct copy of the Letter of Intent filed by the Applicant with the Board.\n\n       Section 5: This resolution shall be effective on its passage and approval.\n\nPage 2 of 2                                   VVWD                                    August 2026"
+    },
+    {
+     "page_number": 40,
+     "text": "                                    Letter of Intent from the\n                             Capital Improvements Grant Program\n                                     Board for Financing Water Projects\n                                                August 2026\n\n\nPershing County Water Conservation District\n Estimated Project     Recommendation\n Cost                  The Nevada Division of Environmental Protection (NDEP) recommends that the\n $13,795,820.00        Board for Financing Water Projects (Board) approve a Letter of Intent to fund\n                       Pershing County Water Conservation District (PCWCD) for a capital improvement\n                       project for the Pitt Dam Replacement.\n Grant Percent         Resolution            Program and Terms\n\n 78%                   G11-0826           Grant Funds\n\nManagement and Structure\n\n    Grant Recipient Pershing County Water Conservation District (PCWCD) is an eligible recipient per\n     and Structure NRS 349.981(4)(a).\n\n\nSystem Information\n\n                 County Pershing\n    System Population 1,805\n\n          Date System April 2, 2025\n             Founded\n\nPage 1 of 5              Pershing County Water Conservation District              August 2026"
+    },
+    {
+     "page_number": 41,
+     "text": "Maps and Exhibits\n\nIn accordance with NRS 239C.210 and Executive Order 2020-01 dated February 4, 2020, drawings, maps,\nplans, or records that reveal the locations of critical infrastructure, including primary buildings, facilities, and\nother structures used for storing, transporting, or transmitting water are deemed confidential and not subject to\nsubpoena or discovery, and therefore not subject to inspection by the general public.\nNDEP is able to provide the following information for further clarification on the project location, need, or scope:\n\n\n\n\nPage 2 of 5                Pershing County Water Conservation District                 August 2026"
+    },
+    {
+     "page_number": 42,
+     "text": "Proposed Project Costs\n\n      Cap Grant (78%)        Matching Funds (22%)           Total Cost           Matching Funds Source\n                                                                                  United States Department of\n           $10,760,739.60              $3,035,080.40        $13,795,820.00\n                                                                                           Agriculture (USDA)\n\n\nGrant Recipient Information\n\n           Possibility for N/A\n           Consolidation\n     Water Conservation N/A\n                   Plan\n\n\n      Financial Capacity “Financial capability” means the ability of a public water system to:\n                             1. Pay the costs related to maintenance, operations, depreciation and capital\n                                expenses; and\n                             2. Maintain creditworthiness; and\n                             3. Establish and maintain adequate fiscal controls and accounting methods\n                                required for the operation of the system 1.\n\n\n                                                      Financial Information as of:    June 30, 2025\n                                    Financial information independently audited by:   Eide Bailly\n                                                                  Unrestricted cash   $1,385,355\n                                                                Days cash on hand     246\n\nPage 3 of 5                 Pershing County Water Conservation District               August 2026"
+    },
+    {
+     "page_number": 43,
+     "text": "            Capital Based on the current information for the Capital Improvements Grant Scale, this\n Improvements Grant project qualifies for 78% funding. PCWCD will be closing a four-million-dollar loan\n              Scale with USDA to fund the match.\n\n\n\n\nPage 4 of 5             Pershing County Water Conservation District            August 2026"
+    },
+    {
+     "page_number": 44,
+     "text": "Capital Improvements Grant Program Authority and Purpose\nNevada Revised Statute (NRS) 349.980 to 349.987 describes the Capital Improvements Grant Program and\nthe powers and duties of the Board for Financing Water Projects (Board). NDEP administers the Capital\nImprovements Grant Program on behalf of the Board as per NRS 349.982 and NAC 349.430 to 349.574,\ninclusive. If the Board determines to provide a grant from the Capital Improvements Grant Program, one of the\nrequirements of the Nevada Administrative Code (NAC) is that the Board will adopt a resolution that includes a\nstatement of approval of the Board that sets forth its findings of fact (NAC 349.535, subsection 1).\n\n\nRECOMMENDED MOTION FOR THE CAPITAL IMPROVEMENT GRANT\n\nI move to approve the resolution titled “G11-0826 PCWCD Letter of Intent Approval,” as required per NAC\n349.485. The terms and conditions as outlined in the staff report and resolution shall apply to this approval.\n\n\n\n\nPage 5 of 5               Pershing County Water Conservation District                August 2026"
+    },
+    {
+     "page_number": 45,
+     "text": "                              RESOLUTION G11-0826\n              Pershing County Water Conservation District Project Letter of Intent\n\n\n WHEREAS:         Nevada Revised Statutes (NRS) 349.980 to 349.987, establishes a program to provide\n                  grants of money to purveyors of water, eligible recipients, or local governments to pay for\n                  eligible capital improvement costs and water resource plans; and\n\n WHEREAS:         The Board for Financing Water Projects (Board) administers the program and establishes\n                  regulations for requirements to participate in the program in conformance with NRS\n                  349.982; and\n\n WHEREAS:         Pershing County Water Conservation District, (“Recipient”) is an eligible recipient seeking\n                  funding for a qualified project in conformance with NRS 349.981; and\n\n WHEREAS:         The Recipient has submitted to the Board a Letter of Intent per Nevada Administrative Code\n                  (NAC) 349.475; and\n WHEREAS:         The Division of Environmental Protection has satisfied the requirements in conformance\n                  with NAC 349.480; and\n WHEREAS:         NAC 349.485 provides in relevant part, as follows:\n                  If the Board determines the Letter of Intent for the grant meets the requirements pursuant to\n                  NAC 349.480, it will adopt a resolution.\n\n\n\n\nPage 1 of 2               Pershing County Water Conservation District                August 2026"
+    },
+    {
+     "page_number": 46,
+     "text": "IT IS RESOLVED by the Board for Financing Water Projects of the State of Nevada:\n\n       Section 1: This resolution shall be known as the “G11-0826 Pershing County Water Conservation\n       District”\n\n       Section 2: In connection with the findings of fact set forth in Section 3 of this Resolution and subject to\n       the provisions of Section 4 of this Resolution, the Board has determined, and does hereby declare, that\n       it approves the Letter of Intent submitted by the Applicant\n\n       Section 3: Based on its review of the Letter of Intent, and based on the records and documents\n       submitted to the Board concerning the Project, the Board hereby makes the following findings of fact in\n       support of its determination to approve the Letter of Intent:\n\n          (a) The proposed capital improvement is economically justified and financially feasible;\n          (b) The proposed capital improvement complies with the provisions of the NRS 349.980 to 349.987,\n              inclusive;\n          (c) The plan for development of the proposed capital improvement is satisfactory;\n          (d) The Applicant is able to obtain the financing required to complete the capital improvement;\n          (e) The Applicant has made sufficient and reasonable efforts to determine whether the proposed\n              capital improvement conflicts with any regional master plan of any local, state or federal\n              governing authority, and those efforts have not revealed such a conflict; and\n          (f) The proposed capital improvement will not use or waste excessive quantities of water.\n\n       Section 4: The Letter of Intent, on file with the State and by this reference incorporated herein, is a true\n       and correct copy of the Letter of Intent filed by the Applicant with the Board.\n\nPage 2 of 2               Pershing County Water Conservation District                 August 2026"
+    },
+    {
+     "page_number": 47,
+     "text": "                                    Letter of Intent from the\n                             Capital Improvements Grant Program\n                                     Board for Financing Water Projects\n                                                August 2026\n\n\nNye County – Gabbs Water System\n Estimated Project     Recommendation\n Cost                  The Nevada Division of Environmental Protection (NDEP) recommends that the\n $5,000,000.00         Board for Financing Water Projects (Board) approve a Letter of Intent to fund Nye\n                       County - Gabbs Water System for a capital improvement project for water system\n                       improvements.\n Grant Percent         Resolution         Program and Terms\n\n 72%                   G12-0826           Grant Funds\n\nManagement and Structure\n\n    Grant Recipient Nye County - Gabbs Water System is a purveyor of water per NRS 349.980(10).\n     and Structure\n    Project system The project is for the Gabbs Water System, which is managed by Nye County.\n   System Number NV0000063\n\n\n\nSystem Information\n\n                 County Nye\n    System Population 200\n\nPage 1 of 6                   Nye County-Gabbs Water System                       August 2026"
+    },
+    {
+     "page_number": 48,
+     "text": "    System need The replacement of small-diameter piping will enhance overall system reliability by\n   for the project reducing water/pipe leaks and repairs, improving system sustainability and available fire\n                   flow, and minimizing total water loss.\n         Project The project will replace existing small-diameter piping in north and south Gabbs.\n        Narrative\n\n\nMaps and Exhibits\n\nIn accordance with NRS 239C.210 and Executive Order 2020-01 dated February 4, 2020, drawings, maps,\nplans, or records that reveal the locations of critical infrastructure, including primary buildings, facilities, and\nother structures used for storing, transporting, or transmitting water are deemed confidential and not subject to\nsubpoena or discovery, and therefore not subject to inspection by the general public.\nNDEP is able to provide the following information for further clarification on the project location, need, or scope:\n\n\n\n\nPage 2 of 6                     Nye County-Gabbs Water System                          August 2026"
+    },
+    {
+     "page_number": 49,
+     "text": "Proposed Project Costs\n\n   Cap Grant (72%)       Matching Funds (28%)      Total Cost      Matching Funds Source\n         $3,600,000.00           $1,400,000.00    $ 5,000,000.00            DWSRF PF Loan\n\n\nPage 3 of 6                Nye County-Gabbs Water System             August 2026"
+    },
+    {
+     "page_number": 50,
+     "text": "Grant Recipient Information\n\n           Possibility for Gabbs is not located close enough to an adjacent water system to consider\n           Consolidation consolidation a reasonable alternative.\n     Water Conservation A Water Conservation Plan dated 4/8/2024 is in place with Nevada Division of\n                   Plan Water Resources\n      Technical Capacity “Technical capability” means the ability of a public water system to:\n                            1. Obtain an adequate and reliable source of water that is necessary to provide\n                                the quantity and quality of water required by the system; and\n                            2. Establish and maintain an adequate infrastructure for the treatment, storage\n                                and distribution of the quantity and quality of water required by the system;\n                                and\n\n                           Nye County - Gabbs Water System has a certified operator Grade D1-T0 in current\n                           good standing.\n                           Nye County - Gabbs Water System has the technical capacity for NDEP to\n                           recommend funding support.\n    Managerial Capacity “Managerial capability” means the ability of a public water system to conduct its\n                        administrative affairs in a manner that ensures compliance with all applicable\n                        standards based on 1:\n                            1. The accountability, responsibility and authority of the owner or operator of\n                               the system; and\n\nPage 4 of 6                     Nye County-Gabbs Water System                         August 2026"
+    },
+    {
+     "page_number": 51,
+     "text": "              User Rates Water user rates were adopted September 2022 and included a rate increase each\n                         year through fiscal year 2027; with the most recent increase implemented July 1,\n                         2026.\n                              •    Residential base rate per user per month: $85.10\n                              •    Commodity Rate per k/gal:\n                                      o 0 to 10,000 gallons: included in base rate\n                                      o 10,001 to 25,000 gallons: $2.00 per k/gal\n                                      o 25,001 to 35,000 gallons: $3.19 per k/gal\n                                      o 35,001 to 50,000 gallons: $5.11 per k/gal\n                                      o 50,001 gallons and over: $6.71 per k/gal\n                              •    Average Water Rate/Use for System: $85.10\n                           The water rates established sufficiently cover current operation, maintenance, debt\n                           service, and reserves of the system.\n\n\n       Drinking Water The system is fully metered\n               Meters\n   Asset Management The Asset Management Plan was updated July 2026.\n            or Fiscal\n   Sustainability Plan\n Capital Replacement A Capital Replacement Reserve Account is funded and meets DWSRF\n    Reserve Account requirements. The final Journal Entries for FY26 are still pending; however, the\n\nPage 5 of 6                       Nye County-Gabbs Water System                       August 2026"
+    },
+    {
+     "page_number": 52,
+     "text": "Capital Improvements Grant Program Authority and Purpose\nNevada Revised Statute (NRS) 349.980 to 349.987 describes the Capital Improvements Grant Program and\nthe powers and duties of the Board for Financing Water Projects (Board). NDEP administers the Capital\nImprovements Grant Program on behalf of the Board as per NRS 349.982 and NAC 349.430 to 349.574,\ninclusive. If the Board determines to provide a grant from the Capital Improvements Grant Program, one of the\nrequirements of the Nevada Administrative Code (NAC) is that the Board will adopt a resolution that includes a\nstatement of approval of the Board that sets forth its findings of fact (NAC 349.535, subsection 1).\n\n\nRECOMMENDED MOTION FOR THE CAPITAL IMPROVEMENT GRANT\n\nI move to approve the resolution titled “G12-0826 Nye County - Gabbs Water System Letter of Intent\nApproval,” as required per NAC 349.485. The terms and conditions as outlined in the staff report and\nresolution shall apply to this approval.\n\n\n\n\nPage 6 of 6                   Nye County-Gabbs Water System                       August 2026"
+    },
+    {
+     "page_number": 53,
+     "text": "                          RESOLUTION G12-0826\n              Nye County - Gabbs Water System Project Letter of Intent\n\n\n WHEREAS:     Nevada Revised Statutes (NRS) 349.980 to 349.987, establishes a program to provide\n              grants of money to purveyors of water, eligible recipients, or local governments to pay for\n              eligible capital improvement costs and water resource plans; and\n\n WHEREAS:     The Board for Financing Water Projects (Board) administers the program and establishes\n              regulations for requirements to participate in the program in conformance with NRS\n              349.982; and\n\n WHEREAS:     Nye County - Gabbs Water System, (“Recipient”) is a (purveyor of water/eligible\n              recipient/governing body) seeking funding for a qualified project in conformance with NRS\n              349.981; and\n WHEREAS:     The Recipient has submitted to the Board a Letter of Intent per Nevada Administrative Code\n              (NAC) 349.475; and\n WHEREAS:     The Division of Environmental Protection has satisfied the requirements in conformance\n              with NAC 349.480; and\n WHEREAS:     NAC 349.485 provides in relevant part, as follows:\n              If the Board determines the Letter of Intent for the grant meets the requirements pursuant to\n              NAC 349.480, it will adopt a resolution.\n\n\n\n\nPage 1 of 2                Nye County-Gabbs Water System                         August 2026"
+    },
+    {
+     "page_number": 54,
+     "text": "IT IS RESOLVED by the Board for Financing Water Projects of the State of Nevada:\n\n       Section 1: This resolution shall be known as the “G12-0826 Nye County - Gabbs Water System”\n\n       Section 2: In connection with the findings of fact set forth in Section 3 of this Resolution and subject to\n       the provisions of Section 4 of this Resolution, the Board has determined, and does hereby declare, that\n       it approves the Letter of Intent submitted by the Applicant\n\n       Section 3: Based on its review of the Letter of Intent, and based on the records and documents\n       submitted to the Board concerning the Project, the Board hereby makes the following findings of fact in\n       support of its determination to approve the Letter of Intent:\n\n          (a) The proposed capital improvement is economically justified and financially feasible;\n          (b) The proposed capital improvement complies with the provisions of the NRS 349.980 to 349.987,\n              inclusive;\n          (c) The plan for development of the proposed capital improvement is satisfactory;\n          (d) The Applicant is able to obtain the financing required to complete the capital improvement;\n          (e) The Applicant has made sufficient and reasonable efforts to determine whether the proposed\n              capital improvement conflicts with any regional master plan of any local, state or federal\n              governing authority, and those efforts have not revealed such a conflict; and\n          (f) The proposed capital improvement will not use or waste excessive quantities of water.\n\n       Section 4: The Letter of Intent, on file with the State and by this reference incorporated herein, is a true\n       and correct copy of the Letter of Intent filed by the Applicant with the Board.\n\n       Section 5: This resolution shall be effective on its passage and approval.\n\nPage 2 of 2                    Nye County-Gabbs Water System                          August 2026"
+    },
+    {
+     "page_number": 55,
+     "text": "                                    Letter of Intent from the\n                             Capital Improvements Grant Program\n                                     Board for Financing Water Projects\n                                                August 2026\n\n\nLas Vegas Valley Water District – Blue Diamond\nWater System\n Estimated Project     Recommendation\n Cost                  The Nevada Division of Environmental Protection (NDEP) recommends that the\n $6,550,000            Board for Financing Water Projects (Board) approve a Letter of Intent to fund Las\n                       Vegas Valley Water District (LVVWD) - Blue Diamond Water System for a capital\n                       improvement project to fund system improvements.\n Grant Percent         Resolution         Program and Terms\n\n 25%                   G13-0826           Grant Funds\n\nManagement and Structure\n\n    Grant Recipient Las Vegas Valley Water District (LVVWD) - Blue Diamond Water System is a purveyor\n     and Structure of water per NRS 349.980(10).\n    Project system The project is for the Blue Diamond Water System, which is managed by Las Vegas\n                   Valley Water District\n   System Number NV0000010\n\n\n\nSystem Information\n\nPage 1 of 5            Las Vegas Valley Water District - Blue Diamond             August 2026"
+    },
+    {
+     "page_number": 56,
+     "text": "System Project for Funding\n\n DWSRF Priority Priority #160 on the Drinking Water SRF Priority List Effective May 2026.\n           List\n    System need The Blue Diamond Water System requires upgrades to meet fire protection and\n   for the project emergency storage requirements in accordance with current standards. A significant\n                   mechanical and electrical upgrade to the 3630-zone pumping station is needed to\n                   provide adequate fire flows to both the 3530 and 3630 Pressure Zones. Additionally, to\n                   meet current emergency storage requirements for the community, increased potable\n                   water storage is required.\n         Project The project will replace the 3630-zone pumping station, including a new enclosure, fire\n        Narrative pump, power generator, pump controls, yard piping, and associated appurtenances. It\n                  will also upgrade the power supply from NV Energy to support the new facility capacities\n                  and install a new pumping station discharge pipeline and Pressure Reducing Valve\n                  (PRV) to convey the pumped flows to the town’s distribution system.\n\n\n\nMaps and Exhibits\n\nIn accordance with NRS 239C.210 and Executive Order 2020-01 dated February 4, 2020, drawings, maps,\nplans, or records that reveal the locations of critical infrastructure, including primary buildings, facilities, and\nother structures used for storing, transporting, or transmitting water are deemed confidential and not subject to\nsubpoena or discovery, and therefore not subject to inspection by the general public.\nNDEP is able to provide the following information for further clarification on the project location, need, or scope:\n\nPage 2 of 5              Las Vegas Valley Water District - Blue Diamond                August 2026"
+    },
+    {
+     "page_number": 57,
+     "text": "Proposed Project Costs\n\n      Cap Grant (25%)        Matching Funds (75%)            Total Cost           Matching Funds Source\n            $1,637,500.00              $4,912,500.00         $ 6,550,000.00       US Army Corps of Engineers\n\n\nGrant Recipient Information\n\n           Possibility for Blue Diamond is currently a consecutive-connection system; its remote location\n           Consolidation does not allow for additional consolidation.\n     Water Conservation Las Vegas Valley Water District Small Systems has a completed Water\n                   Plan Conservation Plan for Blue Diamond, dated September 2024.\n      Technical Capacity “Technical capability” means the ability of a public water system to:\n                            1. Obtain an adequate and reliable source of water that is necessary to provide\n                                the quantity and quality of water required by the system; and\n                            2. Establish and maintain an adequate infrastructure for the treatment, storage\n                                and distribution of the quantity and quality of water required by the system;\n                                and\n\n                            Las Vegas Valley Water District - Blue Diamond Water System has a certified\n                            operator Grade D2-T0 in current good standing.\n                            Las Vegas Valley Water District - Blue Diamond Water System has the technical\n                            capacity for NDEP to recommend funding support.\n    Managerial Capacity “Managerial capability” means the ability of a public water system to conduct its\n                        administrative affairs in a manner that ensures compliance with all applicable\n\nPage 3 of 5               Las Vegas Valley Water District - Blue Diamond             August 2026"
+    },
+    {
+     "page_number": 58,
+     "text": "                              3. Establish and maintain adequate fiscal controls and accounting\n                                 methods required for the operation of the system 2.\n                                              Financial Information as of:    June 30, 2025\n                            Financial information independently audited by:   Baker Tilly US, LLP\n                                                          Unrestricted cash   $50,366,380\n                                                        Days cash on hand     60 – without unrestricted\n                                                                              investments\n                                                                              833 – with investments\n                                                         Outstanding debt     $3,049,412,917\n                                            Net Income before depreciation    $203,281,031\n                                                              Current ratio   2.73\n                                                           Debt coverage      2.80\n\n                           The recipient has demonstrated to NDEP that they will remain viable upon\n                           completion of the proposed improvement (NAC 349.475(2)(h)(4)(i)).\n              User Rates Water user rates were adopted October 2023 and included increases every\n                         January 1st through 2025.\n                              •   Residential base rate per user per month: $22.68\n                              •   Commodity Rate per k/gal:\n                                      o   1 to 5,010 gallons: $1.59 per k/gal\n                                      o   5,011 to 10,020 gallons: $1.90 per k/gal\n\nPage 4 of 5              Las Vegas Valley Water District - Blue Diamond               August 2026"
+    },
+    {
+     "page_number": 59,
+     "text": "Capital Improvements Grant Program Authority and Purpose\nNevada Revised Statute (NRS) 349.980 to 349.987 describes the Capital Improvements Grant Program and\nthe powers and duties of the Board for Financing Water Projects (Board). NDEP administers the Capital\nImprovements Grant Program on behalf of the Board as per NRS 349.982 and NAC 349.430 to 349.574,\ninclusive. If the Board determines to provide a grant from the Capital Improvements Grant Program, one of the\nrequirements of the Nevada Administrative Code (NAC) is that the Board will adopt a resolution that includes a\nstatement of approval of the Board that sets forth its findings of fact (NAC 349.535, subsection 1).\n\n\nRECOMMENDED MOTION FOR THE CAPITAL IMPROVEMENT GRANT\n\nI move to approve the resolution titled “G13-0826 Las Vegas Valley Water District - Blue Diamond Water\nSystem Letter of Intent Approval,” as required per NAC 349.485. The terms and conditions as outlined in the\nstaff report and resolution shall apply to this approval.\n\n\n\n\nPage 5 of 5             Las Vegas Valley Water District - Blue Diamond            August 2026"
+    },
+    {
+     "page_number": 60,
+     "text": "                           RESOLUTION G13-0826\n              Las Vegas Valley Water District - Blue Diamond Water System\n                                Project Letter of Intent\n\n\n WHEREAS:      Nevada Revised Statutes (NRS) 349.980 to 349.987, establishes a program to provide\n               grants of money to purveyors of water, eligible recipients, or local governments to pay for\n               eligible capital improvement costs and water resource plans; and\n\n WHEREAS:      The Board for Financing Water Projects (Board) administers the program and establishes\n               regulations for requirements to participate in the program in conformance with NRS\n               349.982; and\n\n WHEREAS:      Las Vegas Valley Water District - Blue Diamond Water System, (“Recipient”) is a purveyor\n               of water seeking funding for a qualified project in conformance with NRS 349.981; and\n\n WHEREAS:      The Recipient has submitted to the Board a Letter of Intent per Nevada Administrative Code\n               (NAC) 349.475; and\n WHEREAS:      The Division of Environmental Protection has satisfied the requirements in conformance\n               with NAC 349.480; and\n WHEREAS:      NAC 349.485 provides in relevant part, as follows:\n               If the Board determines the Letter of Intent for the grant meets the requirements pursuant to\n               NAC 349.480, it will adopt a resolution.\n\n\n\n\nPage 1 of 2          Las Vegas Valley Water District - Blue Diamond               August 2026"
+    },
+    {
+     "page_number": 61,
+     "text": "IT IS RESOLVED by the Board for Financing Water Projects of the State of Nevada:\n\n       Section 1: This resolution shall be known as the “G13-0826 Las Vegas Valley Water District - Blue\n       Diamond Water System”\n\n       Section 2: In connection with the findings of fact set forth in Section 3 of this Resolution and subject to\n       the provisions of Section 4 of this Resolution, the Board has determined, and does hereby declare, that\n       it approves the Letter of Intent submitted by the Applicant\n\n       Section 3: Based on its review of the Letter of Intent, and based on the records and documents\n       submitted to the Board concerning the Project, the Board hereby makes the following findings of fact in\n       support of its determination to approve the Letter of Intent:\n\n          (a) The proposed capital improvement is economically justified and financially feasible;\n          (b) The proposed capital improvement complies with the provisions of the NRS 349.980 to 349.987,\n              inclusive;\n          (c) The plan for development of the proposed capital improvement is satisfactory;\n          (d) The Applicant is able to obtain the financing required to complete the capital improvement;\n          (e) The Applicant has made sufficient and reasonable efforts to determine whether the proposed\n              capital improvement conflicts with any regional master plan of any local, state or federal\n              governing authority, and those efforts have not revealed such a conflict; and\n          (f) The proposed capital improvement will not use or waste excessive quantities of water.\n\n       Section 4: The Letter of Intent, on file with the State and by this reference incorporated herein, is a true\n       and correct copy of the Letter of Intent filed by the Applicant with the Board.\n\nPage 2 of 2             Las Vegas Valley Water District - Blue Diamond                August 2026"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/": "<html><body>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/08.19.2026_DRAFT-BoardMeetingMinutes_.pdf\">Draft Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Material.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Presentation_August_2026.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/Agenda_06.03.2026.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/06_03_26_Board_Meeting_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/BFWP_Meeting_Materials_06.03.26.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/R124-24_BFWP_Presentation.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/01-Agenda_05.20.26.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/05_20_26_Board_Meeting_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/Meeting_Materials.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/Board_Presentation_May_2026.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/01_Agenda_02.18.26.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/02.18.26_Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Meeting_02.18.26.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Presentation_February_2026.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/01-Agenda_11.19.25.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/04-11.19.25_DRAFT-Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Meeting_Materials_1.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Presentation_November_2025.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/BFWP_Meeting_Agenda.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/04-08.20.25_DRAFT-Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Meeting_Materials.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Presentation_August_2025.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/5.21.25_Agenda_.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/04-05.21.25_Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/5.21.25_Meeting_Material_.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Presentation_May_2025.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/documents/Agenda_02.19.25.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/2.19.25_Draft_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Presentation_February_2025.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/11.13.24_Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/11-13-24_Mtg-Material.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/8-21-24_Agenda.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/8.21.24_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/8-21-24_MTG_MATERIAL.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/8-21-24_Mtg_Presentation.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/01_Agenda_6-26.24.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/6.26.24_Draft_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Meeting_Materials_6-26-24.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/6-26-24_Mtg_Presentation.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/5.15.24_Draft_Minutes_BFWP_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_1-24.24.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/Draft_Minutes_1.24.24_Brd_Mtg_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/1-24-24__Mtg_Material.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Mtg_Presentation_1.24.24.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_10-18-23.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/Minutes_10.18.23.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Meeting_Material_10-18-23.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Meeting_Presentation_10-18-23.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_6-28.23.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/4_6.28.23_Board_Meeting_Minutes_DRAFT_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Meeting_Material.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/03.22.23_Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Revised_Meeting_Materials_3-22-23.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Minutes_1.24.23.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_12-06-22.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/12.06.22_final_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/Agenda-10.05.22-mtg_.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/10.05.22_Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-srf-drinkingwater-docs/Mtg_Agenda_6-29-22.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/6-29-22_DRAFT_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/Agenda_12-15-21.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/12_15_21_Mtg_Minutes_DRAFT.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/10-6-21_Agenda_BFFWP_mtg.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/10-6-21_BFFWP_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_7-27-21.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/07-27-21_Board_Mtg_Minutes_Final.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_4-28-21.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/04-28-21_Meeting_Minutes-Final.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/1_Agenda_1-20-21_final.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/01.20.21_final_Board_Meeting_Minutes_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/BFWPAgenda_7-29-20.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/07-29-20_Meeting_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/011420-Agenda.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/011420_Draft_Meeting_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_6-2019.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/062519_Minutes_final.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_4-2019.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/Draft_Minutes_4-17-2019.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/9-2018_Agenda.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda_6-20-18.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/062018_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Agenda-3-7-18.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/3-7-18_Meeting_minutes-FINAL.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/agenda-11-8-17.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/bfwp-_minutes-_11-8-17.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/agenda1-10-11-17.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/bfwp-minutes-10-11-17.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/agenda-6-14-17.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/061417_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/agenda-2-1-17.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/020117-minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Priority_List_Workshop_agenda_May_2026.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/DW_CW_Priority_List_Presentation_May_2026.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/033126_R124-24_Presentation.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/010726_Agenda_CW_Regulation_Workshop.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/010726_Presentation_CW_Regulation_Workshop.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Priority_List_Workshop_agenda._11_.05.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/DW_CW_Priority_List_Presentation_November_2025.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/5-07-25_Board_Workshop_Minutes.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Board_Workshop_Presentation_05.07.25.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/17W1_Agenda_Workshop_1-24-24.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/Draft_Minutes_1.24.24_BFWP_Workshop_.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/17Workshop_Material_1-24-24.pdf\">Material</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/17Workshop_Presentation_Jan_2024.pdf\">Presentation</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/111419-Agenda-FINAL.pdf\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/111419_Workshop_Minutes-FINAL.pdf\">Minutes</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/4-11-18_Agenda.docx\">Agenda</a>\n<a href=\"https://ndep.nv.gov/uploads/water-financing-bwfp-docs/4-11-18_Workshop_Minutes-FINAL.pdf\">Minutes</a>\n</body></html>"
+ },
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4": null,
+  "5": null,
+  "6": null,
+  "7": null,
+  "8": {
+   "page_start": 17,
+   "page_end": 24,
+   "heading": "D08-0826"
+  },
+  "9": {
+   "page_start": 25,
+   "page_end": 32,
+   "heading": "G09-0826"
+  },
+  "10": {
+   "page_start": 33,
+   "page_end": 39,
+   "heading": "G10-0826"
+  },
+  "11": {
+   "page_start": 40,
+   "page_end": 46,
+   "heading": "G11-0826"
+  },
+  "12": {
+   "page_start": 47,
+   "page_end": 54,
+   "heading": "G12-0826"
+  },
+  "13": {
+   "page_start": 55,
+   "page_end": 61,
+   "heading": "G13-0826"
+  },
+  "15": null,
+  "16": null,
+  "17": null,
+  "18": null
+ }
+}

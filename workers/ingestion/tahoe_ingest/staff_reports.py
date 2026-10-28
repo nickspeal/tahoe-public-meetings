@@ -1,4 +1,4 @@
-"""Shared core for mapping agenda items to their own staff reports (IDEA-013); the per-agency rules and their guide are in ``staff_report_rules/`` (README.md)."""
+"""Shared core for mapping agenda items to their own staff reports (IDEA-013); the rules, one per publishing format, and their guide are in ``staff_report_rules/`` (README.md), and each agency picks one in its registry entry."""
 from __future__ import annotations
 
 import hashlib
@@ -11,6 +11,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
+from typing import NewType
 
 from . import http
 from .http import EndpointSkipped
@@ -25,6 +26,9 @@ RETRY_HOURS = 24  # a meeting whose downloads failed is scanned again after this
 DEFAULT_MAX_MEETINGS = 6  # per scheduled run, nearest to today first; bounds downloads and statements
 MIN_TITLE_OVERLAP = 0.6
 TITLE_MATCH_FLOOR = 0.8  # by-title matching has no number to agree with, so it needs more of the title
+
+# A rule parameter that holds a regular expression: the registry compiles it when the agency catalog loads.
+Regex = NewType("Regex", str)
 
 # Meeting mechanics and records that have no staff report worth linking or summarizing.
 PROCEDURAL = re.compile(
@@ -654,8 +658,8 @@ def packet_reports(ctx: Context, packet: Document, pages: dict[int, str], items:
 # --- Rule registry ---------------------------------------------------------------------
 
 def _rules() -> dict:
-    from .staff_report_rules import RULES as merged  # imported on first use: rule modules import this module
-    return merged
+    from .staff_report_rules import agency_rules  # imported on first use: rule modules import this module
+    return agency_rules()
 
 
 def _supported() -> tuple[str, ...]:
@@ -663,7 +667,8 @@ def _supported() -> tuple[str, ...]:
 
 
 def __getattr__(name: str):
-    """``RULES`` (agency ID -> rule) and ``SUPPORTED`` (sorted agency IDs), merged from ``staff_report_rules``."""
+    """``RULES`` (agency ID -> its configured rule, parameters bound) and ``SUPPORTED`` (sorted agency IDs): every
+    agency whose ``staffReports`` entry in the registry names a rule from ``staff_report_rules``."""
     if name == "RULES":
         return _rules()
     if name == "SUPPORTED":

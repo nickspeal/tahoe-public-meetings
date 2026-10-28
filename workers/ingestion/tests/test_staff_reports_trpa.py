@@ -1,9 +1,11 @@
 """TRPA staff reports (staff_report_rules/trpa.py): each item's own file, its attachments, and the packet fallback; no network."""
 import re
+from datetime import date
 
 import pytest
 
 from tahoe_ingest import staff_reports
+from tahoe_ingest.catalog import agency_catalog
 from tahoe_ingest.staff_report_rules import trpa
 from test_staff_reports import load, run_rule
 
@@ -185,3 +187,13 @@ def test_page_value_comes_from_the_items_own_row():
     assert trpa._row_page(ctx, item("4.A", "Consideration and possible recommendation for")) == 57
     assert trpa._row_page(ctx, item("4.C", "Briefing on the plan")) == 69
     assert trpa._row_page(ctx, item("4.D", "Closed session")) is None
+
+
+@pytest.mark.parametrize("agency,packet", [("trpa-advisory", "May 13, 2026 APC Meeting Packet"),
+                                           ("trpa-governing", "May 13 Governing Board Packet")])
+def test_packet_link_is_the_one_named_for_the_agencys_body(agency, packet):
+    name = next(a for a in agency_catalog() if a["id"] == agency)["staffReports"]["packetName"]
+    meeting = staff_reports.Meeting("m", agency, "Board", date(2026, 5, 13), [], [], "https://www.trpa.gov/meeting/")
+    links = [{"url": UP + "APC-Packet.pdf", "text": "May 13, 2026 APC Meeting Packet"},
+             {"url": UP + "GB-Packet.pdf", "text": "May 13 Governing Board Packet"}]
+    assert trpa._packet_link(staff_reports.Context(None, meeting, None), links, name)["text"] == packet

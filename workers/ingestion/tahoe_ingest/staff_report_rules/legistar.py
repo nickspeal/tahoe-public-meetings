@@ -1,27 +1,31 @@
-"""Legistar counties (``el-dorado-*``, ``washoe-*``): each item's report, found through the open Legistar Web API.
+"""Rule ``legistar``: each item's report, found through the open Legistar Web API.
 
 The captured agenda PDF prints every item's number, and Legistar keeps the same agenda
 as rows (``/Events/{id}/EventItems``) that carry the item's file and its attachments.
 The event is the one the legistar1 agenda file name starts with (``5288_A_...pdf``) or,
-without one, the only event that day for the agency's body. One rule serves all four
-agencies; ``AGENCIES`` says which report each one publishes and how it is checked:
+without one, the only event that day for the agency's body. An agency's entry gives
+its Legistar ``client`` (the site and API name, ``eldorado`` for eldorado.legistar.com),
+its ``body`` (the API's EventBodyName), and the ``report`` it publishes, which says how
+the report is found and checked:
 
-- El Dorado Board of Supervisors: the file's own Legislation Text (``/Matters/{id}/Versions``
-  then ``/Texts/{id}``), the department's memo. The agenda prints "7. 26-1680" and the
-  text carries that file and the agenda item's own title. It is linked at the file's
-  LegislationDetail page (from the meeting page, else the agenda's gateway link), so its
-  media type is text/html, and kept as pseudo-pages; its hash is of the text, since the
-  rendered PDF prints the day it was rendered.
-- El Dorado Planning Commission: the attachment named "A - Staff Report" or
-  "B - Staff Memo", whose first page prints the meeting date ("Date:" or "Agenda of:")
-  and a case number from the item title; otherwise the Legislation Text as above.
-- Washoe Board of County Commissioners: the attachment named as a staff report (or the
-  item's only Word file), which the agenda's "Attachments:" list under the item names
-  too. It opens "STAFF REPORT / BOARD MEETING DATE: <date> / SUBJECT: <item title>". Most
-  are Word files: .docx is read here, legacy .doc only when ``antiword`` is installed.
-- Washoe Planning Commission: the "... - Staff Report" PDF listed under the item, which
-  prints "Meeting Date: <date>  Agenda Item: 8A". Agendas from before Legistar
-  (washoecounty.gov) are out of reach.
+- ``legislation-text`` (El Dorado Board of Supervisors): the file's own Legislation Text
+  (``/Matters/{id}/Versions`` then ``/Texts/{id}``), the department's memo. The agenda
+  prints "7. 26-1680" and the text carries that file and the agenda item's own title. It
+  is linked at the file's LegislationDetail page (from the meeting page, else the
+  agenda's gateway link), so its media type is text/html, and kept as pseudo-pages; its
+  hash is of the text, since the rendered PDF prints the day it was rendered.
+- ``planning-attachment`` (El Dorado Planning Commission): the attachment named
+  "A - Staff Report" or "B - Staff Memo", whose first page prints the meeting date
+  ("Date:" or "Agenda of:") and a case number from the item title; otherwise the
+  Legislation Text as above.
+- ``staff-report`` (Washoe Board of County Commissioners): the attachment named as a
+  staff report (or the item's only Word file), which the agenda's "Attachments:" list
+  under the item names too. It opens "STAFF REPORT / BOARD MEETING DATE: <date> /
+  SUBJECT: <item title>". Most are Word files: .docx is read here, legacy .doc only when
+  ``antiword`` is installed.
+- ``agenda-item`` (Washoe Planning Commission): the "... - Staff Report" PDF listed under
+  the item, which prints "Meeting Date: <date>  Agenda Item: 8A". Agendas from before
+  Legistar (washoecounty.gov) are out of reach.
 
 API responses and Word files come through ``Context.fetch_json`` and ``Context.fetch_bytes``;
 each counts as a download and honours the context's delay. Per meeting, at most
@@ -40,6 +44,7 @@ import urllib.parse
 import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import Literal
 
 from ..http import EndpointSkipped
 from ..staff_reports import (MAX_PAGE_CHARS, MIN_TITLE_OVERLAP, Context, FetchFailed, Item, Mapping, TooLarge, Uncertain,
@@ -51,14 +56,6 @@ MAX_REPORTS = 40  # PDF and Word report downloads per meeting; later items are s
 MAX_TEXTS = 100  # Legislation Text reads per meeting (two small API calls each); later items are skipped
 WORD_TYPES = {"doc": "application/msword", "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
 TEXT_TITLE_OVERLAP = 0.8  # the Legislation Text repeats the agenda title word for word
-
-# client: the Legistar site and API name (the discovery indexUrl host); body: EventBodyName.
-AGENCIES = {
-    "el-dorado-supervisors": {"client": "eldorado", "body": "Board of Supervisors", "report": "text"},
-    "el-dorado-planning": {"client": "eldorado", "body": "Planning Commission", "report": "planning-attachment"},
-    "washoe-commissioners": {"client": "washoe-nv", "body": "Board of County Commissioners", "report": "staff-report"},
-    "washoe-planning": {"client": "washoe-nv", "body": "Washoe County Planning Commission", "report": "agenda-item"},
-}
 
 
 def antiword_available() -> bool:
@@ -241,8 +238,8 @@ def _extension(url: str) -> str:
 class _Run:
     """One meeting's run: the context, API, agenda blocks, event rows, and the report budget."""
 
-    def __init__(self, ctx: Context, agency: dict, api: _Api, blocks: dict):
-        self.ctx, self.agency, self.api, self.blocks = ctx, agency, api, blocks
+    def __init__(self, ctx: Context, client: str, api: _Api, blocks: dict):
+        self.ctx, self.client, self.api, self.blocks = ctx, client, api, blocks
         self.reports = self.texts = 0
         self._detail_links = None
 
@@ -305,10 +302,10 @@ class _Run:
                 except (FetchFailed, Uncertain, EndpointSkipped):
                     pass
         return self._detail_links.get(file_number) or (
-            f"https://{self.agency['client']}.legistar.com/gateway.aspx?m=l&id=/matter.aspx?key={matter_id}")
+            f"https://{self.client}.legistar.com/gateway.aspx?m=l&id=/matter.aspx?key={matter_id}")
 
 
-# --- Per-agency report rules -------------------------------------------------------------
+# --- Reports, by the ``report`` an agency publishes ---------------------------------------
 
 _BOILERPLATE = re.compile(r"^SPACING IN LEGISTAR\s*$.*?^DO NOT USE THE AUTOMATIC NUMBERING SPACING IN WORD\s*$", re.M | re.S)
 
@@ -375,7 +372,8 @@ def _same_day(printed: str, day) -> bool:
     return " ".join(printed.replace(".", "").replace(",", ", ").split()).replace(" ,", ",").casefold() == long_date(day).casefold()
 
 
-def el_dorado_supervisors(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
+def text_report(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
+    """The Legislation Text, when the agenda prints the item's file number."""
     if _file_line(run, item, row, block):
         return legislation_text(run, item, row, block)
     return None
@@ -385,7 +383,7 @@ _CASE = re.compile(r"\b[A-Z]{2,5}(?:-[A-Z]{1,2})?\d{2}-\d{4}\b")
 _PLANNING_REPORT = re.compile(r"[A-Z](?:\.\d+)?\s*-\s*Staff\s+(Report|Memo)", re.I)
 
 
-def el_dorado_planning(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
+def planning_attachment(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
     """The "A - Staff Report" / "B - Staff Memo" PDF when there is one, else the Legislation Text."""
     if not _file_line(run, item, row, block):
         return None
@@ -429,7 +427,7 @@ def _listed(run: _Run, item: Item, name: str, block: dict | None) -> bool:
     return True
 
 
-def washoe_commissioners(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
+def staff_report_attachment(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
     """The attachment named as a staff report (else the only Word file), listed under the item, for this board meeting."""
     attachments = row.get("EventItemMatterAttachments") or []
     named = [a for a in attachments if re.search(r"staff\s*report", a.get("MatterAttachmentName") or "", re.I)
@@ -483,7 +481,7 @@ def washoe_commissioners(run: _Run, item: Item, row: dict, block: dict | None) -
                    leading(pages, 1, count), media_type)
 
 
-def washoe_planning(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
+def agenda_item_report(run: _Run, item: Item, row: dict, block: dict | None) -> Mapping | None:
     """The "... - Staff Report" PDF listed under the item, printing "Meeting Date: <date>  Agenda Item: 8A"."""
     named = [a for a in row.get("EventItemMatterAttachments") or []
              if re.search(r"staff\s*report", a.get("MatterAttachmentName") or "", re.I)
@@ -515,15 +513,14 @@ def washoe_planning(run: _Run, item: Item, row: dict, block: dict | None) -> Map
                          "meetingDate": run.ctx.meeting.local_date.isoformat()})
 
 
-_REPORTS = {"text": el_dorado_supervisors, "planning-attachment": el_dorado_planning,
-            "staff-report": washoe_commissioners, "agenda-item": washoe_planning}
+_REPORTS = {"legislation-text": text_report, "planning-attachment": planning_attachment,
+            "staff-report": staff_report_attachment, "agenda-item": agenda_item_report}
 
 
 # --- Rule ------------------------------------------------------------------------------
 
-def map_legistar(ctx: Context) -> list[Mapping]:
-    agency = AGENCIES[ctx.meeting.agency_id]
-    client = agency["client"]
+def map_legistar(ctx: Context, *, client: str, body: str,
+                 report: Literal["legislation-text", "planning-attachment", "staff-report", "agenda-item"]) -> list[Mapping]:
     agendas = [d for d in ctx.meeting.documents if d.media_type == "application/pdf"
                and re.match(rf"https://{re.escape(client)}\.legistar1?\.com/", d.url, re.I)
                and not re.search(r"minutes|packet", d.source_document_id + " " + d.title, re.I)]
@@ -534,10 +531,10 @@ def map_legistar(ctx: Context) -> list[Mapping]:
         return []
     blocks = agenda_blocks(ctx, agendas)
     api = _Api(ctx, client)
-    event = find_event(api, agendas, ctx, agency["body"])
+    event = find_event(api, agendas, ctx, body)
     rows = agenda_rows(api.get(f"Events/{event['EventId']}/EventItems?AgendaNote=1&MinutesNote=1&Attachments=1"))
-    run = _Run(ctx, agency, api, blocks)
-    report = _REPORTS[agency["report"]]
+    run = _Run(ctx, client, api, blocks)
+    check = _REPORTS[report]
     mappings = []
     for item in items:
         number = norm_number(item.number)
@@ -554,9 +551,9 @@ def map_legistar(ctx: Context) -> list[Mapping]:
         if title_overlap(item.title, row.get("EventItemTitle") or "") < MIN_TITLE_OVERLAP:
             ctx.skip(item, f"Legistar's item {item.number} has another title")
             continue
-        if (mapping := report(run, item, row, blocks.get(number))) is not None:
+        if (mapping := check(run, item, row, blocks.get(number))) is not None:
             mappings.append(mapping)
     return mappings
 
 
-RULES = {agency: map_legistar for agency in AGENCIES}
+RULES = {"legistar": map_legistar}

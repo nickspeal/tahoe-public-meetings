@@ -1,4 +1,4 @@
-"""Lahontan Water Board (``lahontan-board``): the agenda PDF links ``itemN.pdf``, headed "ITEM N" with the item's title."""
+"""Rule ``lahontan-item-files``: the Lahontan Water Board's agenda PDF links ``itemN.pdf``, headed "ITEM N" with the item's title."""
 from __future__ import annotations
 
 import re
@@ -35,4 +35,4 @@ def map_lahontan(ctx: Context) -> list[Mapping]:
                           missing="{count} item links for item {number}")
 
 
-RULES = {"lahontan-board": map_lahontan}
+RULES = {"lahontan-item-files": map_lahontan}

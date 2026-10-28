@@ -1,4 +1,4 @@
-"""Helpers shared by the Granicus rules (``douglas``, ``slt_commissions``, ``tcpud``); not a rule module.
+"""Helpers shared by the Granicus rules (``douglas-packet``, ``slt-commission-report``, ``tcpud-memo``); not a rule module.
 
 Granicus agenda pages (``GeneratedAgendaViewer.php``) carry each item's number in a table
 cell beside its title, which ``Context.html_links`` drops, so these rules read the page's

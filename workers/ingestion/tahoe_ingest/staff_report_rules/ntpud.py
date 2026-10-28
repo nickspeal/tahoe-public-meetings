@@ -1,4 +1,4 @@
-"""North Tahoe Public Utility District (``ntpud``): staff reports in the stored agenda packet.
+"""Rule ``ntpud-packet``: North Tahoe Public Utility District staff reports in the stored agenda packet.
 
 Each meeting page links an "Agenda and Packet" PDF, which discovery stores as
 ``ntpud-agenda-packet``. Its first pages are the agenda, and unlike the standalone agenda
@@ -186,4 +186,4 @@ def map_ntpud(ctx: Context) -> list[Mapping]:
     return mappings
 
 
-RULES = {"ntpud": map_ntpud}
+RULES = {"ntpud-packet": map_ntpud}

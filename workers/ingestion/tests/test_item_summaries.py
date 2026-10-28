@@ -173,9 +173,8 @@ def test_links_and_summaries_publish_and_survive_reprocessing(conn, monkeypatch)
 
 def test_a_report_that_is_not_a_pdf_exports_its_media_type(conn, monkeypatch):
     import dataclasses
-    from tahoe_ingest import staff_report_rules
-    rule = staff_report_rules.RULES["slt"]
-    monkeypatch.setitem(staff_report_rules.RULES, "slt",
+    rule = staff_reports.RULES["slt"]
+    monkeypatch.setitem(staff_reports.RULES, "slt",
                         lambda ctx: [dataclasses.replace(m, media_type="text/html") if m.url.endswith("Item_5-_Executive_Summary.pdf")
                                      else m for m in rule(ctx)])
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)

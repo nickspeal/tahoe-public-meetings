@@ -1,4 +1,5 @@
-"""South Lake Tahoe (``slt``, Granicus with Legistar files): one executive summary PDF per item, and its attachments.
+"""Rule ``slt-executive-summary``: South Lake Tahoe City Council (Granicus with Legistar files), one executive summary
+PDF per item, and its attachments.
 
 The agenda PDF links "Item N- Executive Summary.pdf" for each item. That file opens with
 an "Agenda Item Executive Summary" page that names the item number and title, followed
@@ -131,4 +132,4 @@ def slt_attachments(ctx: Context, fetched: dict, agenda_pages: dict[int, str]) -
     return found
 
 
-RULES = {"slt": map_slt}
+RULES = {"slt-executive-summary": map_slt}

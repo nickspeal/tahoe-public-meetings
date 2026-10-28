@@ -1,4 +1,5 @@
-"""California Fish and Game Commission (``california-fish-game``): one "Staff Summary" PDF per item, listed in a documents index.
+"""Rule ``fish-game-staff-summaries``: California Fish and Game Commission, one "Staff Summary" PDF per item, listed
+in a documents index.
 
 The Commission's year page (the meeting's official URL, shared by every meeting that
 year) lists each meeting's "Agenda (PDF)" followed by its "Meeting Documents (PDF)": an
@@ -168,4 +169,4 @@ def map_fish_game(ctx: Context) -> list[Mapping]:
                           title="Item {number} staff summary", missing="{count} documents for item {number} in the index")
 
 
-RULES = {"california-fish-game": map_fish_game}
+RULES = {"fish-game-staff-summaries": map_fish_game}

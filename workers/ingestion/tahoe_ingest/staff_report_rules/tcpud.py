@@ -1,4 +1,4 @@
-"""Tahoe City PUD (``tcpud``, ``tcpud-parks-recreation-committee``, Granicus view 2): the agenda page links each memo.
+"""Rule ``tcpud-memo``: Tahoe City PUD's agenda page (Granicus view 2, the board and its committees) links each memo.
 
 The captured agenda is Granicus's HTML agenda page (``GeneratedAgendaViewer.php``). Each
 item sits in a row whose ``numberspace`` cell prints its number (a section letter "D.",
@@ -161,4 +161,4 @@ def memo_names_item(first_page: str, title: str, meeting_date: date | None) -> d
     return evidence
 
 
-RULES = {"tcpud": map_tcpud, "tcpud-parks-recreation-committee": map_tcpud}
+RULES = {"tcpud-memo": map_tcpud}

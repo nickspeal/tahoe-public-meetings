@@ -1,6 +1,6 @@
-"""South Lake Tahoe commissions (``slt-planning``, ``slt-parks-recreation-commission``, Granicus view 6): the staff report each item links.
+"""Rule ``slt-commission-report``: the staff report each item of a South Lake Tahoe commission's agenda links.
 
-The commissions publish on the same Granicus site as the council (``slt``). Under each
+The commissions publish on the same Granicus site as the City Council (view 6). Under each
 item the agenda lists its files, and the item's staff report is the one whose printed
 name says so ("01-Staff Report - Parks Foundation Update.docx", "01 - Staff Report",
 "01_Mid-Town_PC_Rec_StaffReport.docx"). The file list is read from, in order:
@@ -15,8 +15,9 @@ name says so ("01-Staff Report - Parks Foundation Update.docx", "01 - Staff Repo
    after checking that they print the captured agenda.
 
 Two signals must agree: the agenda lists exactly one staff report under the item, and
-that report's first page reads "Report to Planning Commission" (or "Parks and Recreation
-Commission") with "Meeting Date:" this meeting and a "Title:" sharing
+that report's first page reads "Report to <body>", the agency's ``body`` parameter
+("Planning Commission", "Parks and Recreation Commission"), with "Meeting Date:" this
+meeting and a "Title:" sharing
 ``MIN_TITLE_OVERLAP`` of the item title. Every file listed under an item is also kept as
 its attachment list.
 """
@@ -30,7 +31,6 @@ from ..staff_reports import (MIN_TITLE_OVERLAP, Attachments, Context, Mapping, U
 from . import _granicus
 from .slt import attachment_label, slt_attachments
 
-BODIES = {"slt-planning": "Planning Commission", "slt-parks-recreation-commission": "Parks and Recreation Commission"}
 STAFF_REPORT = re.compile(r"staff[\s_-]*report", re.I)
 OPENS_WITH_AGENDA = 0.9  # share of a captured agenda page's words that the packet's page must print
 
@@ -115,8 +115,7 @@ def _from_packet(ctx: Context, agenda) -> list[Attachments]:
     return slt_attachments(ctx, front, {n: t for n, t in pages.items() if n <= last})
 
 
-def map_slt_commission(ctx: Context) -> list[Mapping]:
-    body = BODIES[ctx.meeting.agency_id]
+def map_slt_commission(ctx: Context, *, body: str) -> list[Mapping]:
     agenda = _agenda(ctx)
     fetched = ctx.read(agenda.url, last_page=1, links=True)
     if fetched["sha256"] != agenda.sha256:
@@ -166,4 +165,4 @@ def report_heading(first_page: str, title: str, body: str, meeting_date) -> dict
             "meetingDate": meeting_date.isoformat()}
 
 
-RULES = {"slt-planning": map_slt_commission, "slt-parks-recreation-commission": map_slt_commission}
+RULES = {"slt-commission-report": map_slt_commission}

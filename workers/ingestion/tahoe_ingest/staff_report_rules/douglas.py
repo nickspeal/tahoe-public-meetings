@@ -1,4 +1,4 @@
-"""Douglas County (``douglas-commissioners``, ``douglas-planning``, ``douglas-transportation``): item cover pages in the agenda packet.
+"""Rule ``douglas-packet``: Douglas County's item cover pages in the agenda packet (every county board on its Granicus site).
 
 Douglas County's Granicus site (view 1) posts the agenda without per-item links and an
 "Agenda Packet" that opens with the agenda and then, for every item, a cover page and the
@@ -173,4 +173,4 @@ def _opens_with(agenda: dict[int, str], packet: dict[int, str]) -> bool:
     return True
 
 
-RULES = {"douglas-commissioners": map_douglas, "douglas-planning": map_douglas, "douglas-transportation": map_douglas}
+RULES = {"douglas-packet": map_douglas}

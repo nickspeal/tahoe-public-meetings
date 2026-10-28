@@ -1,4 +1,4 @@
-"""Tahoe Regional Planning Agency (``trpa-governing``, ``trpa-advisory``): each item's staff report, its attachments,
+"""Rule ``trpa-meeting-materials``: the Tahoe Regional Planning Agency's staff report for each item, its attachments,
 and the board packet.
 
 Every page of a TRPA staff report carries a right-aligned footer naming the item, with
@@ -22,8 +22,10 @@ AND 6.C"); each of them maps to it.
    the item's own row and the footer on that packet page naming the item are the two
    signals; the report runs while the footer keeps naming the number. The packet is the
    stored packet document when discovery captured one, else the meeting page's packet
-   link, and is used only after its first pages reproduce the stored agenda. A page
-   stamped with another number, or a mis-encoded text layer, maps nothing.
+   link, named with the agency's ``packetName`` (a regular expression for the body's
+   name in "<date> Governing Board Packet"), and is used only after its first pages
+   reproduce the stored agenda. A page stamped with another number, or a mis-encoded
+   text layer, maps nothing.
 
 Downloads per meeting: the agenda (for its links), the meeting page, at most
 ``MAX_REPORTS`` report files (first pages only), and the packet only when an item still
@@ -35,14 +37,13 @@ import re
 import subprocess
 
 from ..http import EndpointSkipped
-from ..staff_reports import (LEADING_PAGES, Attachments, Context, Document, FetchFailed, Item, Mapping, Uncertain, leading,
+from ..staff_reports import (LEADING_PAGES, Attachments, Context, Document, FetchFailed, Item, Mapping, Regex, Uncertain, leading,
                              long_date, norm_number, title_overlap, words)
 from .slt import attachment_label
 
 MAX_REPORTS = 15  # report files read per meeting; a meeting has a handful
 MIN_AGENDA_OVERLAP = 0.9  # word Jaccard of each agenda page against the packet's page; measured 0.97-1.00
 _HOST = re.compile(r"^https://www\.trpa\.gov/", re.I)
-_BODY = {"trpa-governing": r"Governing\s+Board", "trpa-advisory": r"APC(?:\s+Meeting)?"}
 _MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
 _PURPOSE = r"(?:For\s+Possible\s+Action|Informational(?:\s+Only)?|For\s+Discussion(?:\s+Only)?|Report)"
 # The Page value ends the item's first row: one space may separate it from "Informational", "--" means no page.
@@ -60,7 +61,7 @@ _NOT_REPORT = re.compile(r"presentation|public comments|minutes|^(?:attachment|e
 _ATTACHMENT = re.compile(r"^(?:attachment|exhibit)\b", re.I)
 
 
-def map_trpa(ctx: Context) -> list[Mapping]:
+def map_trpa(ctx: Context, *, packet_name: Regex) -> list[Mapping]:
     items = []
     for item in ctx.numbered():
         if re.search(r"\bminutes$", item.title.strip(), re.I) or re.search(r"minutes", item.section or "", re.I):
@@ -108,7 +109,7 @@ def map_trpa(ctx: Context) -> list[Mapping]:
         else:
             reasons.setdefault(item.id, "no staff report link and the agenda gives no packet page")
     if wanted:
-        mappings += _packet_reports(ctx, [i for i in rest if i.id in wanted], wanted, agenda, page_links, reasons)
+        mappings += _packet_reports(ctx, [i for i in rest if i.id in wanted], wanted, agenda, page_links, reasons, packet_name)
     mapped = {m.item_id for m in mappings}
     for item in items:
         if item.id not in mapped:
@@ -266,12 +267,12 @@ def named_numbers(text: str) -> set[str]:
 # --- The packet ------------------------------------------------------------------------------
 
 def _packet_reports(ctx: Context, items: list[Item], wanted: dict, agenda: Document, page_links: list[dict],
-                    reasons: dict) -> list[Mapping]:
+                    reasons: dict, packet_name: str) -> list[Mapping]:
     stored_agenda = ctx.stored_pages(agenda.version_id)
     try:
         if not stored_agenda:
             raise Uncertain("the cited agenda has no stored pages to check the packet against")
-        name, url, sha256, count, pages = _packet(ctx, agenda, page_links, set(wanted.values()) | set(stored_agenda))
+        name, url, sha256, count, pages = _packet(ctx, agenda, page_links, set(wanted.values()) | set(stored_agenda), packet_name)
         if url != agenda.url:
             for number, text in stored_agenda.items():
                 if _jaccard(text, pages.get(number, "")) < MIN_AGENDA_OVERLAP:
@@ -311,7 +312,7 @@ def _packet_reports(ctx: Context, items: list[Item], wanted: dict, agenda: Docum
     return mappings
 
 
-def _packet(ctx: Context, agenda: Document, page_links: list[dict], needed: set[int]) -> tuple:
+def _packet(ctx: Context, agenda: Document, page_links: list[dict], needed: set[int], packet_name: str) -> tuple:
     """``(name, url, sha256, page_count, pages)``: the stored packet document, or else the meeting page's packet link."""
     stored = [d for d in ctx.meeting.documents if d.media_type == "application/pdf" and d.version_id != agenda.version_id
               and re.search(r"packet", d.source_document_id + " " + d.title, re.I)]
@@ -321,18 +322,17 @@ def _packet(ctx: Context, agenda: Document, page_links: list[dict], needed: set[
         packet = stored[0]
         pages = ctx.pages(packet, needed=lambda texts: needed <= set(texts))
         return packet.title, packet.url, packet.sha256, packet.page_count, pages
-    link = _packet_link(ctx, page_links)
+    link = _packet_link(ctx, page_links, packet_name)
     fetched = ctx.read(link["url"])
     return (link["text"], link["url"], fetched["sha256"], fetched["page_count"],
             {p["page_number"]: p["text"] for p in fetched["pages"]})
 
 
-def _packet_link(ctx: Context, page_links: list[dict]) -> dict:
-    """The one "<date> Governing Board Packet" / "<date> APC Meeting Packet" link on the meeting page."""
+def _packet_link(ctx: Context, page_links: list[dict], packet_name: str) -> dict:
+    """The one "<date> <packet_name> Packet" link on the meeting page ("September 23 Governing Board Packet")."""
     if not ctx.meeting.official_url:
         raise Uncertain("meeting has no official page to find the packet on")
-    body = _BODY.get(ctx.meeting.agency_id, r"Governing\s+Board|APC(?:\s+Meeting)?")
-    name = re.compile(rf"^(?:(?P<month>{_MONTHS})\s+(?P<day>\d{{1,2}}),?(?:\s+(?P<year>\d{{4}}))?\s+)?(?:{body})\s+Packet$", re.I)
+    name = re.compile(rf"^(?:(?P<month>{_MONTHS})\s+(?P<day>\d{{1,2}}),?(?:\s+(?P<year>\d{{4}}))?\s+)?(?:{packet_name})\s+Packet$", re.I)
     found = {}
     for link in page_links:
         match = name.match(link["text"])
@@ -415,4 +415,4 @@ def _jaccard(a: str, b: str) -> float:
     return len(first & second) / len(first | second)
 
 
-RULES = {"trpa-governing": map_trpa, "trpa-advisory": map_trpa}
+RULES = {"trpa-meeting-materials": map_trpa}

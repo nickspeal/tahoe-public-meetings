@@ -16,7 +16,7 @@ python3 scripts/project.py worker reclassify
 python3 scripts/project.py refresh
 ```
 
-Rule classification uses each item's title and limited TTD context, never neighboring page excerpts. Supporting-report subjects can be missed.
+Rule classification uses each item's title, never neighboring page excerpts. Supporting-report subjects can be missed. An agency entry may add `topicHints`: title patterns that tag a topic only for that agency's items, where a word means more than it does elsewhere. TTD and its committee tag Transit from "fleet", an operating or service budget, or a service change or route number: `"topicHints": {"transit": [{"rule": "ttd-fleet", "pattern": "\\bfleet\\b"}, ...]}`. A topic's hints apply only when the catalog's own patterns did not tag it, the first matching hint counts, and its `rule` name is recorded as the tag's provenance. Hints must name catalog topics; `reclassify` applies an edit wherever it changes an item's topics.
 
 ### Claude classification
 
@@ -47,6 +47,8 @@ python3 scripts/project.py worker agencies
 Named built-in discovery covers TTD and the original SLT Council path. Other reviewed sources use the configured adapters described below, including Truckee's Municode index. Setting `follow` alone does not implement discovery: entries with no adapter remain manual sources. Body-specific filters keep unrelated commissions out. Operational URLs were verified during the source review where possible; `legacy` cells remain unverified and are never fetched automatically.
 
 An entry can also carry a standing `participation` block for details the agency publishes on its website rather than in each agenda: `watchUrl` (livestream), `url` (comment form or participation page), `email`, and `instructions`, plus a required official `sourceUrl` and `checkedOn` date (`YYYY-MM-DD`). The export uses these only when neither the source adapter nor the agenda supplies the field ([decision 0021](../docs/decisions/0021-participation-details-from-agendas.md)). Recheck them when the agency changes its process.
+
+An entry's optional `staffReports` block chooses how `map-staff-reports` links its items to their own staff reports ([decision 0026](../docs/decisions/0026-staff-reports-for-every-agency.md)): `rule` names a rule in [`staff_report_rules/`](../workers/ingestion/tahoe_ingest/staff_report_rules/README.md), and the other keys are that rule's parameters, for example `{"rule": "legistar", "client": "washoe-nv", "body": "Board of County Commissioners", "report": "staff-report"}` or `{"rule": "ttd-packet", "footer": "(?:RTCPC\\s+)?AGENDA ITEM"}`. An agency on a format that already has a rule needs only this block (plus a fixture and a source review record). Without a rule, a `note` says why, with `"published": false` when the agency publishes no reports a rule could use (`{"published": false, "note": "A one-page agenda with unnumbered items and no staff reports."}`) or `true` when reports exist but cannot be reached or attached yet. A malformed block, an unknown rule, or a missing, unknown, or invalid parameter stops the registry from loading.
 
 Public agency filters and coverage lists include followed agencies with actual stored meetings. A manually added notice's official URL is used as a source fallback when registry URLs are absent. The registry itself is not a claim of comprehensive live coverage. Existing recurring-cost constraints remain under $20/month; expanding the watchlist does not create cloud jobs or approve a larger budget.
 

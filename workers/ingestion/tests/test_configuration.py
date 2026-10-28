@@ -58,6 +58,31 @@ def test_inclusion_hides_retired_topics():
     assert expand_topics({'short-term-rentals', 'roads'}) == {'short-term-rentals', 'housing'}
 
 
+def test_agency_topic_hints_apply_only_to_that_agency():
+    assert classify('ttd-rtcpc', 'Fleet replacement plan', [])['transit']['rule'] == 'ttd-fleet'
+    assert classify('ttd', 'Route 50 service change', [])['transit']['rule'] == 'ttd-service-action'
+    assert classify('ttd', 'Bus fleet replacement', [])['transit']['rule'] == 'transit-service'  # catalog patterns come first
+    assert classify('slt', 'Fleet replacement plan', []) == {}
+
+
+def test_agency_topic_hints_must_name_catalog_topics(tmp_path, monkeypatch):
+    from tahoe_ingest import catalog, topics
+    agencies = json.loads(catalog.agency_catalog_path().read_text())
+    next(a for a in agencies if a['id'] == 'ttd')['topicHints'] = {'transport': [{'rule': 'ttd-fleet', 'pattern': 'fleet'}]}
+    path = tmp_path / 'agencies.json'
+    path.write_text(json.dumps(agencies))
+    monkeypatch.setattr(catalog, 'agency_catalog_path', lambda: path)
+    catalog.agency_catalog.cache_clear()
+    topics.agency_hints.cache_clear()
+    try:
+        with pytest.raises(ValueError, match='invalid topicHints: ttd'):
+            topics.agency_hints()
+    finally:
+        monkeypatch.undo()
+        catalog.agency_catalog.cache_clear()
+        topics.agency_hints.cache_clear()
+
+
 def notice():
     return {'agency': 'slt', 'id': 'one-off-housing-workshop-test',
             'title': 'Housing policy workshop', 'date': '2026-11-12',

@@ -1,4 +1,4 @@
-"""Truckee Tahoe Airport District (``truckee-tahoe-airport``): one staff report file per agenda TAB.
+"""Rule ``airport-tab-files``: Truckee Tahoe Airport District, one staff report file per agenda TAB.
 
 The meeting's official page (``/board_meetings/<id>/attachments``, HTML) lists every
 file by its printed name: "TAB 04 - Staff Report Airfield NOE 2026.pdf", with
@@ -134,4 +134,4 @@ def map_airport(ctx: Context) -> list[Mapping]:
                           missing="{count} TAB files for item {number}")
 
 
-RULES = {"truckee-tahoe-airport": map_airport}
+RULES = {"airport-tab-files": map_airport}

@@ -1,13 +1,55 @@
-"""Agency agenda layouts for the deterministic outline parser.
+"""Agenda layouts: the formats agencies print their agendas in.
 
-Each entry was written against that agency's published agendas; the tests in
-``tests/test_agenda_layouts.py`` replay real agenda text for every layout.
-Add a layout here when a new agency (or a new format from an existing agency)
-needs item extraction, then add its agenda text to the test fixtures.
+Layouts are data in ``config/agenda-layouts.json``, keyed by format name. An
+agency entry in ``packages/domain/agencies.json`` lists the layouts its
+agendas use, tried in order::
+
+    "agenda": {"layouts": ["trpa-governing-board"], "agendaBeforePacket": true}
+
+so a body that publishes in a format that is already supported (another
+committee of the same district) needs only that registry entry. A layout
+describes a document format, not an agency: bodies whose agendas look alike
+share one (the TTD board and its committee share ``ttd``). Its cover must
+match only documents in that format, because the cover is what tells a body's
+agenda from an attachment or a sibling body's agenda.
+
+This module holds the building blocks that layouts name: outline ``LEVELS``,
+shared regular expressions (``FRAGMENTS``, written ``"@NAME"``), and the
+hand-written parsers in ``agenda_custom.PARSERS``. It loads the file and
+validates it when the agency registry loads. config/README.md lists every
+layout key.
+
+To add a layout:
+
+1. Capture one of the agency's agendas and describe its format in
+   ``config/agenda-layouts.json``: label, cover, outline levels, ending
+   marker, and the page furniture to skip. Use the registry names where they
+   fit and an inline level (``{"kind": "free", "pattern": "..."}``) for a
+   marker only one layout uses. Read the extracted items against the PDF, not
+   just their count.
+2. Name the layout in the agency's ``agenda.layouts``.
+3. Add the agenda's pages and reviewed items to
+   ``tests/fixtures/agenda-layouts/AGENCY--MEETING.json`` (``"expected": null``
+   for a document that must be rejected). ``tests/test_agenda_layouts.py``
+   replays every fixture and requires one for every layout.
+4. Run ``tahoe-ingest reparse --agency AGENCY --dry-run`` to re-parse stored
+   text with no source fetch.
+
+Add a building block here only when several layouts need it, and a parser to
+``agenda_custom`` only for a format the outline engine cannot describe.
 """
 from __future__ import annotations
 
+import json
+import re
+from dataclasses import fields, replace
+from functools import lru_cache
+from pathlib import Path
+
+from .agenda_custom import PARSERS
 from .outline import LOWER, NUM, NUM_LOOSE, ROMAN_LEVEL, UPPER, Appendix, Layout, Level
+
+NAME = "agenda-layouts.json"
 
 # A wrapped title stops at a staff attribution such as "Matt Click, Executive Director".
 STAFF_LINE = r"^[A-Z][\w.'’-]+(?: [A-Z][\w.'’-]+){1,3},\s+(?:and\s+)?[A-Z]"
@@ -28,190 +70,174 @@ UPPER_ANY = Level("upper", r"\(?(?P<v>[A-Z])[.)](?=\s|$)")
 NUM_TIGHT = Level("num", r"(?P<v>\d{1,2})\.(?=\s|[A-Z])")
 LOWER_ROMAN = Level("lroman", r"(?P<v>[ivx]{1,4})\.(?=\s)", item=False)
 
-LAYOUTS: dict[str, tuple[Layout, ...]] = {
-    "california-fish-game": (
-        Layout("california-fish-game", "Fish and Game Commission agenda",
-               cover=(r"Fish and Game Commission", r"Meeting Agenda"),
-               levels=(NUM,), first_pages=30, wrap="lowercase", max_title_lines=3, restart=True,
-               min_items=5),
-    ),
-    "california-state-parks": (
-        Layout("california-state-parks", "OHMVR Commission agenda",
-               cover=(r"OFF-HIGHWAY MOTOR VEHICLE RECREATION COMMISSION", r"AGENDA"),
-               levels=(ROMAN_LEVEL, LOWER), first_pages=3, max_title_lines=3),
-        Layout("california-state-parks", "State Park and Recreation Commission agenda",
-               cover=(r"STATE PARK AND RECREATION COMMISSION", r"AGENDA"),
-               levels=(NUM_TIGHT, LOWER, LOWER_ROMAN), first_pages=3, max_title_lines=2,
-               skip=r"^State Park and Recreation Commission Meeting Agenda"),
-    ),
-    "douglas-commissioners": (
-        Layout("douglas-commissioners", "Douglas County Board of Commissioners agenda",
-               cover=(r"Douglas County", r"Board of County", r"(?i)agenda"),
-               levels=(NUM, DOUGLAS_CHILD), first_pages=12, max_title_lines=3, indent_tolerance=99, headings=CAPS_HEADING,
-               title_end=r"\.$", title_cleanup=(FOR_ACTION,),
-               skip=r"^Douglas County Board of County Commissioners\s+\w+ \d{1,2}, \d{4}$|^\d{1,3}$|^LUNCH BREAK$|^FINAL AGENDA$"),
-    ),
-    "douglas-planning": (
-        Layout("douglas-planning", "Douglas County Planning Commission agenda",
-               cover=(r"Douglas County", r"Planning Commission", r"(?i)agenda"),
-               levels=(NUM, UPPER), first_pages=8, max_title_lines=3, indent_tolerance=99, headings=CAPS_HEADING,
-               title_end=r"\.$", title_cleanup=(FOR_ACTION,), min_items=2,
-               skip=r"^Douglas County Planning Commission\s+\w+ \d{1,2}, \d{4}$|^\d{1,3}$"),
-    ),
-    "douglas-transportation": (
-        Layout("douglas-transportation", "Douglas County joint Board and RTC agenda",
-               cover=(r"Douglas County", r"(?i)agenda"),
-               levels=(NUM, DOUGLAS_CHILD), first_pages=12, max_title_lines=3, indent_tolerance=99, headings=CAPS_HEADING,
-               title_end=r"\.$", title_cleanup=(FOR_ACTION,),
-               skip=r"^Douglas County .*\s+\w+ \d{1,2}, \d{4}$|^\d{1,3}$|^LUNCH BREAK$|^FINAL AGENDA$"),
-    ),
-    "el-dorado-planning": (
-        Layout("el-dorado-planning", "El Dorado County Legistar agenda",
-               cover=(r"County of El Dorado", r"MEETING AGENDA"),
-               levels=(LEGISTAR_FILE,), first_pages=20, max_title_lines=8, headings=CAPS_HEADING,
-               min_items=1, skip=r"^County of El Dorado\s+Page \d+|Printed on \d", addendum=r"^ADDENDUM$"),
-    ),
-    "el-dorado-supervisors": (
-        Layout("el-dorado-supervisors", "El Dorado County Legistar agenda",
-               cover=(r"County of El Dorado", r"(?i)agenda"),
-               levels=(LEGISTAR_FILE,), first_pages=40, max_title_lines=8, headings=CAPS_HEADING,
-               skip=r"^County of El Dorado\s+Page \d+|Printed on \d", addendum=r"^ADDENDUM$"),
-    ),
-    "ivgid": (
-        Layout("ivgid", "IVGID Board of Trustees agenda",
-               cover=(r"Incline Village General Improvement District", r"PLEASE TAKE NOTICE"),
-               levels=(UPPER, NUM, Level("upper", UPPER.pattern, item=False)), first_pages=8,
-               max_title_lines=6, stop=r"^(?:Recommendation for Action|Public Comments will be taken)",
-               skip=(r"^Incline Village General Improvement District|^recreation programs and facilities|"
-                     r"^893 Southwood Boulevard|^www\.yourtahoeplace\.com|^Agenda for the Board Meeting of"),
-               title_cleanup=((r"^SUBJECT:\s*", ""), (r"^\((?:For|Not for) Possible Action\)\s*-?\s*", ""),
-                              (r"^PUBLIC HEARING\s*-\s*Time:.*?practicable\.\s*", ""),
-                              (r"(?i)\s*-?\s*\((?:For|Not for) possible Action\)", ""),
-                              (r"\s*\(Requesting Staff Member:.*$", ""), (r"\*$", "")),
-               caps_lead=True),
-    ),
-    "ndep": (
-        Layout("ndep", "Nevada Division of Environmental Protection board agenda",
-               cover=(r"STATE OF NEVADA", r"AGENDA"),
-               levels=(NUM_LOOSE,), first_pages=4, wrap="lowercase", max_title_lines=2, max_gap=1,
-               skip=r"^Page \d+ of \d+"),
-    ),
-    "nevada-state-parks": (
-        Layout("nevada-state-parks", "Nevada Division of State Parks meeting agenda",
-               cover=(r"(?i)state parks", r"AGENDA"),
-               levels=(NUM,), first_pages=4, max_title_lines=2, wrap="lowercase"),
-    ),
-    "ntpud": (
-        Layout("ntpud", "NTPUD Board agenda",
-               cover=(r"NORTH TAHOE PUBLIC UTILITY DISTRICT", r"(?i)agenda"),
-               levels=(UPPER, NUM, Level("lower", LOWER.pattern, item=False)), first_pages=5,
-               max_title_lines=6, skip=r"^Agenda Posted on", caps_colon=True, caps_lead=True),
-    ),
-    "placer-planning": (
-        Layout("placer-planning", "Placer County Planning Commission agenda",
-               cover=(r"COUNTY OF PLACER", r"PLANNING COMMISSION AGENDA"),
-               levels=(NUM, UPPER, Level("num", NUM.pattern, item=False), Level("lower", LOWER.pattern, item=False)),
-               first_pages=8, max_title_lines=3, stop=r"^(?:Project Location|Assessor Parcel|County Staff)",
-               skip=r"^PLANNING COMMISSION\s+PAGE \d+|^[A-Z]+ \d{1,2}, \d{4}$"),
-    ),
-    "placer-supervisors": (
-        Layout("placer-supervisors", "Placer County Board of Supervisors agenda",
-               cover=(r"COUNTY OF PLACER", r"BOARD OF SUPERVISORS"),
-               levels=(NUM, UPPER_ANY, Level("num", NUM.pattern, item=False),
-                       Level("lower", r"\(?(?P<v>[a-z])[.)](?=\s)", item=False)),
-               first_pages=14, max_title_lines=3, prefix=r"^\s{0,2}\d{1,3}(?![.\d:])(?=\s+\S)",
-               stop=r"\d+ min\)$|^\(",
-               skip=r"^BOARD OF SUPERVISORS\s+PAGE \d+|^[A-Z]+ \d{1,2}, \d{4}$"),
-    ),
-    "placer-transportation": (
-        Layout("placer-transportation", "PCTPA Board agenda",
-               cover=(r"PLACER COUNTY TRANSPORTATION PLANNING AGENCY", r"A\s*G\s*E\s*N\s*D\s*A"),
-               levels=(UPPER, NUM, Level("lower", LOWER.pattern, item=False)), first_pages=4,
-               max_title_lines=3, end=r"^Next Board Meeting", end_item=False,
-               suffix=r"\s{3,}(?:Action|Info|Separate|cover|Pg\.\s*\d+)(?:\s+Pg\.\s*\d+)?\s*$",
-               stop=STAFF_LINE + r"|^(?:These items|Persons may|Adopt a resolution|Receive)",
-               skip=r"^BOARD OF DIRECTORS MEETING AGENDA$|^Page \d+$|^[A-Z][a-z]+ \d{1,2}, \d{4}$|"
-                    r"^PLACER COUNTY TRANSPORTATION PLANNING AGENCY$|^2260 Douglas|^www\.pctpa\.net"),
-    ),
-    "slt-parks-recreation-commission": (
-        Layout("slt-parks-recreation-commission", "South Lake Tahoe Parks and Recreation Commission agenda",
-               cover=(r"City of South Lake Tahoe", r"Parks and Recreation Commission", r"Meeting Agenda"),
-               levels=(NUM,), first_pages=6, max_title_lines=2,
-               stop=r"^(?:Requested Action|Responsible Staff|\S.*\.(?:docx?|pdf)$)",
-               headings=SLT_HEADINGS,
-               heading_items=(r"^(?:Call to Order|Roll Call|Public Communications?|Updates and Announcements|"
-                              r"Commissioner Reports|Commissioner Assignments)")),
-    ),
-    "slt-planning": (
-        Layout("slt-planning", "South Lake Tahoe Planning Commission agenda",
-               cover=(r"City of South Lake Tahoe", r"Planning Commission"),
-               levels=(NUM,), first_pages=6, max_title_lines=2,
-               stop=r"^(?:Requested Action|Responsible Staff|\S.*\.(?:docx?|pdf)$)",
-               headings=SLT_HEADINGS,
-               heading_items=(r"^(?:Call to Order|Roll Call|Public Communications?|Updates and Announcements|"
-                              r"Planning Commissioner Reports|Commissioner Reports)")),
-    ),
-    "stpud": (
-        Layout("stpud", "South Tahoe PUD Board agenda",
-               cover=(r"SOUTH TAHOE PUBLIC UTILITY DISTRICT", r"BOARD MEETING AGENDA"),
-               levels=(NUM_LOOSE, LOWER), first_pages=6, max_title_lines=3, max_gap=1, stop=r"^\(",
-               skip=r"BOARD MEETING AGENDA\s+[–-]\s+\w+ \d{1,2}, \d{4}\s+PAGE",
-               title_cleanup=(PAREN_DESCRIPTION,),
-               after_end=(Appendix(r"^ITEMS FOR CONSENT$", LOWER, parent="4"),)),
-    ),
-    "tcpud": (
-        Layout("tcpud", "TCPUD Board agenda",
-               cover=(r"TAHOE CITY PUBLIC UTILITY DISTRICT", r"Board of Directors"),
-               levels=(UPPER, NUM, Level("lower", LOWER.pattern, item=False)), first_pages=2,
-               wrap="none", caps_lead=True),
-    ),
-    "trcd": (
-        Layout("trcd", "Tahoe RCD Board agenda",
-               cover=(r"TAHOE RESOURCE CONSERVATION DISTRICT", r"AGENDA"),
-               levels=(ROMAN_LEVEL, NUM), first_pages=4, max_title_lines=4, stop=r"^[•*]",
-               suffix=(r"\s{2,}(?:Action/Approve|Discussion Only|Action|Information(?:al)?(?: Only)?)"
-                       r"(?:\s+[\dx][\d\-–x, ]*)?\s*$|\s{4,}[\dx]+(?:\s*[-–]\s*\d+)?\s*$"),
-               skip=r"^RECOMMENDATION\s+PAGE$", title_cleanup=(PAREN_DESCRIPTION,)),
-    ),
-    "trpa-advisory": (
-        Layout("trpa-advisory", "TRPA Advisory Planning Commission agenda",
-               cover=(r"Tahoe Regional Planning Agency", r"Advisory Planning Commission"),
-               levels=(NUM, UPPER_BARE), first_pages=4, max_title_lines=3,
-               column_header=r"^\s*Item\s{2,}(?P<col>\S)", column_gap=True, skip=r"AGENDA ITEM NO\.|^\d{1,3}$"),
-    ),
-    "trpa-governing": (
-        Layout("trpa-governing", "TRPA Governing Board agenda",
-               cover=(r"Tahoe Regional Planning Agency", r"Governing Board"),
-               levels=(NUM, UPPER_BARE), first_pages=16, max_title_lines=3, start=r"^TRPA GOVERNING BOARD MEETING$",
-               column_header=r"^\s*Item\s{2,}(?P<col>\S)", column_gap=True, skip=r"AGENDA ITEM NO\.|^\d{1,3}$",
-               after_end=(Appendix(r"^(?P<parent>\d+)\.\s+TRPA CONSENT CALENDAR$", UPPER_BARE,
-                                   end=r"^Details:|^AGENDA$|^\d+\.\s+TMPO CONSENT CALENDAR"),
-                          Appendix(r"^(?P<parent>\d+)\.\s+TMPO CONSENT CALENDAR$", UPPER_BARE,
-                                   end=r"^Details:|^AGENDA$|^\d+\.\s+TRPA CONSENT CALENDAR"))),
-    ),
-    "truckee-north-shore-tma": (
-        Layout("truckee-north-shore-tma", "TNT/TMA Board agenda",
-               cover=(r"TRUCKEE NORTH TAHOE TRANSPORTATION MANAGEMENT ASSOCIATION", r"BOARD MEETING AGENDA"),
-               levels=(NUM,), first_pages=3, wrap="any", max_title_lines=2, section_restart=True, indent_tolerance=99,
-               headings=CAPS_HEADING, suffix=r"\s+\d{1,2}:\d{2}\s*[ap]m\s*$", stop=STAFF_LINE + r"|^-"),
-    ),
-    "truckee-tahoe-airport": (
-        Layout("truckee-tahoe-airport", "Truckee Tahoe Airport District agenda",
-               cover=(r"TRUCKEE TAHOE AIRPORT DISTRICT", r"MEETING AGENDA"),
-               levels=(NUM,), first_pages=4, max_title_lines=2, headings=CAPS_HEADING, min_items=2,
-               suffix=r"\s*-{3,}\s*TAB\s+\d+\s*$", stop=r"^\d+-"),
-    ),
-    "washoe-commissioners": (
-        Layout("washoe-commissioners", "Washoe County Board of Commissioners agenda",
-               cover=(r"(?i)washoe county", r"(?i)board of county commissioners"),
-               levels=(NUM, Level("free", r"(?P<p>\d{1,2})\.(?P<v>[A-Z]\.\d{1,2})\.(?=\s)")), first_pages=40,
-               max_title_lines=3, title_end=r"\.$|\)$",
-               title_cleanup=(ACTION_TAGS, (r"^(Public Comment)\.\s.*$", r"\1"))),
-    ),
-    "washoe-planning": (
-        Layout("washoe-planning", "Washoe County Planning Commission agenda",
-               cover=(r"(?i)washoe county", r"(?i)planning commission"),
-               levels=(NUM, UPPER), first_pages=12, max_title_lines=3, title_cleanup=(ACTION_TAGS,),
-               title_end=r"(?i)\[(?:non-action item|for possible action)\]$"),
-    ),
-}
+LEVELS = {"NUM": NUM, "NUM_LOOSE": NUM_LOOSE, "NUM_TIGHT": NUM_TIGHT, "UPPER": UPPER, "UPPER_ANY": UPPER_ANY,
+          "UPPER_BARE": UPPER_BARE, "LOWER": LOWER, "ROMAN_LEVEL": ROMAN_LEVEL, "LOWER_ROMAN": LOWER_ROMAN,
+          "LEGISTAR_FILE": LEGISTAR_FILE, "DOUGLAS_CHILD": DOUGLAS_CHILD}
+# A regular expression, or a (pattern, replacement) pair for ``titleCleanup``.
+FRAGMENTS = {"STAFF_LINE": STAFF_LINE, "CAPS_HEADING": CAPS_HEADING, "SLT_HEADINGS": SLT_HEADINGS,
+             "ACTION_TAGS": ACTION_TAGS, "PAREN_DESCRIPTION": PAREN_DESCRIPTION, "FOR_ACTION": FOR_ACTION}
+
+KINDS = ("num", "upper", "lower", "roman", "lroman", "free")
+WRAPS = ("indent", "lowercase", "any", "none")
+_FIELDS = {f.name for f in fields(Layout)} - {"name"}
+_PATTERNS = {"start", "end", "skip", "prefix", "suffix", "column_header", "headings", "heading_items", "stop",
+             "title_end", "addendum"}
+_COUNTS = {"cover_pages": 1, "first_pages": 1, "max_title_lines": 1, "min_items": 1, "max_gap": 0, "indent_tolerance": 0}
+_FLAGS = {"caps_colon", "column_gap", "caps_lead", "end_item", "restart", "section_restart"}
+_PARSER_FIELDS = {"label", "cover", "cover_pages", "recognize", "parser"}
+
+
+@lru_cache(maxsize=1)
+def layouts() -> dict[str, Layout]:
+    """Every configured layout by name: a wheel's bundled copy, else the checkout's config file."""
+    packaged = Path(__file__).with_name(NAME)
+    path = packaged if packaged.is_file() else Path(__file__).resolve().parents[3] / "config" / NAME
+    config = json.loads(path.read_text())
+    if not isinstance(config.get("layouts"), dict) or not config["layouts"]:
+        raise ValueError(f"invalid agenda layouts: {path}")
+    return {name: _layout(name, spec) for name, spec in config["layouts"].items()}
+
+
+def validate_agency_agendas(agencies: list[dict]) -> None:
+    """Check each agency's ``agenda`` block against the layouts (called when the registry loads)."""
+    known = layouts()
+    for agency in agencies:
+        if "agenda" not in agency:
+            continue
+        agenda = agency["agenda"]
+        names = agenda.get("layouts") if isinstance(agenda, dict) else None
+        if not isinstance(names, list) or not names or len(set(names)) != len(names) \
+                or set(agenda) - {"layouts", "agendaBeforePacket"} or not isinstance(agenda.get("agendaBeforePacket", False), bool):
+            raise ValueError(f"invalid agenda: {agency['id']}")
+        for name in names:
+            if name not in known:
+                raise ValueError(f"unknown agenda layout {name!r}: {agency['id']}")
+
+
+class _Invalid(ValueError):
+    pass
+
+
+def _layout(name: str, spec: dict) -> Layout:
+    try:
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name) or not isinstance(spec, dict):
+            raise _Invalid("invalid name or entry")
+        values = {}
+        for key, value in spec.items():
+            field = re.sub(r"[A-Z]", lambda m: "_" + m.group().lower(), key)
+            if field not in _FIELDS:
+                raise _Invalid(f"unknown key {key}")
+            values[field] = _value(field, value)
+        if not values.get("label") or not values.get("cover"):
+            raise _Invalid("label and cover are required")
+        if "parser" in values and set(values) - _PARSER_FIELDS:
+            raise _Invalid("a parser layout takes only label, cover, coverPages, recognize, and parser")
+        if "parser" not in values and not values.get("levels"):
+            raise _Invalid("levels are required")
+        return Layout(name=name, **values)
+    except (_Invalid, re.error) as exc:
+        raise ValueError(f"agenda layout {name}: {exc}") from None
+
+
+def _value(field: str, value):
+    if field == "label":
+        return _text(value)
+    if field == "parser":
+        if value not in PARSERS:
+            raise _Invalid(f"unknown parser {value!r}")
+        return value
+    if field in ("cover", "recognize"):
+        return tuple(_pattern(v) for v in _list(value))
+    if field in _PATTERNS:
+        return _pattern(value)
+    if field in _COUNTS:
+        if type(value) is not int or value < _COUNTS[field]:
+            raise _Invalid(f"{field} must be an integer of at least {_COUNTS[field]}")
+        return value
+    if field in _FLAGS:
+        if not isinstance(value, bool):
+            raise _Invalid(f"{field} must be true or false")
+        return value
+    if field == "wrap":
+        if value not in WRAPS:
+            raise _Invalid(f"wrap must be one of {', '.join(WRAPS)}")
+        return value
+    if field == "levels":
+        return tuple(_level(v) for v in _list(value))
+    if field == "title_cleanup":
+        return tuple(_cleanup(v) for v in _list(value))
+    if field == "after_end":
+        return tuple(_appendix(v) for v in _list(value))
+    raise _Invalid(f"unsupported key {field}")
+
+
+def _list(value) -> list:
+    if not isinstance(value, list) or not value:
+        raise _Invalid(f"expected a non-empty list, not {value!r}")
+    return value
+
+
+def _text(value) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise _Invalid(f"expected text, not {value!r}")
+    return value
+
+
+def _fragment(value: str):
+    if value[1:] not in FRAGMENTS:
+        raise _Invalid(f"unknown fragment {value}")
+    return FRAGMENTS[value[1:]]
+
+
+def _pattern(value) -> str:
+    """A regular expression; "@NAME" is a shared fragment, and a list matches any of its patterns."""
+    parts = [_fragment(v) if isinstance(v, str) and v.startswith("@") else _text(v) for v in
+             (_list(value) if isinstance(value, list) else [value])]
+    if not all(isinstance(part, str) for part in parts):
+        raise _Invalid(f"{value!r} is not a pattern")
+    pattern = "|".join(parts)
+    re.compile(pattern)
+    return pattern
+
+
+def _level(value) -> Level:
+    if isinstance(value, str):
+        if value not in LEVELS:
+            raise _Invalid(f"unknown level {value}")
+        return LEVELS[value]
+    if not isinstance(value, dict):
+        raise _Invalid(f"invalid level {value!r}")
+    if set(value) - {"level", "kind", "pattern", "item"} or ("level" in value) == ("kind" in value or "pattern" in value):
+        raise _Invalid(f"a level names a registry level or gives kind and pattern: {value!r}")
+    if not isinstance(value.get("item", True), bool):
+        raise _Invalid("level item must be true or false")
+    if "level" in value:
+        level = replace(_level(value["level"]), **({"item": value["item"]} if "item" in value else {}))
+    else:
+        if value.get("kind") not in KINDS:
+            raise _Invalid(f"level kind must be one of {', '.join(KINDS)}")
+        level = Level(value["kind"], _text(value.get("pattern")), value.get("item", True))
+    if "v" not in re.compile(r"^(?P<indent>\s*)" + level.pattern + r"\s*(?P<t>.*)$").groupindex:
+        raise _Invalid(f"level pattern must capture its label as group v: {level.pattern}")
+    return level
+
+
+def _cleanup(value) -> tuple[str, str]:
+    if isinstance(value, str) and value.startswith("@"):
+        pair = _fragment(value)
+        if not isinstance(pair, tuple):
+            raise _Invalid(f"{value} is not a cleanup pair")
+        return pair
+    if not isinstance(value, list) or len(value) != 2 or not all(isinstance(v, str) for v in value):
+        raise _Invalid(f"titleCleanup entries are [pattern, replacement] or @NAME, not {value!r}")
+    re.compile(value[0]).sub(value[1], "")  # also checks the replacement's group references
+    return value[0], value[1]
+
+
+def _appendix(value) -> Appendix:
+    if not isinstance(value, dict) or set(value) - {"heading", "level", "parent", "end"} \
+            or "heading" not in value or "level" not in value:
+        raise _Invalid(f"afterEnd entries need heading and level: {value!r}")
+    return Appendix(_pattern(value["heading"]), _level(value["level"]),
+                    _text(value["parent"]) if "parent" in value else None,
+                    _pattern(value["end"]) if "end" in value else None)

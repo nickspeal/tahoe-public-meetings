@@ -34,9 +34,9 @@ official indexes with bounded result counts. Truckee also accepts `--year`
 and `--month`. The initial filters cover SLT City Council and Truckee Town
 Council; TTD uses its meeting posts. `capture candidates.json` downloads up
 to five meetings and two PDFs each into temporary scratch space and stores
-page text and hashes. It recognizes the tested TTD Board, SLT City Council,
-and Truckee Town Council agenda layouts, plus one declarative layout per other
-covered agency (`tahoe_ingest/agenda_layouts.py`, decision 0015). It requires
+page text and hashes. It reads items with the agenda layouts each agency's
+registry entry names (`agenda.layouts` in `packages/domain/agencies.json`,
+defined in `config/agenda-layouts.json`; decision 0015). It requires
 sequential numbering and an ending marker, and publishes item excerpts only
 with exact page quotes.
 For an unknown, incomplete, or conflicting agenda layout, it keeps the PDF
@@ -49,17 +49,25 @@ file at 80 MiB and 800 pages.
 
 ### Agency agenda layouts
 
-Each layout in `agenda_layouts.py` names an agency's cover text, outline
-markers per level, ending marker, and page furniture (running headers, page
-or time columns, packet page numbers) for the shared engine in `outline.py`.
-NTCD's centered-number table and South Shore TMA's bullets use
-`agenda_custom.py`. To add or fix an agency:
+Each layout in `config/agenda-layouts.json` describes one agenda format: its
+cover text, outline markers per level, ending marker, and page furniture
+(running headers, page or time columns, packet page numbers) for the shared
+engine in `outline.py`. Formats the engine cannot describe (NTCD's
+centered-number table, South Shore TMA's bullets, and the original TTD, SLT
+City Council, and Truckee Town Council parsers) name a hand-written parser in
+`agenda_custom.py` instead. `agenda_layouts.py` holds the named levels and
+patterns that layouts share. An agency lists its layouts in its registry
+entry, so a body that publishes in a supported format (another committee of
+the same district) needs only that entry; see the
+[configuration guide](../../config/README.md#agenda-layouts). To add or fix a
+layout:
 
-1. Capture one of its agendas, add or edit the layout, and read the extracted
-   items against the PDF, not just the count.
+1. Capture one of the agency's agendas, add or edit the layout, name it in
+   the agency's `agenda.layouts`, and read the extracted items against the
+   PDF, not just the count.
 2. Add the agenda's pages and reviewed items to
    `tests/fixtures/agenda-layouts/AGENCY--MEETING.json` (`"expected": null`
-   for a document that must be rejected).
+   for a document that must be rejected). Every layout needs one.
 3. Run `tahoe-ingest reparse --agency AGENCY --dry-run`, then without
    `--dry-run`, to re-parse stored text with no source fetch. By default it
    only touches meetings with no items or with items waiting to be

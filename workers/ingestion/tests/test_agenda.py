@@ -65,6 +65,8 @@ def test_ttd_committee_meeting_agenda_cover_parses_like_the_board():
     titles = {i["source_number"]: i["title"] for i in parsed.items}
     assert titles["III.A"] == "Informational Only: Informational Summary Update on the Overall Park Tahoe® Program"
     assert titles["IV"] == "COMMITTEE MEMBER REQUESTS AND COMMENTS"
+
+
 def test_unknown_layout_is_review_only():
     pages = [{"document_id": "x", "page_number": 1, "text": "Agenda items need no evidence. 1. Adopt everything."}]
     parsed = parse_agenda("slt", [{"id": "x"}], pages)
@@ -103,13 +105,14 @@ def test_reparse_clears_every_parse_agenda_failure_warning():
     import re
     from pathlib import Path
     from tahoe_ingest.reparse import STALE
-    source = (Path(__file__).resolve().parents[1] / "tahoe_ingest/agenda.py").read_text()
-    in_parse_agenda = source[source.index("def parse_agenda"):]
-    warnings = re.findall(r'_result\(\[\], False, f?"([^"]+)"\)', in_parse_agenda)
-    assert warnings and all(STALE.search(w) for w in warnings), warnings
+    package = Path(__file__).resolve().parents[1] / "tahoe_ingest"
+    # The dispatcher, the hand-written parsers, and the outline engine each phrase their own reasons.
+    for module, least in (("agenda.py", 5), ("agenda_custom.py", 10), ("outline.py", 10)):
+        reasons = re.findall(r'"([^"]*(?:review|could not be validated)[^"]*)"', (package / module).read_text())
+        assert len(reasons) >= least and all(STALE.search(w) for w in reasons), (module, reasons)
 
 
-def test_legacy_parsers_name_sections_as_printed():
+def test_hand_written_parsers_name_sections_as_printed():
     bundle = json.loads(FIXTURE.read_text())
     meetings = {(m["agency"], m["id"]): m for m in bundle["meetings"]}
 

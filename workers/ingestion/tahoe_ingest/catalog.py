@@ -6,6 +6,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
+from .agenda_layouts import validate_agency_agendas
 from .schedules import validate_schedule
 
 
@@ -92,6 +93,7 @@ def agency_catalog() -> tuple[dict, ...]:
             for key in ("watchUrl", "url", "sourceUrl"):
                 if key in standing and (urlparse(standing[key]).scheme != "https" or not urlparse(standing[key]).netloc):
                     raise ValueError(f"invalid participation.{key}: {agency['id']}")
+    validate_agency_agendas(agencies)
     return tuple(agencies)
 
 

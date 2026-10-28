@@ -34,6 +34,11 @@
       "agendaPublishingSchedule": "About a week before",
       "notification": "",
       "website": "https://tahoetransportation.org/meetings-and-agendas/"
+    },
+    "agenda": {
+      "layouts": [
+        "ttd"
+      ]
     }
   },
   {
@@ -51,6 +56,11 @@
     "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
     "discovery": {
       "bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs"
+    },
+    "agenda": {
+      "layouts": [
+        "ttd"
+      ]
     }
   },
   {
@@ -77,6 +87,11 @@
       "agendaPublishingSchedule": "2nd and 4th Thursdays",
       "notification": "https://www.cityofslt.us/list.aspx",
       "website": "https://cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+    },
+    "agenda": {
+      "layouts": [
+        "slt-council"
+      ]
     }
   },
   {
@@ -127,6 +142,11 @@
       "agendaPublishingSchedule": "",
       "notification": "https://www.cityofslt.us/list.aspx",
       "website": "https://cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+    },
+    "agenda": {
+      "layouts": [
+        "slt-planning-commission"
+      ]
     }
   },
   {
@@ -158,6 +178,12 @@
       "indexUrl": "https://www.trpa.gov/meeting-materials/",
       "bodyPattern": "Advisory Planning Commission",
       "documentPattern": "APC|Advisory Planning Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "trpa-apc"
+      ],
+      "agendaBeforePacket": true
     }
   },
   {
@@ -187,6 +213,12 @@
       "type": "trpa",
       "indexUrl": "https://www.trpa.gov/meeting-materials/",
       "bodyPattern": "Governing Board"
+    },
+    "agenda": {
+      "layouts": [
+        "trpa-governing-board"
+      ],
+      "agendaBeforePacket": true
     }
   },
   {
@@ -247,6 +279,11 @@
       "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
       "bodyPattern": "(?s)^(?!.*Supplement)\\s*Board of County Commissioners",
       "titlePrefix": "Douglas County "
+    },
+    "agenda": {
+      "layouts": [
+        "douglas-county-board"
+      ]
     }
   },
   {
@@ -298,6 +335,11 @@
       "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
       "bodyPattern": "(?s)^(?!.*Supplement)\\s*Planning Commission",
       "titlePrefix": "Douglas County "
+    },
+    "agenda": {
+      "layouts": [
+        "douglas-county-planning"
+      ]
     }
   },
   {
@@ -350,6 +392,11 @@
       "type": "granicus",
       "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
       "bodyPattern": "Regional Transportation Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "douglas-county-joint-board-rtc"
+      ]
     }
   },
   {
@@ -381,6 +428,11 @@
       "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
       "bodyPattern": "Board of Supervisors",
       "title": "El Dorado County Board of Supervisors Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "el-dorado-legistar-board"
+      ]
     }
   },
   {
@@ -437,6 +489,11 @@
       "type": "legistar",
       "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
       "bodyPattern": "Planning Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "el-dorado-legistar-planning"
+      ]
     }
   },
   {
@@ -469,6 +526,11 @@
       "indexUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=30765&GUID=4B8B322D-C2C5-48F3-899F-45F45D87C758",
       "bodyPattern": "Board of County Commissioners",
       "title": "Washoe County Board of County Commissioners Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "washoe-county-board"
+      ]
     }
   },
   {
@@ -515,6 +577,11 @@
       "type": "legistar",
       "indexUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
       "bodyPattern": "Planning Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "washoe-county-planning"
+      ]
     }
   },
   {
@@ -539,6 +606,11 @@
       "agendaPublishingSchedule": "72 hours before",
       "notification": "",
       "website": "https://www.placer.ca.gov/2231/Board-of-Supervisors"
+    },
+    "agenda": {
+      "layouts": [
+        "placer-county-board"
+      ]
     }
   },
   {
@@ -560,6 +632,11 @@
       "agendaPublishingSchedule": "72 hours before",
       "notification": "",
       "website": "https://www.placer.ca.gov/2403/Planning-Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "placer-county-planning"
+      ]
     }
   },
   {
@@ -612,6 +689,11 @@
       "bodyPattern": "PCTPA",
       "title": "Placer County Transportation Planning Agency Board of Directors Meeting",
       "minutesLinks": true
+    },
+    "agenda": {
+      "layouts": [
+        "pctpa-board"
+      ]
     }
   },
   {
@@ -692,6 +774,11 @@
       "indexUrl": "https://ss-tma.org/board-meetings/",
       "bodyPattern": "Board",
       "title": "South Shore Transportation Management Association Board of Directors Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "south-shore-tma-board"
+      ]
     }
   },
   {
@@ -725,6 +812,11 @@
       "bodyPattern": "Board Meeting|TNT.?TMA",
       "idPrefix": "board-",
       "minutesLinks": true
+    },
+    "agenda": {
+      "layouts": [
+        "tnt-tma-board"
+      ]
     }
   },
   {
@@ -756,6 +848,11 @@
       "indexUrl": "https://ntpud.org/category/meetings/feed/",
       "bodyPattern": "Board of Directors",
       "titlePrefix": "North Tahoe Public Utility District "
+    },
+    "agenda": {
+      "layouts": [
+        "ntpud-board"
+      ]
     }
   },
   {
@@ -786,6 +883,11 @@
       "type": "granicus",
       "indexUrl": "https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2",
       "bodyPattern": "Board of Directors"
+    },
+    "agenda": {
+      "layouts": [
+        "tcpud-board"
+      ]
     }
   },
   {
@@ -818,6 +920,11 @@
       "bodyPattern": "Trustees",
       "apiUrl": "https://ivgid.api.civicclerk.com/v1",
       "portalUrl": "https://ivgid.portal.civicclerk.com"
+    },
+    "agenda": {
+      "layouts": [
+        "ivgid-board"
+      ]
     }
   },
   {
@@ -1004,6 +1111,11 @@
       "type": "link-index",
       "indexUrl": "https://tahoercd.specialdistrict.org/board-meetings",
       "bodyPattern": "Board Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "tahoe-rcd-board"
+      ]
     }
   },
   {
@@ -1033,6 +1145,11 @@
       "type": "link-index",
       "indexUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4aTYmjstsH_N06j4NGelCESd-ONVcib4QUp2i4gUn_7nROGirLdlGbSI5WwMcNjHIxY0t-WCTeU7e/pubhtml/sheet?headers=false&gid=0",
       "bodyPattern": "Board Meeting Library"
+    },
+    "agenda": {
+      "layouts": [
+        "ntcd-board"
+      ]
     }
   },
   {
@@ -1065,6 +1182,11 @@
       "title": "Nevada Board for Financing Water Projects Meeting",
       "datePattern": "^\\s*\\d{1,2}/\\d{1,2}/\\d{2}\\s*$",
       "horizonDays": 120
+    },
+    "agenda": {
+      "layouts": [
+        "ndep-board"
+      ]
     }
   },
   {
@@ -1195,6 +1317,11 @@
       "title": "South Tahoe Public Utility District Board Meeting",
       "qualifySpecial": true,
       "minutesLinks": true
+    },
+    "agenda": {
+      "layouts": [
+        "stpud-board"
+      ]
     }
   },
   {
@@ -1241,6 +1368,12 @@
       "agendaPublishingSchedule": "https://signup.e2ma.net/signup/1867760/1810553/",
       "notification": "https://signup.e2ma.net/signup/1867760/1810553/",
       "website": ""
+    },
+    "agenda": {
+      "layouts": [
+        "ohmvr-commission",
+        "state-park-commission"
+      ]
     }
   },
   {
@@ -1266,6 +1399,11 @@
       "agendaPublishingSchedule": "no",
       "notification": "no",
       "website": "http://parks.nv.gov/about/public-notices"
+    },
+    "agenda": {
+      "layouts": [
+        "nevada-state-parks"
+      ]
     }
   },
   {
@@ -1327,6 +1465,11 @@
       "indexUrlTemplate": "https://fgc.ca.gov/Meetings/{year}",
       "bodyPattern": "Commission|Committee",
       "title": "California Fish and Game Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "fish-game-commission"
+      ]
     }
   },
   {
@@ -1357,6 +1500,11 @@
       "type": "meeting-files",
       "indexUrl": "https://truckeetahoeairport.com/administration/board/meetings",
       "title": "Truckee Tahoe Airport District Regular Board Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "truckee-tahoe-airport-board"
+      ]
     }
   },
   {
@@ -1409,6 +1557,11 @@
       "type": "civicplus",
       "indexUrl": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes",
       "bodyPattern": "Town Council"
+    },
+    "agenda": {
+      "layouts": [
+        "truckee-council"
+      ]
     }
   },
   {
@@ -1427,6 +1580,11 @@
       "type": "granicus",
       "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
       "bodyPattern": "Parks and Recreation Commission"
+    },
+    "agenda": {
+      "layouts": [
+        "slt-parks-commission"
+      ]
     }
   },
   {

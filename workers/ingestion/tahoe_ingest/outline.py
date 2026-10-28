@@ -1,11 +1,12 @@
-"""Deterministic outline parser for agency agenda layouts.
+"""Deterministic outline parser for agenda layouts.
 
-Each agency layout (see ``agenda_layouts``) describes how its agenda numbers
-items: the marker style at each outline level, where the agenda ends, and
-which page furniture to ignore. The parser walks the extracted page text once
-and publishes items only when the whole outline validates:
+Each layout (configured in ``config/agenda-layouts.json``, see
+``agenda_layouts``) describes how an agenda format numbers items: the marker
+style at each outline level, where the agenda ends, and which page furniture
+to ignore. The parser walks the extracted page text once and publishes items
+only when the whole outline validates:
 
-* the agency's cover text is present;
+* the layout's cover text is present;
 * every level counts sequentially from its first value within its parent
   (a skipped number is accepted only when the layout allows it and the
   missing label appears nowhere in the agenda);
@@ -53,10 +54,15 @@ ROMAN_LEVEL = Level("roman", r"(?P<v>[IVX]{1,5})\.(?=\s|$)")
 
 @dataclass(frozen=True)
 class Layout:
-    agency: str
-    name: str
-    cover: tuple[str, ...]
-    levels: tuple[Level, ...]
+    name: str  # the format's key in config/agenda-layouts.json
+    label: str  # names the format in warnings ("NTPUD Board agenda numbering is not sequential ...")
+    cover: tuple[str, ...]  # regexes that must all match the first ``cover_pages`` pages
+    levels: tuple[Level, ...] = ()
+    cover_pages: int = 2
+    # Regexes for the publisher's agenda when ``cover`` fails (a redesigned cover): such a
+    # document blocks publication with a cover warning instead of being ignored as an attachment.
+    recognize: tuple[str, ...] = ()
+    parser: str | None = None  # a hand-written parser (``agenda_custom.PARSERS``) instead of the outline engine
     first_pages: int = 8
     start: str | None = None  # regex; ignore everything before the first matching line
     end: str = r"(?i)^adjourn(?!\w*\s+(?:to\s+closed|as\b))"
@@ -82,7 +88,6 @@ class Layout:
     indent_tolerance: int = 3
     after_end: tuple["Appendix", ...] = ()
     addendum: str | None = None  # regex for a heading after the ending marker that adds numbered items
-    custom: str | None = None
 
 
 @dataclass(frozen=True)
@@ -357,7 +362,7 @@ class Parser:
                 if reference and reference[2] == row.page and not row.page_start and \
                         len(found[0][1].group("indent")) > reference[0] + layout.indent_tolerance:
                     continue  # a numbered list inside an item's description
-                raise Invalid(f"{layout.name} numbering is not sequential near “{stripped[:60]}”; review required.")
+                raise Invalid(f"{layout.label} numbering is not sequential near “{stripped[:60]}”; review required.")
             if choice is not None and choice[0] == -1:
                 # Dotted children ("7.1") without a printed "7." entry: the section heading names the parent.
                 match = choice[1]
@@ -387,14 +392,14 @@ class Parser:
                         stack.append(placeholder)
                         continue
                     if title_row is None or self.rows[title_row].page != row.page or self.is_marker(self.rows[title_row]):
-                        raise Invalid(f"{layout.name} item {match.group('v')} has no title; review required.")
+                        raise Invalid(f"{layout.label} item {match.group('v')} has no title; review required.")
                     column = self.rows[title_row].indent
                 title, quote, last = self.title(title_row, column, clip, top=level_index == 0)
                 consumed_until = last
                 if re.match(r"^(?:\d{1,2}|[A-Za-z]|[IVX]{1,5})\.\s", match.group("t")):
-                    raise Invalid(f"{layout.name} item {match.group('v')} contains a second item number; review required.")
+                    raise Invalid(f"{layout.label} item {match.group('v')} contains a second item number; review required.")
                 if not title:
-                    raise Invalid(f"{layout.name} item {match.group('v')} has no title; review required.")
+                    raise Invalid(f"{layout.label} item {match.group('v')} has no title; review required.")
                 stack = stack[:level_index]
                 parent = stack[-1] if stack else None
                 entry = Entry(level_index, value_of(levels[level_index].kind, match.group("v")), match.group("v"),
@@ -443,11 +448,11 @@ class Parser:
                 stack = stack[:1]
                 continue
         if start is not None:
-            raise Invalid(f"{layout.name} agenda heading was not found; review required.")
+            raise Invalid(f"{layout.label} agenda heading was not found; review required.")
         if not started:
-            raise Invalid(f"{layout.name} agenda items were not found; review required.")
+            raise Invalid(f"{layout.label} agenda items were not found; review required.")
         if not ended:
-            raise Invalid(f"{layout.name} agenda ending was not found; review required.")
+            raise Invalid(f"{layout.label} agenda ending was not found; review required.")
         self.appendices(roots)
         self.addendum(roots)
         return roots
@@ -544,7 +549,7 @@ class Parser:
                         label = found.groupdict().get("parent") or appendix.parent
                         parent = next((e for e in roots if e.label == label), None)
                         if parent is None:
-                            raise Invalid(f"{self.layout.name} appendix heading does not match an agenda item; review required.")
+                            raise Invalid(f"{self.layout.label} appendix heading does not match an agenda item; review required.")
                     continue
                 if end and end.search(stripped):
                     break
@@ -560,7 +565,7 @@ class Parser:
                 children.append(Entry(parent.level + 1, value, match.group("v"), title, row.page, quote, parent))
             if parent is not None:
                 if not children:
-                    raise Invalid(f"{self.layout.name} appendix items were not found; review required.")
+                    raise Invalid(f"{self.layout.label} appendix items were not found; review required.")
                 parent.children.extend(children)
 
 
@@ -596,7 +601,7 @@ class Parser:
                 _, _, consumed = self.title(idx, match.start("t"), None)
             elif match:
                 if value_of(level.kind, match.group("v")) != expected or not match.group("t").strip():
-                    raise Invalid(f"{self.layout.name} addendum numbering is not sequential near “{stripped[:60]}”; review required.")
+                    raise Invalid(f"{self.layout.label} addendum numbering is not sequential near “{stripped[:60]}”; review required.")
                 title, quote, consumed = self.title(idx, match.start("t"), None)
                 added.append(Entry(0, expected, match.group("v"), title, row.page, quote, None, heading=heading))
                 expected += 1
@@ -605,7 +610,7 @@ class Parser:
             elif time_heading(stripped):
                 heading = None
         if not added and consumed == start:
-            raise Invalid(f"{self.layout.name} addendum items were not found; review required.")
+            raise Invalid(f"{self.layout.label} addendum items were not found; review required.")
         for entry in added:
             same = [i for i, root in enumerate(roots) if entry.heading and (root.heading or "").casefold() == entry.heading.casefold()]
             ending = len(roots) - 1 if roots and roots[-1].level < 0 else len(roots)
@@ -653,15 +658,16 @@ def layout_level_item(layout: Layout, entry: Entry) -> bool:
     return entry.level < 0 or layout.levels[entry.level].item
 
 
-def cover_matches(layout: Layout, pages: list[dict]) -> bool:
-    head = "\n".join(p["text"] for p in sorted(pages, key=lambda p: int(p["page_number"]))[:2])
-    return all(re.search(pattern, head) for pattern in layout.cover)
+def cover_matches(layout: Layout, pages: list[dict], patterns: tuple[str, ...] | None = None) -> bool:
+    """Whether every cover pattern (or every one of ``patterns``) occurs in the layout's cover pages."""
+    head = "\n".join(p["text"] for p in sorted(pages, key=lambda p: int(p["page_number"]))[:layout.cover_pages])
+    return all(re.search(pattern, head) for pattern in (layout.cover if patterns is None else patterns))
 
 
 def parse_layout(layout: Layout, document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
     """Items for one document, or ([], reason) when the outline does not validate."""
     if not cover_matches(layout, pages):
-        return [], f"{layout.name} cover was not recognized; agenda items require review."
+        return [], f"{layout.label} cover was not recognized; agenda items require review."
     try:
         roots = Parser(layout, document_id, pages).parse()
     except Invalid as exc:
@@ -669,9 +675,9 @@ def parse_layout(layout: Layout, document_id: str, pages: list[dict]) -> tuple[l
     items = flatten(layout, document_id, roots)
     page_text = {int(p["page_number"]): p["text"] for p in pages}
     if len(items) < layout.min_items:
-        return [], f"{layout.name} has too few recognizable items; review required."
+        return [], f"{layout.label} has too few recognizable items; review required."
     for item in items:
         ref = item["source_pages"][0]
         if not item["title"] or not ref["quote"] or ref["quote"] not in page_text.get(ref["page_number"], ""):
-            return [], f"{layout.name} item {item['source_number'] or item['title'][:40]} has no exact source quote; review required."
+            return [], f"{layout.label} item {item['source_number'] or item['title'][:40]} has no exact source quote; review required."
     return items, None

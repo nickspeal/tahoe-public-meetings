@@ -1,18 +1,32 @@
-"""Agenda layouts that are not numbered outlines.
+"""Hand-written parsers for agenda formats the outline engine does not describe.
 
-* NTCD prints its agenda as a table whose item numbers are vertically
-  centered beside multi-line cells, so a cell's first line (its title) sits
-  above the number.
-* South Shore TMA lists items as bullets under unnumbered headings.
+A layout in ``config/agenda-layouts.json`` selects one of these with
+``"parser"``. The layout still declares its label and cover like any other,
+and the parser runs only on a document whose cover matched. Each parser returns
+``(items, warning)`` like ``outline.parse_layout`` and publishes nothing unless
+the whole agenda validates.
 
-Both return ``(items, warning)`` like ``outline.parse_layout`` and publish
-nothing unless the whole agenda validates.
+* ``ntcd-table``: NTCD prints its agenda as a table whose item numbers are
+  vertically centered beside multi-line cells, so a cell's first line (its
+  title) sits above the number.
+* ``south-shore-tma-bullets``: South Shore TMA lists items as bullets under
+  unnumbered headings.
+* ``ttd-sections``, ``slt-council``, ``truckee-council``: the original TTD,
+  South Lake Tahoe City Council, and Truckee Town Council parsers, which predate
+  the outline engine. Their title wrapping, quoting, and section naming differ
+  from the engine's in small ways (TTD quotes span its page-number column; SLT
+  publishes its section headings as items; Truckee names the section of item 5
+  and its subitems "Joint Meeting"), so they are kept as written rather than
+  approximated by a layout.
 """
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
-from .outline import CONNECTOR, ZERO_WIDTH, section_name
+from .outline import CONNECTOR, ROMAN, ZERO_WIDTH, section_name, title_case
+
+UNVALIDATED = "Agenda structure or source quote could not be validated; items require review."
 
 NTCD_REGION_END = re.compile(
     r"^(?:Posting of Agenda|How to Get Copies|Possible Changes|Public Comment\.|Members of the public|Additionally, persons|"
@@ -32,9 +46,6 @@ def _page_lines(pages: list[dict], first_pages: int):
 
 
 def parse_ntcd(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
-    head = "\n".join(p["text"] for p in pages[:1])
-    if "Board Meeting Agenda" not in head or "Agenda Item" not in head:
-        return [], "NTCD agenda cover was not recognized; agenda items require review."
     # Collect table regions: the rows after each "Agenda Item" header.
     regions: list[list[tuple[int, str, str]]] = []
     current = None
@@ -176,9 +187,6 @@ SUB_BULLET = re.compile(r"^\s*(?:o|▪|◦|-)\s+\S")
 
 
 def parse_south_shore_tma(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
-    head = pages[0]["text"] if pages else ""
-    if "Board of Directors Agenda" not in head:
-        return [], "South Shore TMA agenda cover was not recognized; agenda items require review."
     rows = [(page, raw, ZERO_WIDTH.sub("", raw).rstrip()) for page, raw, _ in _page_lines(pages, 3)]
     start = next((i for i, (_, _, clean) in enumerate(rows) if clean.strip() == "Call to Order"), None)
     if start is None:
@@ -242,4 +250,268 @@ def _clean_tma(text: str) -> str:
     return " ".join(text.split()).rstrip(":")
 
 
-CUSTOM_PARSERS = {"ntcd": parse_ntcd, "south-shore-tma": parse_south_shore_tma}
+@dataclass
+class Line:
+    page: int
+    text: str
+    start: int
+    end: int
+    source: str
+
+
+def _lines(pages: list[dict], *, first_pages: int = 12) -> list[Line]:
+    rows = []
+    for page in sorted(pages, key=lambda p: int(p["page_number"]))[:first_pages]:
+        text = page["text"]
+        for match in re.finditer(r"[^\n]+", text):
+            if match.group().strip():
+                rows.append(Line(int(page["page_number"]), match.group(), match.start(), match.end(), text))
+    return rows
+
+
+def _quote(lines: list[Line], start: int, end: int, prefix_start: int | None = None) -> str:
+    first, last = lines[start], lines[end]
+    if first.page != last.page:
+        return first.text[(prefix_start or 0):].strip()[:300]
+    return first.source[(first.start + (prefix_start or 0)):last.end].strip()[:300]
+
+
+def _title(lines: list[Line], first: int, last: int, offset: int = 0) -> str:
+    parts = [lines[first].text[offset:].strip()]
+    for line in lines[first + 1:last + 1]:
+        if line.page != lines[first].page:
+            break
+        parts.append(line.text.strip())
+    return " ".join(" ".join(parts).split())
+
+
+def _item_at(number: str | None, order: int, section: str | None, title: str,
+             document_id: str, page: int, quote: str) -> dict:
+    return {"source_number": number, "order": order, "section": section, "title": title,
+            "source_pages": [{"document_id": document_id, "page_number": page, "quote": quote}]}
+
+
+def _checked(items: list[dict], complete: bool, warning: str | None = None) -> tuple[list[dict], str | None]:
+    if not complete or not items or any(not i["source_pages"][0]["quote"] for i in items):
+        return [], warning or UNVALIDATED
+    return items, None
+
+
+def parse_slt(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
+    lines = _lines(pages)
+    headings = {
+        "Call to Order/Pledge of Allegiance", "Roll Call", "Closed Session Report", "Proclamations",
+        "Public Communications", "City Commission Reports", "Consent Agenda", "Regular-Unfinished Business",
+        "Regular-New Business", "Agenda Planning Calendar", "Updates and Announcements",
+        "Adjournment", "Presentations", "Public Hearing", "Public Hearings", "Closed Session",
+        # Special meetings use shorter headings.
+        "Call to Order / Pledge of Allegiance", "Consent", "New Business", "Unfinished Business",
+    }
+    items = []
+    section = "Opening"
+    numbered = []
+    seen_agenda = False
+    for idx, line in enumerate(lines):
+        content = line.text.strip()
+        number_match = re.match(r"^(\d{1,2})\.\s+(.+)", content)
+        number_only = re.fullmatch(r"(\d{1,2})\.", content)
+        if number_match or number_only:
+            num = int((number_match or number_only).group(1))
+            if not 1 <= num <= 100 or (numbered and num != numbered[-1] + 1) or (not numbered and num != 1):
+                return _checked([], False, "South Lake Tahoe agenda numbering is not sequential; review required.")
+            title_idx = idx
+            first_title = number_match.group(2) if number_match else ""
+            if number_only:
+                title_idx = idx + 1
+                if title_idx >= len(lines) or lines[title_idx].page != line.page:
+                    return _checked([], False, "South Lake Tahoe standalone item number has no same-page title; review required.")
+                first_title = lines[title_idx].text.strip()
+                if (not first_title or first_title in headings or
+                        re.match(r"^(?:\d{1,2}\.\s*|Requested Action|Responsible Staff|CEQA Determination)", first_title, re.I)):
+                    return _checked([], False, "South Lake Tahoe standalone item title was not recognized; review required.")
+            numbered.append(num)
+            start_offset = lines[title_idx].text.index(first_title)
+            end = title_idx
+            for j in range(title_idx + 1, len(lines)):
+                next_line = lines[j]
+                if next_line.page != lines[title_idx].page:
+                    break
+                next_text = next_line.text.strip()
+                if re.match(r"^\d{1,2}\.\s*", next_text) or next_text in headings:
+                    break
+                if re.match(r"^(Requested Action|Responsible Staff|CEQA Determination|Item \d+\s*[-–]|\d{2}[-_])", next_text, re.I):
+                    break
+                end = j
+            title = _title(lines, title_idx, end, start_offset)
+            quote = _quote(lines, title_idx, end, start_offset)
+            items.append(_item_at(str(num), len(items) + 1, section, title, document_id, lines[title_idx].page, quote))
+            seen_agenda = True
+            continue
+        if content.startswith("Councilmember Reports and Comments"):
+            title = "Councilmember Reports and Comments - Assignments to Boards, Committees, and Commissions"
+            items.append(_item_at(None, len(items) + 1, title, title, document_id, line.page, content))
+            continue
+        if content.startswith("Updates and Announcements"):
+            items.append(_item_at(None, len(items) + 1, content, content, document_id, line.page, content))
+            continue
+        if content in headings:
+            if content in {"Proclamations", "Presentations", "Public Communications", "City Commission Reports",
+                           "Consent Agenda", "Consent", "Public Hearing", "Public Hearings", "Regular-Unfinished Business",
+                           "Unfinished Business", "Regular-New Business", "New Business", "Agenda Planning Calendar",
+                           "Closed Session", "Adjournment"}:
+                section = content
+            items.append(_item_at(None, len(items) + 1, section, content, document_id, line.page, content))
+            if content == "Adjournment" and seen_agenda:
+                break
+    complete = bool(numbered and items and items[-1]["title"] == "Adjournment" and numbered == list(range(1, numbered[-1] + 1)))
+    return _checked(items, complete, "South Lake Tahoe agenda ending or numbered sequence was not found; review required.")
+
+
+def parse_truckee(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
+    lines = _lines(pages, first_pages=8)
+    items = []
+    top_numbers = []
+    section = "Agenda"
+    started = False
+    for idx, line in enumerate(lines):
+        content = line.text.strip()
+        match = re.match(r"^(\d+(?:\.\d+)?)\.?\s{2,}(.+)", content)
+        if not match:
+            continue
+        number, first_title = match.groups()
+        # Restrict to the leading agenda, before the first adjournment.
+        if "." not in number:
+            n = int(number)
+            if n > 100 or (top_numbers and n != top_numbers[-1] + 1) or (not top_numbers and n != 1):
+                if started:
+                    return _checked([], False, "Truckee agenda numbering is not sequential; review required.")
+                continue
+            top_numbers.append(n)
+        elif not top_numbers or not number.startswith(str(top_numbers[-1]) + "."):
+            return _checked([], False, "Truckee subitem does not follow its section; review required.")
+        started = True
+        offset = line.text.index(first_title)
+        end = idx
+        if (not first_title.rstrip().endswith((".", ":"))
+                and not first_title.lower().startswith(("adjournment", "public comment:"))):
+            for j in range(idx + 1, len(lines)):
+                candidate = lines[j]
+                if candidate.page != line.page:
+                    break
+                next_text = candidate.text.strip()
+                if re.match(r"^\d+(?:\.\d+)?\.?\s{2,}", next_text) or re.match(r"^(Recommendation:|Town of Truckee:|Tahoe Forest Hospital District:)", next_text):
+                    break
+                end = j
+                if next_text.endswith((".", ":")):
+                    break
+        title = _title(lines, idx, end, offset).rstrip(":")
+        if title.startswith("Public Comment:"):
+            title = "Public Comment"
+        quote = _quote(lines, idx, end, offset)
+        if number == "5" or title.lower() == "joint meeting":
+            section = "Joint Meeting"
+        items.append(_item_at(number, len(items) + 1, section if number.startswith("5") else "Agenda",
+                              title, document_id, line.page, quote))
+        if title.lower().startswith("adjournment"):
+            break
+    complete = bool(top_numbers and top_numbers == list(range(1, top_numbers[-1] + 1))
+                    and items and items[-1]["title"].lower().startswith("adjournment"))
+    return _checked(items, complete, "Truckee agenda ending or numbered sequence was not found; review required.")
+
+
+def _ttd_title_part(raw: str) -> str:
+    # TTD puts packet page numbers in a right-aligned column, sometimes on a
+    # wrapped title line. Strip that column before joining lines into a title.
+    return re.sub(r"\s{2,}(?:\d{1,3}|Page(?:\s+\d{1,3})?)$", "", raw).strip()
+
+
+def parse_ttd(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
+    lines = _lines(pages, first_pages=6)
+    entries = []
+    section = None
+    section_title = None
+    roman_numbers = []
+    started = False
+    for idx, line in enumerate(lines):
+        content = line.text.strip()
+        roman = re.match(r"^(I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|XIII|XIV|XV)\.\s+(.+)", content)
+        if roman:
+            numeral, title_start = roman.groups()
+            value = ROMAN[numeral]
+            if roman_numbers and value != roman_numbers[-1] + 1:
+                return _checked([], False, "TTD agenda section numbering is not sequential; review required.")
+            if not roman_numbers and value != 1:
+                return _checked([], False, "TTD agenda does not start with section I; review required.")
+            roman_numbers.append(value)
+            section = numeral
+            start_offset = line.text.index(title_start)
+            end = idx
+            for j in range(idx + 1, len(lines)):
+                if "ADJOURNMENT" in title_start.upper() or title_start.upper().strip() == "PUBLIC INTEREST COMMENTS":
+                    break
+                other = lines[j]
+                if other.page != line.page:
+                    break
+                value_text = other.text.strip()
+                if value_text.startswith(("At this time", "This portion of the agenda", "COMPLIANCE WITH")):
+                    break
+                if re.match(r"^(?:[A-Z]|[IVX]{1,5})\.\s+", value_text) or value_text.startswith("Agenda Page"):
+                    break
+                if value_text and value_text == value_text.upper() and len(value_text) < 8:
+                    break
+                end = j
+                if len(value_text) > 140:
+                    break
+            section_title = " ".join(filter(None, (
+                _ttd_title_part(part.text[start_offset:] if part is line else part.text)
+                for part in lines[idx:end + 1] if part.page == line.page)))
+            section_title = " ".join(section_title.split())
+            entries.append(("section", numeral, section_title, line.page, _quote(lines, idx, end, start_offset)))
+            started = True
+            if "ADJOURNMENT" in section_title.upper():
+                break
+            continue
+        if started and section and re.match(r"^[A-Z]\.\s+", content):
+            match = re.match(r"^([A-Z])\.\s+(.+)", content)
+            letter, first_title = match.groups()
+            offset = line.text.index(first_title)
+            end = idx
+            for j in range(idx + 1, len(lines)):
+                other = lines[j]
+                if other.page != line.page:
+                    break
+                value_text = other.text.strip()
+                if re.match(r"^(?:[A-Z]|[IVX]{1,5})\.\s+", value_text) or value_text.startswith("Agenda Page"):
+                    break
+                if re.fullmatch(r"\d{1,3}", value_text):
+                    continue
+                end = j
+            pieces = []
+            for part in lines[idx:end + 1]:
+                if part.page != line.page:
+                    break
+                text = part.text[offset:] if part is line else part.text
+                text = _ttd_title_part(text)
+                if text not in {"Page", ""} and not re.fullmatch(r"\d{1,3}", text):
+                    pieces.append(text)
+            title = " ".join(" ".join(pieces).split())
+            title = re.sub(r"^For Possible Action:\s*", "", title, flags=re.I)
+            title = re.sub(r"\s+\d{1,3}$", "", title)
+            entries.append(("item", f"{section}.{letter}", title, line.page, _quote(lines, idx, end, offset)))
+    if not roman_numbers or not entries or "ADJOURNMENT" not in entries[-1][2].upper():
+        return _checked([], False, "TTD agenda ending was not found; review required.")
+    sections_with_children = {number.split(".")[0] for kind, number, _, _, _ in entries if kind == "item"}
+    items = []
+    current_section_title = None
+    for kind, number, title, page, quote in entries:
+        if kind == "section":
+            current_section_title = title_case(title)
+            if number in sections_with_children:
+                continue
+        items.append(_item_at(number, len(items) + 1, current_section_title, title, document_id, page, quote))
+    return _checked(items, len(items) >= 5 and roman_numbers == list(range(1, roman_numbers[-1] + 1)))
+
+
+# Parser names are referenced by ``"parser"`` in config/agenda-layouts.json.
+PARSERS = {"ntcd-table": parse_ntcd, "south-shore-tma-bullets": parse_south_shore_tma,
+           "ttd-sections": parse_ttd, "slt-council": parse_slt, "truckee-council": parse_truckee}

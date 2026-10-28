@@ -21,12 +21,12 @@ function payload(overrides = {}) {
   };
 }
 
-async function run(env, fetchRow) {
+async function run(env, fetchRow, fetchPublished = async () => { throw new Error('HTTP 404'); }) {
   const dir = await mkdtemp(join(tmpdir(), 'fetch-export-'));
   const output = join(dir, 'public.json');
   const logs = [];
   try {
-    const result = await main(env, { fetchRow, output, log: (line) => logs.push(line) });
+    const result = await main(env, { fetchRow, fetchPublished, output, log: (line) => logs.push(line) });
     const written = result.fetched ? JSON.parse(await readFile(output, 'utf8')) : null;
     return { result, written, logs };
   } finally {
@@ -95,9 +95,23 @@ test('Vercel build fails without a usable URL', async () => {
   await assert.rejects(run({ VERCEL: '1', PRISMA_DATABASE_URL: ACCELERATE }, () => assert.fail('must not connect')), /No usable Postgres URL/);
 });
 
-test('Vercel build fails when no export row exists or the query fails', async () => {
-  await assert.rejects(run({ VERCEL: '1', DATABASE_URL: REMOTE }, async () => null), /no rows/);
+test('Vercel build fails when the database and the live site export both fail', async () => {
+  await assert.rejects(run({ VERCEL: '1', DATABASE_URL: REMOTE }, async () => null), /no rows.*could not be read either: HTTP 404/);
   await assert.rejects(run({ VERCEL: '1', DATABASE_URL: REMOTE }, async () => { throw new Error('relation "public_exports" does not exist'); }), /Could not read public_exports/);
+  await assert.rejects(run({ VERCEL: '1', DATABASE_URL: REMOTE }, async () => null, async () => payload({ meetings: [] })), /meetings is empty/);
+});
+
+test('when the database cannot be read, the build reuses the export the live site serves', async () => {
+  const quota = async () => { throw new Error('Operations limit exceeded for this billing period'); };
+  let requested;
+  const { result, written, logs } = await run({ VERCEL: '1', DATABASE_URL: REMOTE }, quota, async (url) => { requested = url; return payload({ generatedAt: '2026-10-19T12:00:00Z' }); });
+  assert.equal(requested, 'https://tahoepublicmeetings.org/data/public-export.json');
+  assert.deepEqual({ fetched: result.fetched, fallback: result.fallback }, { fetched: true, fallback: true });
+  assert.equal(written.generatedAt, '2026-10-19T12:00:00Z', 'the published export keeps its own timestamp, so the freshness check still sees stale data');
+  assert.match(logs.join('\n'), /Operations limit exceeded[\s\S]*live site/);
+  assert.ok(logs.every((line) => !line.includes('s3cret') && !line.includes('db.prisma.io')));
+  await run({ VERCEL: '1', DATABASE_URL: REMOTE, TAHOE_FALLBACK_EXPORT_URL: 'https://preview.example/data/public-export.json' }, quota, async (url) => { requested = url; return payload(); });
+  assert.equal(requested, 'https://preview.example/data/public-export.json');
 });
 
 test('Vercel build writes the newest payload and never logs the connection string', async () => {

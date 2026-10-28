@@ -196,6 +196,7 @@ This pauses the scheduler, so resume it afterward. If the push fails with an aut
 
 - **Website:** Vercel keeps previous deployments. Promote or instant-rollback to a known-good deployment in the dashboard (`vercel rollback --scope <designated-scope>`). A failed build leaves the current deployment live.
 - **Data:** each run only appends a validated row to `public_exports` and keeps the latest 30, so an earlier export remains available for the site build to use. An invalid export is never stored or published.
+- **Database unavailable:** if a Vercel build cannot read `public_exports` (for example, the Prisma operations quota is used up), it reuses the export the live site serves at `/data/public-export.json`, so code and UI changes still deploy with the last published data. The build log says so, and `/status.json` keeps that export's `generatedAt`, so the freshness alert still reports the stale data. Set `TAHOE_FALLBACK_EXPORT_URL` to read a different deployment's copy. The build fails only when neither source works.
 - **Job image:** redeploy an earlier tag (see above). To stop ingestion entirely, pause the scheduler.
 
 ## Estimated monthly cost

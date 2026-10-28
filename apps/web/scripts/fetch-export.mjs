@@ -5,6 +5,10 @@
  * - On Vercel (VERCEL=1) or with TAHOE_REQUIRE_EXPORT=1 the export is required. Any
  *   missing URL, missing row, or malformed payload fails the build so Vercel keeps the
  *   previous production deployment live instead of publishing an empty site.
+ * - If the database cannot be read (for example, its operations quota is used up), the
+ *   build reuses the export the live site already serves at /data/public-export.json, so
+ *   code and UI changes still deploy with the last published data. That export passes the
+ *   same shape check; the build fails only when neither source works.
  * - Elsewhere it runs only when TAHOE_EXPORT_DATABASE_URL is set. Local builds
  *   (scripts/project.py sets DATABASE_URL for the worker) keep the file written by
  *   `tahoe-ingest export`.
@@ -22,6 +26,9 @@ export const URL_VARIABLES = ['TAHOE_EXPORT_DATABASE_URL', 'DATABASE_URL', 'POST
 const POSTGRES_SCHEMES = new Set(['postgres:', 'postgresql:']);
 const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
 const SSL_PARAMS = ['sslmode', 'ssl', 'sslcert', 'sslkey', 'sslrootcert', 'uselibpqcompat'];
+
+/** Written by every build (src/pages/data/public-export.json.ts); override with TAHOE_FALLBACK_EXPORT_URL. */
+export const FALLBACK_EXPORT_URL = 'https://tahoepublicmeetings.org/data/public-export.json';
 
 export class ExportError extends Error {}
 
@@ -115,6 +122,12 @@ export async function fetchLatestExport(url) {
   }
 }
 
+export async function fetchPublishedExport(url, fetchImpl = fetch) {
+  const response = await fetchImpl(url, { signal: AbortSignal.timeout(60_000), headers: { accept: 'application/json' } });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+}
+
 export async function writeExport(payload, output = OUTPUT) {
   await mkdir(dirname(output), { recursive: true });
   const temporary = `${output}.${process.pid}.tmp`;
@@ -122,7 +135,7 @@ export async function writeExport(payload, output = OUTPUT) {
   await rename(temporary, output);
 }
 
-export async function main(env = process.env, { fetchRow = fetchLatestExport, output = OUTPUT, log = console.log } = {}) {
+export async function main(env = process.env, { fetchRow = fetchLatestExport, fetchPublished = fetchPublishedExport, output = OUTPUT, log = console.log } = {}) {
   const required = isRequired(env);
   const { name, url, skipped } = selectDatabaseUrl(env, { required });
   for (const reason of skipped) log(`fetch-export: skipped ${reason}.`);
@@ -135,19 +148,37 @@ export async function main(env = process.env, { fetchRow = fetchLatestExport, ou
   }
   log(`fetch-export: reading the newest public_exports row using ${name}.`);
   let row;
+  let databaseProblem = null;
   try {
     row = await fetchRow(url);
+    if (!row) databaseProblem = 'public_exports has no rows; run the ingestion export before building.';
   } catch (error) {
-    // Driver messages describe the failure (host lookup, auth, missing table) without the password.
-    throw new ExportError(`Could not read public_exports: ${error?.message ?? error}`);
+    // Driver messages describe the failure (host lookup, auth, quota, missing table) without the password.
+    databaseProblem = `Could not read public_exports: ${error?.message ?? error}`;
   }
-  if (!row) throw new ExportError('public_exports has no rows; run the ingestion export before building.');
-  const payload = validatePayload(row.payload, Number(row.schema_version));
+  let payload;
+  let source;
+  if (databaseProblem) {
+    const fallbackUrl = env.TAHOE_FALLBACK_EXPORT_URL?.trim() || FALLBACK_EXPORT_URL;
+    log(`fetch-export: warning: ${databaseProblem}`);
+    log(`fetch-export: using the export the live site serves at ${fallbackUrl}; meeting data will not change in this build.`);
+    let published;
+    try {
+      published = await fetchPublished(fallbackUrl);
+    } catch (error) {
+      throw new ExportError(`${databaseProblem} The live site's export at ${fallbackUrl} could not be read either: ${error?.message ?? error}`);
+    }
+    payload = validatePayload(published, published?.schemaVersion);
+    source = 'the live site';
+  } else {
+    payload = validatePayload(row.payload, Number(row.schema_version));
+    source = `export #${row.id}`;
+  }
   await writeExport(payload, output);
   const ageHours = (Date.now() - Date.parse(payload.generatedAt)) / 3_600_000;
-  log(`fetch-export: wrote export #${row.id} generated ${payload.generatedAt} (${ageHours.toFixed(1)} h old): ${payload.meetings.length} meetings, ${payload.agencies.length} agencies.`);
+  log(`fetch-export: wrote ${source} generated ${payload.generatedAt} (${ageHours.toFixed(1)} h old): ${payload.meetings.length} meetings, ${payload.agencies.length} agencies.`);
   if (ageHours > 48) log('fetch-export: warning: the newest export is more than 48 hours old; check the scheduled ingestion job.');
-  return { fetched: true, id: row.id };
+  return { fetched: true, id: row?.id, fallback: Boolean(databaseProblem) };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {

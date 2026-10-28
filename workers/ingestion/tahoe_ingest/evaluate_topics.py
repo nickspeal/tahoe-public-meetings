@@ -62,6 +62,7 @@ USAGE_FIELDS = ("input_tokens", "output_tokens", "cache_creation_input_tokens", 
 RULES = "rules"
 RETRIES = 1  # one more attempt when a reply is refused, truncated, malformed, or misaligned
 RULES_CONTEXT = "rules-on-agenda-context"
+STORED = "claude:stored"  # production's current results, to measure a prompt edit against
 
 
 @dataclass
@@ -500,6 +501,7 @@ def _kappa(both: int, only_a: int, only_b: int, neither: int):
 
 def compare(name_a: str, a: dict, name_b: str, b: dict, topic_ids) -> dict:
     """Agreement matrix for two methods over items both classified without error."""
+    full_a, full_b = a, b
     a, b = _valid(a), _valid(b)
     common = [item_id for item_id in a if item_id in b]
     topics = {}
@@ -510,9 +512,25 @@ def compare(name_a: str, a: dict, name_b: str, b: dict, topic_ids) -> dict:
                          "agreement": round((both + neither) / len(common), 3) if common else None,
                          "kappa": _kappa(both, only_a, only_b, neither)}
     disagreements = [i for i in common if a[i] != b[i]]
+    # Tahoe relevance, where both methods judge it: a flip with no topic change is invisible to readers but shows
+    # whether a prompt edit moved the boundary.
+    relevance = {"toRelevant": [], "toOutside": []}
+    for i in common:
+        was, now = full_a[i].get("tahoeRelevant"), full_b[i].get("tahoeRelevant")
+        if was is not None and now is not None and was != now:
+            relevance["toRelevant" if now else "toOutside"].append(i)
     return {"a": name_a, "b": name_b, "items": len(common), "exactMatch": len(common) - len(disagreements),
             "exactMatchRate": round((len(common) - len(disagreements)) / len(common), 3) if common else None,
-            "topics": topics, "disagreements": disagreements}
+            "topics": topics, "disagreements": disagreements, "relevanceChanges": relevance}
+
+
+def stored_results(conn, items: list[AgendaItem]) -> dict:
+    """Production's stored Claude results for these items, where they still match the item's source."""
+    return {r["item_id"]: {"topics": ordered(_json(r["topics"])), "reason": r["reason"], "tahoeRelevant": r["tahoe_relevant"],
+                           "error": None}
+            for r in conn.execute("""SELECT a.item_id,a.topics,a.reason,a.tahoe_relevant FROM ai_topic_classifications a
+                JOIN agenda_items i ON i.id=a.item_id AND i.source_fingerprint=a.source_fingerprint
+                WHERE a.item_id = ANY(%s)""", ([item.id for item in items],))}
 
 
 def topic_counts(results: dict, topic_ids) -> dict:
@@ -647,6 +665,10 @@ def build_review(items: list[AgendaItem], methods: dict, comparisons: list[dict]
     for comparison in comparisons:
         for item_id in comparison["disagreements"]:
             flagged[item_id].append(f'{comparison["a"]} vs {comparison["b"]}')
+        for item_ids in comparison["relevanceChanges"].values():
+            for item_id in item_ids:
+                if item_id not in comparison["disagreements"]:
+                    flagged[item_id].append(f'{comparison["a"]} vs {comparison["b"]} (Tahoe relevance)')
     rows = []
     for item in items:
         if item.id not in flagged and not include_all:
@@ -686,6 +708,8 @@ def write_review(review: dict, directory) -> tuple[Path, Path]:
         lines += ["| Method | Topics | Reason |", "| --- | --- | --- |"]
         for name, result in row["methods"].items():
             topics = f"error: {result['error']}" if result["error"] else ", ".join(result["topics"]) or "none"
+            if result.get("tahoeRelevant") is False:
+                topics += " (outside Tahoe)"
             lines.append(f"| {name} | {topics} | {result['reason'].replace('|', '/')} |")
         lines += ["", f"Gold: {json.dumps(row['gold'])}" + (f" · Notes: {row['notes']}" if row["notes"] else ""), ""]
     md_path.write_text("\n".join(lines))
@@ -730,6 +754,8 @@ def run(conn, args, *, model_client=None) -> dict:
     items_per_meeting = len(corpus) / len(_by_meeting(corpus))
 
     methods = {RULES: rule_results(sample), RULES_CONTEXT: rule_results(sample, use_context=True)}
+    if stored := stored_results(conn, sample):
+        methods[STORED] = stored
     _print_sample(corpus, sample, methods[RULES], args.show)
     preview = _preview(sample, requests, args.preview_meeting)
     _print_prompt(preview)
@@ -776,6 +802,8 @@ def run(conn, args, *, model_client=None) -> dict:
     pairs = [(RULES, RULES_CONTEXT)] + [(RULES, f"claude:{m}") for m in modes if f"claude:{m}" in methods]
     if all(f"claude:{m}" in methods for m in MODES):
         pairs.append(("claude:title-only", "claude:agenda-context"))
+    if STORED in methods and "claude:agenda-context" in methods:
+        pairs.append((STORED, "claude:agenda-context"))  # production's mode
     comparisons = [compare(a, methods[a], b, methods[b], topic_ids) for a, b in pairs]
     counts = {name: topic_counts(results, topic_ids) for name, results in methods.items()}
     per_mode = {}
@@ -886,6 +914,13 @@ def _print_comparisons(comparisons, sample):
             print(f"    differs: {item_id} {titles.get(item_id, '')[:80]}")
         if len(comparison["disagreements"]) > 12:
             print(f"    ... {len(comparison['disagreements']) - 12} more in the review file")
+        changes = comparison["relevanceChanges"]
+        if changes["toRelevant"] or changes["toOutside"]:
+            print(f"  Tahoe relevance: {len(changes['toRelevant'])} became relevant, "
+                  f"{len(changes['toOutside'])} became outside Tahoe")
+            for direction, item_ids in changes.items():
+                for item_id in item_ids[:12]:
+                    print(f"    {direction}: {item_id} {titles.get(item_id, '')[:80]}")
 
 
 def _print_costs(model, estimates, actual, projection):

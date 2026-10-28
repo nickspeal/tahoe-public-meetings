@@ -160,6 +160,17 @@ def test_agreement_matrix_counts_kappa_and_disagreements():
     assert comparison["topics"]["biking"]["onlyA"] == 1
     assert comparison["topics"]["housing"]["kappa"] is None  # all "neither": agreement is uninformative
     assert ev.topic_counts(model, TOPIC_IDS)["transit"] == 2
+    assert comparison["relevanceChanges"] == {"toRelevant": [], "toOutside": []}  # rules never judge relevance
+
+
+def test_comparison_reports_tahoe_relevance_flips():
+    stored = results({"a": [], "b": [], "c": ["housing"]})
+    edited = results({"a": ["transit"], "b": [], "c": []})
+    for item_id, was, now in (("a", False, True), ("b", False, True), ("c", True, False)):
+        stored[item_id]["tahoeRelevant"], edited[item_id]["tahoeRelevant"] = was, now
+    comparison = ev.compare(ev.STORED, stored, "claude:agenda-context", edited, TOPIC_IDS)
+    assert comparison["disagreements"] == ["a", "c"]
+    assert comparison["relevanceChanges"] == {"toRelevant": ["a", "b"], "toOutside": ["c"]}
 
 
 def test_gold_scoring_and_formats(tmp_path):

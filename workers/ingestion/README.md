@@ -93,7 +93,10 @@ agenda-page excerpt. It only reads the database. Without `ANTHROPIC_API_KEY`
 meeting's prompt, the rule results, and a monthly cost projection, and writes
 `data/topic-eval/disagreements.{json,md}` for labeling. The live run needs
 the optional SDK: `uv sync --project workers/ingestion --extra test --extra ai`.
-Edit the prompt in `tahoe_ingest/prompts/topic_classification.md`. See
+Edit the prompt in `tahoe_ingest/prompts/topic_classification.md`. To measure
+an edit, a live run also compares the agenda-context results with production's
+stored ones (`claude:stored`), and lists items whose Tahoe relevance flipped,
+including flips that change no topic. See
 `docs/research/topic-classification-evaluation-2026-10-20.md`.
 
 The ordered topic catalog lives at `packages/domain/topics.json`; the worker,

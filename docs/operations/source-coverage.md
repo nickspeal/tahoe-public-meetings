@@ -71,6 +71,18 @@ Checked October 20, 2026, one request each. All three newsrooms respond normally
 
 These are sources of public comment periods, handled by `config/public-comment-periods.json`, not meeting bodies. Per the maintainer's decision, `ltbmu` and `tahoe-usfs` now have `participationTypes` of `public-comment-period` only. `usfws` keeps `"meeting"` for its occasional virtual hearings.
 
+## Staff reports and attachments
+
+Items get a "Read the staff report" link and a verbatim summary only where `map-staff-reports` has a rule for the agency ([decision 0026](../decisions/0026-staff-reports-for-every-agency.md); rules in `workers/ingestion/tahoe_ingest/staff_report_rules/`).
+
+| Coverage | Registry IDs |
+| --- | --- |
+| Own report file per item | `trpa-governing`, `trpa-advisory` (also attachment lists), `slt` (also attachment lists), `slt-planning`, `slt-parks-recreation-commission`, `tcpud`, `tcpud-parks-recreation-committee`, `lahontan-board`, `california-fish-game`, `california-state-parks` (State Park and Recreation Commission only), `truckee-tahoe-airport`, `el-dorado-planning`, `washoe-commissioners`, `washoe-planning` |
+| Pages inside the packet | `ttd`, `truckee`, `douglas-commissioners`, `douglas-planning`, `douglas-transportation`, `stpud`, `ntpud`, `placer-transportation`, `ivgid`, `ndep` |
+| Legislation text (HTML) | `el-dorado-supervisors` |
+| No reports published | `ntcd`, `trcd`, `south-shore-tma`, `truckee-north-shore-tma`, `nevada-state-parks`; OHMVR Commission reports carry no item numbers |
+| Blocked or no items | `placer-supervisors`, `placer-planning`, `placer-tahoe-design-review` (HTTP 403); `ctc`, `state-lands` (reports exist, agenda adapter missing) |
+
 ## Maintaining this page
 
 When an adapter is added, move the entry to the automatic table and delete its snapshot row. When a source turns out to be blocked, add it to the blocked table with the evidence, create or extend a `docs/issues/SOURCE-NNN` file, and keep the entry followed so its snapshot meetings stay visible. Update the counts above and in [implementation status](../planning/implementation-status.md).

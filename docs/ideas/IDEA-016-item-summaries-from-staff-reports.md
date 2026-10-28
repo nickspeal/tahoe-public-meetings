@@ -1,6 +1,6 @@
 # IDEA-016: Item summaries from staff reports
 
-Status: building (implemented locally; not yet deployed)
+Status: building (implemented locally for 25 agencies, decisions 0024 and 0026; not yet deployed)
 Stage: MVP polish
 
 ## Problem and audience

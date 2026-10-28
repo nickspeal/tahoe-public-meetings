@@ -18,8 +18,8 @@ Copy [TEMPLATE.md](TEMPLATE.md) for new ideas. Keep stable IDs and append dated 
 | IDEA-010 | [Live meeting discussion](IDEA-010-live-discussion.md) | inbox | Participation experiments |
 | IDEA-011 | [Archive, search, and agent access](IDEA-011-archive-search.md) | inbox | Broader access |
 | IDEA-012 | [Coverage and one-off meeting administration](IDEA-012-coverage-admin.md) | parked; config/CLI shipped locally | Later admin UI |
-| IDEA-013 | [Direct links to each item's supporting documents](IDEA-013-item-supporting-documents.md) | building: staff report links (SLT, TTD, Truckee, Lahontan) and SLT attachment lists implemented locally | MVP polish |
+| IDEA-013 | [Direct links to each item's supporting documents](IDEA-013-item-supporting-documents.md) | building: staff report links for 25 agencies and attachment lists (SLT, TRPA) implemented locally (decisions 0024, 0026) | MVP polish |
 | IDEA-014 | [Slim the public export and bound stored page text](IDEA-014-export-slimming.md) | parked; monitor thresholds | Operations |
 | IDEA-015 | [Escalate disputed topic tags to a larger model](IDEA-015-topic-escalation.md) | parked; Sonnet fallback shipped locally | Operations |
-| IDEA-016 | [Item summaries from staff reports](IDEA-016-item-summaries-from-staff-reports.md) | building: verbatim requested-action and staff report summaries implemented locally | MVP polish |
+| IDEA-016 | [Item summaries from staff reports](IDEA-016-item-summaries-from-staff-reports.md) | building: verbatim requested-action and staff report summaries implemented locally for 25 agencies (decisions 0024, 0026) | MVP polish |
 | IDEA-017 | [Minutes and recording links](IDEA-017-minutes-and-recordings.md) | accepted; implemented (decision 0025) | MVP polish |

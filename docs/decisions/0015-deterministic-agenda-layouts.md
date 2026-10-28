@@ -33,3 +33,6 @@ Titles are the agency's own text. Some long Legistar and Douglas County titles a
 ## Revisit when
 
 A layout breaks repeatedly, an agency publishes agendas with no stable structure, or the number of covered agencies makes per-agency layouts more expensive to maintain than a model-based extractor within the budget. That extractor would be Claude per decision 0011, and topic classification is a separate system.
+
+## Update 2026-10-28: layouts are configuration
+Layouts moved from code to [`config/agenda-layouts.json`](../../config/agenda-layouts.json), keyed by format name, and each agency entry in `packages/domain/agencies.json` names the layouts its agendas use (`agenda.layouts`). A body whose agendas share an existing format, such as the TTD Regional Transit and Capital Programs Committee, needs only a registry entry. The three original parsers and the NTCD and South Shore TMA parsers are kept as written in `agenda_custom.py`; a layout selects one by name and declares its cover in the same file as every other layout. The TRPA agenda-before-packet rule is the registry flag `agenda.agendaBeforePacket`. Parsing results are unchanged; the [configuration guide](../../config/README.md#agenda-layouts) lists the layout keys.

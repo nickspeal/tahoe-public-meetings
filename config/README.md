@@ -52,6 +52,37 @@ An entry's optional `staffReports` block chooses how `map-staff-reports` links i
 
 Public agency filters and coverage lists include followed agencies with actual stored meetings. A manually added notice's official URL is used as a source fallback when registry URLs are absent. The registry itself is not a claim of comprehensive live coverage. Existing recurring-cost constraints remain under $20/month; expanding the watchlist does not create cloud jobs or approve a larger budget.
 
+## Agenda layouts
+
+An agency entry's optional `agenda` block names the agenda layouts that read its documents' items, tried in order ([decision 0015](../docs/decisions/0015-deterministic-agenda-layouts.md)):
+
+```json
+"agenda": {"layouts": ["trpa-governing-board"], "agendaBeforePacket": true}
+```
+
+`agendaBeforePacket` is for sources that link the agenda and a full packet that reprints it (TRPA): items come from the agenda, and the packet is read only when no agenda was captured, so an older packet can never void a revised agenda. An agency without `agenda` keeps its meetings' text and official links, with no items.
+
+The layouts live in [`agenda-layouts.json`](agenda-layouts.json), keyed by format name. A layout describes a document format, not an agency: bodies whose agendas look alike share one (the TTD board and its Regional Transit and Capital Programs Committee both use `ttd`), so a new body that publishes in a supported format needs only its registry entry, a fixture test, and a source review record. The cover is what tells a body's agenda from an attachment or a sibling body's agenda in the same packet, so sibling bodies with different covers (Douglas County's three bodies, TRPA's two, the SLT commissions) keep their own layouts. A layout's keys (patterns are Python regular expressions, case-sensitive unless they start with `(?i)`):
+
+- `label` (required): names the format in review warnings ("NTPUD Board agenda numbering is not sequential…"). Changing it changes stored warnings.
+- `cover` (required): patterns that must all occur in the first `coverPages` pages (default 2). A document whose cover does not match is ignored as an attachment.
+- `recognize`: patterns that identify the publisher's agenda when `cover` fails, for example after a cover redesign. Such a document blocks publication with a "cover was not recognized" warning instead of being ignored.
+- `parser`: a hand-written parser for a format the outline engine cannot describe (`ntcd-table`, `south-shore-tma-bullets`, `ttd-sections`, `slt-council`, `truckee-council` in `agenda_custom.py`). It takes only `label`, `cover`, `coverPages`, and `recognize` besides.
+- `levels` (required otherwise): outline levels from the top. Use a named level (`NUM` "1.", `NUM_LOOSE`, `NUM_TIGHT`, `UPPER` "A.", `UPPER_ANY`, `UPPER_BARE`, `LOWER` "a.", `ROMAN_LEVEL` "IV.", `LOWER_ROMAN`, `LEGISTAR_FILE` "12. 26-1714", `DOUGLAS_CHILD`); `{"level": "LOWER", "item": false}` for one tracked for numbering only, such as recommended actions; or an inline `{"kind": "num", "pattern": "...", "item": false}` whose pattern captures the label as group `v`. Kinds are `num`, `upper`, `lower`, `roman`, `lroman`, and `free` (a compound label such as `8.E.2` that captures its parent's label as `p`).
+- `firstPages` (default 8): pages read. `start`: ignore lines before the first match. `end` (default: a line starting "Adjourn"): the ending marker; `endItem: false` leaves it out of the items. `minItems` (default 3).
+- Page furniture: `skip` blanks matching lines (running headers, page numbers); `prefix` and `suffix` strip column text from the start or end of each line; `columnHeader` (group `col`) and `columnGap` end titles at a table column.
+- Sections: `headings` (unnumbered section headings), `headingItems` (unnumbered lines published as items, such as "Call to Order"), `sectionRestart` and `restart` (numbering restarts under each heading, or when a repeated agenda starts again at 1).
+- Titles: `stop` (a line that ends a wrapped title), `wrap` (`indent` by default, `lowercase`, `any`, `none`), `maxTitleLines` (default 3), `titleEnd` (a title that matches ends there), `titleCleanup` (`[pattern, replacement]` pairs), `capsColon`, `capsLead`.
+- Numbering: `maxGap` (default 0) skipped numbers allowed when the missing label appears nowhere in the agenda; `indentTolerance` (default 3) columns a sibling label may shift.
+- After the ending marker: `afterEnd` lists separately printed children of one entry, such as a consent calendar (`{"heading": ..., "level": ..., "parent": ..., "end": ...}`); `addendum` is a heading that adds numbered items.
+
+`"@NAME"` uses a shared pattern from `workers/ingestion/tahoe_ingest/agenda_layouts.py`: `@CAPS_HEADING`, `@STAFF_LINE`, `@SLT_HEADINGS`, and the cleanup pairs `@FOR_ACTION`, `@ACTION_TAGS`, and `@PAREN_DESCRIPTION`. A list in a single-pattern key matches any of its patterns, so `"stop": ["@STAFF_LINE", "^-"]` extends a shared one. The registry does not load if a key, layout, level, pattern name, or parser is unknown or a pattern does not compile. Every layout needs a fixture in `tests/fixtures/agenda-layouts/` with the reviewed items; after a change, run the agenda tests and re-parse stored text without fetching sources:
+
+```sh
+python3 scripts/project.py worker reparse --agency AGENCY --dry-run
+python3 scripts/project.py worker reparse --agency AGENCY
+```
+
 ## Source review flags
 
 [`source-reviews.json`](source-reviews.json) tracks source questions independently of `follow`. The readable [source review queue](../docs/operations/source-review.md) has stable SR IDs, official links, observed problems, and the input needed to resolve each. A pending flag does not disable a source, hide its meetings, or imply that download failure means no meetings exist. Record the maintainer's decision and supplied URLs in `resolution` when resolving an entry; keep the review ID stable. Recovered access failures and missing item parsers are distinguished from unresolved download problems.

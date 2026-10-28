@@ -20,7 +20,7 @@ COPY packages/domain/ ./packages/domain/
 COPY tests/fixtures/meetings.json ./tests/fixtures/meetings.json
 COPY workers/ingestion/pyproject.toml workers/ingestion/README.md workers/ingestion/build_hook.py ./workers/ingestion/
 COPY workers/ingestion/tahoe_ingest ./workers/ingestion/tahoe_ingest
-# The build hook bundles the topic catalog, agency registry, and duration model into the wheel.
+# The build hook bundles the topic catalog, agency registry, duration model, and agenda layouts into the wheel.
 RUN pip install "./workers/ingestion[ai]" && rm -rf ./workers/ingestion \
     && useradd --system --uid 10001 --no-create-home --home-dir /nonexistent tahoe
 

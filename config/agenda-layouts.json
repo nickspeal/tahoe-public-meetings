@@ -1,0 +1,298 @@
+{
+  "description": "Agenda layouts (decision 0015): how each agenda format numbers its items, keyed by format name. Agencies name the layouts their agendas use in packages/domain/agencies.json (agenda.layouts). See config/README.md for the keys and workers/ingestion/tahoe_ingest/agenda_layouts.py for the named levels (\"NUM\"), shared patterns (\"@CAPS_HEADING\"), and parsers they refer to.",
+  "layouts": {
+    "douglas-county-board": {
+      "label": "Douglas County Board of Commissioners agenda",
+      "cover": ["Douglas County", "Board of County", "(?i)agenda"],
+      "levels": ["NUM", "DOUGLAS_CHILD"],
+      "firstPages": 12,
+      "skip": "^Douglas County Board of County Commissioners\\s+\\w+ \\d{1,2}, \\d{4}$|^\\d{1,3}$|^LUNCH BREAK$|^FINAL AGENDA$",
+      "headings": "@CAPS_HEADING",
+      "titleCleanup": ["@FOR_ACTION"],
+      "titleEnd": "\\.$",
+      "indentTolerance": 99
+    },
+    "douglas-county-joint-board-rtc": {
+      "label": "Douglas County joint Board and RTC agenda",
+      "cover": ["Douglas County", "(?i)agenda"],
+      "levels": ["NUM", "DOUGLAS_CHILD"],
+      "firstPages": 12,
+      "skip": "^Douglas County .*\\s+\\w+ \\d{1,2}, \\d{4}$|^\\d{1,3}$|^LUNCH BREAK$|^FINAL AGENDA$",
+      "headings": "@CAPS_HEADING",
+      "titleCleanup": ["@FOR_ACTION"],
+      "titleEnd": "\\.$",
+      "indentTolerance": 99
+    },
+    "douglas-county-planning": {
+      "label": "Douglas County Planning Commission agenda",
+      "cover": ["Douglas County", "Planning Commission", "(?i)agenda"],
+      "levels": ["NUM", "UPPER"],
+      "skip": "^Douglas County Planning Commission\\s+\\w+ \\d{1,2}, \\d{4}$|^\\d{1,3}$",
+      "headings": "@CAPS_HEADING",
+      "titleCleanup": ["@FOR_ACTION"],
+      "titleEnd": "\\.$",
+      "minItems": 2,
+      "indentTolerance": 99
+    },
+    "el-dorado-legistar-board": {
+      "label": "El Dorado County Legistar agenda",
+      "cover": ["County of El Dorado", "(?i)agenda"],
+      "levels": ["LEGISTAR_FILE"],
+      "firstPages": 40,
+      "skip": "^County of El Dorado\\s+Page \\d+|Printed on \\d",
+      "headings": "@CAPS_HEADING",
+      "maxTitleLines": 8,
+      "addendum": "^ADDENDUM$"
+    },
+    "el-dorado-legistar-planning": {
+      "label": "El Dorado County Legistar agenda",
+      "cover": ["County of El Dorado", "MEETING AGENDA"],
+      "levels": ["LEGISTAR_FILE"],
+      "firstPages": 20,
+      "skip": "^County of El Dorado\\s+Page \\d+|Printed on \\d",
+      "headings": "@CAPS_HEADING",
+      "maxTitleLines": 8,
+      "minItems": 1,
+      "addendum": "^ADDENDUM$"
+    },
+    "fish-game-commission": {
+      "label": "Fish and Game Commission agenda",
+      "cover": ["Fish and Game Commission", "Meeting Agenda"],
+      "levels": ["NUM"],
+      "firstPages": 30,
+      "wrap": "lowercase",
+      "restart": true,
+      "minItems": 5
+    },
+    "ivgid-board": {
+      "label": "IVGID Board of Trustees agenda",
+      "cover": ["Incline Village General Improvement District", "PLEASE TAKE NOTICE"],
+      "levels": ["UPPER", "NUM", {"level": "UPPER", "item": false}],
+      "skip": "^Incline Village General Improvement District|^recreation programs and facilities|^893 Southwood Boulevard|^www\\.yourtahoeplace\\.com|^Agenda for the Board Meeting of",
+      "stop": "^(?:Recommendation for Action|Public Comments will be taken)",
+      "maxTitleLines": 6,
+      "titleCleanup": [["^SUBJECT:\\s*", ""], ["^\\((?:For|Not for) Possible Action\\)\\s*-?\\s*", ""], ["^PUBLIC HEARING\\s*-\\s*Time:.*?practicable\\.\\s*", ""], ["(?i)\\s*-?\\s*\\((?:For|Not for) possible Action\\)", ""], ["\\s*\\(Requesting Staff Member:.*$", ""], ["\\*$", ""]],
+      "capsLead": true
+    },
+    "ndep-board": {
+      "label": "Nevada Division of Environmental Protection board agenda",
+      "cover": ["STATE OF NEVADA", "AGENDA"],
+      "levels": ["NUM_LOOSE"],
+      "firstPages": 4,
+      "skip": "^Page \\d+ of \\d+",
+      "wrap": "lowercase",
+      "maxTitleLines": 2,
+      "maxGap": 1
+    },
+    "nevada-state-parks": {
+      "label": "Nevada Division of State Parks meeting agenda",
+      "cover": ["(?i)state parks", "AGENDA"],
+      "levels": ["NUM"],
+      "firstPages": 4,
+      "wrap": "lowercase",
+      "maxTitleLines": 2
+    },
+    "ntcd-board": {
+      "label": "NTCD agenda",
+      "cover": ["Board Meeting Agenda", "Agenda Item"],
+      "coverPages": 1,
+      "parser": "ntcd-table"
+    },
+    "ntpud-board": {
+      "label": "NTPUD Board agenda",
+      "cover": ["NORTH TAHOE PUBLIC UTILITY DISTRICT", "(?i)agenda"],
+      "levels": ["UPPER", "NUM", {"level": "LOWER", "item": false}],
+      "firstPages": 5,
+      "skip": "^Agenda Posted on",
+      "maxTitleLines": 6,
+      "capsColon": true,
+      "capsLead": true
+    },
+    "ohmvr-commission": {
+      "label": "OHMVR Commission agenda",
+      "cover": ["OFF-HIGHWAY MOTOR VEHICLE RECREATION COMMISSION", "AGENDA"],
+      "levels": ["ROMAN_LEVEL", "LOWER"],
+      "firstPages": 3
+    },
+    "pctpa-board": {
+      "label": "PCTPA Board agenda",
+      "cover": ["PLACER COUNTY TRANSPORTATION PLANNING AGENCY", "A\\s*G\\s*E\\s*N\\s*D\\s*A"],
+      "levels": ["UPPER", "NUM", {"level": "LOWER", "item": false}],
+      "firstPages": 4,
+      "end": "^Next Board Meeting",
+      "skip": "^BOARD OF DIRECTORS MEETING AGENDA$|^Page \\d+$|^[A-Z][a-z]+ \\d{1,2}, \\d{4}$|^PLACER COUNTY TRANSPORTATION PLANNING AGENCY$|^2260 Douglas|^www\\.pctpa\\.net",
+      "suffix": "\\s{3,}(?:Action|Info|Separate|cover|Pg\\.\\s*\\d+)(?:\\s+Pg\\.\\s*\\d+)?\\s*$",
+      "stop": ["@STAFF_LINE", "^(?:These items|Persons may|Adopt a resolution|Receive)"],
+      "endItem": false
+    },
+    "placer-county-board": {
+      "label": "Placer County Board of Supervisors agenda",
+      "cover": ["COUNTY OF PLACER", "BOARD OF SUPERVISORS"],
+      "levels": [
+        "NUM",
+        "UPPER_ANY",
+        {"level": "NUM", "item": false},
+        {"kind": "lower", "pattern": "\\(?(?P<v>[a-z])[.)](?=\\s)", "item": false}
+      ],
+      "firstPages": 14,
+      "skip": "^BOARD OF SUPERVISORS\\s+PAGE \\d+|^[A-Z]+ \\d{1,2}, \\d{4}$",
+      "prefix": "^\\s{0,2}\\d{1,3}(?![.\\d:])(?=\\s+\\S)",
+      "stop": "\\d+ min\\)$|^\\("
+    },
+    "placer-county-planning": {
+      "label": "Placer County Planning Commission agenda",
+      "cover": ["COUNTY OF PLACER", "PLANNING COMMISSION AGENDA"],
+      "levels": ["NUM", "UPPER", {"level": "NUM", "item": false}, {"level": "LOWER", "item": false}],
+      "skip": "^PLANNING COMMISSION\\s+PAGE \\d+|^[A-Z]+ \\d{1,2}, \\d{4}$",
+      "stop": "^(?:Project Location|Assessor Parcel|County Staff)"
+    },
+    "slt-council": {
+      "label": "South Lake Tahoe agenda",
+      "cover": ["City of South Lake Tahoe", "Meeting Agenda"],
+      "coverPages": 1,
+      "recognize": ["Agenda", "City of South Lake Tahoe"],
+      "parser": "slt-council"
+    },
+    "slt-parks-commission": {
+      "label": "South Lake Tahoe Parks and Recreation Commission agenda",
+      "cover": ["City of South Lake Tahoe", "Parks and Recreation Commission", "Meeting Agenda"],
+      "levels": ["NUM"],
+      "firstPages": 6,
+      "headings": "@SLT_HEADINGS",
+      "headingItems": "^(?:Call to Order|Roll Call|Public Communications?|Updates and Announcements|Commissioner Reports|Commissioner Assignments)",
+      "stop": "^(?:Requested Action|Responsible Staff|\\S.*\\.(?:docx?|pdf)$)",
+      "maxTitleLines": 2
+    },
+    "slt-planning-commission": {
+      "label": "South Lake Tahoe Planning Commission agenda",
+      "cover": ["City of South Lake Tahoe", "Planning Commission"],
+      "levels": ["NUM"],
+      "firstPages": 6,
+      "headings": "@SLT_HEADINGS",
+      "headingItems": "^(?:Call to Order|Roll Call|Public Communications?|Updates and Announcements|Planning Commissioner Reports|Commissioner Reports)",
+      "stop": "^(?:Requested Action|Responsible Staff|\\S.*\\.(?:docx?|pdf)$)",
+      "maxTitleLines": 2
+    },
+    "south-shore-tma-board": {
+      "label": "South Shore TMA agenda",
+      "cover": ["Board of Directors Agenda"],
+      "coverPages": 1,
+      "parser": "south-shore-tma-bullets"
+    },
+    "state-park-commission": {
+      "label": "State Park and Recreation Commission agenda",
+      "cover": ["STATE PARK AND RECREATION COMMISSION", "AGENDA"],
+      "levels": ["NUM_TIGHT", "LOWER", "LOWER_ROMAN"],
+      "firstPages": 3,
+      "skip": "^State Park and Recreation Commission Meeting Agenda",
+      "maxTitleLines": 2
+    },
+    "stpud-board": {
+      "label": "South Tahoe PUD Board agenda",
+      "cover": ["SOUTH TAHOE PUBLIC UTILITY DISTRICT", "BOARD MEETING AGENDA"],
+      "levels": ["NUM_LOOSE", "LOWER"],
+      "firstPages": 6,
+      "skip": "BOARD MEETING AGENDA\\s+[–-]\\s+\\w+ \\d{1,2}, \\d{4}\\s+PAGE",
+      "stop": "^\\(",
+      "titleCleanup": ["@PAREN_DESCRIPTION"],
+      "maxGap": 1,
+      "afterEnd": [{"heading": "^ITEMS FOR CONSENT$", "level": "LOWER", "parent": "4"}]
+    },
+    "tahoe-rcd-board": {
+      "label": "Tahoe RCD Board agenda",
+      "cover": ["TAHOE RESOURCE CONSERVATION DISTRICT", "AGENDA"],
+      "levels": ["ROMAN_LEVEL", "NUM"],
+      "firstPages": 4,
+      "skip": "^RECOMMENDATION\\s+PAGE$",
+      "suffix": "\\s{2,}(?:Action/Approve|Discussion Only|Action|Information(?:al)?(?: Only)?)(?:\\s+[\\dx][\\d\\-–x, ]*)?\\s*$|\\s{4,}[\\dx]+(?:\\s*[-–]\\s*\\d+)?\\s*$",
+      "stop": "^[•*]",
+      "maxTitleLines": 4,
+      "titleCleanup": ["@PAREN_DESCRIPTION"]
+    },
+    "tcpud-board": {
+      "label": "TCPUD Board agenda",
+      "cover": ["TAHOE CITY PUBLIC UTILITY DISTRICT", "Board of Directors"],
+      "levels": ["UPPER", "NUM", {"level": "LOWER", "item": false}],
+      "firstPages": 2,
+      "wrap": "none",
+      "capsLead": true
+    },
+    "tnt-tma-board": {
+      "label": "TNT/TMA Board agenda",
+      "cover": ["TRUCKEE NORTH TAHOE TRANSPORTATION MANAGEMENT ASSOCIATION", "BOARD MEETING AGENDA"],
+      "levels": ["NUM"],
+      "firstPages": 3,
+      "suffix": "\\s+\\d{1,2}:\\d{2}\\s*[ap]m\\s*$",
+      "headings": "@CAPS_HEADING",
+      "stop": ["@STAFF_LINE", "^-"],
+      "wrap": "any",
+      "maxTitleLines": 2,
+      "sectionRestart": true,
+      "indentTolerance": 99
+    },
+    "trpa-apc": {
+      "label": "TRPA Advisory Planning Commission agenda",
+      "cover": ["Tahoe Regional Planning Agency", "Advisory Planning Commission"],
+      "levels": ["NUM", "UPPER_BARE"],
+      "firstPages": 4,
+      "skip": "AGENDA ITEM NO\\.|^\\d{1,3}$",
+      "columnHeader": "^\\s*Item\\s{2,}(?P<col>\\S)",
+      "columnGap": true
+    },
+    "trpa-governing-board": {
+      "label": "TRPA Governing Board agenda",
+      "cover": ["Tahoe Regional Planning Agency", "Governing Board"],
+      "levels": ["NUM", "UPPER_BARE"],
+      "firstPages": 16,
+      "start": "^TRPA GOVERNING BOARD MEETING$",
+      "skip": "AGENDA ITEM NO\\.|^\\d{1,3}$",
+      "columnHeader": "^\\s*Item\\s{2,}(?P<col>\\S)",
+      "columnGap": true,
+      "afterEnd": [
+        {"heading": "^(?P<parent>\\d+)\\.\\s+TRPA CONSENT CALENDAR$", "level": "UPPER_BARE", "end": "^Details:|^AGENDA$|^\\d+\\.\\s+TMPO CONSENT CALENDAR"},
+        {"heading": "^(?P<parent>\\d+)\\.\\s+TMPO CONSENT CALENDAR$", "level": "UPPER_BARE", "end": "^Details:|^AGENDA$|^\\d+\\.\\s+TRPA CONSENT CALENDAR"}
+      ]
+    },
+    "truckee-council": {
+      "label": "Truckee Town Council agenda",
+      "cover": ["Agenda", "Truckee", "Town Council"],
+      "coverPages": 1,
+      "recognize": ["Agenda", "Town Council"],
+      "parser": "truckee-council"
+    },
+    "truckee-tahoe-airport-board": {
+      "label": "Truckee Tahoe Airport District agenda",
+      "cover": ["TRUCKEE TAHOE AIRPORT DISTRICT", "MEETING AGENDA"],
+      "levels": ["NUM"],
+      "firstPages": 4,
+      "suffix": "\\s*-{3,}\\s*TAB\\s+\\d+\\s*$",
+      "headings": "@CAPS_HEADING",
+      "stop": "^\\d+-",
+      "maxTitleLines": 2,
+      "minItems": 2
+    },
+    "ttd": {
+      "label": "TTD agenda",
+      "cover": ["TAHOE TRANSPORTATION DISTRICT", "Notice of Agenda|Meeting Agenda"],
+      "coverPages": 1,
+      "recognize": ["Agenda", "TAHOE TRANSPORTATION DISTRICT"],
+      "parser": "ttd-sections"
+    },
+    "washoe-county-board": {
+      "label": "Washoe County Board of Commissioners agenda",
+      "cover": ["(?i)washoe county", "(?i)board of county commissioners"],
+      "levels": ["NUM", {"kind": "free", "pattern": "(?P<p>\\d{1,2})\\.(?P<v>[A-Z]\\.\\d{1,2})\\.(?=\\s)"}],
+      "firstPages": 40,
+      "titleCleanup": ["@ACTION_TAGS", ["^(Public Comment)\\.\\s.*$", "\\1"]],
+      "titleEnd": "\\.$|\\)$"
+    },
+    "washoe-county-planning": {
+      "label": "Washoe County Planning Commission agenda",
+      "cover": ["(?i)washoe county", "(?i)planning commission"],
+      "levels": ["NUM", "UPPER"],
+      "firstPages": 12,
+      "titleCleanup": ["@ACTION_TAGS"],
+      "titleEnd": "(?i)\\[(?:non-action item|for possible action)\\]$"
+    }
+  }
+}

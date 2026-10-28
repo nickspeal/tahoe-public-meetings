@@ -32,7 +32,7 @@ Editing the catalog or [the prompt](../workers/ingestion/tahoe_ingest/prompts/to
 
 ## Agencies and bodies
 
-Edit [`packages/domain/agencies.json`](../packages/domain/agencies.json). Each entry has a stable `id`, display names, optional `aliases` (other names readers may type into the website's agency filter, such as acronyms and full official names), `follow`, optional operational URLs, optional `discoveryAdapter`, and an optional regular meeting `schedule` (see [below](#meeting-schedules-and-expected-meetings)).
+Edit [`packages/domain/agencies.json`](../packages/domain/agencies.json). Each entry has a stable `id`, display names, optional `aliases` (other names readers may type into the website's agency filter, such as acronyms and full official names), `follow`, optional operational URLs, an optional `discovery` block (see [below](#reviewed-source-configuration-and-repeatable-acquisition)), and an optional regular meeting `schedule` (see [below](#meeting-schedules-and-expected-meetings)).
 
 The registry preserves **all 41 CSV rows**, plus the existing Town of Truckee entry and two explicitly requested committee entries, for **44 entries**. Six entries are disabled by the maintainer's source-review decisions with `follow: false`; they remain in the registry for provenance. Rows include distinct boards, offices, newsletters, and organizations; these are not necessarily 41 separate jurisdictions or meeting bodies. No rows were merged or dropped. `legacy` preserves all six original CSV cells, original row number, and the supplied February 1, 2023 update date. All imported metadata is explicitly unverified. It is research input only: the software never reads `legacy.meetingSchedule`. Regular meeting patterns live in the separate, validated `schedule` field. Original website and notification cells may contain broken or misplaced links.
 
@@ -44,7 +44,7 @@ python3 scripts/project.py refresh
 python3 scripts/project.py worker agencies
 ```
 
-Named built-in discovery covers TTD and the original SLT Council path. Other reviewed sources use the configured adapters described below, including Truckee's Municode index. Setting `follow` alone does not implement discovery: entries with no adapter remain manual sources. Body-specific filters keep unrelated commissions out. Operational URLs were verified during the source review where possible; `legacy` cells remain unverified and are never fetched automatically.
+An entry has live discovery when it carries a `discovery` block: its `type` names one of the source formats [below](#reviewed-source-configuration-and-repeatable-acquisition), and the rest of the block says where and how to read it. Adding a body whose source uses a supported format needs only that block, a fixture test, and a source-review record; code never branches on an agency ID to discover meetings. Setting `follow` alone does not implement discovery: entries without a `discovery` block remain manual sources. Body-specific filters keep unrelated commissions out. Operational URLs were verified during the source review where possible; `legacy` cells remain unverified and are never fetched automatically.
 
 An entry can also carry a standing `participation` block for details the agency publishes on its website rather than in each agenda: `watchUrl` (livestream), `url` (comment form or participation page), `email`, and `instructions`, plus a required official `sourceUrl` and `checkedOn` date (`YYYY-MM-DD`). The export uses these only when neither the source adapter nor the agenda supplies the field ([decision 0021](../docs/decisions/0021-participation-details-from-agendas.md)). Recheck them when the agency changes its process.
 
@@ -165,7 +165,35 @@ See [the pacing research](../docs/research/meeting-duration-pacing-2026-10-20.md
 
 ## Reviewed source configuration and repeatable acquisition
 
-The maintainer's source review is recorded in [decision 0014](../docs/decisions/0014-reviewed-sources-and-public-comment-periods.md). The registry now has 44 entries, of which 38 are followed. Disabled entries stay in the file with `follow: false`. Sources with `discoveryAdapter: "configured"` carry a `discovery` object with a verified `type`, `indexUrl`, and exact `bodyPattern`. Supported types are `granicus`, `legistar`, `civicplus`, `link-index`, `civicclerk`, `trpa`, `dated-table`, `meeting-files` (a dated table or "next meeting" block whose links open per-meeting file lists), and body-filtered `rss`. Optional keys: `title`, `titlePrefix` (Granicus, RSS), `qualifySpecial` (link-index: give special meetings and workshops their own ID and title), `minutesLinks` (link-index: attach minutes PDFs on the index to the agenda row of the same date, read from the link's aria-label, label, or file name), `datePattern` and `horizonDays` (dated-table: restrict to one table and ignore far-future placeholders), `filesLabel` (meeting-files), and `documentPattern` (trpa: how the meeting page names the body's documents when that differs from `bodyPattern`, for example "APC"). A TRPA meeting page links committee agendas, staff reports, attachments, and public comments beside the board's own documents; discovery keeps only the body's agenda and its full packet, in that order, as `<agency>-agenda-<date>` and `<agency>-agenda-packet-<date>`, and marks them the meeting's complete document set. Elsewhere, when a meeting offers a short agenda and a packet, the packet is ordered second so the default two captured documents are the agenda and the packet. The generic link index supports rolling dated agenda links and published Google Sheets meeting libraries. Annual-table sources (Lahontan and Fish and Game) use `indexUrlTemplate` with `{year}` for the current annual index, retaining dated notices and cancellations before agendas are posted. A multi-day date uses the first day and directs readers to the agenda for subsequent sessions. Truckee's official wrapper links its public Municode meeting index; IVGID's public event API supplies current agenda file IDs.
+The maintainer's source review is recorded in [decision 0014](../docs/decisions/0014-reviewed-sources-and-public-comment-periods.md). The registry now has 44 entries, of which 38 are followed. Disabled entries stay in the file with `follow: false`. Sources with live discovery carry a `discovery` object with a verified `type`, an `https` `indexUrl`, and an exact `bodyPattern` (a case-insensitive regular expression; without one every row qualifies). For example, the TTD committee:
+
+```json
+"discovery": {
+  "type": "wordpress-meetings",
+  "indexUrl": "https://tahoetransportation.org/wp-json/wp/v2/meeting",
+  "bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs",
+  "documentIdPrefix": "ttd"
+}
+```
+
+Loading the registry checks each block against its type (`TYPES` in `tahoe_ingest/source_discovery.py`) and rejects keys the type does not read. The retired `discoveryAdapter` key is rejected too.
+
+| Type | `indexUrl` and what is read | Also reads |
+| --- | --- | --- |
+| `granicus` | Granicus `ViewPublisher.php`; rows are matched by their text and keep the HTML agenda | `title`, `titlePrefix` |
+| `granicus-row-ids` | Granicus `ViewPublisher.php` whose rows carry IDs such as `10-06-2026-City-Council`; the ID gives the date and title (`bodyPattern` matches "10 06 2026 City Council"), and only the row's PDFs are documents | |
+| `legistar` | A Legistar department page; minutes and video come from the public web API | `title`, `legistarClient` |
+| `civicplus` | A CivicPlus Agenda Center category | `title`, `idPrefix` |
+| `municode` | The Municode meetings page, `https://meetings.municode.com/MeetingsPage/index?clientCode=…`; its public API is queried 90 days either side of today | |
+| `civicclerk` | A CivicClerk portal; its public event API supplies current agenda file IDs | `apiUrl`, `portalUrl` |
+| `link-index` | Rolling dated agenda links, or a published Google Sheets meeting library | `title`, `idPrefix`, `qualifySpecial`, `minutesLinks` |
+| `trpa` | TRPA meeting materials; each meeting page is read | `idPrefix`, `documentPattern` |
+| `dated-table` | An annual table with dates in its first column | `title`, `datePattern` |
+| `meeting-files` | A dated table or "next meeting" block whose links open per-meeting file lists | `title`, `filesLabel` |
+| `rss` | A category feed, filtered by body | `titlePrefix` |
+| `wordpress-meetings` | A WordPress REST collection of meeting posts, which several bodies may share | `documentIdPrefix` |
+
+Every type except `granicus-row-ids`, `municode`, `civicclerk`, and `wordpress-meetings` also takes `indexUrlTemplate` and `horizonDays`. Optional keys: `title`, `titlePrefix` (Granicus, RSS), `idPrefix` (a prefix for date-based source IDs), `qualifySpecial` (link-index: give special meetings and workshops their own ID and title), `minutesLinks` (link-index: attach minutes PDFs on the index to the agenda row of the same date, read from the link's aria-label, label, or file name), `datePattern` and `horizonDays` (dated-table: restrict to one table and ignore far-future placeholders), `filesLabel` (meeting-files), `documentPattern` (trpa: how the meeting page names the body's documents when that differs from `bodyPattern`, for example "APC"), and `documentIdPrefix` (wordpress-meetings: stored document IDs start with this instead of the agency ID; the TTD committee keeps `ttd`, the prefix of its first captures). WordPress posts state no meeting date, so a scheduled run reads at most 6 of them and capture takes the date from the post title or agenda. A TRPA meeting page links committee agendas, staff reports, attachments, and public comments beside the board's own documents; discovery keeps only the body's agenda and its full packet, in that order, as `<agency>-agenda-<date>` and `<agency>-agenda-packet-<date>`, and marks them the meeting's complete document set. Elsewhere, when a meeting offers a short agenda and a packet, the packet is ordered second so the default two captured documents are the agenda and the packet. The generic link index supports rolling dated agenda links and published Google Sheets meeting libraries. Annual-table sources (Lahontan and Fish and Game) use `indexUrlTemplate` with `{year}` for the current annual index, retaining dated notices and cancellations before agendas are posted. A multi-day date uses the first day and directs readers to the agenda for subsequent sessions. Truckee's official agenda page embeds its public Municode meeting index, which discovery reads directly.
 
 For example, from the repository root:
 

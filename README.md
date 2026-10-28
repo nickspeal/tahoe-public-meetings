@@ -59,7 +59,7 @@ Discover official meetings without changing stored data:
 
 ```sh
 mkdir -p data
-python3 scripts/project.py worker discover truckee --year 2026 --month 10 --limit 5 --out data/truckee-candidates.json
+python3 scripts/project.py worker discover truckee --limit 5 --out data/truckee-candidates.json
 ```
 
 See the [worker guide](workers/ingestion/README.md) for capture, document refresh, and correction commands, and the [operations guide](docs/operations.md) for backup, recovery, and failed-job procedures. Live access can be rate-limited or blocked; the reproducible fixture workflow works offline after dependencies are installed.

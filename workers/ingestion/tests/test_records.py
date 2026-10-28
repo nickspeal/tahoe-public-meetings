@@ -11,7 +11,7 @@ import pytest
 from tahoe_ingest import records
 from tahoe_ingest.capture import StoredMeetings
 from tahoe_ingest.core import ingest_bundle, init_db
-from tahoe_ingest.discovery import discover_slt
+from tahoe_ingest.discovery import granicus_row_ids
 from tahoe_ingest.draft_minutes import following_text, link_draft_minutes, minutes_heading, minutes_targets
 from tahoe_ingest.source_discovery import discover_configured, event_links
 
@@ -197,7 +197,8 @@ def test_slt_publisher_row_links():
     <td class="listItem"><a href="//slt.granicus.com/MinutesViewer.php?view_id=6&clip_id=2330&doc_id=57df807f">Minutes</a></td>
     <td class="listItem"><a href="javascript:void(0);" onClick="window.open('//slt.granicus.com/MediaPlayer.php?view_id=6&amp;clip_id=2330','player')">Video</a></td>
     </tr></table>"""
-    [found] = discover_slt(limit=1, fetch=lambda url: row)
+    config = {"type": "granicus-row-ids", "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6", "bodyPattern": "City Council"}
+    [found] = granicus_row_ids("slt", config, limit=1, fetch=lambda url: row)
     assert found["minutes_url"] == "https://slt.granicus.com/MinutesViewer.php?view_id=6&clip_id=2330&doc_id=57df807f"
     assert found["recording_url"] == "https://slt.granicus.com/MediaPlayer.php?view_id=6&clip_id=2330"
 

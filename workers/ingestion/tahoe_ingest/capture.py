@@ -9,58 +9,21 @@ from __future__ import annotations
 import re
 import time
 from datetime import date, datetime, timezone
-from zoneinfo import ZoneInfo
 
 from .agenda import ParseResult, parse_agenda
 from .core import ingest_bundle, record_failure, stable_id
-from .discovery import discover_slt, discover_truckee, discover_ttd
 from .source_discovery import discover_configured
 from .http import EndpointSkipped
 from .records import apply_links, links_of, match_meeting, qualifiers
 from .source import download_extract
 from .start_times import agenda_date
 
-PACIFIC = ZoneInfo("America/Los_Angeles")
 
-
-TRUCKEE_PREVIOUS_MONTH_DAYS = 14  # Early in a month, also read last month's calendar for recent meetings.
-
-
-def truckee_months(today: date) -> list[tuple[int, int]]:
-    """Calendar months the Truckee adapter reads when no month is named: current and next, plus the previous one early in a month."""
-    def shift(offset):
-        index = today.year * 12 + today.month - 1 + offset
-        return index // 12, index % 12 + 1
-    return ([shift(-1)] if today.day <= TRUCKEE_PREVIOUS_MONTH_DAYS else []) + [shift(0), shift(1)]
-
-
-def _discover_truckee_months(months: list[tuple[int, int]], limit: int) -> list[dict]:
-    found, seen = [], set()
-    for year, month in months:
-        for candidate in discover_truckee(year=year, month=month, limit=limit):
-            if candidate["source_id"] not in seen:
-                seen.add(candidate["source_id"])
-                found.append(candidate)
-    return found
-
-
-def discover_agency(agency_id: str, config: dict, *, limit: int, year: int | None = None, month: int | None = None) -> list[dict]:
-    """Bounded candidates from one followed agency's discovery adapter.
-
-    The Truckee calendar adapter reads one month when `year`/`month` are given
-    and otherwise the months from `truckee_months` (each bounded by `limit`).
-    """
-    adapter = config.get("discoveryAdapter")
-    if not adapter:
-        raise ValueError(f"{agency_id}: no discovery adapter")
-    now = datetime.now(PACIFIC)
-    if adapter in ("configured", "ttd", "slt"):
-        candidates = (discover_configured(agency_id, config["discovery"], limit=limit) if adapter == "configured" else
-                      discover_ttd(limit=limit, body_pattern=config.get("discovery", {}).get("bodyPattern", "board")) if adapter == "ttd" else discover_slt(limit=limit))
-    elif year is None and month is None:
-        candidates = _discover_truckee_months(truckee_months(now.date()), limit)
-    else:
-        candidates = discover_truckee(year=year or now.year, month=month or now.month, limit=limit)
+def discover_agency(agency_id: str, config: dict, *, limit: int) -> list[dict]:
+    """Bounded candidates from one followed agency's `discovery` block (see source_discovery)."""
+    if not config.get("discovery"):
+        raise ValueError(f"{agency_id}: no discovery source")
+    candidates = discover_configured(agency_id, config["discovery"], limit=limit)
     for candidate in candidates:
         candidate["agency"] = agency_id
     return candidates

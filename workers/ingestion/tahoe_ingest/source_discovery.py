@@ -1,5 +1,7 @@
-"""Configured official indexes: CivicPlus, Legistar, Granicus, and link feeds.
+"""Live discovery: each agency's `discovery` block names a source type and how to read it.
 
+`discover_configured` (scheduled runs) and `discover_configured_range` (backfill)
+dispatch on the type; `validate_discovery` checks a block against its type's keys.
 URLs and body filters are operator configuration, never instructions from HTML.
 Dates must be written on a source row or document filename, not inferred from
 regular meeting patterns. Agenda-only documents are preferred over full packets.
@@ -16,9 +18,47 @@ import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from .http import fetch_bytes
-from .discovery import anchors, fetch_text, _pdf_links
+from .discovery import (anchors, fetch_text, _pdf_links, granicus_row_ids, granicus_row_ids_range,
+                        wordpress_meetings, wordpress_meetings_range)
 from .html_dom import document
 from .records import granicus_links, listing_minutes, qualifiers, recording_link, records_entry
+
+# Each discovery type and the keys it reads besides `type`, `indexUrl` (always https), and
+# `bodyPattern`; config/README.md describes them. Index pages fetched by the shared reader
+# below also take `indexUrlTemplate` and `horizonDays`.
+_PAGE = {'indexUrlTemplate','horizonDays'}
+TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
+       'link-index':{'title','idPrefix','qualifySpecial','minutesLinks'}|_PAGE,
+       'trpa':{'idPrefix','documentPattern'}|_PAGE,
+       'dated-table':{'title','datePattern'}|_PAGE,
+       'legistar':{'title','legistarClient'}|_PAGE,
+       'granicus':{'title','titlePrefix'}|_PAGE,
+       'meeting-files':{'title','filesLabel'}|_PAGE,
+       'rss':{'titlePrefix'}|_PAGE,
+       'civicclerk':{'apiUrl','portalUrl'},
+       'municode':set(),
+       'granicus-row-ids':set(),
+       'wordpress-meetings':{'documentIdPrefix'}}
+# Rows of these types state no meeting date, so a scheduled run cannot window them before
+# reading, and each costs a page fetch: it bounds them by count instead.
+UNDATED_TYPES=frozenset({'wordpress-meetings'})
+
+
+def validate_discovery(agency):
+    """Check an agency entry's `discovery` block against its type. An entry without one has no live discovery."""
+    aid,config=agency['id'],agency.get('discovery')
+    if 'discoveryAdapter' in agency:
+        raise ValueError(f'{aid}: discoveryAdapter is retired; the discovery block\'s type selects the reader')
+    if config is None:return
+    keys=TYPES.get(config.get('type') if isinstance(config,dict) else None)
+    if keys is None or not str(config.get('indexUrl','')).startswith('https://'):
+        raise ValueError(f'invalid source configuration: {aid}')
+    if unknown:=set(config)-keys-{'type','indexUrl','bodyPattern'}:
+        raise ValueError(f'invalid source configuration: {aid}: {config["type"]} does not read {", ".join(sorted(unknown))}')
+    for key in ('bodyPattern','documentPattern','datePattern','filesLabel'):
+        re.compile(config.get(key,'.'),re.I)
+    if config['type']=='municode' and not _municode_client(config):
+        raise ValueError(f'invalid source configuration: {aid}: a Municode indexUrl names its clientCode')
 
 
 def date_in(text):
@@ -143,16 +183,19 @@ def candidate(agency, sid, title, day, url, docs, text=''):
 
 
 def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
+    """The newest candidates (at most ``limit``) from one agency's `discovery` block."""
     # limit=None lists every row the index shows (used by the backfill's date-range discovery).
     if limit is not None and not 1<=limit<=20:raise ValueError('discovery limit must be 1..20')
-    url=config.get('indexUrlTemplate',config['indexUrl']).replace('{year}',str(datetime.now(ZoneInfo('America/Los_Angeles')).year));kind=config['type']
+    kind=config['type']
+    if kind=='wordpress-meetings':return wordpress_meetings(agency,config,limit=limit,fetch=fetch)
+    if kind=='granicus-row-ids':return granicus_row_ids(agency,config,limit=limit,fetch=fetch)
+    if kind=='municode':return municode(agency,config,limit)
+    url=config.get('indexUrlTemplate',config['indexUrl']).replace('{year}',str(datetime.now(ZoneInfo('America/Los_Angeles')).year))
     markup=fetch(url)
     body=re.compile(config.get('bodyPattern','.'),re.I)
     if kind=='civicclerk':
         return civicclerk(agency,config,markup,limit,fetch)
     embedded=document(markup)
-    if kind=='civicplus' and any('meetings.municode.com/MeetingsPage/' in n.attrs.get('src','') for n in embedded.find('iframe')):
-        return municode(agency,config,limit)
     if kind=='link-index':
         # Follow only public library embeds, never arbitrary scripts or links.
         sheet=next((n.attrs.get('src') for n in embedded.find('iframe') if n.attrs.get('src','').startswith('https://docs.google.com/spreadsheets/d/e/')),None)
@@ -480,26 +523,38 @@ def sheet_meetings(agency, markup, url, limit):
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
 
 
-def municode(agency, config, limit):
-    today=datetime.now(ZoneInfo('America/Los_Angeles')).date()
-    payload=json.dumps({'displayClientCode':config.get('clientCode','TRUCKEECA'), 'isDraft':False, 'meetingTypeIds':[],
-                       'meetingDateFrom':(today-timedelta(days=90)).isoformat(),
-                       'meetingDateTo':(today+timedelta(days=90)).isoformat()}).encode()
-    raw,_=fetch_bytes('https://meetings.municode.com/api/publicMeetings/list',max_bytes=6*1024*1024,accept='application/json',payload=payload)
+def _municode_client(config):
+    """The client code in a Municode meetings page URL (``.../MeetingsPage/index?clientCode=TRUCKEECA``)."""
+    return urllib.parse.parse_qs(urllib.parse.urlparse(config['indexUrl']).query).get('clientCode',[None])[0]
+
+
+def _municode_meetings(agency, config, since, until, fetch_json=None):
+    """Municode meetings dated since..until whose name matches `bodyPattern`, newest first, from its public API."""
+    def default(payload):
+        raw,_=fetch_bytes('https://meetings.municode.com/api/publicMeetings/list',max_bytes=6*1024*1024,accept='application/json',payload=payload)
+        return json.loads(raw)
+    client=_municode_client(config)
     rows=[]
-    for meeting in json.loads(raw):
+    for meeting in (fetch_json or default)(json.dumps({'displayClientCode':client,'isDraft':False,'meetingTypeIds':[],
+                                                       'meetingDateFrom':since.isoformat(),'meetingDateTo':until.isoformat()}).encode()):
         title=meeting.get('meeting') or meeting.get('meetingType') or ''
-        if not re.search(config.get('bodyPattern','Town Council'),title,re.I):continue
+        if not re.search(config.get('bodyPattern','.'),title,re.I):continue
         day=date_in(meeting.get('date',''))
         if not day:continue
         sid=meeting['meetingId'];docs=[]
         for key,label in [('adaHTMLAgenda','Official agenda (HTML)'),('agenda','Official agenda (PDF)')]:
-            if meeting.get(key):docs.append({'id':agency+'-agenda-'+('html' if key=='adaHTMLAgenda' else 'pdf'), 'title':label,'url':meeting[key]})
-        official='https://meetings.municode.com/MeetingDetailsPage/index?clientCode='+config.get('clientCode','TRUCKEECA')+'&meetingId='+sid
+            if meeting.get(key):docs.append({'id':agency+'-agenda-'+('html' if key=='adaHTMLAgenda' else 'pdf'),'title':label,'url':meeting[key]})
+        official='https://meetings.municode.com/MeetingDetailsPage/index?clientCode='+client+'&meetingId='+sid
         row=candidate(agency,sid,title,day,official,docs,meeting.get('time',''))
         row['location']=meeting.get('venue')
         rows.append(row)
-    return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
+    return sorted(rows,key=lambda r:r['date'],reverse=True)
+
+
+def municode(agency, config, limit, *, fetch_json=None):
+    """Meetings within 90 days either side of today (the API takes a date range)."""
+    today=datetime.now(ZoneInfo('America/Los_Angeles')).date()
+    return _municode_meetings(agency,config,today-timedelta(days=90),today+timedelta(days=90),fetch_json)[:limit]
 
 
 # ---------------------------------------------------------------- date-range discovery (backfill)
@@ -523,25 +578,7 @@ def _in_range(rows, since, until):
 
 def municode_range(agency, config, since, until, *, fetch_json=None):
     """Every Municode meeting dated since..until (the API takes a date range)."""
-    def default(payload):
-        raw,_=fetch_bytes('https://meetings.municode.com/api/publicMeetings/list',max_bytes=6*1024*1024,accept='application/json',payload=payload)
-        return json.loads(raw)
-    fetch_json=fetch_json or default
-    rows=[]
-    for meeting in fetch_json(json.dumps({'displayClientCode':config.get('clientCode','TRUCKEECA'),'isDraft':False,'meetingTypeIds':[],
-                                          'meetingDateFrom':since.isoformat(),'meetingDateTo':until.isoformat()}).encode()):
-        title=meeting.get('meeting') or meeting.get('meetingType') or ''
-        if not re.search(config.get('bodyPattern','Town Council'),title,re.I):continue
-        day=date_in(meeting.get('date',''))
-        if not day:continue
-        sid=meeting['meetingId'];docs=[]
-        for key,label in [('adaHTMLAgenda','Official agenda (HTML)'),('agenda','Official agenda (PDF)')]:
-            if meeting.get(key):docs.append({'id':agency+'-agenda-'+('html' if key=='adaHTMLAgenda' else 'pdf'),'title':label,'url':meeting[key]})
-        official='https://meetings.municode.com/MeetingDetailsPage/index?clientCode='+config.get('clientCode','TRUCKEECA')+'&meetingId='+sid
-        row=candidate(agency,sid,title,day,official,docs,meeting.get('time',''))
-        row['location']=meeting.get('venue')
-        rows.append(row)
-    return _in_range(sorted(rows,key=lambda r:r['date'],reverse=True),since,until)
+    return _in_range(_municode_meetings(agency,config,since,until,fetch_json),since,until)
 
 
 def civicclerk_range(agency, config, since, until, *, fetch=fetch_text, max_pages=40):
@@ -592,10 +629,16 @@ def discover_configured_range(agency, config, *, since, until, fetch=fetch_text,
     indexes (Granicus, link indexes, TRPA) are read whole; yearly indexes are
     read once per year in the range; Municode and the Legistar web API are
     queried by date range (queried_by_date=True: they reach ``since`` by
-    design); CivicClerk is paged until events are older than ``since``.
+    design); CivicClerk and WordPress posts are paged until older than ``since``.
     """
     fetch=_memo(fetch)
     kind=config['type']
+    if kind=='wordpress-meetings':
+        return (*wordpress_meetings_range(agency,config,since=since,until=until,fetch=fetch),False)
+    if kind=='granicus-row-ids':
+        return (*granicus_row_ids_range(agency,config,since=since,until=until,fetch=fetch),False)
+    if kind=='municode':
+        return (*municode_range(agency,config,since,until,fetch_json=municode_json),True)
     if kind=='civicclerk':
         found,earliest=civicclerk_range(agency,config,since,until,fetch=fetch)
         return found,earliest,False
@@ -605,10 +648,6 @@ def discover_configured_range(agency, config, *, since, until, fetch=fetch_text,
         for year in range(since.year,until.year+1):
             rows+=discover_configured(agency,{**config,'indexUrlTemplate':template.replace('{year}',str(year))},limit=None,fetch=fetch)
         return (*_in_range(rows,since,until),True)
-    if kind=='civicplus':
-        markup=fetch(config['indexUrl'])
-        if any('meetings.municode.com/MeetingsPage/' in n.attrs.get('src','') for n in document(markup).find('iframe')):
-            return (*municode_range(agency,config,since,until,fetch_json=municode_json),True)
     if kind=='legistar':
         try:
             api=legistar_range(agency,config,since,until,fetch=fetch)

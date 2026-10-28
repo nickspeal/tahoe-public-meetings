@@ -72,6 +72,7 @@ def agency_catalog() -> tuple[dict, ...]:
             if config.get("type") not in {"civicplus", "legistar", "granicus", "link-index", "civicclerk", "trpa", "rss", "dated-table", "meeting-files"} or not config.get("indexUrl", "").startswith("https://"):
                 raise ValueError(f"invalid source configuration: {agency['id']}")
             re.compile(config.get("bodyPattern", "."), re.I)
+            re.compile(config.get("documentPattern", "."), re.I)
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
         from urllib.parse import urlparse

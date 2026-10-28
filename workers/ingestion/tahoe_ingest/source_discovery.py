@@ -64,15 +64,75 @@ def documents_in(markup, base, agency):
         suffix='-html' if is_html else ''
         docs.append({'id':agency+'-'+role+suffix,'title':label or ('Official agenda (HTML)' if is_html else 'Official agenda'), 'url':url})
         existing.add(url)
-    # Prefer accessible HTML agenda / small agenda PDF to full packets and minutes.
-    docs.sort(key=lambda d: (bool(re.search(r'how to|help guide|staff report|agenda item|public comment',d['title'],re.I)) or 'attachment' in d['id'],
-                             'packet' in (d['title']+' '+d['id']).lower(),
-                             'minutes' in (d['title']+' '+d['id']).lower(),
-                             not bool(re.search(r'html|AADA',d['title']+' '+d['url'],re.I))))
+    docs=agenda_then_packet(docs)
     counts={i:sum(d['id']==i for d in docs) for i in {d['id'] for d in docs}}
     for d in docs:
         if counts[d['id']]>1:d['id']+='-'+hashlib.sha256(d['url'].encode()).hexdigest()[:10]
     return docs
+
+
+def _document_rank(d):
+    text=(d['title']+' '+d['id']).lower()
+    extra=bool(re.search(r'how to|help guide|staff report|agenda item|public comment',d['title'],re.I)) or 'attachment' in d['id']
+    return (extra,'packet' in text,'minutes' in text,not bool(re.search(r'html|AADA',d['title']+' '+d['url'],re.I)))
+
+
+def agenda_then_packet(docs):
+    """Order a meeting's documents: the agenda, then its full packet, then minutes and other material.
+
+    Capture keeps only the first few (`max_documents`, 2 by default), so when a page
+    offers both a short agenda and a packet, the packet comes second, ahead of a
+    second copy of the agenda (an HTML agenda's PDF), other agendas, and minutes.
+    Readers then find both the agenda and the packet under the meeting's sources.
+    """
+    docs=sorted(docs,key=_document_rank)  # accessible HTML / short agenda first, then packets, then minutes
+    first=_document_rank(docs[0]) if docs else None
+    if first and not any(first[:3]):
+        packet=next((i for i,d in enumerate(docs) if i>1 and _document_rank(d)[:2]==(False,True)),None)
+        if packet is not None:
+            docs.insert(1,docs.pop(packet))
+    return docs
+
+
+# A TRPA meeting page also links committee agendas, staff reports, attachments,
+# minutes, presentations, and public comments; none of them is the body's agenda.
+TRPA_NOT_MEETING_DOCUMENT=re.compile(r'\b(?:committees?|items?|minutes|staff reports?|attachments?|exhibits?|comments?|'
+                                     r'presentations?|summary|how to|navigation|resolutions?|letters?)\b',re.I)
+MONTH_DAY=re.compile(r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2})\b',re.I)
+
+
+def trpa_documents(agency, config, markup, base, day):
+    """The body's own agenda and then its full packet from a TRPA meeting page.
+
+    The anchor text, or else the PDF's file name, names the body and the document:
+    "October 28 Governing Board Agenda", "DRAFT July 8, 2026 APC Meeting Packet"
+    (`documentPattern`, else `bodyPattern`, names the body). Committee agendas, staff
+    reports, attachments, minutes, and public comments never qualify (minutes links
+    come from `page_links`). A stated month and day must be the meeting's.
+    IDs are `<agency>-agenda-<date>` and `<agency>-agenda-packet-<date>`, the IDs the
+    reviewed meeting files use, so a capture updates those documents instead of
+    adding copies. Returns the documents and whether they are the meeting's complete
+    set: only when the page offers an agenda or packet, so a page that lists neither
+    never removes stored documents.
+    """
+    named=re.compile(config.get('documentPattern') or config.get('bodyPattern','.'),re.I)
+    wanted=re.compile(r'(?:%s)\W+(?:Meeting\W+)?(?P<kind>Agenda|Packet)\b'%named.pattern,re.I)
+    found={}
+    when=date.fromisoformat(day)
+    for url,label in anchors(markup,base):
+        parsed=urllib.parse.urlparse(url)
+        if parsed.scheme!='https' or not parsed.path.lower().endswith('.pdf'):continue
+        label=' '.join(label.split())
+        name=re.sub(r'[-_+]+',' ',urllib.parse.unquote(parsed.path.rsplit('/',1)[-1]))
+        # The anchor text names the document; a bare "Agenda" link falls back to its file name.
+        text=next((t for t in (label,name) if wanted.search(t)),None)
+        if not text or TRPA_NOT_MEETING_DOCUMENT.search(label+' '+name):continue
+        stated=MONTH_DAY.search(text)
+        if stated and (datetime.strptime(stated[1][:3].title(),'%b').month,int(stated[2]))!=(when.month,when.day):continue
+        kind='agenda-packet' if wanted.search(text)['kind'].lower()=='packet' else 'agenda'
+        found.setdefault(kind,{'id':f'{agency}-{kind}-{day}','title':label or text,'url':url})
+    docs=[found[k] for k in ('agenda','agenda-packet') if k in found]
+    return docs,bool(docs)
 
 
 def candidate(agency, sid, title, day, url, docs, text=''):
@@ -192,9 +252,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             day=date_in(label) or date_in(urllib.parse.unquote(target))
             if not day:continue
             if kind=='civicplus' and 'PreviousVersions' in target:continue
-            links={}
+            links,complete={},False
             if kind=='trpa':
-                detail=fetch(target);docs=documents_in(detail,target,agency)
+                detail=fetch(target);docs,complete=trpa_documents(agency,config,detail,target,day)
                 title=label
                 links,earlier=page_links(agency,body,day,detail,target)
                 extras.extend(earlier)
@@ -210,6 +270,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
                 if found:
                     sid+='-'+found[1].lower();title=title.replace(' Board ',f' {found[1].title()} Board ',1)
             rows.append({**candidate(agency,sid,title,day,target,docs,label),**links})
+            if complete:rows[-1]['documents_complete']=True  # stale documents (another body's agenda) stop being current
         if kind=='link-index' and config.get('minutesLinks'):
             extras.extend(index_minutes(agency,tree,url,rows))
     elif kind=='meeting-files':

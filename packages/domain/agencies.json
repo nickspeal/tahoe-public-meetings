@@ -136,7 +136,8 @@
     "discovery": {
       "type": "trpa",
       "indexUrl": "https://www.trpa.gov/meeting-materials/",
-      "bodyPattern": "Advisory Planning Commission"
+      "bodyPattern": "Advisory Planning Commission",
+      "documentPattern": "APC|Advisory Planning Commission"
     }
   },
   {

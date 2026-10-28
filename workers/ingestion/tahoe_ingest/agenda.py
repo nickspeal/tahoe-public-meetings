@@ -328,9 +328,20 @@ def _parse_document(agency: str, document_id: str, pages: list[dict]) -> tuple[P
     return _result([], False, f"{LAYOUTS[agency][0].name} cover was not recognized; agenda items require review."), False
 
 
+# Agencies whose meeting page links the agenda and a full packet that reprints it
+# (source_discovery.trpa_documents). Items come from the agenda; the packet is read
+# only when no agenda document was captured, so an older packet copy can never
+# void or replace the items of a revised agenda.
+AGENDA_BEFORE_PACKET = {"trpa-governing", "trpa-advisory"}
+
+
 def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> ParseResult:
     if not has_parser(agency):
         return _result([], False, f"No parser exists for agency {agency}; review required.")
+    if agency in AGENDA_BEFORE_PACKET:
+        captured = {p["document_id"] for p in pages}
+        agendas = [d for d in documents if "-agenda-packet" not in str(d["id"]) and d["id"] in captured]
+        documents = agendas or documents
     successes = []
     failures = []
     for document in documents:

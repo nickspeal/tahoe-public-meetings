@@ -1,0 +1,824 @@
+{
+ "note": "TRPA Governing Board, 2026-10-28. Each item's title in the agenda PDF links its staff report, and the meeting page lists the same file followed by its attachments; the report's footer names the board item (6.B and 6.C share one report, CONSENT CALENDAR ITEM NOS. 6.B AND 6.C; 6.E's footer misspells COMITTEE). Agenda download: only the PDF links on the board pages 7 and 9. Report downloads: page 1 in full, later pages trimmed to their footer lines. Meeting page HTML: its content up to the public comments section. The packet (111 pages, linked from the meeting page as 'October 28 Governing Board Packet') carries the cited agenda pages and the 7.A/7.B report pages, for the packet fallback tests; 7.A's Page value follows 'Informational' after a single space.",
+ "meeting": {
+  "id": "trpa-governing:2026-10-28",
+  "agency_id": "trpa-governing",
+  "title": "Governing Board Documents October 28, 2026-Hybrid Meeting",
+  "local_date": "2026-10-28",
+  "official_url": "https://www.trpa.gov/governing-board-documents-october-28-2026-hybrid-meeting/"
+ },
+ "items": [
+  {
+   "id": "trpa-governing:2026-10-28:1",
+   "number": "1",
+   "title": "CALL TO ORDER AND DETERMINATION OF QUORUM",
+   "section": null,
+   "fingerprint": "8303bcab5d646fab2751c7a1df573ccdbcb44372b8590e899d873377bc135302",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "CALL TO ORDER AND DETERMINATION OF QUORUM",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:2",
+   "number": "2",
+   "title": "PLEDGE OF ALLEGIANCE",
+   "section": null,
+   "fingerprint": "bcde393d014439d0933945064d4eab6ed1eeb6b9268ef46a7ec55f149c380186",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "PLEDGE OF ALLEGIANCE",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:3",
+   "number": "3",
+   "title": "PUBLIC INTEREST COMMENTS – ON AGENDA ITEMS",
+   "section": null,
+   "fingerprint": "d2291d335a340aab8e118e9e32baf279232a62265b7249b3c56cd2af0be8137b",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "PUBLIC INTEREST COMMENTS – ON AGENDA ITEMS",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:4",
+   "number": "4",
+   "title": "APPROVAL OF AGENDA",
+   "section": null,
+   "fingerprint": "c1c49e4151774117da2ba44de53be6420d22f7e0fb4acd2b00fcd63a670c8c03",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "APPROVAL OF AGENDA",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:5.A",
+   "number": "5.A",
+   "title": "September 23, 2026 Governing Board Minutes",
+   "section": "Approval Of Minutes",
+   "fingerprint": "3237b88faa3d53836c6a5ddb5be190ad6754b3a13fcfa1ca9a1e5b11fdc33418",
+   "citations": [
+    {
+     "page": 6,
+     "quote": "September 23, 2026 Governing Board Minutes",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:6.A",
+   "number": "6.A",
+   "title": "September Financials",
+   "section": "TRPA Consent Calendar",
+   "fingerprint": "77e32faff116c99ad3657a524f83fb5a36a1bb71281c318c260a137399765f4a",
+   "citations": [
+    {
+     "page": 9,
+     "quote": "September Financials",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:6.B",
+   "number": "6.B",
+   "title": "Inflation adjustment to TRPA Filing Fee Schedule and Mobility Mitigation Fee",
+   "section": "TRPA Consent Calendar",
+   "fingerprint": "985831ba3cbc2434ec3405117d6935c8ad96badccb7b2ed9a0162faf40d08e79",
+   "citations": [
+    {
+     "page": 9,
+     "quote": "Inflation adjustment to TRPA Filing Fee Schedule",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:6.C",
+   "number": "6.C",
+   "title": "Inflation adjustment to TRPA Rental Vehicle Mitigation Fee",
+   "section": "TRPA Consent Calendar",
+   "fingerprint": "e9ada458c32cdfc8d612df006890dd9fc367f17e09422a54b38265cf06eed24f",
+   "citations": [
+    {
+     "page": 9,
+     "quote": "Inflation adjustment to TRPA Rental Vehicle",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:6.D",
+   "number": "6.D",
+   "title": "Resolution of Enforcement Action: Brady Sessions; Unauthorized Grading resulting in Material Damage to Trees and Unauthorized Tree Removal;",
+   "section": "TRPA Consent Calendar",
+   "fingerprint": "9167b93907a71023661170dd653bf195f7eb9158e1b8ee2c1b66daf93d059d35",
+   "citations": [
+    {
+     "page": 9,
+     "quote": "Resolution of Enforcement Action: Brady Sessions;",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:6.E",
+   "number": "6.E",
+   "title": "Resolution of Enforcement Action: LIND Art & Technology, Inc., Launching a motorized watercraft into the waters of the Region without",
+   "section": "TRPA Consent Calendar",
+   "fingerprint": "f299aaf02bb41c23a9bc0bbb805dd4ab7b7ee9829c59ea19771881952933e945",
+   "citations": [
+    {
+     "page": 9,
+     "quote": "Resolution of Enforcement Action: LIND Art &",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:7.A",
+   "number": "7.A",
+   "title": "Briefing on Biodiversity and Recreation Threshold Updates",
+   "section": "Planning Matters",
+   "fingerprint": "1b10dd8d51c32b03e71135d237c9d788dee1bbb2811b9e6d8e6575721c7025a7",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Briefing on Biodiversity and Recreation",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:7.B",
+   "number": "7.B",
+   "title": "Lake Tahoe Aquatic Invasive Species (AIS) Program Update",
+   "section": "Planning Matters",
+   "fingerprint": "2351dbc95e59a8d4a47879d0c090da533463d7c8403cce6d0fa5815a69cfa9c1",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Lake Tahoe Aquatic Invasive Species (AIS)",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:8.A",
+   "number": "8.A",
+   "title": "Executive Director Status Report",
+   "section": "Executive Reports",
+   "fingerprint": "b972daccc8c4d69147496124094164c26be95a3ebdc98acd8aab18f3a3e020ea",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Executive Director Status Report",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:8.B",
+   "number": "8.B",
+   "title": "General Counsel Status Report",
+   "section": "Executive Reports",
+   "fingerprint": "353018572c1a6d7746f34ef1705d88809f63bef6700a496cb539bed5e670647b",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "General Counsel Status Report",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:9",
+   "number": "9",
+   "title": "GOVERNING BOARD MEMBER REPORTS",
+   "section": null,
+   "fingerprint": "77f2b47f1e4293716a18a2ed9f08c8fb3a04d089dd4a2a076ab975015908df95",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "GOVERNING BOARD MEMBER REPORTS",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.A",
+   "number": "10.A",
+   "title": "Legal Committee",
+   "section": "Committee Reports",
+   "fingerprint": "c18ebcc095d821162582a8563eb89b70eececc4e642f42bd24267906fae8f889",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Legal Committee",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.B",
+   "number": "10.B",
+   "title": "Operations and Governance Committee",
+   "section": "Committee Reports",
+   "fingerprint": "949899164637574cced5a51776b4a15a52b91b6d3eed312763fb308fe63a9811",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Operations and Governance Committee",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.C",
+   "number": "10.C",
+   "title": "Environmental Improvement Program Committee",
+   "section": "Committee Reports",
+   "fingerprint": "b4330b8d23362286dd64e21a788fd9337b17ae975ddc34b149b6233033032848",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Environmental Improvement Program Committee",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.D",
+   "number": "10.D",
+   "title": "Transportation Committee",
+   "section": "Committee Reports",
+   "fingerprint": "52488c502b98e796d2761e23826a4940fb3d561bc7f659b4fae69833ddea75c1",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Transportation Committee",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.E",
+   "number": "10.E",
+   "title": "Regional Planning Committee",
+   "section": "Committee Reports",
+   "fingerprint": "883428032e6f952507b2c466537274e58fb1237bebfef0e4a1c344b3c8969476",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Regional Planning Committee",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.F",
+   "number": "10.F",
+   "title": "Local Government Committee",
+   "section": "Committee Reports",
+   "fingerprint": "418b27bbf449368049d23cfaf4ef8ce52351bd17d37776fcc571489513d6a5ac",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Local Government Committee",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:10.G",
+   "number": "10.G",
+   "title": "Tahoe Living Working Group",
+   "section": "Committee Reports",
+   "fingerprint": "b13d106a7f7dd199dc1cac7e054f24a5adc7fdff945f49050ca4a8c40671bb49",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "Tahoe Living Working Group",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:11",
+   "number": "11",
+   "title": "PUBLIC INTEREST COMMENTS – ON ANY MATTER",
+   "section": null,
+   "fingerprint": "1686cd196265360e876327920a82590d60768ad826e365098dddf3026d3310bb",
+   "citations": [
+    {
+     "page": 7,
+     "quote": "PUBLIC INTEREST COMMENTS – ON ANY MATTER",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  },
+  {
+   "id": "trpa-governing:2026-10-28:12",
+   "number": "12",
+   "title": "ADJOURNMENT",
+   "section": null,
+   "fingerprint": "2cf3ab462ed2bcffd84d465d5d05d2c251d15f2565d2b2ebe27ea43a66966703",
+   "citations": [
+    {
+     "page": 8,
+     "quote": "ADJOURNMENT",
+     "documentId": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "trpa-governing:2026-10-28:trpa-governing-agenda-a8292df5fb91:61f06fb8465405bb",
+   "source_document_id": "trpa-governing-agenda-a8292df5fb91",
+   "title": "Legal Committee",
+   "url": "https://www.trpa.gov/wp-content/uploads/Legal-Committee-Agenda-10-28-2026.pdf",
+   "sha256": "61f06fb8465405bb8183d563be99525d83dbd11633f0d21bdd6609ddf215dd01",
+   "page_count": 21,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828",
+   "source_document_id": "trpa-governing-agenda-e24901379e4d",
+   "title": "October 28 Governing Board Agenda",
+   "url": "https://www.trpa.gov/wp-content/uploads/October-28-Governing-Board-Agenda.pdf",
+   "sha256": "c57f397cff448828ddc009984aad34136a321d72d464931448e012f7b38e87ca",
+   "page_count": 11,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "trpa-governing:2026-10-28:trpa-governing-agenda-e24901379e4d:c57f397cff448828": {
+   "6": "AGENDA\n                          TRPA GOVERNING BOARD MEETING\n                                          Beginning at 9:15 a.m.\n\n\n\n     Agenda items may be taken out of order, combined for consideration, removed from the agenda, or\n                            delayed at any time at the discretion of the Chair.\n\n1.     CALL TO ORDER AND DETERMINATION OF QUORUM\n\n2.     PLEDGE OF ALLEGIANCE\n\n3.     PUBLIC INTEREST COMMENTS – ON AGENDA ITEMS\n\n       Any member of the public wishing to address the Governing Board on an agenda item, including\n       items on the Consent Calendar, may do so at this time. Unless otherwise announced by the Chair,\n       comments will be limited to 3 minutes per person for a maximum period of 45 minutes. The Chair\n       may reasonably reduce individual speaking time based on the number of persons wishing to\n       comment and the time reasonably available for the meeting. If the comment period concludes\n       before all persons wishing to comment have been heard, the Chair may provide an additional\n       opportunity for comment when the relevant agenda item is considered, including before action is\n       taken on an action item. Any restrictions or adjustments will be applied uniformly and without\n       regard to viewpoint.\n\n4.     APPROVAL OF AGENDA\n\n5.     APPROVAL OF MINUTES\n\n       Item                                                                Purpose               Page\n A     September 23, 2026 Governing Board Minutes                          For Possible Action   21\n\n6.     TRPA CONSENT CALENDAR\n\n       See TRPA Consent Calendar Agenda below for specific items.",
+   "7": "7.   PLANNING MATTERS\n\n\n     Item                                            Staff                     Purpose       Page\n A   Briefing on Biodiversity and Recreation         Devin Middlebrook /       Informational 107\n     Threshold Updates                               Beth Vollmer\n B   Lake Tahoe Aquatic Invasive Species (AIS)       Dennis Zabaglo            Informational 109\n     Program Update\n\n8.   EXECUTIVE REPORTS\n\n            Item                                               Purpose            Staff\n A          Executive Director Status Report                   Informational      Julie Regan\n      A.1   Notice of Preparation and public scoping period,   Informational      Julie Regan\n            October 20 through November 20, for the joint\n            Environmental Assessment or Environmental\n            Impact Statement/Environmental Impact Report\n            being prepared by TRPA and El Dorado County for\n            the proposed West Shore Trail, an approximately\n            6-mile shared-use path connecting Meeks Bay and\n            D.L. Bliss State Park\n B          General Counsel Status Report                      Informational      Graham St. Michel\n\n\n9.   GOVERNING BOARD MEMBER REPORTS\n\n10. COMMITTEE REPORTS\n\n      Item                                                              Purpose\n A    Legal Committee                                                   Report\n B    Operations and Governance Committee                               Report\n C    Environmental Improvement Program Committee                       Report\n D    Transportation Committee                                          Report\n E    Regional Planning Committee                                       Report\n F    Local Government Committee                                        Report\n G    Tahoe Living Working Group                                        Report\n\n\n11. PUBLIC INTEREST COMMENTS – ON ANY MATTER\n\n     Any member of the public wishing to address the Governing Board on any matter within TRPA’s\n     jurisdiction, whether or not listed on the agenda, may do so at this time. Unless otherwise",
+   "8": "announced by the Chair, comments will be limited to 3 minutes per person. The Chair may set a\n   maximum time allotment for this comment period of at least 45 minutes and may reasonably\n   reduce the time allotted to individual speakers, based on the time reasonably available for the\n   meeting. Any adjusted speaking time will be applied uniformly and without regard to viewpoint.\n\n\n   TRPA encourages (but does not require) public comment on items agendized for possible action to\n   be provided at the period designated for comment on agenda items, prior to the Governing Board’s\n   consideration of the proposed action.\n\n   A speaker who comments on an agenda item during the initial public-comment period ordinarily\n   will not be permitted to comment again on the same item during general public comment. The\n   Governing Board may deliberate or take action only if a matter has been listed on an agenda\n   properly posted prior to the meeting. Responses from Governing Board members to unlisted public\n   comment topics could become deliberation on a matter without notice to the public. To avoid this\n   situation and to ensure the public has notice of all matters the Governing Board will consider,\n   Board members may choose not to respond to public comments, except to correct factual\n   inaccuracies, ask for staff clarification, or to ask that a matter be listed on a future agenda.\n\n12. ADJOURNMENT",
+   "9": "6. TRPA CONSENT CALENDAR\n                              Click the listed item for full packet details\n\n   Item                                                    Staff              Purpose               Page\n A September Financials                                    Chad Cox           For Possible Action   51\n B Inflation adjustment to TRPA Filing Fee Schedule        Aly Borawski       For Possible Action   69\n   and Mobility Mitigation Fee\n C Inflation adjustment to TRPA Rental Vehicle             Aly Borawski       For Possible Action   69\n   Mitigation Fee\n D Resolution of Enforcement Action: Brady Sessions;       Steve Sweet        For Possible Action   93\n   Unauthorized Grading resulting in Material\n   Damage to Trees and Unauthorized Tree Removal;\n   630 Grand Avenue, Placer County, CA; Assessor's\n   Parcel Number (APN) 085-142-021; TRPA File No.\n   CODE2026-0025\n E Resolution of Enforcement Action: LIND Art &            Steve Sweet        For Possible Action   99\n   Technology, Inc., Launching a motorized\n   watercraft into the waters of the Region without\n   an inspection, operating motorized watercraft in a\n   tributary and in No Wake zones, TRPA File No.\n   CODE2026-0038\n\n\nDetails:\nItems on the Consent Calendar are expected to be routine and non-controversial and will be acted upon\nby the Board in a single motion unless removed for separate consideration. See TRPA Rule of Procedure\n2.11 for procedures governing the Consent Calendar."
+  }
+ },
+ "downloads": {
+  "https://www.trpa.gov/wp-content/uploads/October-28-Governing-Board-Agenda.pdf": {
+   "sha256": "c57f397cff448828ddc009984aad34136a321d72d464931448e012f7b38e87ca",
+   "page_count": 11,
+   "pages": [],
+   "links": [
+    {
+     "page": 7,
+     "top": 270,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-A-Biodervisity-and-Recreation-Threshold-Updates.pdf",
+     "text": "Briefing on Biodiversity and Recreation"
+    },
+    {
+     "page": 7,
+     "top": 290,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-A-Biodervisity-and-Recreation-Threshold-Updates.pdf",
+     "text": "Threshold Updates"
+    },
+    {
+     "page": 7,
+     "top": 290,
+     "left": 273,
+     "url": "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-A-Biodervisity-and-Recreation-Threshold-Updates.pdf",
+     "text": ""
+    },
+    {
+     "page": 7,
+     "top": 318,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf",
+     "text": "Lake Tahoe Aquatic Invasive Species (AIS)"
+    },
+    {
+     "page": 7,
+     "top": 338,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf",
+     "text": "Program Update"
+    },
+    {
+     "page": 7,
+     "top": 338,
+     "left": 258,
+     "url": "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 286,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf",
+     "text": "September Financials"
+    },
+    {
+     "page": 9,
+     "top": 286,
+     "left": 290,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 310,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+     "text": "Inflation adjustment to TRPA Filing Fee Schedule"
+    },
+    {
+     "page": 9,
+     "top": 330,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+     "text": "and Mobility Mitigation Fee"
+    },
+    {
+     "page": 9,
+     "top": 330,
+     "left": 333,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 351,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+     "text": "Inflation adjustment to TRPA Rental Vehicle"
+    },
+    {
+     "page": 9,
+     "top": 371,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+     "text": "Mitigation Fee"
+    },
+    {
+     "page": 9,
+     "top": 371,
+     "left": 240,
+     "url": "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 392,
+     "left": 94,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 392,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "Resolution of Enforcement Action: Brady Sessions;"
+    },
+    {
+     "page": 9,
+     "top": 412,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "Unauthorized Grading resulting in Material"
+    },
+    {
+     "page": 9,
+     "top": 433,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "Damage to Trees and Unauthorized Tree Removal;"
+    },
+    {
+     "page": 9,
+     "top": 453,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "630 Grand Avenue, Placer County, CA; Assessor's"
+    },
+    {
+     "page": 9,
+     "top": 473,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "Parcel Number (APN) 085-142-021; TRPA File No."
+    },
+    {
+     "page": 9,
+     "top": 493,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "CODE2026-0025"
+    },
+    {
+     "page": 9,
+     "top": 493,
+     "left": 257,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 514,
+     "left": 85,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": ""
+    },
+    {
+     "page": 9,
+     "top": 514,
+     "left": 145,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "Resolution of Enforcement Action: LIND Art &"
+    },
+    {
+     "page": 9,
+     "top": 534,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "Technology, Inc., Launching a motorized"
+    },
+    {
+     "page": 9,
+     "top": 554,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "watercraft into the waters of the Region without"
+    },
+    {
+     "page": 9,
+     "top": 574,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "an inspection, operating motorized watercraft in a"
+    },
+    {
+     "page": 9,
+     "top": 594,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "tributary and in No Wake zones, TRPA File No."
+    },
+    {
+     "page": 9,
+     "top": 615,
+     "left": 143,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": "CODE2026-0038"
+    },
+    {
+     "page": 9,
+     "top": 615,
+     "left": 257,
+     "url": "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+     "text": ""
+    }
+   ],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/October-28-Governing-Board-Packet.pdf": {
+   "sha256": "d974ee14b4fd664d52df7d4cc6603b5369d2c8bd0e2aa0eef5a7542bcaee181d",
+   "page_count": 111,
+   "pages": [
+    {
+     "page_number": 6,
+     "text": "                                    AGENDA\n                          TRPA GOVERNING BOARD MEETING\n                                          Beginning at 9:15 a.m.\n\n\n\n     Agenda items may be taken out of order, combined for consideration, removed from the agenda, or\n                            delayed at any time at the discretion of the Chair.\n\n1.     CALL TO ORDER AND DETERMINATION OF QUORUM\n\n2.     PLEDGE OF ALLEGIANCE\n\n3.     PUBLIC INTEREST COMMENTS – ON AGENDA ITEMS\n\n       Any member of the public wishing to address the Governing Board on an agenda item, including\n       items on the Consent Calendar, may do so at this time. Unless otherwise announced by the Chair,\n       comments will be limited to 3 minutes per person for a maximum period of 45 minutes. The Chair\n       may reasonably reduce individual speaking time based on the number of persons wishing to\n       comment and the time reasonably available for the meeting. If the comment period concludes\n       before all persons wishing to comment have been heard, the Chair may provide an additional\n       opportunity for comment when the relevant agenda item is considered, including before action is\n       taken on an action item. Any restrictions or adjustments will be applied uniformly and without\n       regard to viewpoint.\n\n4.     APPROVAL OF AGENDA\n\n5.     APPROVAL OF MINUTES\n\n       Item                                                                Purpose               Page\n A     September 23, 2026 Governing Board Minutes                          For Possible Action   21\n\n6.     TRPA CONSENT CALENDAR\n\n       See TRPA Consent Calendar Agenda below for specific items.\n\n\n\n\n                                                    6\n"
+    },
+    {
+     "page_number": 7,
+     "text": "7.   PLANNING MATTERS\n\n\n     Item                                            Staff                     Purpose       Page\n A   Briefing on Biodiversity and Recreation         Devin Middlebrook /       Informational 107\n     Threshold Updates                               Beth Vollmer\n B   Lake Tahoe Aquatic Invasive Species (AIS)       Dennis Zabaglo            Informational 109\n     Program Update\n\n8.   EXECUTIVE REPORTS\n\n            Item                                               Purpose            Staff\n A          Executive Director Status Report                   Informational      Julie Regan\n      A.1   Notice of Preparation and public scoping period,   Informational      Julie Regan\n            October 20 through November 20, for the joint\n            Environmental Assessment or Environmental\n            Impact Statement/Environmental Impact Report\n            being prepared by TRPA and El Dorado County for\n            the proposed West Shore Trail, an approximately\n            6-mile shared-use path connecting Meeks Bay and\n            D.L. Bliss State Park\n B          General Counsel Status Report                      Informational      Graham St. Michel\n\n\n9.   GOVERNING BOARD MEMBER REPORTS\n\n10. COMMITTEE REPORTS\n\n      Item                                                              Purpose\n A    Legal Committee                                                   Report\n B    Operations and Governance Committee                               Report\n C    Environmental Improvement Program Committee                       Report\n D    Transportation Committee                                          Report\n E    Regional Planning Committee                                       Report\n F    Local Government Committee                                        Report\n G    Tahoe Living Working Group                                        Report\n\n\n11. PUBLIC INTEREST COMMENTS – ON ANY MATTER\n\n     Any member of the public wishing to address the Governing Board on any matter within TRPA’s\n     jurisdiction, whether or not listed on the agenda, may do so at this time. Unless otherwise\n\n\n\n                                                 7\n"
+    },
+    {
+     "page_number": 8,
+     "text": "   announced by the Chair, comments will be limited to 3 minutes per person. The Chair may set a\n   maximum time allotment for this comment period of at least 45 minutes and may reasonably\n   reduce the time allotted to individual speakers, based on the time reasonably available for the\n   meeting. Any adjusted speaking time will be applied uniformly and without regard to viewpoint.\n\n\n   TRPA encourages (but does not require) public comment on items agendized for possible action to\n   be provided at the period designated for comment on agenda items, prior to the Governing Board’s\n   consideration of the proposed action.\n\n   A speaker who comments on an agenda item during the initial public-comment period ordinarily\n   will not be permitted to comment again on the same item during general public comment. The\n   Governing Board may deliberate or take action only if a matter has been listed on an agenda\n   properly posted prior to the meeting. Responses from Governing Board members to unlisted public\n   comment topics could become deliberation on a matter without notice to the public. To avoid this\n   situation and to ensure the public has notice of all matters the Governing Board will consider,\n   Board members may choose not to respond to public comments, except to correct factual\n   inaccuracies, ask for staff clarification, or to ask that a matter be listed on a future agenda.\n\n12. ADJOURNMENT\n\n\n\n\n                                                 8\n"
+    },
+    {
+     "page_number": 9,
+     "text": "                                6. TRPA CONSENT CALENDAR\n                              Click the listed item for full packet details\n\n   Item                                                    Staff              Purpose               Page\n A September Financials                                    Chad Cox           For Possible Action   51\n B Inflation adjustment to TRPA Filing Fee Schedule        Aly Borawski       For Possible Action   69\n   and Mobility Mitigation Fee\n C Inflation adjustment to TRPA Rental Vehicle             Aly Borawski       For Possible Action   69\n   Mitigation Fee\n D Resolution of Enforcement Action: Brady Sessions;       Steve Sweet        For Possible Action   93\n   Unauthorized Grading resulting in Material\n   Damage to Trees and Unauthorized Tree Removal;\n   630 Grand Avenue, Placer County, CA; Assessor's\n   Parcel Number (APN) 085-142-021; TRPA File No.\n   CODE2026-0025\n E Resolution of Enforcement Action: LIND Art &            Steve Sweet        For Possible Action   99\n   Technology, Inc., Launching a motorized\n   watercraft into the waters of the Region without\n   an inspection, operating motorized watercraft in a\n   tributary and in No Wake zones, TRPA File No.\n   CODE2026-0038\n\n\nDetails:\nItems on the Consent Calendar are expected to be routine and non-controversial and will be acted upon\nby the Board in a single motion unless removed for separate consideration. See TRPA Rule of Procedure\n2.11 for procedures governing the Consent Calendar.\n\n\n\n\n                                                   9\n"
+    },
+    {
+     "page_number": 107,
+     "text": "                                              STAFF REPORT\n\n\nDATE:       October 21, 2026\nTo:         TRPA Governing Board\nFrom:       TRPA Staff\nSubject:    Briefing on Biodiversity and Recreation Threshold Updates\n\n\nSummary and Staff Recommendation:\nThe Bi-State Compact requires TRPA to adopt environmental threshold carrying capacities (threshold\nstandards) to establish environmental quality goals for the Tahoe Region. The Board identified\ncontinuing to review and update the standards as a priority for the 2026-2027 work plan. The\npresentation will provide an overview of the work underway to update threshold standards related to\nbiodiversity and recreation.\n\nRequested Action:\nThis item is informational only.\nBackground:\nMore than forty years ago, the revised Bi-State Compact recognized that “the waters of Lake Tahoe and\nother resources of the region are threatened with deterioration or degeneration, which endangers the\nnatural beauty and economic productivity of the region” (96th Congress, 1980). To protect these\nresources for future generations, the Compact directs TRPA to establish “environmental threshold\ncarrying capacities,” defined as “an environmental standard necessary to maintain a significant scenic,\nrecreation, educational, scientific or natural value of the region or to maintain public health and safety\nwithin the region.”\nThese standards set environmental quality goals and represent a shared aspiration to restore and\nprotect Lake Tahoe. The standards shape the goals and policies of the Regional Plan and guide millions\nof dollars of public and private investment in the basin through the Environmental Improvement\nProgram (EIP).\nThe initial threshold standards, established more than four decades ago, were never intended to remain\nstatic. The multi-disciplinary team that authored the 1981 threshold study report outlined specific\ntriggers for standard review and set the expectation that the standards would be reassessed at least\nevery five years, writing, “environmental thresholds are not static standards that once in place remain\nforever” (TRPA 1982a).\nThe presentation will provide an overview of the work underway to update threshold standards in two\nfocus areas.\n\n\n\n\n                                                   107                                  AGENDA ITEM NO. 7.A\n"
+    },
+    {
+     "page_number": 108,
+     "text": "Submitting Public Comment:\no Please submit written comments by 3 p.m. the day before the meeting.\no You may email comments to publiccomment@trpa.gov. Include meeting details and agenda item in\n   the subject line or write \"General Comment\" for non-agenda items.\no You may also send by mail, fax to (775) 588-4527, or drop off in person at 128 Market Street.\n                                                   108                                 AGENDA ITEM NO. 7.A"
+    },
+    {
+     "page_number": 109,
+     "text": "                                              STAFF REPORT\n\nDate:       October 21, 2026\n\nTo:         TRPA Governing Board\n\nFrom:       TRPA Staff\n\nSubject:    Lake Tahoe Aquatic Invasive Species (AIS) Program Update\n\n\nSummary and Staff Recommendation:\nTRPA staff will provide an update on the Aquatic Invasive Species (AIS) program. The presentation will\ncover all program areas including AIS prevention, control, monitoring, and rapid response for the past\nyear.\n\nLake Tahoe faces a constant and serious threat from the introduction and spread of aquatic invasive\nspecies. AIS can harm native ecosystems, negatively impact recreation opportunities, and affect Lake\nTahoe’s famed water quality and clarity. The Lake Tahoe AIS program’s mission is to prevent, detect, and\ncontrol aquatic invasive species in the region so that future generations can enjoy Lake Tahoe.\n\nTRPA co-leads the Lake Tahoe AIS program with the Tahoe Resource Conservation District (Tahoe RCD)\nand more than 40 public and private partners. Numerous federal, state, and regional regulations and\nprograms are in place to limit the introduction and spread of AIS. TRPA and Tahoe RCD implement a\nnationally recognized watercraft inspection program, work together to reduce and control the existing\ninvasive species in the lake, and conduct lake-wide monitoring to measure progress.\n\nStaff will provide an overview of accomplishments, challenges, and upcoming work for the AIS program.\nStaff will highlight program enhancements to protect the Tahoe Region from golden mussels and other\nAIS. These enhancements include strategies focusing on motorized and non-motorized recreation,\neducation and outreach, as well as the status of permanent watercraft inspection stations.\n\nStaff will also share progress on control activities including the next phase of work at the Taylor-Tallac\nEcosystem, Emerald Bay, and Nevada Shoreline areas, as well as interim control and containment work\nat the Tahoe Keys and other locations around the lake.\n\nRegarding monitoring, staff will discuss upcoming lake-wide surveys and surveillance, a new drone-\nsupported remote-sensing effort, and early detection monitoring.\n\nStaff will close with the status of funding for the program and upcoming priorities.\nThis item is for informational purposes, and no action is required.\n\n\n\n\n                                                                                       AGENDA ITEM NO. 7.B\n\n                                                    109\n"
+    },
+    {
+     "page_number": 110,
+     "text": "o Please submit written comments by 3 p.m. the day before the meeting.\no You may email comments to publiccomment@trpa.gov. Include meeting details and agenda item in\n   the subject line or write \"General Comment\" for non-agenda items.\no You may also send by mail, fax to (775) 588-4527, or drop off in person at 128 Market Street.\n                                                                                 AGENDA ITEM NO. 7.B\n                                                  110"
+    },
+    {
+     "page_number": 111,
+     "text": "111"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf": {
+   "sha256": "61167136f2cafbf8a296b69b19d8e4f990896989c19994ff6dbc1fde640bf21d",
+   "page_count": 18,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                             STAFF REPORT\n\nDate:       October 21, 2026\n\nTo:         TRPA Governing Board\n\nFrom:       TRPA Staff\n\nSubject:    September Financial Statements, Fiscal Year 2027 (FY 2027)\n\n\nSummary and Staff Recommendation:\nAs of September 30, 2026, 3 months, or 25 percent of the fiscal year, were complete. Appropriations\nfrom both states have been invoiced and received. Planning fees are on pace with the prior year and the\nbudget. Expenses are as expected, driven primarily by staff compensation and contracts. Staff\nrecommends acceptance of the September 2026 Financial Statements for FY 2027.\n\nRequired Motion:\nIn order to accept the September 2026 Financial Statements, the Board must make the following\nmotion, based on the staff report:\n\n        1) A motion to accept the September 2026 Financial Statements\n\nIn order for motion to pass, an affirmative vote of any eight Board members is required.\n\nFiscal Year-to-Date Revenues and Expenses\nThrough September, the agency recognized $9.7 million in revenue, representing 27 percent of the\nbudget. Revenue was primarily driven by $8.0 million in state appropriations. $1.2 million in fee revenue\nwas recognized. Fee revenue was driven by Planning fees, which account for $0.6 million and are at 22\npercent of the budget. $0.2 million in other rent revenue and interest income are on plan for the fiscal\nyear to date.\n\nThe agency incurred expenses of $3.5 million, representing 9 percent of the budget, through September.\n$2.3 million of Compensation is on track at 21 percent of the budget. Contracts and other costs of $1.0\nmillion are ramping as the Agency completes the first quarter of the work plan.\n\nThrough September the agency received $0.8 million in mitigation fees and made $0.1 million in\nmitigation disbursements.\n\n\n\n\n                                                                             OPERATIONS AND GOVERNANCE\n                                                                          COMMITTEE AGENDA ITEM NO. 5.A &\n                                                                            CONSENT CALENDAR ITEM NO. 6.A\n"
+    },
+    {
+     "page_number": 2,
+     "text": "Balance Sheet\nAs of September 30, 2026, the agency’s net position is $32.8 million, with $26.0 million of cash and\ninvestments being held in trust.\n                                                                              OPERATIONS AND GOVERNANCE\n                                                                           COMMITTEE AGENDA ITEM NO. 5.A &\n                                                                             CONSENT CALENDAR ITEM NO. 6.A"
+    },
+    {
+     "page_number": 3,
+     "text": "invoice receipts. This was offset by $1.7 million in payroll and contract disbursements. $6.4 million in\ncash has been generated fiscal year-to-date through September, which will be spent throughout the\nremainder of the fiscal year.\n                                                                               OPERATIONS AND GOVERNANCE\n                                                                            COMMITTEE AGENDA ITEM NO. 5.A &\n                                                                              CONSENT CALENDAR ITEM NO. 6.A"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf": {
+   "sha256": "f1079cd16e4575d6c88da71d4feab9c03a8815cfa9c19521f5a246130fcf6909",
+   "page_count": 24,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                             STAFF REPORT\n\nDate:       October 21, 2026\n\nTo:         TRPA Governing Board\n\nFrom:       TRPA Staff\n\nSubject:    Resolutions Amending the Application Fee Schedule, Mobility Mitigation Fee, & Rental\n            Vehicle Mitigation Fee\n\n\nSummary and Staff Recommendation:\nStaff recommends that the Governing Board adopt the attached Resolution 2026-__ (Attachment A) to\nadjust the Tahoe Regional Planning Agency (TRPA) filing fee schedule for inflation. This action will\nincrease the TRPA filing fee schedule by 3.2 percent and the Mobility Mitigation Fee by 3.2 percent. The\nfee adjustments will take effect on Tuesday, January 19, 2027.\n\nAdditionally, staff recommends that the Governing Board adopt the attached Resolution 2026-__\n(Attachment B) to adjust the TRPA Rental Vehicle Mitigation Fee (RVMF) for inflation. This action will\nincrease the Rental Vehicle Mitigation Fee to $6.53 per day. The adjustments will take effect on Friday,\nJanuary 1, 2027.\n\nRequired Motions:\nIn order to amend the fee schedule and the above-referenced mitigation fees, the Board must make the\nfollowing motions, based on the staff report:\n\n        1) A motion to approve the attached Resolution 2026-__, as shown in Attachment A, and its\n           Exhibit 1, amending the TRPA application filing fee schedule and Mobility Mitigation Fee.\n        2) A motion to approve the attached Resolution 2026-__, as shown in Attachment B, amending\n           the Rental Vehicle Mitigation Fee.\n\nIn order for each motion to pass, an affirmative vote of any eight Board members is required.\n\nProposed changes:\nPlanning Fees\nTRPA proposes a 3.2 percent inflation adjustment to the filing fees outlined in Exhibit 1, Attachment A.\nThe TRPA Governing Board has approved filing fee schedule increases annually since 2018 pursuant to\nits policy of adjusting the filing fee schedule based on the Consumer Price Index (CPI). The filing fee\nincrease is based on the Western Region CPI. The Western Region CPI is referenced by the Nevada\nRevised Statutes (NRS) for inflation adjustments to local building permit fees. While TRPA is not required\nto follow NRS for fee adjustments, it serves as guidance that is consistent with TRPA’s approach to fee\namendments.\n\n\n                                                                    OPERATIONS AND GOVERNANCE COMMITTEE\n                                                                     AGENDA ITEM NOS. 5.B AND 5.C & CONSENT\n                                                                             CALENDAR ITEM NOS. 6.B AND 6.C\n"
+    },
+    {
+     "page_number": 2,
+     "text": "   A. Resolution 2026-__ Revising the Application Filing Fee Schedule & Mobility Mitigation Fee\n       Exhibit 1 to Attachment A Fee Schedule\n   B. Resolution 2026-__ Revising the Rental Vehicle Mitigation Fee\n                                                                    OPERATIONS AND GOVERNANCE COMMITTEE\n                                                                     AGENDA ITEM NOS. 5.B AND 5.C & CONSENT\n                                                                             CALENDAR ITEM NOS. 6.B AND 6.C"
+    },
+    {
+     "page_number": 3,
+     "text": "                                 Attachment A\nResolution Revising the Application Filing Fee Schedule & Mobility Mitigation Fee\n                                                       OPERATIONS AND GOVERNANCE COMMITTEE\n                                                        AGENDA ITEM NOS. 5.B AND 5.C & CONSENT\n                                                                CALENDAR ITEM NOS. 6.B AND 6.C"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf": {
+   "sha256": "f4baab92314e33160f5e0ef89db26c33450498823c8cc929b57c3ff85f4d3bee",
+   "page_count": 5,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                              STAFF REPORT\n\nDate:       October 21, 2026\n\nTo:         TRPA Governing Board\n\nFrom:       TRPA Staff\n\nSubject:    Resolution of Enforcement Action: Brady Sessions; Unauthorized Grading resulting in\n            Material Damage to Trees and Unauthorized Tree Removal; 630 Grand Avenue, Placer\n            County, CA; Assessor’s Parcel Number (APN) 085-142-021; TRPA File No. CODE2026-0025\n\n\n\nSummary and Staff Recommendation:\nStaff recommends that the Governing Board approve the proposed Settlement Agreement (Attachment\nA), under which Brady Sessions (“Sessions”) agrees to pay $15,000 to TRPA within 30 days of Governing\nBoard approval of this Settlement Agreement for the unauthorized removal of two trees and addition of\ncoverage without a TRPA permit at the property located at 630 Grand Avenue, Placer County,\nAssessor’s Parcel Number (APN) 085-142-021 (the “Sessions Property”).\n\nRequired Motions:\nTo approve the proposed Settlement Agreement, the Governing Board must make the following motion,\nbased on the staff report:\n\n            A motion to approve the Settlement Agreement as shown in Attachment A.\n\nFor the motion to pass, an affirmative vote of any eight Board members is required.\n\nViolation Description/Background:\nIn May 2026, TRPA investigated a report of unauthorized tree removal at the Sessions Property. After\nfurther investigation, TRPA found that two large trees over 20 inches diameter at breast height (dbh)\nhad been removed for the construction of a new deck. Neither the tree removal activities nor deck\nconstruction project sought or obtained a TRPA permit, resulting in several violations of the TRPA Code\nof Ordinances (“Code”). The Code violations include the unauthorized creation of land coverage,\nunauthorized grading activities without a pregrade inspection, disturbance of vegetation during\nconstruction, and removal of trees greater than 14 inches dbh without TRPA approval.\n\nSessions has taken full responsibility for the unauthorized activities and has agreed to a settlement in\nwhich he will pay a penalty of $15,000 to TRPA and either remove or obtain a permit for the deck\n\n\n\n\n                                                                      LEGAL COMMITTEE AGENDA ITEM NO. 5.A &\n                                                                              CONSENT CALENDAR ITEM NO. 6.D\n"
+    },
+    {
+     "page_number": 2,
+     "text": "   the subject line or write \"General Comment\" for non-agenda items.\no You may also send by mail, fax to (775) 588-4527, or drop off in person at 128 Market Street.\nAttachments:\nA. Sessions Settlement Agreement\n                                                                   LEGAL COMMITTEE AGENDA ITEM NO. 5.A &\n                                                                           CONSENT CALENDAR ITEM NO. 6.D"
+    },
+    {
+     "page_number": 3,
+     "text": "\u0004 \n \b\u0001\u0014 \u0001\b\u0003\u0004\u0001\u000e \u0006\u000f\b \u0005\u000e\u0010 \u0006\u0001 \u0014\u0001\u0007\u0001\u0006\u0004&\u0001 \u0004\u000e\u0015\u0019\n   ># \u0001 !\u0010\b6\u0019\u0014 \b\u0019%\bE\u0012\u0014\u0003\u000e\u0013\u000e\" \u0007\bF\b1=#=#:+\b\u0001\u0002 \b\"&M\u000e\u0011*\b \u0019'\u0003\u000e\u0011*\b\u0012 \u0019'\u0003\u000e\u0011*\bA\u0003 \u0003\u000e\u0011*\b\u0019\u0012\b \u0013\u000f \u0012\u0003\u0013 \u0016\b\n      \u0014\u0013 \u0013\u0011\u0003\u000e\u0011\b\u0019%\b \u0003' \b\u000f\u0012 \u0007*\b\u0013\u000e\u0014\b\u000f\u0002 \b\u0013 \u0013\"\u0002 \u000e\u000f\b\u0019%\b\u0013$$&\u0012\u000f \u000e\u0013\u000e\" \u0007\b\u000f\u0019\b\u000f\u0012 \u0007*\b\u0007\u0002\u0013 \b\"\u0019 $ \u0016\b\u0017\u0003\u000f\u0002\b\n                                                            LEGAL COMMITTEE AGENDA ITEM NO. 5.A &\n                                                                    CONSENT CALENDAR ITEM NO. 6.D"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf": {
+   "sha256": "6de18510f497970e0c96ead0a1cdaa43a2e1faa22b57e1cd956487943c352110",
+   "page_count": 8,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                             STAFF REPORT\n\nDate:       October 21, 2026\n\nTo:         TRPA Governing Board\n\nFrom:       TRPA Staff\n\nSubject:    Resolution of Enforcement Action; LIND Art & Technology, Inc., Launching a motorized\n            watercraft into the waters of the Region without an inspection, operating a motorized\n            watercraft in a tributary and in No Wake zones, TRPA File No. CODE2026-0038\n\n\nSummary and Staff Recommendation:\nStaff recommends that the Governing Board approve the proposed Settlement Agreement (Attachment\nA), under which LIND Art & Technology, Inc. (“LIND”) agrees to pay $10,000 to TRPA within 30 days of\nGoverning Board approval of this Settlement Agreement for use of motorized watercraft in violation of\nthe TRPA Code of Ordinances (“Code”), including use in the tributaries of Lake Tahoe and launching\nwithout the required required aquatic invasive species (“AIS”) decontamination requirements.\n\nRequired Motions:\nTo approve the proposed Settlement Agreement, the Governing Board must make the following motion,\nbased on the staff report:\n\n            A motion to approve the Settlement Agreement as shown in Attachment A.\n\nFor the motion to pass, an affirmative vote of any eight Board members is required.\n\nViolation Description/Background:\nLIND designs and sells electric surfboards and is operated through two affiliated entities: LIND Art &\nTechnology, Inc., a corporation based in San Francisco, California (“LIND”), and LIND Art & Technology\nAB, a Swedish entity (“LIND AB”). LIND is the sole signatory to this Settlement Agreement, and all\nreferences to “LIND” in this Agreement refer to LIND Art & Technology, Inc. unless otherwise specified.\n\nIn 2026, TRPA discovered social media content posted to official LIND social media channels that\ndepicted the use of LIND electric surfboards within Lake Tahoe and other waterbodies of the Lake Tahoe\nbasin. The electric surfboards manufactured by LIND are considered “motorized watercraft” under the\nTRPA Code and are subject to Code provisions pertaining to motorized watercraft.\n\nThe content depicted (1) the launching of LIND electric surfboards into Lake Tahoe without required AIS\ninspection and decontamination, (2) the use of LIND electric surfboards within Lake Tahoe in a manner\nthat created wakes within 600 feet of the waterline and within Emerald Bay, and (3) the use of LIND\n\n\n\n                                                                        LEGAL COMMITTEE AGENDA ITEM NO. 5.B &\n                                                                         CONSENT CALENDAR AGENDA ITEM NO. 6.E\n"
+    },
+    {
+     "page_number": 2,
+     "text": "o You may also send by mail, fax to (775) 588-4527, or drop off in person at 128 Market Street.\nAttachments:\nA. LIND Settlement Agreement\n                                                                                                             L\n                                                                         LEGAL COMMITTEE AGENDA ITEM NO. 5.B &\n                                                                          CONSENT CALENDAR AGENDA ITEM NO. 6.E"
+    },
+    {
+     "page_number": 3,
+     "text": "       its designee, to detect the presence, and prevent the introduction of, aquatic invasive species.\n       Non-motorized watercraft and seaplanes are subject to inspection and are included in this\n       provision if determined necessary by TRPA or its designee. LIND launched motorized watercraft\n       into the waters of the Lake Tahoe region without required inspection.\n                                                                         LEGAL COMMITTEE AGENDA ITEM NO. 5.B &\n                                                                          CONSENT CALENDAR AGENDA ITEM NO. 6.E"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-A-Biodervisity-and-Recreation-Threshold-Updates.pdf": {
+   "sha256": "aeda3f8519c41c8c44b3de18a628b1f59bcfcae2889b4410b3af947d352fc767",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                              STAFF REPORT\n\n\nDATE:       October 21, 2026\nTo:         TRPA Governing Board\nFrom:       TRPA Staff\nSubject:    Briefing on Biodiversity and Recreation Threshold Updates\n\n\nSummary and Staff Recommendation:\nThe Bi-State Compact requires TRPA to adopt environmental threshold carrying capacities (threshold\nstandards) to establish environmental quality goals for the Tahoe Region. The Board identified\ncontinuing to review and update the standards as a priority for the 2026-2027 work plan. The\npresentation will provide an overview of the work underway to update threshold standards related to\nbiodiversity and recreation.\n\nRequested Action:\nThis item is informational only.\nBackground:\nMore than forty years ago, the revised Bi-State Compact recognized that “the waters of Lake Tahoe and\nother resources of the region are threatened with deterioration or degeneration, which endangers the\nnatural beauty and economic productivity of the region” (96th Congress, 1980). To protect these\nresources for future generations, the Compact directs TRPA to establish “environmental threshold\ncarrying capacities,” defined as “an environmental standard necessary to maintain a significant scenic,\nrecreation, educational, scientific or natural value of the region or to maintain public health and safety\nwithin the region.”\nThese standards set environmental quality goals and represent a shared aspiration to restore and\nprotect Lake Tahoe. The standards shape the goals and policies of the Regional Plan and guide millions\nof dollars of public and private investment in the basin through the Environmental Improvement\nProgram (EIP).\nThe initial threshold standards, established more than four decades ago, were never intended to remain\nstatic. The multi-disciplinary team that authored the 1981 threshold study report outlined specific\ntriggers for standard review and set the expectation that the standards would be reassessed at least\nevery five years, writing, “environmental thresholds are not static standards that once in place remain\nforever” (TRPA 1982a).\nThe presentation will provide an overview of the work underway to update threshold standards in two\nfocus areas.\n\n\n\n\n                                                                                        AGENDA ITEM NO. 7.A\n"
+    },
+    {
+     "page_number": 2,
+     "text": "Submitting Public Comment:\no Please submit written comments by 3 p.m. the day before the meeting.\no You may email comments to publiccomment@trpa.gov. Include meeting details and agenda item in\n   the subject line or write \"General Comment\" for non-agenda items.\no You may also send by mail, fax to (775) 588-4527, or drop off in person at 128 Market Street.\n                                                                                       AGENDA ITEM NO. 7.A"
+    },
+    {
+     "page_number": 3,
+     "text": ""
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf": {
+   "sha256": "5a0485836cbf7b6a945400780841df84e1af44aaf0a063247351d41f8df71700",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                              STAFF REPORT\n\nDate:       October 21, 2026\n\nTo:         TRPA Governing Board\n\nFrom:       TRPA Staff\n\nSubject:    Lake Tahoe Aquatic Invasive Species (AIS) Program Update\n\n\nSummary and Staff Recommendation:\nTRPA staff will provide an update on the Aquatic Invasive Species (AIS) program. The presentation will\ncover all program areas including AIS prevention, control, monitoring, and rapid response for the past\nyear.\n\nLake Tahoe faces a constant and serious threat from the introduction and spread of aquatic invasive\nspecies. AIS can harm native ecosystems, negatively impact recreation opportunities, and affect Lake\nTahoe’s famed water quality and clarity. The Lake Tahoe AIS program’s mission is to prevent, detect, and\ncontrol aquatic invasive species in the region so that future generations can enjoy Lake Tahoe.\n\nTRPA co-leads the Lake Tahoe AIS program with the Tahoe Resource Conservation District (Tahoe RCD)\nand more than 40 public and private partners. Numerous federal, state, and regional regulations and\nprograms are in place to limit the introduction and spread of AIS. TRPA and Tahoe RCD implement a\nnationally recognized watercraft inspection program, work together to reduce and control the existing\ninvasive species in the lake, and conduct lake-wide monitoring to measure progress.\n\nStaff will provide an overview of accomplishments, challenges, and upcoming work for the AIS program.\nStaff will highlight program enhancements to protect the Tahoe Region from golden mussels and other\nAIS. These enhancements include strategies focusing on motorized and non-motorized recreation,\neducation and outreach, as well as the status of permanent watercraft inspection stations.\n\nStaff will also share progress on control activities including the next phase of work at the Taylor-Tallac\nEcosystem, Emerald Bay, and Nevada Shoreline areas, as well as interim control and containment work\nat the Tahoe Keys and other locations around the lake.\n\nRegarding monitoring, staff will discuss upcoming lake-wide surveys and surveillance, a new drone-\nsupported remote-sensing effort, and early detection monitoring.\n\nStaff will close with the status of funding for the program and upcoming priorities.\nThis item is for informational purposes, and no action is required.\n\n\n\n\n                                                                                       AGENDA ITEM NO. 7.B\n"
+    },
+    {
+     "page_number": 2,
+     "text": "Submitting Public Comment:\no Please submit written comments by 3 p.m. the day before the meeting.\no You may email comments to publiccomment@trpa.gov. Include meeting details and agenda item in\n   the subject line or write \"General Comment\" for non-agenda items.\no You may also send by mail, fax to (775) 588-4527, or drop off in person at 128 Market Street.\n                                                                                 AGENDA ITEM NO. 7.B"
+    },
+    {
+     "page_number": 3,
+     "text": ""
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://www.trpa.gov/governing-board-documents-october-28-2026-hybrid-meeting/": "<div class=\"entry-content\">\n\t\t\t\t\t<p><a href=\"https://www.trpa.gov/wp-content/uploads/October-28-Governing-Board-Agenda.pdf\" target=\"_blank\" rel=\"noopener\">October 28 Governing Board Agenda</a></p>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/October-28-Governing-Board-Packet.pdf\" target=\"_blank\" rel=\"noopener\">October 28 Governing Board Packet</a></p>\n<p>&nbsp;</p>\n<hr />\n<h2>Meeting Materials</h2>\n<div class='et-learn-more clearfix'>\n\t\t\t\t\t<h3 class='heading-more'>Legal Committee - 8:30 a.m.</h3>\n\t\t\t\t\t<div class='learn-more-content'><p><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Legal Committee Agenda Item No. 5. A &amp; Consent Calendar Agenda Item No. 6.D Resolution of Enforcement Action: Brady Sessions; Unauthorized Grading resulting in Material Damage to Trees and Unauthorized Tree Removal; 630 Grand Avenue, Placer County, CA; Assessor&#8217;s Parcel Number (APN) 085-142-021; TRPA File No. CODE2026-0025 Staff Report</a></p>\n<ul>\n<li><a href=\"https://www.trpa.gov/wp-content/uploads/Attachment-A_Sessions-Signed-Settlement.pdf\" target=\"_blank\" rel=\"noopener\">Attachment A Sessions Settlement Agreement</a></li>\n</ul>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Legal Committee Agenda Item No. 5.B &amp; Consent Calendar Agenda Item No. 6.E Resolution of Enforcement Action: LIND Art &amp; Technology, Inc., Launching a motorized watercraft into the waters of the Region without an inspection, operating motorized watercraft in a tributary and in No Wake zones, TRPA File No. CODE2026-0038 Staff Report</a></p>\n<ul>\n<li><a href=\"https://www.trpa.gov/wp-content/uploads/Attachment-A_LIND-Settlement-Agreement-1.pdf\" target=\"_blank\" rel=\"noopener\">Attachment A LIND Settlement Agreement</a></li>\n</ul>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Draft-September-23-2026-Legal-Committee-Minutes.pdf\" target=\"_blank\" rel=\"noopener\">Draft September 23, 2026 Legal Committee Minutes</a></p></div>\n\t\t\t\t</div>\n<div class='et-learn-more clearfix'>\n\t\t\t\t\t<h3 class='heading-more'>Operations and Governance Committee - 8:30 a.m.</h3>\n\t\t\t\t\t<div class='learn-more-content'><p><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf\" target=\"_blank\" rel=\"noopener\">Operations and Governance Committee Agenda Item No. 5.A &amp; Consent Calendar Item No. 6.A September Financials Staff Report</a></p>\n<ul>\n<li><a href=\"https://www.trpa.gov/wp-content/uploads/Attachment-A-September-Financials.pdf\" target=\"_blank\" rel=\"noopener\">Attachment A September Financials</a></li>\n</ul>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf\" target=\"_blank\" rel=\"noopener\">Operations and Governance Committee Agenda Item Nos. 5.B and 5.C &amp; Consent Calendar Item Nos. 6.B and 6.C Inflation adjustment to TRPA Filing Fee Schedule, Mobility Mitigation Fee, and Rental Vehicle Mitigation Fee Staff Report</a></p>\n<ul>\n<li><a href=\"https://www.trpa.gov/wp-content/uploads/Attachment-A_Fee-Resolution-2026.pdf\" target=\"_blank\" rel=\"noopener\">Attachment A Fee Resolution 2026</a></li>\n<li><a href=\"https://www.trpa.gov/wp-content/uploads/2-Fee-Schedule-Update-2026-10-COI-Only-3.2-Draft.pdf\" target=\"_blank\" rel=\"noopener\">Exhibit 1 to Attachment A Fee Schedule </a></li>\n<li><a href=\"https://www.trpa.gov/wp-content/uploads/Attachment-B_Fee-Resolution-2026.pdf\" target=\"_blank\" rel=\"noopener\">Attachment B Fee Resolution 2026</a></li>\n</ul>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Draft-September-23-2026-Operations-Governance-Committee-Minutes.pdf\" target=\"_blank\" rel=\"noopener\">Draft September 23, 2026 Operations &amp; Governance Committee Minutes</a></p></div>\n\t\t\t\t</div>\n<div class='et-learn-more clearfix'>\n\t\t\t\t\t<h3 class='heading-more'>Governing Board - Beginning at 9:15 a.m.</h3>\n\t\t\t\t\t<div class='learn-more-content'><p><a href=\"https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-A-Biodervisity-and-Recreation-Threshold-Updates.pdf\" target=\"_blank\" rel=\"noopener\">Agenda Item No. 7.A Biodiversity and Recreation Threshold Updates Staff Report</a></p>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf\" target=\"_blank\" rel=\"noopener\">Agenda Item No. 7.B Aquatic Invasive Species Program Update Staff Report</a></p>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Draft-September-23-Governing-Board-Minutes.pdf\" target=\"_blank\" rel=\"noopener\">Draft September 23, 2026 Governing Board Minutes</a></p>\n<h4>TRPA Consent Calendar</h4>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf\" target=\"_blank\" rel=\"noopener\">Consent Calendar Item No. 6.A &amp; </a><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf\" target=\"_blank\" rel=\"noopener\">Operations and Governance Committee Agenda Item No. 5.A </a><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf\" target=\"_blank\" rel=\"noopener\">September Financials Staff Report</a></p>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf\" target=\"_blank\" rel=\"noopener\">Consent Calendar Item Nos. 6.B and 6.C &amp; </a><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf\" target=\"_blank\" rel=\"noopener\">Operations and Governance Committee Agenda Item Nos. 5.B and 5.C </a><a href=\"https://www.trpa.gov/wp-content/uploads/Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf\" target=\"_blank\" rel=\"noopener\">Inflation adjustment to TRPA Filing Fee Schedule, Mobility Mitigation Fee, and Rental Vehicle Mitigation Fee Staff Report</a></p>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Consent Calendar Agenda Item No. 6.D &amp; </a><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Legal Committee Agenda Item No. 5. A </a><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Resolution of Enforcement Action: Brady Sessions; Unauthorized Grading resulting in Material Damage to Trees and Unauthorized Tree Removal; 630 Grand Avenue, Placer County, CA; Assessor&#8217;s Parcel Number (APN) 085-142-021; TRPA File No. CODE2026-0025 Staff Report</a></p>\n<p><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Consent Calendar Agenda Item No. 6.E &amp; </a><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Legal Committee Agenda Item No. 5.B </a><a href=\"https://www.trpa.gov/wp-content/uploads/LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf\" target=\"_blank\" rel=\"noopener\">Resolution of Enforcement Action: LIND Art &amp; Technology, Inc., Launching a motorized watercraft into the waters of the Region without an inspection, operating motorized watercraft in a tributary and in No Wake zones, TRPA File No. CODE2026-0038 Staff Report</a></p></div>\n\t\t\t\t</div>\n<p><span style=\"color: #666666; font-size: 14px;\"><div class='et-learn-more clearfix'>\n\t\t\t\t\t<h3 class='heading-more'>Join the LEGAL COMMITTEE ONLY on October 28</h3>\n\t\t\t\t\t<div class='learn-more-content'></span></p>\n<h4><a href=\"https://us02web.zoom.us/j/83443259531?pwd=AHzIy4AWqhN6My2NH76dxefAvtW7La.1\" target=\"_blank\" rel=\"noopener\">CLICK HERE TO JOIN THE LEGAL COMMITTEE ONLY ON OCTOBER 28</a></h4>\n<p>Meeting ID: 834 4325 9531\nPasscode: 264929</p>\n<p>&#8212;</p>\n<p>One tap mobile\n+16699009128,,83443259531#,,,,*264929# US (San Jose)\n+16694449171,,83443259531#,,,,*264929# US</p>\n<p>&#8212;</p>\n<p>Join by SIP\n• <a href=\"/cdn-cgi/l/email-protection\" class=\"__cf_email__\" data-cfemail=\"a29a9196969190979b979193e2d8cdcdcfc1d0c18cc1cdcf\">[email&#160;protected]</a></p>\n<p>Join instructions\n<a href=\"https://us02web.zoom.us/meetings/83443259531/invitations?signature=fXozhRwhyBMctcPkqfT1OpOvu2LMadh5tkM7TMWGnng\" target=\"_blank\" rel=\"noopener\">https://us02web.zoom.us/meetings/83443259531/invitations?signature=fXozhRwhyBMctcPkqfT1OpOvu2LMadh5tkM7TMWGnng</a></p>\n<p>&nbsp;</p></div>\n\t\t\t\t</div></p>\n<p><span style=\"color: #666666; font-size: 14px;\"><div class='et-learn-more clearfix'>\n\t\t\t\t\t<h3 class='heading-more'>Join the Webinar on October 28</h3>\n\t\t\t\t\t<div class='learn-more-content'></span></p>\n<h4><a href=\"https://us02web.zoom.us/j/86841573265?pwd=krE6FzzChG77etGmGvzReI3lZpG1j3.1\" target=\"_blank\" rel=\"noopener\">CLICK HERE TO JOIN THE WEBINAR ON OCTOBER 28</a></h4>\n<p>Passcode:408500</p>\n<p>&nbsp;</p>\n<p>Phone one-tap:</p>\n<p>+16699009128,,86841573265#,,,,*408500# US (San Jose)</p>\n<p>+16694449171,,86841573265#,,,,*408500# US</p>\n<p>&nbsp;</p>\n<p>Join via audio:</p>\n<p>+1 669 900 9128 US (San Jose)</p>\n<p>+1 669 444 9171 US</p>\n<p>+1 719 359 4580 US</p>\n<p>+1 253 205 0468 US</p>\n<p>+1 253 215 8782 US (Tacoma)</p>\n<p>+1 346 248 7799 US (Houston)</p>\n<p>+1 360 209 5623 US</p>\n<p>+1 386 347 5053 US</p>\n<p>+1 507 473 4847 US</p>\n<p>+1 564 217 2000 US</p>\n<p>+1 646 558 8656 US (New York)</p>\n<p>+1 646 931 3860 US</p>\n<p>+1 689 278 1000 US</p>\n<p>+1 301 715 8592 US (Washington DC)</p>\n<p>+1 305 224 1968 US</p>\n<p>+1 309 205 3325 US</p>\n<p>+1 312 626 6799 US (Chicago)</p>\n<p>Webinar ID: 868 4157 3265</p>\n<p>Passcode: 408500</p>\n<p>International numbers available: <a href=\"https://us02web.zoom.us/u/kqVOoeIe7\" target=\"_blank\" rel=\"noopener\">https://us02web.zoom.us/u/kqVOoeIe7</a></p></div>\n\t\t\t\t</div></p>\n<p><span style=\"color: #666666; font-size: 14px;\"><div class='et-learn-more clearfix'>\n\t\t\t\t\t"
+ },
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4": null,
+  "5.A": null,
+  "6.A": {
+   "page_start": 1,
+   "page_end": 18,
+   "url_end": "Ops-Item-No-5-A-Consent-Calendar-Item-No-6-A-September-Financials.pdf",
+   "heading": "CONSENT CALENDAR ITEM NO. 6.A"
+  },
+  "6.B": {
+   "page_start": 1,
+   "page_end": 24,
+   "url_end": "Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+   "heading": "CALENDAR ITEM NOS. 6.B AND 6.C"
+  },
+  "6.C": {
+   "page_start": 1,
+   "page_end": 24,
+   "url_end": "Ops-Item-Nos-5-B-and-5-C-Consent-Calendar-Item-Nos-6-B-and-6-C-Filing-Fees.pdf",
+   "heading": "CALENDAR ITEM NOS. 6.B AND 6.C"
+  },
+  "6.D": {
+   "page_start": 1,
+   "page_end": 5,
+   "url_end": "LC-5-A-CC-6-D-Brady-Sessions-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+   "heading": "CONSENT CALENDAR ITEM NO. 6.D"
+  },
+  "6.E": {
+   "page_start": 1,
+   "page_end": 8,
+   "url_end": "LC-5-B-CC-6-E-LIND-Art-Resolution-of-Enforcement-Action-Staff-Report.pdf",
+   "heading": "CONSENT CALENDAR AGENDA ITEM NO. 6.E"
+  },
+  "7.A": {
+   "page_start": 1,
+   "page_end": 2,
+   "url_end": "Agenda-Item-No-7-A-Biodervisity-and-Recreation-Threshold-Updates.pdf",
+   "heading": "AGENDA ITEM NO. 7.A"
+  },
+  "7.B": {
+   "page_start": 1,
+   "page_end": 2,
+   "url_end": "Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf",
+   "heading": "AGENDA ITEM NO. 7.B"
+  },
+  "8.A": null,
+  "8.B": null,
+  "9": null,
+  "10.A": null,
+  "10.B": null,
+  "10.C": null,
+  "10.D": null,
+  "10.E": null,
+  "10.F": null,
+  "10.G": null,
+  "11": null,
+  "12": null
+ }
+}

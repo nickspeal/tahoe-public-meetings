@@ -400,18 +400,11 @@ def write_schedules(path: Path, reports: list[dict]) -> list[str]:
         if not schedule or (entry.get("schedule") or {}).get("source") == "configured":
             continue
         validate_schedule(entry["id"], schedule)
-        # Keep the operational fields together, ahead of the legacy research record.
-        reordered = {}
-        for key, value in entry.items():
-            if key == "legacy":
-                reordered["schedule"] = schedule
-            if key != "schedule":
-                reordered[key] = value
-        reordered.setdefault("schedule", schedule)
-        registry[index] = reordered
+        registry[index] = {**entry, "schedule": schedule}
         written.append(entry["id"])
     if written:
+        from .catalog import registry_text  # the catalog imports this module
         temporary = path.with_name(path.name + ".tmp")
-        temporary.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n")
+        temporary.write_text(registry_text(registry))
         temporary.replace(path)
     return written

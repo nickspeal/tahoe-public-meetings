@@ -42,6 +42,7 @@ def check(data):
     timestamp(data.get("generatedAt"), "generatedAt")
     agencies = {a["id"] for a in data.get("agencies", [])}
     topics = {t["id"] for t in data.get("topics", [])}
+    # The raw registry is enough here: `follow` is never inherited through `extends`.
     followed = {a["id"] for a in json.loads((ROOT / "packages/domain/agencies.json").read_text()) if a["follow"]}
     require(agencies <= followed, "exported agencies must be followed")
     require(data.get("topics") == PUBLIC_TOPICS, "topics must match the ordered canonical catalog")

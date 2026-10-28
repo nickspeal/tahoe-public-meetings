@@ -1,7 +1,8 @@
 """Meeting-length model: estimates, observed lengths, and minutes-text detection.
 
-Tunable through config/meeting-durations.json. Estimates are always biased long
-and rounded up, and are labelled as estimates wherever they are exported.
+Tunable through config/meeting-durations.json (the defaults) and an agency entry's
+``duration`` in packages/domain/agencies.json (that body's own settings). Estimates are
+always biased long and rounded up, and are labelled as estimates wherever they are exported.
 """
 from __future__ import annotations
 
@@ -15,30 +16,44 @@ from pathlib import Path
 NAME = "meeting-durations.json"
 OBSERVED_SOURCES = ("minutes", "recording", "manual", "published", "minutes-text")
 _NUMERIC = ("baseMinutes", "perItemMinutes", "fixedMinutes", "minMinutes", "maxMinutes", "roundUpToMinutes", "longBiasFactor")
+_KEYS = {"mode", "sectionWeights", "notes", *_NUMERIC}
 
 
 @lru_cache(maxsize=1)
 def duration_config() -> dict:
+    """The file's defaults plus ``agencies``: each registry entry's ``duration``, keyed by agency ID."""
+    from .catalog import agency_catalog
     checkout = Path(__file__).resolve().parents[3] / "config" / NAME
     packaged = Path(__file__).with_name(NAME)
     cfg = json.loads((packaged if packaged.is_file() else checkout).read_text())
+    if "agencies" in cfg:
+        raise ValueError(f"{NAME}: per-agency settings belong in the agency's `duration` in packages/domain/agencies.json")
+    cfg["agencies"] = {a["id"]: a["duration"] for a in agency_catalog() if "duration" in a}
     validate(cfg)
     return cfg
+
+
+def validate_scope(scope: dict, where: str = "meeting-durations") -> None:
+    """Check the defaults or one agency's ``duration`` block."""
+    if not isinstance(scope, dict) or set(scope) - _KEYS:
+        raise ValueError(f"invalid {where}: settings are {', '.join(sorted(_KEYS))}")
+    if scope.get("mode", "estimated") not in ("fixed", "estimated"):
+        raise ValueError("duration mode must be fixed or estimated")
+    for key in _NUMERIC:
+        if key in scope and not (isinstance(scope[key], (int, float)) and scope[key] > 0):
+            raise ValueError(f"{key} must be a positive number")
+    for pattern, weight in scope.get("sectionWeights", {}).items():
+        re.compile(pattern, re.I)
+        if not isinstance(weight, (int, float)) or weight < 0:
+            raise ValueError(f"invalid weight for {pattern}")
 
 
 def validate(cfg: dict) -> None:
     if cfg.get("version") != 1 or "defaults" not in cfg:
         raise ValueError("invalid meeting-durations config")
-    for scope in [cfg["defaults"], *cfg.get("agencies", {}).values()]:
-        if scope.get("mode", "estimated") not in ("fixed", "estimated"):
-            raise ValueError("duration mode must be fixed or estimated")
-        for key in _NUMERIC:
-            if key in scope and not (isinstance(scope[key], (int, float)) and scope[key] > 0):
-                raise ValueError(f"{key} must be a positive number")
-        for pattern, weight in scope.get("sectionWeights", {}).items():
-            re.compile(pattern, re.I)
-            if not isinstance(weight, (int, float)) or weight < 0:
-                raise ValueError(f"invalid weight for {pattern}")
+    validate_scope(cfg["defaults"])
+    for agency, scope in cfg.get("agencies", {}).items():
+        validate_scope(scope, f"duration of {agency}")
     if not all(key in cfg["defaults"] for key in _NUMERIC):
         raise ValueError("defaults must define every numeric setting")
 

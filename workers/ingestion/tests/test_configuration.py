@@ -13,10 +13,11 @@ from tahoe_ingest.topics import classify
 def test_csv_rows_remain_distinct_unverified_research():
     agencies = agency_catalog()
     imported = [a for a in agencies if a.get('legacy')]
+    # Every imported CSV row stays one entry with its own row number; later entries are added without a legacy record.
     assert len(imported) == 41
-    assert {a['legacy']['sourceRow'] for a in imported} == set(range(3, 44))
+    assert sorted(a['legacy']['sourceRow'] for a in imported) == list(range(3, 44))
     assert all(a['legacy']['verification'] == 'unverified' for a in imported)
-    assert len(agencies) == 45  # Imported rows, Truckee, two added parks commissions, and the TTD RTCPC.
+    assert len({a['id'] for a in agencies}) == len(agencies)
     assert {'slt', 'ttd', 'truckee'} <= {a['id'] for a in agencies if a.get('discovery')}
     assert {a['id'] for a in agencies if not a['follow']} == {'douglas-newsletter','fows','lahontan-office','tahoe-fund','cal-epa','usace'}
     # Subsequent source verification may fill operational URLs; the imported

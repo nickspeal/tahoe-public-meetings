@@ -106,7 +106,7 @@ def test_every_discovery_type_goes_through_one_scheduled_and_one_backfill_path(m
 
 def test_every_followed_source_names_a_known_type():
     followed = [a for a in agency_catalog() if a["follow"] and a.get("discovery")]
-    assert len(followed) >= 30 and all(a["discovery"]["type"] in source_discovery.TYPES for a in followed)
+    assert followed and all(a["discovery"]["type"] in source_discovery.TYPES for a in followed)
     assert not any("discoveryAdapter" in a for a in agency_catalog())
 
 

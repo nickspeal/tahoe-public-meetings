@@ -1,12 +1,14 @@
-"""Load the single source topic catalog in a checkout or installed wheel."""
+"""Load the topic catalog and the agency registry in a checkout or installed wheel."""
 from __future__ import annotations
 
+import copy
 import json
 import re
 from functools import lru_cache
 from pathlib import Path
 
 from .agenda_layouts import validate_agency_agendas
+from .durations import validate_scope as validate_duration
 from .schedules import validate_schedule
 from .source_discovery import validate_discovery
 
@@ -53,15 +55,73 @@ def agency_catalog_path() -> Path:
     return packaged if packaged.is_file() else Path(__file__).resolve().parents[3] / "packages/domain/agencies.json"
 
 
+# Every key an agency entry may have, in the order the registry file keeps them (`registry_text`).
+AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "officialUrl", "sourceUrl", "participation",
+               "participationTypes", "discovery", "agenda", "staffReports", "topicHints", "schedule", "duration", "legacy")
+# What an entry says about its own body, never inherited through `extends`: its identity, the decision to follow it,
+# how readers take part, when and how long it meets, and its research record. The rest describes the publisher's
+# website and document formats, which sibling bodies share.
+OWN_KEYS = frozenset({"id", "name", "aliases", "extends", "follow", "participation", "schedule", "duration", "legacy"})
+
+
+def registry_text(entries: list[dict]) -> str:
+    """The registry file's canonical text: two-space JSON, each entry's keys in AGENCY_KEYS order."""
+    return json.dumps([{key: entry[key] for key in sorted(entry, key=AGENCY_KEYS.index)} for entry in entries],
+                      indent=2, ensure_ascii=False) + "\n"
+
+
+def _merge(base: dict, override: dict) -> dict:
+    merged = copy.deepcopy(base)
+    for key, value in override.items():
+        both = isinstance(value, dict) and isinstance(merged.get(key), dict)
+        merged[key] = _merge(merged[key], value) if both else copy.deepcopy(value)
+    return merged
+
+
+def resolve_extends(entries: list[dict]) -> list[dict]:
+    """Registry entries with ``extends`` applied, so no consumer needs to know about it.
+
+    A child starts from its parent's resolved entry minus OWN_KEYS. Objects merge key by key,
+    recursively, the child's value winning; lists and other values replace the parent's.
+    A child cannot remove an inherited key, so a body whose blocks differ in shape, not only
+    in values, should not extend. The parent must exist; chains resolve parent first and
+    cycles are an error. ``extends`` itself is dropped, and keys follow AGENCY_KEYS.
+    """
+    by_id = {entry["id"]: entry for entry in entries}
+    done: dict[str, dict] = {}
+
+    def resolve(aid: str, path: tuple[str, ...]) -> dict:
+        if aid not in done:
+            entry, parent = by_id[aid], by_id[aid].get("extends")
+            if parent is None:
+                resolved = copy.deepcopy(entry)
+            elif not isinstance(parent, str) or parent not in by_id:
+                raise ValueError(f"{aid}: extends unknown agency {parent!r}")
+            elif parent in path:
+                raise ValueError(f"agency entries extend each other: {' -> '.join((*path, parent))}")
+            else:
+                inherited = {k: v for k, v in resolve(parent, (*path, parent)).items() if k not in OWN_KEYS}
+                resolved = _merge(inherited, {k: v for k, v in entry.items() if k != "extends"})
+            done[aid] = {key: resolved[key] for key in sorted(resolved, key=AGENCY_KEYS.index)}
+        return done[aid]
+    return [resolve(entry["id"], (entry["id"],)) for entry in entries]
+
+
 @lru_cache(maxsize=1)
 def agency_catalog() -> tuple[dict, ...]:
-    agencies = json.loads(agency_catalog_path().read_text())
-    ids = [a["id"] for a in agencies]
+    """The validated registry, with ``extends`` resolved (see config/README.md, "Sibling bodies")."""
+    raw = json.loads(agency_catalog_path().read_text())
+    ids = [a.get("id") for a in raw]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate agency IDs")
+    for entry in raw:
+        if not isinstance(entry.get("id"), str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", entry["id"]):
+            raise ValueError(f"invalid agency: {entry}")
+        if unknown := set(entry) - set(AGENCY_KEYS):
+            raise ValueError(f"{entry['id']}: unknown registry keys {', '.join(sorted(unknown))}")
+    agencies = resolve_extends(raw)
     for agency in agencies:
-        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", agency["id"]) or not all(
-                agency.get(k) for k in ("name", "shortName")) or not isinstance(agency.get("follow"), bool):
+        if not all(agency.get(k) for k in ("name", "shortName")) or not isinstance(agency.get("follow"), bool):
             raise ValueError(f"invalid agency: {agency}")
         # Other names readers search for (acronyms, full names); the website's agency filter matches them.
         aliases = agency.get("aliases", [])
@@ -70,6 +130,8 @@ def agency_catalog() -> tuple[dict, ...]:
         validate_discovery(agency)
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
+        if "duration" in agency:
+            validate_duration(agency["duration"], f"duration of {agency['id']}")
         from .staff_report_rules import check_config  # imported here: rule modules load only with the registry
         check_config(agency)
         from urllib.parse import urlparse

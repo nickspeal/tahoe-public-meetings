@@ -5,6 +5,7 @@ type Agency = PublicData['agencies'][number];
 type Topic = PublicData['topics'][number];
 
 // Read from the registry at build time, like the topic catalog: aliases are search vocabulary, not exported meeting data.
+// The raw file is safe to read here because `aliases` is one of the keys `extends` never passes on (catalog.OWN_KEYS).
 const aliasesById = new Map((registry as { id: string; aliases?: string[] }[]).map((entry) => [entry.id, entry.aliases ?? []]));
 
 /** Other names a reader might type for an agency: its short name, acronyms, and full official names. */

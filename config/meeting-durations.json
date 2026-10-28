@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "notes": "Tunable meeting-length model. Every exported meeting gets a duration; estimates are labelled as estimates and deliberately biased long. See config/README.md and docs/research/meeting-duration-pacing-2026-10-20.md.",
+  "notes": "Tunable meeting-length model. Every exported meeting gets a duration; estimates are labelled as estimates and deliberately biased long. Per-agency settings are each agency's `duration` in packages/domain/agencies.json. See config/README.md and docs/research/meeting-duration-pacing-2026-10-20.md.",
   "defaults": {
     "mode": "estimated",
     "baseMinutes": 90,
@@ -19,32 +19,5 @@
     "maxMinutes": 360,
     "roundUpToMinutes": 30,
     "longBiasFactor": 1.25
-  },
-  "agencies": {
-    "ttd": {
-      "mode": "fixed",
-      "fixedMinutes": 150,
-      "notes": "Initial guess: TTD board meetings tend to fill a morning slot regardless of agenda length. No observed data yet; 150 minutes before the long-side bias (3.5 hours exported)."
-    },
-    "slt": {
-      "mode": "estimated",
-      "baseMinutes": 120,
-      "notes": "Initial guess: City Council agendas with 20+ items and hearings run long. No observed data yet."
-    },
-    "truckee": {
-      "mode": "estimated",
-      "baseMinutes": 90,
-      "notes": "Initial guess for Town Council. No observed data yet."
-    },
-    "lahontan-board": {
-      "mode": "fixed",
-      "fixedMinutes": 240,
-      "notes": "Initial guess: the Regional Water Board holds long, full-morning business meetings. No observed data yet."
-    },
-    "trpa-governing": {
-      "mode": "fixed",
-      "fixedMinutes": 240,
-      "notes": "Initial guess: TRPA Governing Board meetings are typically a long morning session. No observed data yet."
-    }
   }
 }

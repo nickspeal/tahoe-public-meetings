@@ -13,8 +13,9 @@ from functools import lru_cache
 
 from .catalog import agency_catalog, topic_ids, topic_catalog, expand_topics
 
-# Include configuration in the version so rule edits are picked up by reclassify. Agencies' topicHints are not in it;
-# reclassify still applies a hint edit wherever it changes an item's topics.
+# Include configuration in the version so rule edits are picked up by reclassify. Agencies' topicHints are left out on
+# purpose: a new version rewrites every item's tags, and reclassify already compares each item's stored evidence, so a
+# hint edit rewrites only the items whose tags or rule provenance change (decision 0027).
 CLASSIFIER_VERSION = "title-rules-v4.1-" + hashlib.sha256(
     json.dumps(topic_catalog(), sort_keys=True).encode()).hexdigest()[:12]
 RULES = {topic["id"]: [(rule["id"], re.compile(rule["pattern"], re.I))

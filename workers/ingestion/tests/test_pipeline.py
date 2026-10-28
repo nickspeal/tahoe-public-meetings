@@ -677,6 +677,31 @@ def test_reclassify_upgrade_after_a_catalog_edit_does_not_grow_with_the_archive(
     assert again["n"] == 2
 
 
+def test_reclassify_applies_an_agency_hint_edit_without_a_new_classifier_version(db, monkeypatch):
+    # topicHints are not in CLASSIFIER_VERSION, which would rewrite every item; stored evidence is compared instead.
+    import re
+    from tahoe_ingest import topics
+    assert ingest_bundle(db, fixture_bundle())["failed"] == 0
+    item = db.execute("""SELECT i.id,i.title FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id
+        WHERE m.agency_id='ttd' AND i.active AND NOT EXISTS (SELECT 1 FROM item_topics t WHERE t.item_id=i.id AND t.topic_id='transit')
+        ORDER BY i.id LIMIT 1""").fetchone()
+
+    def hint(rule):
+        monkeypatch.setattr(topics, "agency_hints", lambda: {"ttd": (("transit", ((rule, re.compile(re.escape(item["title"]), re.I)),)),)})
+    hint("ttd-first")
+    tagged = reclassify_topics(db)["itemsChanged"]
+    assert tagged >= 1
+    hint("ttd-renamed")  # same tags, new provenance
+    preview = reclassify_topics(db, dry_run=True)
+    assert (preview["itemsChanged"], preview["itemsUpgraded"], preview["itemsEvidenceChanged"]) == (0, 0, tagged)
+    with statement_count(monkeypatch) as counter:
+        reclassify_topics(db)
+    assert counter["n"] <= 9
+    rule = db.execute("SELECT evidence->>'rule' AS rule FROM item_topics WHERE item_id=%s AND topic_id='transit'", (item["id"],))
+    assert rule.fetchone()["rule"] == "ttd-renamed"
+    assert reclassify_topics(db, dry_run=True)["itemsEvidenceChanged"] == 0
+
+
 def test_reingesting_an_unchanged_meeting_skips_rewrites(db, monkeypatch):
     bundle = one_meeting("slt")
     assert ingest_bundle(db, bundle)["failed"] == 0

@@ -473,7 +473,9 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
 
     Any topic catalog edit changes CLASSIFIER_VERSION and so upgrades every item;
     writes therefore go in bulk, a fixed number of statements whatever the archive
-    size (decision 0020).
+    size (decision 0020). An agency's topicHints are not in the version: every item's
+    stored evidence is compared instead, so a hint edit rewrites only the items whose
+    tags or their provenance (rule name, matched text) change.
     """
     rows = list(conn.execute("""SELECT i.id,i.meeting_id,i.title,i.citations,i.classifier_version,m.agency_id
         FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id WHERE i.active ORDER BY i.id"""))
@@ -481,23 +483,27 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
     after = dict(before)
     changed = 0
     upgraded = 0
+    evidence_only = 0
     stored = {}
-    for r in conn.execute("SELECT item_id,topic_id FROM item_topics"):
-        stored.setdefault(r["item_id"], set()).add(r["topic_id"])
+    for r in conn.execute("SELECT item_id,topic_id,source,evidence FROM item_topics"):
+        stored.setdefault(r["item_id"], {})[r["topic_id"]] = r
     pending = []
     for item in rows:
-        old = stored.get(item["id"], set())
+        old = set(stored.get(item["id"], {}))
         evidence = classify(item["agency_id"], item["title"], _json(item["citations"]))
         new = set(evidence)
         for topic in old:
             before[topic] = before.get(topic, 0) + 1
         for topic in new:
             after[topic] += 1
+        stale = _tags_stale(stored.get(item["id"], {}), evidence)
         if old != new:
             changed += 1
         if item["classifier_version"] != CLASSIFIER_VERSION:
             upgraded += 1
-        if old != new or item["classifier_version"] != CLASSIFIER_VERSION:
+        elif stale and old == new:
+            evidence_only += 1
+        if stale or item["classifier_version"] != CLASSIFIER_VERSION:
             pending.append((item, evidence))
     if pending and not dry_run:
         with conn.transaction():
@@ -522,7 +528,7 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
                 conn.execute("UPDATE agenda_items SET updated_at=clock_timestamp() WHERE id = ANY(%s)", ([item["id"] for item in retagged],))
                 _touch_meetings(conn, {item["meeting_id"] for item in retagged})
     return {"classifierVersion": CLASSIFIER_VERSION, "dryRun": dry_run, "itemsScanned": len(rows),
-            "itemsChanged": changed, "itemsUpgraded": upgraded,
+            "itemsChanged": changed, "itemsUpgraded": upgraded, "itemsEvidenceChanged": evidence_only,
             "automaticTopicsBefore": before, "automaticTopicsAfter": after}
 
 

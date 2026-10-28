@@ -1,0 +1,704 @@
+{
+ "note": "Tahoe City PUD Board of Directors, September 18, 2026. The captured Granicus HTML agenda page (unchanged, so its hash matches), and the first pages of each linked memo, department report, and pay estimate (trimmed).",
+ "meeting": {
+  "id": "tcpud:2026-09-18",
+  "agency_id": "tcpud",
+  "title": "Tahoe City Public Utility District Board of Directors Meeting",
+  "local_date": "2026-09-18",
+  "official_url": "https://www.tcpud.org/index.php/meetings"
+ },
+ "items": [
+  {
+   "id": "tcpud:2026-09-18:A",
+   "number": "A",
+   "title": "CALL TO ORDER – PLEDGE OF ALLEGIANCE",
+   "section": null,
+   "fingerprint": "fee6884d4954582ad9f12650855717412e38ac6185f302a0bac080d80ca562d5",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CALL TO ORDER – PLEDGE OF ALLEGIANCE",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:B",
+   "number": "B",
+   "title": "APPROVAL OF AGENDA - ACTION",
+   "section": null,
+   "fingerprint": "7f3602eb215e3c9bb58a6b6a070721da85ca5b810e4dac270b000cc76a088e38",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "APPROVAL OF AGENDA - ACTION",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:C",
+   "number": "C",
+   "title": "PUBLIC COMMENT",
+   "section": null,
+   "fingerprint": "25ab1df3b1315745d0b5bf70689da28389ad48551bc1dc11b0187e9cdac8ff85",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "PUBLIC COMMENT",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.1",
+   "number": "D.1",
+   "title": "Minutes",
+   "section": "Consent Calendar",
+   "fingerprint": "c9680fcc9a9284c819ec84cb6f9ffd309fbca6aaacae51de5ad5138ebcbb38b6",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Minutes",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.2",
+   "number": "D.2",
+   "title": "Finance",
+   "section": "Consent Calendar",
+   "fingerprint": "173fd8970f731903932bcd987265d48baa50114bae04b2f4e34c1fbcfc1891da",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Finance",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.3",
+   "number": "D.3",
+   "title": "Approve Tahoe City Golf Course/Winter Sports Park Food & Beverage Agreement with Cafe Zenon",
+   "section": "Consent Calendar",
+   "fingerprint": "65babfc30510b11712b98202f178bdd375a0727500360268afae55e50e9418d8",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Tahoe City Golf Course/Winter Sports Park Food & Beverage Agreement with Cafe Zenon",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.4",
+   "number": "D.4",
+   "title": "Approve Pay Estimate No. 2 for the Tahoe Cedars Water System Reconstruction Project, Phase 1",
+   "section": "Consent Calendar",
+   "fingerprint": "7fca875823f86e92744dd2835523ba756bd536ceb7522fb069dbb05f81f963bb",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Pay Estimate No. 2 for the Tahoe Cedars Water System Reconstruction Project, Phase 1",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.5",
+   "number": "D.5",
+   "title": "Approve Pay Estimate No. 5 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project",
+   "section": "Consent Calendar",
+   "fingerprint": "4ef367fc0673b56679095bac62a01036335eb71f8f872a0743fc5f70f4f99c5f",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Pay Estimate No. 5 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.6",
+   "number": "D.6",
+   "title": "Approve Pay Estimate No. 1 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project",
+   "section": "Consent Calendar",
+   "fingerprint": "21be515d7cfe006fc19a73d722c6624c184454efe021dde71bface206d8b1da5",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Pay Estimate No. 1 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.7",
+   "number": "D.7",
+   "title": "Approve Final Pay Estimate No. 3 Release of Retention for the Administrative Building Roof Replacement Project",
+   "section": "Consent Calendar",
+   "fingerprint": "4cd3d0708b68901b9f1808a0a69c176a8a295cbfb228d7d33d84ef3e90b78ff9",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Final Pay Estimate No. 3 Release of Retention for the Administrative Building Roof Replacement Project",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:D.8",
+   "number": "D.8",
+   "title": "Approve Pay Estimate No. 4 for the Madden Creek Water System Improvement Project, Phase 4",
+   "section": "Consent Calendar",
+   "fingerprint": "4ccf4c2cf6005dfcebc32ab5e7c5280829ef80c96942f67ee7c9e860ecde4f91",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve Pay Estimate No. 4 for the Madden Creek Water System Improvement Project, Phase 4",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:E.1",
+   "number": "E.1",
+   "title": "Employee Recognition - CSDA Staff Member of the Year Award",
+   "section": "Action Items / General Business – Discussion And Possible Action",
+   "fingerprint": "fd2b47311f670877015d91fd9aaed3f9a52f78ab9ec4a5f8b069bb27147598c2",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Employee Recognition - CSDA Staff Member of the Year Award",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:E.2",
+   "number": "E.2",
+   "title": "Update on the District’s Information Technology Strategic Plan and Cybersecurity Disaster Response Plan",
+   "section": "Action Items / General Business – Discussion And Possible Action",
+   "fingerprint": "1de6084286e8131b4c0029698ff249657d5e38d341797455623a3a0d36f4d958",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Update on the District’s Information Technology Strategic Plan and Cybersecurity Disaster Response Plan",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:E.3",
+   "number": "E.3",
+   "title": "Approve a Professional Services Agreement with ClientFirst for a Virtual Chief Information Officer (vCIO)",
+   "section": "Action Items / General Business – Discussion And Possible Action",
+   "fingerprint": "9e240f13fe1448151f36903c9fe3777acdc19ef7623b425455a590363270e51a",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Approve a Professional Services Agreement with ClientFirst for a Virtual Chief Information Officer (vCIO)",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:E.4",
+   "number": "E.4",
+   "title": "Discussion on the Community Meeting for the Tahoe City Community Center Planning and Feasibility Study Project",
+   "section": "Action Items / General Business – Discussion And Possible Action",
+   "fingerprint": "20886ffc305f26ed822513a33b30f4f20f9ae8ab1c25ba1ed450bd243fd6ac65",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Discussion on the Community Meeting for the Tahoe City Community Center Planning and Feasibility Study Project",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:E.5",
+   "number": "E.5",
+   "title": "Adopt 2027-2031 Strategic Plan",
+   "section": "Action Items / General Business – Discussion And Possible Action",
+   "fingerprint": "de82087eac061ef5348498774621d1c50dd723c946403bab0a4946bd99a46f92",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Adopt 2027-2031 Strategic Plan",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:E.6",
+   "number": "E.6",
+   "title": "2027 Training and Conference Opportunities for Board of Directors - Discussion for 2027 Budget",
+   "section": "Action Items / General Business – Discussion And Possible Action",
+   "fingerprint": "bb130aa52eff515321a2c34345b175c242f95d51a82b5726fe3bae2f85cc2983",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "2027 Training and Conference Opportunities for Board of Directors - Discussion for 2027 Budget",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:F.1",
+   "number": "F.1",
+   "title": "Governance & Administrative Services Department Report",
+   "section": "Department Reports And Updates",
+   "fingerprint": "8c0a68fd3a5c5467340ca8568b8b01d31985940af95ccc3f05bc8e53d4f7a28a",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Governance & Administrative Services Department Report",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:F.2",
+   "number": "F.2",
+   "title": "Utilities Department Report",
+   "section": "Department Reports And Updates",
+   "fingerprint": "8c409c62d74ad8682bbd5d7dcd8dfc5a653f105e1d5b983b38d4d838ddff4b98",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Utilities Department Report",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:F.3",
+   "number": "F.3",
+   "title": "Engineering Department Report",
+   "section": "Department Reports And Updates",
+   "fingerprint": "74a80ec3b20d88b0e64fc85b64455a29ac2139f15cd70acf67d91ad140138996",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Engineering Department Report",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:F.4",
+   "number": "F.4",
+   "title": "Parks and Recreation Department Report",
+   "section": "Department Reports And Updates",
+   "fingerprint": "10da71040ceabcc95a03b7e0c98c18c9da16806b73ce0ac21b54d40b757edd36",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Parks and Recreation Department Report",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:F.5",
+   "number": "F.5",
+   "title": "General Manager’s Report",
+   "section": "Department Reports And Updates",
+   "fingerprint": "a455b588bd40f001aaad7dc55a86f29dbf78247ea7349f260f2b3781bacfcceb",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "General Manager’s Report",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:F.6",
+   "number": "F.6",
+   "title": "Additional Verbal Reports – T-TSA, Board Member Reports on Meetings on Behalf of TCPUD",
+   "section": "Department Reports And Updates",
+   "fingerprint": "09aacf9816c95e5b40817ac377d2a92e3659e63457e7fb4e9617c0114f6bce61",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Additional Verbal Reports – T-TSA, Board Member Reports on Meetings on Behalf of TCPUD",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:G",
+   "number": "G",
+   "title": "CORRESPONDENCE",
+   "section": null,
+   "fingerprint": "2aec0c606e137e3b91508508c636b0cb19bd571db7ed3323cbff663102eb644e",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "CORRESPONDENCE",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:H.1",
+   "number": "H.1",
+   "title": "Director’s Comments and Correspondence",
+   "section": "Director’s Forum",
+   "fingerprint": "251fefcd44ded92b366fdb2ed07e3e095e1ecd3f34c1b8eb40f75b15cba32686",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Director’s Comments and Correspondence",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:I.1",
+   "number": "I.1",
+   "title": "Staff will Review Board Action and Direction Given at this Meeting",
+   "section": "Meeting Review And Staff Direction",
+   "fingerprint": "108cb2185ccb6d6d21988eed4b8796135b93b53e4ce44361aa0b2a602a624e24",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Staff will Review Board Action and Direction Given at this Meeting",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  },
+  {
+   "id": "tcpud:2026-09-18:J",
+   "number": "J",
+   "title": "ADJOURNMENT",
+   "section": null,
+   "fingerprint": "6627dba735c685386fc5008e4f5ca7ebfa62015b5cc1f122cca5f0f9efcc3709",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "ADJOURNMENT",
+     "documentId": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2",
+   "source_document_id": "agenda-view_id-2-clip_id-1735",
+   "title": "Official agenda",
+   "url": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1735",
+   "sha256": "01d1898cab1ecba26643504fa3933c5b7d8a57f8dc49b5e062dca5bc3b68baaa",
+   "page_count": 1,
+   "media_type": "text/html"
+  }
+ ],
+ "stored": {
+  "tcpud:2026-09-18:agenda-view_id-2-clip_id-1735:01d1898cab1ecba2": {
+   "1": "TAHOE CITY PUBLIC UTILITY DISTRICT\nSpecial Meeting of the Board of Directors\nA   G   E   N   D   A\nTo access online viewing of board meetings:\nhttp://www.tahoecitypud.com/general/agenda.shtml\nInstructions for Public Participation:\nMembers of the public may attend the Zoom teleconference by telephone, computer or mobile device. To participate via Zoom join the meeting from the link:\nhttps://us02web.zoom.us/j/86013028520 Meeting ID: 860 1302 8520 Telephone: (669) 900-6833\nMembers of the public will be admitted into the meeting as an attendee, with audio and video controls disabled. If you wish to make a public comment use the ‘Raise Hand’ feature in Zoom or *9 on your telephone. You will be called upon and unmuted when it is your turn to provide comment. Comments must be 3 minutes or less and limited to one comment per item.\nDATE: Friday, September 18, 2026\nTIME: 08:30\na.m.\nPLACE:\nTCPUD Administrative Office\n221 Fairway Drive - Board Room\nTahoe City, California 96145\nA.\nCALL TO ORDER – PLEDGE OF ALLEGIANCE\nB.\nAPPROVAL OF AGENDA - ACTION\nC.\nPUBLIC COMMENT\nAny person may address the Board of Directors for 3 minutes, and at the discretion of the Board President, may be extended to 5 minutes on any subject within the jurisdiction of Tahoe City Public Utility District that does not appear elsewhere on the agenda. The Board will confer and decide upon one of the following but otherwise will not take any action: 1) Agree to continue discussion at another meeting by placing the subject on a future agenda; 2) Individual Board members may ask questions of staff; or 3) End public comment on subject.\nD.\nCONSENT CALENDAR\nAll items listed under the consent calendar-motions are considered to be routine and/or have been reviewed by committee, and will be approved by one motion. There will be no separate discussion of these items unless a board member or staff person requests a specific item be removed from the consent calendar for separate consideration. Any item removed will be considered after the motion and vote to approve the remainder of consent calendar-motions.\n1.\nMinutes\na.\nParks & Recreation Committee – August 11, 2026\nb.\nSewer & Water Committee – August 13, 2026\nc.\nFinance Committee – August 13, 2026\nd.\nBoard of Directors – August 21, 2026\nMinutes\n2.\nFinance\na.\nApprove General Manager Expense Report\nb.\nApprove Bills Paid\nc.\nApprove the Employee Reimbursement Report\nFinance\n3.\nApprove Tahoe City Golf Course/Winter Sports Park Food & Beverage Agreement with Cafe Zenon\nApprove Tahoe City Golf Course/Winter Sports Park Food & Beverage Agreement with Cafe Zenon\n4.\nApprove Pay Estimate No. 2 for the Tahoe Cedars Water System Reconstruction Project, Phase 1\nApprove Pay Estimate No. 2 for the Tahoe Cedars Water System Reconstruction Project, Phase 1\n5.\nApprove Pay Estimate No. 5 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project\nApprove Pay Estimate No. 5 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project\n6.\nApprove Pay Estimate No. 1 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project\nApprove Pay Estimate No. 1 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project\n7.\nApprove Final Pay Estimate No. 3 Release of Retention for the Administrative Building Roof Replacement Project\nApprove Final Pay Estimate No. 3 Release of Retention for the Administrative Building Roof Replacement Project\n8.\nApprove Pay Estimate No. 4 for the Madden Creek Water System Improvement Project, Phase 4\nApprove Pay Estimate No. 4 for the Madden Creek Water System Improvement Project, Phase 4\nE.\nACTION ITEMS / GENERAL BUSINESS – DISCUSSION AND POSSIBLE ACTION\n1.\nEmployee Recognition - CSDA Staff Member of the Year Award\nEmployee Recognition - CSDA Staff Member of the Year Award\n2.\nUpdate on the District’s Information Technology Strategic Plan and Cybersecurity Disaster Response Plan\nUpdate on the District’s Information Technology Strategic Plan and Cybersecurity Disaster Response Plan\n3.\nApprove a Professional Services Agreement with ClientFirst for a Virtual Chief Information Officer (vCIO)\nApprove a Professional Services Agreement with ClientFirst for a Virtual Chief Information Officer (vCIO)\nClientFirst Presentation\n4.\nDiscussion on the Community Meeting for the Tahoe City Community Center Planning and Feasibility Study Project\nDiscussion on the Community Meeting for the Tahoe City Community Center Planning and Feasibility Study Project\nTahoe City Community Center Planning and Feasibility Study Presentation\n5.\nAdopt 2027-2031 Strategic Plan\nAdopt 2027-2031 Strategic Plan\n6.\n2027 Training and Conference Opportunities for Board of Directors - Discussion for 2027 Budget\n2027 Training and Conference Opportunities for Board of Directors - Discussion for 2027 Budget\nF.\nDEPARTMENT REPORTS AND UPDATES (Informational Only)\n1.\nGovernance & Administrative Services Department Report\nGovernance & Administrative Services Department Report\n2.\nUtilities Department Report\nUtilities Department Report\n3.\nEngineering Department Report\nEngineering Department Report\n4.\nParks and Recreation Department Report\nParks and Recreation Department Report\n5.\nGeneral Manager’s Report\nGeneral Manager’s Report\n6.\nAdditional Verbal Reports – T-TSA, Board Member Reports on Meetings on Behalf of TCPUD\nG.\nCORRESPONDENCE\n* Gerwer Emails Re: Tahoe Cedars\n* TTSA Agenda and Minutes\n* Various TCPUD Publications and Articles\nCORRESPONDENCE\nAdditional Correspondence Received\nH.\nDIRECTOR’S FORUM\n1.\nDirector’s Comments and Correspondence\nI.\nMEETING REVIEW AND STAFF DIRECTION\n1.\nStaff will Review Board Action and Direction Given at this Meeting\nJ.\nADJOURNMENT\nPublic participation is encouraged. Agenda copies and a complete agenda packet are located on the Public Information table in the meeting room. The meeting location is accessible to people with disabilities. The District will provide appropriate auxiliary aids or services when necessary to ensure effective communications with members of the public who have hearing, sight, or speech impairments, unless to do so would result in a fundamental alteration of its programs or an undue administrative or financial burden. To request an accommodation or an auxiliary aid or service, please contact the District Clerk at (530) 580-6052, or by email at tviehmann@tcpud.org at least 48 hours in advance of the meeting.\nAny public record relating to an open session agenda item distributed prior to the meeting is available for public inspection at the District Offices located at 221 Fairway Drive during normal business hours, or can be viewed on the District website www.tahoecitypud.com.\nPosted: Friday, September 11, 2026\nTerri Viehmann\nTerri Viehmann, District Clerk"
+  }
+ },
+ "downloads": {
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111095": {
+   "sha256": "c82c8d37826d404399ccecf3a16d0a26cd8cafef44b1d6bc6cbd2aa29ae30432",
+   "page_count": 43,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                             MEMORANDUM\n\n\n    TO:          Board of Directors                     DATE:      September 18, 2026\n\n    C:           Parks and Recreation Committee\n\n    FROM:        Kay Berntson                           SUBJ:      Approve Tahoe City Golf Course/Winter\n                 Parks & Facilities Superintendent                 Sports Park Food and Beverage Agreement of\n                                                                   Lease with Café Zenon\nRECOMMENDATION:\n\nThe Board of Directors authorizes the General Manager to execute the attached Agreement of Lease for Food\nand Beverage Operations at the Tahoe City Golf Course/Winter Sports Park (Property) with Café Zenon\n(Tenant).\n\nBACKGROUND:\n\nCafé Zenon has operated food and beverage service at the Property since October 2016 as a cooperative\npartner of the District, in accordance with the terms of consecutive agreements.\nIn April 2019, following expiration of the initial agreement, staff worked with Café Zenon to develop a\nmutually beneficial agreement to provide the continuation of food and beverage services at the clubhouse\nwhile the District completed its planning process for future clubhouse replacement/renovations. Due to\ndelays associated with the clubhouse project, the District and Café Zenon have extended the lease multiple\ntimes. Since March 2024 has operated under a month-to-month continuation of existing lease terms.\nThe terms and conditions of the attached Agreement are substantially the same as the previous agreement,\nwith the exception of the following key provisions:\n         •   Term: December 1, 2026 to April 30, 2028. The Agreement includes provisions addressing potential\n             District construction of building and/or site improvements that may impact the Tenant’s operations.\n\n         •   Rent: Tenant shall pay a monthly rent of $5000 for the duration of the Agreement. This structure\n             "
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111108": {
+   "sha256": "f1c7d4bd7e04d0e6a31d023742051cba3b39ac6b0b27280d5d544e0aee3696ac",
+   "page_count": 4,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                         MEMORANDUM\n\n\n TO:          Board of Directors                 DATE:   September 4, 2026\n\n FROM:        Sean Barclay                       SUBJ:   Employee Recognition – CSDA Staff Member of\n              General Manager                            the Year Award\n\nRECOMMENDATION:\n\nThe Board of Directors recognize Director of Strategic Affairs Kim Boyd for receiving the 2026 Staff Member\nof the Year Award from California Special Districts Association (CSDA).\n\nBACKGROUND:\n\nCSDA has named Director of Strategic Affairs Kim Boyd as the 2026 Staff Member of the Year. This\nprestigious award honors one special district staff member who has demonstrated outstanding public service\nand made a measurable contribution to their district and community, as well as advancing and positively\nimpacting the mission of special districts statewide.\n\nKim began her career with TCPUD in 2017 as a Senior Management Analyst and was promoted to Director of\nStrategic Affairs in January 2024. Kim’s quiet leadership, deep commitment to the District’s Core Values and\nunique display of initiative and tenacity have made significant contributions to the District, our community\nand the entire statewide water agency community.\n\nKim’s leadership extends well beyond the accomplishments associated with her position. She has become a\ntrusted mentor and resource to leaders throughout the District, particularly those who are newer to their\nroles and have looked to Kim for guidance, perspective, and institutional knowledge as they navigate the\nresponsibilities and challenges of leadership. Kim is generous with her time and expertise, readily offering\nthoughtful and candid feedback, sharing lessons learned from her own experience, and stepping in to support\ncolleagues even when the issue falls outside her direct area of responsibility.\n\nNotable among her many accomplishments are Kim’s work to secure more than $15.6 million"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111110": {
+   "sha256": "14e18f48e6e466786a33b98fc547ceaff8959a32839fee9ac1b66874a794716f",
+   "page_count": 181,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                          MEMORANDUM\n\n\n    TO:       Board of Directors                  DATE:   September 10, 2026\n\n    FROM:     Kim Boyd                            SUBJ:   Receive Presentation on the District’s\n              Director of Strategic Affairs               Information Technology Strategic Plan and an\n                                                          Update on the Cybersecurity Disaster Response\n                                                          Plan\n\nRECOMMENDATION:\n\nThe Board of Directors receive a presentation from ClientFirst on the District’s Information Technology\nStrategic Plan (Technology Master Plan) and an update on the development of the Cybersecurity Disaster\nResponse Plan.\n\nBACKGROUND:\n\nIn March 2025, the Board of Directors authorized the General Manager to execute a Professional Services\nAgreement with ClientFirst to develop a District Information Technology (IT) Strategic Plan (Technology\nMaster Plan) and Cybersecurity Disaster Response Plan. Recognizing the importance of proactive technology\nplanning and cybersecurity preparedness, this work was identified as a 2025 District Operational Priority\nduring the 2025 budget planning process.\n\nClientFirst conducted a comprehensive assessment of the District’s current IT infrastructure, systems,\npractices, and organization needs. The resulting IT Strategic Plan provides a roadmap for aligning technology\ninvestments with District goals and identifies recommended initiatives to guide future budgeting,\nprioritization, resource allocation, and implementation.\n\nDevelopment of the Cybersecurity Disaster Response Plan is currently being completed and will complement\nthe IT Strategic Plan by establishing a framework for responding to cybersecurity incidents and other\ntechnology disruptions. It will provide guidance for protecting District systems and data, minimizing\noperational downtime, and supporting timely and effecti"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111112": {
+   "sha256": "a136429e9f3187b0b8c428da30a232d11d3f2eecb1ca21746c5c955aaed52d54",
+   "page_count": 14,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                         MEMORANDUM\n\n\n TO:         Board of Directors            DATE:       September 10, 2026\n FROM:       Ryan Philpott                 SUBJ:       Authorize the General Manager to Execute a\n             Director of Finance &                     Professional Services Agreement with ClientFirst\n             Administration                            for a Virtual Chief Information Officer (vCIO)\n\n\nRECOMMENDATION:\n\nThe Board of Directors authorize the General Manager to execute a Professional Services Agreement (PSA)\nwith ClientFirst for a Virtual Chief Information Officer (vCIO).\n\nBACKGROUND:\n\nAt the March 21, 2025, Board meeting, the Board authorized the General Manager to execute a professional\nservices agreement with ClientFirst for the development of an IT Strategic Plan. The IT Strategic Plan has been\na District Operational Priority, and is planned for completion in 2026. The goals of the IT Strategic Plan include\na roadmap for technology initiatives with clear objectives to guide the District's technology direction, including\nbudgeting, prioritization, and resource allocation. The Board will receive full presentation of the IT Strategic\nPlan at the September 18, 2026, Board meeting. Recommendations from the IT Strategic Plan will include\nstaffing and support recommendations in addition to increasing the IT budget to meet industry standards.\n\nAs part of the staffing and support recommendations, a temporary vCIO is recommended to support, train, and\nmentor the IT Administrator and the Director of Finance & Administration. The vCIO will also guide\nmanagement and IT staff on best practices for all areas of IT, provide assistance on current IT projects, and\nprovide vendor management support.\n\nBased on District staff’s experience working with ClientFirst, staff is recommending a PSA with ClientFirst with\nTom Jakobsen serving as vCIO. Tom knows the District’s operations, IT administra"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111114": {
+   "sha256": "634ba100cc64247efa1161e5ecbec8adf59cd7edc89a8e635471465758dc6773",
+   "page_count": 31,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                          MEMORANDUM\n\n TO:         Board of Directors                      DATE:      September 1, 2026\n Cc:         Parks & Recreation Committee\n FROM:       Kim Boyd                                SUBJ:      Discussion on the Community Meeting for\n             Interim Director of Parks and                      the Tahoe City Community Center Planning\n             Recreation                                         and Feasibility Study Project\n\nRECOMMENDATION:\n\nThe Board of Directors review and discuss the proposed format for a community meeting for the Tahoe City\nCommunity Center Planning and Feasibility Study Project (Project) and provide feedback and direction on the meeting\nstructure, polling questions, Board participation, and public comment process.\n\nBACKGROUND:\n\nThe Board continues to evaluate future active recreation opportunities at the Tahoe City Community Center (TCCC)\nproperty through the Project. The planning and feasibility work has considered three potential recreation facility\nconcepts: an indoor recreation facility, an indoor aquatics facility, and a combined recreation and aquatics facility. The\nconcepts have been developed at a programmatic level and have been used to frame ongoing community engagement\nregarding recreation priorities, facility preferences, and potential funding approaches.\n\nOn August 21, 2026 the Board directed staff to plan a community meeting to provide an interactive opportunity for\ncommunity members to ask questions and share comments on the proposed recreation concepts at the TCCC property.\nThe meeting is not intended to result in a final project decision or serve as a formal vote on any facility concept or\nfunding measure. Rather, the purpose is to gather additional qualitative and quantitative input to help inform future\nBoard direction on whether, and how, to advance the Project.\n\nStaff has prepared the attached proposed community meeting f"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111116": {
+   "sha256": "f88ded109034934208642ce046fa049fc8e02f62a85ad310c7fb4152adc6c580",
+   "page_count": 11,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                               MEMORANDUM\n\n\n    TO:       Board of Directors                       DATE:    September 9, 2026\n\n    FROM:     Sean Barclay                             SUBJ:    Adopt the TCPUD Strategic Plan - 2027-2031\n              General Manager\n\n\nRECOMMENDATION:\n\nThe Board of Directors adopt the TCPUD Strategic Plan - 2027-2031.\n\nBACKGROUND:\n\nThe TCPUD Strategic Plan - 2027-2031 (Plan) establishes the District’s vision, priorities, and direction for the\nnext five years. It is the culmination of a comprehensive, months-long planning process that included small-\ngroup engagement with front-line staff, a supervisory and professional staff workshop, and a senior\nmanagement workshop. Input was collected and refined through these staff-led efforts and informed the draft\n2027-2031 Strategic Plan Priorities and Core Operating Principles, which were presented for the Board’s\nreview and discussion at the July 31, 2026 Special Meeting of the Board of Directors. The Board discussed\nboth documents in detail and provided feedback and direction, and directed staff to incorporate that feedback\nand prepare updated versions for further review at the August Board meeting.\n\nAt the August 21, 2026 Board Meeting, the Board reviewed the draft Plan and directed staff to bring it\nforward for final adoption at the September Board Meeting.\n\nThe Plan is organized around five Strategic Focus Areas: Governance, Management & Organizational Health;\nSafe & Sustainable Water & Sewer Services; Outstanding Recreation & Leisure Opportunities; Resilient\nInfrastructure & Facilities; and Long-Term Financial Sustainability. Within each, the Plan sets a focused set of\nhigh-level Priorities, with specific Objectives that define the work needed to achieve them. It also includes the\nDistrict’s Core Operating Principles, which describe the standards and practices that guide how the District\nconducts its business every day.\n\nTh"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111118": {
+   "sha256": "63da8f9af7dd44b4080d42affc573125f53fd09512b85d4cd72becdc5ba69c08",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                             MEMORANDUM\n\n\n TO:          Board of Directors         DATE:         September 1, 2026\n FROM:        Sean Barclay               SUBJ:         2027 Training and Conference Opportunities for Board\n              General Manager                          of Directors – Discussion for 2027 Budget\n\nRECOMMENDATION:\n\nThe Board of Directors review and discuss 2027 training and conference opportunities and provide direction\non the allocation of funds in the 2027 District operating budget for the Board’s participation.\n\nBACKGROUND:\n\nThe following is a list of regular training and conference opportunities available for ongoing Board member\ndevelopment. These events are frequently attended by staff and Board members from a variety of local\nagencies and special districts each year and offer valuable education in governance, leadership, legislative\naffairs, and industry best practices.\n\nAssociation of California Water Agencies (ACWA/JPIA) Spring and Fall Conferences – Statewide water\nconferences covering water policy, regulatory updates, and risk management topics.\n\nCalifornia Special Districts Association (CSDA) – Offers a variety of conferences and training\nopportunities:\n    • CSDA Annual Conference and Exhibitor Showcase – Focused on governance, best practices, and\n        networking with other districts.\n    • CSDA General Manager Leadership Summit – Leadership development and emerging issues for\n        district leaders.\n    • Special District Legislative Days – Legislative and advocacy with direct engagement opportunities at\n        the State Capitol.\n    • Special District Leadership Academy Conference – Comprehensive governance training designed for\n        both new and experienced board members. Curriculum emphasizes the board–general manager\n        partnership, effective leadership, and core governance responsibilities.\n\nSTRATEGIC FOCUS AREA:\n\n   Not Applicable – General Oper"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111121": {
+   "sha256": "8fbdbfddc31333090e64ca4803a37e485ec70da0000657ee5b17f009afa34c55",
+   "page_count": 21,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                       GOVERNANCE & ADMINISTRATIVE SERVICES\n                                               DEPARTMENT REPORT\n\n\n TO:          Board of Directors                             DATE:         September 10, 2026\n C:           Finance Committee\n FROM:        Ryan Philpott                                  SUBJ:         Monthly Report Index\n              Dir of Finance & Administration                              August 2026\n\n\n\n            Governance & Administrative Services Department Monthly Report\n\n\nStandard Reports\n➢ Governance & Administrative Services Department Monthly Activity Report\n➢ Monthly Cash & Investment Schedule Report\nAdditional Reports\n➢ Financial Statement for the Period Ending June 30, 2026\n➢ 2027 District Cash Allocation Strategy\n\n\n\n\nSubmitted By: ______________________________________________________________\n              Ryan Phillpott, Director of Finance & Administration\n                                                                                                  335 of 487"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111123": {
+   "sha256": "d09a6a7f307c9ae91401b00a4e90a855966d12ff20294b0dd776a17ca4015854",
+   "page_count": 10,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                               UTILITIES DEPARTMENT REPORT\n\n\n TO:          Board of Directors                           DATE:   September 10, 2026\n CC:          Sewer and Water Committee\n FROM:        Dan Lewis                                    SUBJ:   Monthly Report Index\n              Director of Utilities                                August 2026\n\n\n\n                                  Utilities Department Monthly Report\n\n\nStandard Reports\n   Utilities Department Report – August 2026\n   Monthly Water Production - Report\n   Monthly Water Production (Historical Systems) – Graph\n   Monthly Water Production (Timberland-Madden-Tahoe Cedars-Tahoe Swiss-Glenridge) – Graph\n   Monthly Water Production (All Water Systems) – Graph\n   Monthly Water Loss - Graph\n   Monthly Potential Customer Leaks Detected - Graph\n   Monthly Sewer Flows - Graph\n\n\nAdditional Reports\n   None\n\n\n\n\nSubmitted By: __________________________________________\n              Dan Lewis, Director of Utilities\n                                                                                          357 of 487"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111125": {
+   "sha256": "5880d341a4e4029cc4e67c85a4b8407d20717d3926789e4b753f802f4d561f99",
+   "page_count": 15,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                             ENGINEERING DEPARTMENT REPORT\n\n\n TO:          Board of Directors                                         DATE:   September 9, 2026\n C:           Parks & Recreation Committee\n              Sewer & Water Committee\n              Finance Committee\n FROM:        Sarah Hussong Johnson                                      SUBJ:   Monthly Report Index\n              Director of Engineering                                            August 2026\n\n\n\n                               Engineering Department Monthly Report\n\n\nStandard Reports\n Capital Project Activity Report – Utility (S&W Committee & Board)\n         o    Tahoe Cedars Water System Reconstruction Project Update\n Capital Project Activity Report – Parks & Recreation (P&R Committee & Board)\n Capital Project Activity Report – Governance & Administrative Services Projects (Finance\n  Committee & Board)\n Special (Non-Capital) Project Activity Report\n Technical Services Division Report (S&W Committee & Board)\n\n\nAdditional Reports\n None\n\n\n\n\nSubmitted By: _______________________________________________________________\n             Sarah Hussong Johnson, Director of Engineering\n                                                                                                        367 of 487"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111127": {
+   "sha256": "21b9a0350e10cd5a39db1b6f2aaa1e21b9405485286396cd6bbc7539d7a6cebe",
+   "page_count": 9,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                    PARKS & RECREATION DEPARTMENT REPORT\n\n\n    TO:      Board of Directors                                         DATE:   September 18, 2026\n    CC:      Parks & Recreation Committee\n    FROM:    Kim Boyd                                                   SUBJ:   Monthly Report Index\n             Interim Director of Parks and Recreation                           August, 2026\n\n\n\n                       Parks and Recreation Department Monthly Report\n\nStandard Reports\n•     Parks and Recreation Department Report\n•     In-Kind Community Donations Request – 2025-2026 YTD Report – After-Action In-Kind\n      Community Donation Report\n•     Tahoe City Golf Course Operations Report\n\n\nAdditional Reports\nNA\n\n\n\n\nSubmitted By: _______________________________________________________\n              Kim Boyd, Interim Director of Parks and Recreation\n                                                                                                       383 of 487"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111129": {
+   "sha256": "8857a1ce1865914d2cfb1c03ed95fd9c45ae4ea3c19890779f8ea1f663177f6e",
+   "page_count": 14,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                  GENERAL MANAGER’S REPORT\n\n\n TO:          Board of Directors                             DATE:   September 1, 2026\n\n FROM:        Sean Barclay                                   SUBJ:   Monthly Report Index\n              General Manager                                        August 2026\n\n\n\n                                   General Manager’s Monthly Report\n\n\nStandard Reports\n General Manager’s Report\n Human Resources Manager's Report\n Director of Strategic Affairs Report\n Legislative Initiatives Report\n Communications Activity Report\n Sustainable Community Advocates Report\n\n\nAdditional Reports\n None\n\n\n\n\nSubmitted By: _______________________________________\n            Sean Barclay, General Manager\n                                                                                            393 of 487"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111097": {
+   "sha256": "c62a6fb0773690dda41c57b565b7deb4e82f91d1e27099bb7c0288ba5d90b9dc",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                        TAHOE CITY PUBLIC UTILITY DISTRICT\n                                          TAHOE CEDARS WATER SYSTEM RECONSTRUCTION PROJECT, PHASE 1\n                                                            PROGRESS PAY ESTIMATE NO. 2\n\n\nCONTRACTOR: Granite Construction Company\nProject No.: 23-00-1802-8185-5010\n\n\nBASE CONTRACT (COMPONENT 1&4)                     $15,995,044.00                                                  ORIGINAL TIME: 222\nREVISED CONTRACT AMOUNT                           $15,995,044.00                                                   REVISED TIME: 222\nMAX AUTHORIZED CONTRACT AMOUNT                    $19,026,351.00                                                   ELAPSED TIME: 84\nWORK COMPLETED:                                    $5,144,269.10                                                  % TIME ELAPSED: 38%\nPCT. WORK COMPLETED:                                   32%\n\n\n\n                                                                   GL Code for AP               PREVIOUS             CURRENT            TO DATE\n\nA. EARNINGS\n1. COMPONENT 1 - CONSTRUCTION LUMP SUM                                                             1,538,496.05       3,128,013.67       4,666,509.72\n2. COMPONENT 2 - CONTINGENCY                                                                               0.00               0.00               0.00\n3. COMPONENT 3 - ALLOWANCE                                                                                 0.00          61,574.11          61,574.11\n4. TOTAL EARNINGS ON CONSTRUCTION                                  23-00-1802-8185-5010-4400P      1,538,496.05       3,189,587.78       4,728,083.83\n5. RETENTION ON CONSTRUCTION (5%)                                  23-00-2010                         76,924.80        159,479.39         (236,404.19)\n6. COMPONENT 4 - PROFESSIONAL SERVICES T&M NTE                     23-00-1802-8185-5010-4300F       181,524.89         234,660.38          4"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111099": {
+   "sha256": "e9aae4acdc3ffc8fab00b52f562bc3b4152e89d5b243343e0a661639d85e3f5c",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                    TAHOE CITY PUBLIC UTILITY DISTRICT\n                                                         PROGRESS PAY ESTIMATE No. 5\n\n\n\n\nPROJECT TITLE: Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project Segment 1\nCONTRACTOR: Baldoni Construction, Inc.\nProject No.: 10-00-1802-8697-5030-4400P\n\n\nBASE CONTRACT (BID)                          $2,420,021.00                                           ORIGINAL TIME:       207\nREVISED CONTRACT AMOUNT                      $2,479,834.07                                             REVISED TIME:      207\nMAX AUTHORIZED CONTRACT AMOUNT               $2,662,023.10                                            ELAPSED TIME:       147\nWORK COMPLETED:                              $1,630,300.47                            % TIME ELAPSED (MILESTONE #2):      71%\nPCT. WORK COMPLETED:                             66%\n\n\n\n                                                             GL Code for AP               PREVIOUS          CURRENT             TO DATE\n\nA. EARNINGS\n1. WORK DONE                                                 10-00-1802-8697-5030-4400P      1,030,466.20    599,834.27           1,630,300.47\n2. RETENTION ON WORK (5%)                                    10-00-2010                         51,523.31     29,991.71             (81,515.02)\n\n3. NET EARNINGS ON WORK                                                                        978,942.89    569,842.56           1,548,785.45\n\n\nB. DEDUCTIONS\n1. Partial/Full Release of Retention                                                                                                         0.00\n2. Materials                                                                                                                                 0.00\n\n\n3. TOTAL DEDUCTIONS                                                                                  0.00          0.00                      0.00\n\nC. OTHER ADJUSTMENTS\n1\n2\n\n3. TOTAL ADJUSTMENTS            "
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111101": {
+   "sha256": "794a2bbe9ca32c1597c0dad3d3c70a3eaf4795b6545ff47f7857e23244decd64",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                TAHOE CITY PUBLIC UTILITY DISTRICT\n                                       CA SR89 MEEKS BAY BRIDGE SEWER RELOCATION PROJECT\n                                                    PROGRESS PAY ESTIMATE NO. 1\n\n\n\n\nPROJECT TITLE: CA SR89 Meeks Bay Bridge Sewer Relocation Project\nCONTRACTOR: Green Bear Construction, Inc.\nProject No.: 25-00-1802-8374-5000-4400P\n\n\nBASE CONTRACT (BID)                        $471,995.00                                                  ORIGINAL TIME: 69\nREVISED CONTRACT AMOUNT                    $471,995.00                                                   REVISED TIME: 69\nMAX AUTHORIZED CONTRACT AMOUNT             $519,194.00                                                   ELAPSED TIME: 24\nWORK COMPLETED:                             $33,860.00                                                  % TIME ELAPSED: 35%\nPCT. WORK COMPLETED:                           7%\n\n\n\n                                                         GL Code for AP               PREVIOUS             CURRENT            TO DATE\n\nA. EARNINGS\n1. WORK DONE                                             25-00-1802-8374-5000-4400P                           33,860.00           33,860.00\n2. RETENTION ON WORK (5%)                                25-00-2010                              0.00          1,693.00           (1,693.00)\n\n3. NET EARNINGS ON WORK                                                                          0.00         32,167.00           32,167.00\n\n4. MATERIALS ON HAND                                                                                               0.00                  0.00\n5. RETENTION ON MAT.                                                                                               0.00                  0.00\n\n6. NET EARNINGS ON MAT.                                                                          0.00              0.00                  0.00\n\n7. TOTAL NET EARNINGS                                 "
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111103": {
+   "sha256": "66cd99c0bb53656a15e90c136d22ccbf3bfc255a23fc65fc7850f771eb0cf14c",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                       TAHOE CITY PUBLIC UTILITY DISTRICT\n                                               ADMINISTRATIVE BUILDING ROOF REPLACEMENT PROJECT\n                                                  FINAL PAY ESTIMATE NO. 3 RELEASE OF RETENTION\n\n\n\n\nPROJECT TITLE: Administrative Building Roof Replacement Project\nCONTRACTOR: Michael A. Roberts. DBA Michael A Roberts Construction\nProject No.: 10-00-1802-8711-5000-4400P\n\n\nBASE CONTRACT (BID)                                $349,466.00                                                  ORIGINAL TIME: 60\nREVISED CONTRACT AMOUNT                            $349,466.00                                                   REVISED TIME: 60\nMAX AUTHORIZED CONTRACT AMOUNT                     $384,413.00                                                   ELAPSED TIME: 119\nWORK COMPLETED:                                    $349,466.00                                                  % TIME ELAPSED: 198%\nPCT. WORK COMPLETED:                                  100%\n\n\n\n                                                                 GL Code for AP               PREVIOUS             CURRENT             TO DATE\n\nA. EARNINGS\n1. WORK DONE                                                     10-00-1802-8711-5000-4400P       349,466.00               0.00           349,466.00\n2. RETENTION ON WORK (5%)                                        10-00-2010                        17,473.30               0.00           (17,473.30)\n\n3. NET EARNINGS ON WORK                                                                           331,992.70               0.00           331,992.70\n\n4. MATERIALS ON HAND                                                                                     0.00              0.00                   0.00\n5. RETENTION ON MAT.                                                                                     0.00              0.00                   0.00\n\n6. NET EARNINGS ON MAT.                       "
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111105": {
+   "sha256": "2108415f8b9df726adc433258e8e97bcf2b849bc32d7601cd26c4c84772a6d30",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                                                    TAHOE CITY PUBLIC UTILITY DISTRICT\n                                        MADDEN CREEK WATER SYSTEM IMPROVEMENT PROJECT, PHASE 4\n                                                        PROGRESS PAY ESTIMATE NO. 4\n\n\n\n\nPROJECT TITLE: Madden Creek Water System Improvement Project, Phase 4\nCONTRACTOR: Vinciguerra Construction, Inc.\nProject No.: 23-00-1802-8171-5030-4400P\n\n\nBASE CONTRACT (BID)            $5,922,445.00                                                               ORIGINAL TIME: 157\nREVISED CONTRACT AMOUNT        $5,922,445.00                                                                REVISED TIME: 157\nMAX AUTHORIZED CONTRACT AMOUNT $6,514,890.00                                                                ELAPSED TIME: 116\nWORK COMPLETED:                $4,360,405.00                                                               % TIME ELAPSED: 74%\nPCT. WORK COMPLETED:               74%\n\n\n\n                                                            GL Code for AP               PREVIOUS             CURRENT            TO DATE\n\nA. EARNINGS\n1. WORK DONE                                                23-00-1802-8171-5030-4400P      3,894,595.00        465,810.00         4,360,405.00\n2. RETENTION ON WORK (5%)                                   23-00-2010                        194,729.75         23,290.50           218,020.25\n\n3. NET EARNINGS ON WORK                                                                     3,699,865.25        442,519.50         4,142,384.75\n\n4. MATERIALS ON HAND                                                                                0.00              0.00                   0.00\n5. RETENTION ON MAT.                                                                                0.00              0.00                   0.00\n\n6. NET EARNINGS ON MAT.                                                                             0.00              0.00                   0.00\n\n7. T"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1735": "<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-0T79SKXRQT\"></script>\n\n<script>\n    window.dataLayer = window.dataLayer || [];\n    function gtag() { dataLayer.push(arguments); }\n    gtag('js', new Date());\n    gtag('config', 'G-0T79SKXRQT', { 'request_origin':'external' });\n</script>\n                 \n     <style>\n      body{ \n         margin-top: .5in; \n         margin-bottom: .5in; \n         margin-right: .5in ; \n         margin-left: .5in;\n         text-align: justify;\n         }\n      \n      table{\n         text-align: justify;\n         border-spacing: 5px;\n         padding: 0;\n         }\n  \n      td{\n         text-align: justify;\n         vertical-align:top;\n         } \n            .numberspace\n             {width: 30px}\n  \n           </style>\n     \n  \n    <table width = \"100%\" border = 0>\n  <tr>\n  <td width = \"15%\">\n  <img src = \"http://webcontent.granicusops.com/content/tahoecitypud/images/logo.jpg\">\n  </td>\n  \n  <td width=\"75%\">\n  <div align = \"center\"> <strong>\n  TAHOE CITY PUBLIC UTILITY DISTRICT <br/>\n  Special Meeting of the Board of Directors <br/>\n  <br/>\n  <span style = \"font-size: 18pt\"><i>A&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;N&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;A</i></span>  <br/>\n  </strong> <br/>\n  To access online viewing of board meetings: <br/>\n  <a href=\"http://www.tahoecitypud.com/general/agenda.shtml\" target+\"_blank\">http://www.tahoecitypud.com/general/agenda.shtml</a><br/>   <br/>\n  </div>\n  \n     \n  <div style=\"text-align: left;\">\n     <strong>Instructions for Public Participation:</strong><br><br>\n  \n     Members of the public may attend the Zoom teleconference by telephone, computer or mobile device. To participate via Zoom join the meeting from the link:<br/>\n     <br/>\n     <a href=\"https://us02web.zoom.us/j/86013028520\" target=\"_blank\">https://us02web.zoom.us/j/86013028520</a><span style=\"color: red; font-weight: bold;\">  Meeting ID: 860 1302 8520    Telephone: (669) 900-6833</span>\n     <br/>\n     <br/>\n     Members of the public will be admitted into the meeting as an attendee, with audio and video controls disabled. If you wish to make a public comment use the ‘Raise Hand’ feature in Zoom or *9 on your telephone. You will be called upon and unmuted when it is your turn to provide comment. Comments must be 3 minutes or less and limited to one comment per item.\n     <br><br>\n     <!-- Members of the public may attend the Zoom teleconference by telephone, computer or mobile device. To participate via Zoom teleconference members of the public must register on the link below to join the meeting:<br>\n     <a href=\"\" target=\"_blank\"></a><br><br>\n     Members of the public will be admitted into the meeting as an attendee, with audio and video controls disabled. If you wish to make a public comment use the ‘Raise Hand’ feature in Zoom or *9 on your telephone. You will be called upon and unmuted when it is your turn to provide comment. Comments must be 3 minutes or less and limited to one comment per item.<br><br> -->\n  </div>\n  \n  \n  \n  </td>\n  \n  <td></td>\n  </tr>\n  </table>\n  \n  \n  \n  <table width = \"100%\" border = 0>\n  <tr>\n  <td width = \"15%\">\n  \n  </td>\n  \n  <td width=\"40%\">\n  DATE: Friday, September 18, 2026<br/><br/>\n  \n  TIME:        08:30\n       a.m.  </td>\n  <td>\n  PLACE:\n    TCPUD Administrative Office \n  <br/>221 Fairway Drive - Board Room \n    <br/>Tahoe City, California 96145\n    </td>\n  </tr>\n  </table>\n  \n    \n  <style>blockquote { margin-left: 40px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px; }@media print { a { color: black; } }</style>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>A.</strong></td>\n      <td>  \n  \n  <strong>CALL TO ORDER – PLEDGE OF ALLEGIANCE</strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>B.</strong></td>\n      <td>  \n  \n  <strong><a name=\"agenda111080\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111080\" onclick=\"\">APPROVAL OF AGENDA - ACTION</a></strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>C.</strong></td>\n      <td>  \n  \n  <strong><a name=\"agenda111081\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111081\" onclick=\"\">PUBLIC COMMENT           \nAny person may address the Board of Directors for 3 minutes, and at the discretion of the Board President, may be extended to 5 minutes on any subject within the jurisdiction of Tahoe City Public Utility District that does not appear elsewhere on the agenda.  The Board will confer and decide upon one of the following but otherwise will not take any action:  1) Agree to continue discussion at another meeting by placing the subject on a future agenda; 2) Individual Board members may ask questions of staff; or 3) End public comment on subject.</a></strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>D.</strong></td>\n      <td>  \n  \n    <strong><a name=\"agenda111082\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111082\" onclick=\"\">CONSENT CALENDAR</a></strong>\n          \n                \n    <br/><br/>\n  All items listed under the consent calendar-motions are considered to be routine and/or have been reviewed by committee, and will be approved by one motion.  There will be no separate discussion of these items unless a board member or staff person requests a specific item be removed from the consent calendar for separate consideration.  Any item removed will be considered after the motion and vote to approve the remainder of consent calendar-motions.\n  \n  \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">1.</td>\n      <td>  Minutes\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">a.</td>\n      <td>  Parks & Recreation Committee – August 11, 2026\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">b.</td>\n      <td>  Sewer & Water Committee – August 13, 2026\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">c.</td>\n      <td>  Finance Committee – August 13, 2026\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">d.</td>\n      <td>  Board of Directors – August 21, 2026\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111088\"  name=\"document111088\" class=\"Document Document2\" onclick=\"\">Minutes</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">2.</td>\n      <td>  Finance\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">a.</td>\n      <td>  Approve General Manager Expense Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">b.</td>\n      <td>  Approve Bills Paid\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">c.</td>\n      <td>  Approve the Employee Reimbursement Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111093\"  name=\"document111093\" class=\"Document Document2\" onclick=\"\">Finance</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">3.</td>\n      <td>  Approve Tahoe City Golf Course/Winter Sports Park Food & Beverage Agreement with Cafe Zenon\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111095\"  name=\"document111095\" class=\"Document Document2\" onclick=\"\"> Approve Tahoe City Golf Course/Winter Sports Park Food & Beverage Agreement with Cafe Zenon</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">4.</td>\n      <td>  Approve Pay Estimate No. 2 for the Tahoe Cedars Water System Reconstruction Project, Phase 1\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111097\"  name=\"document111097\" class=\"Document Document2\" onclick=\"\">Approve Pay Estimate No. 2 for the Tahoe Cedars Water System Reconstruction Project, Phase 1</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">5.</td>\n      <td>  Approve Pay Estimate No. 5 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111099\"  name=\"document111099\" class=\"Document Document2\" onclick=\"\">Approve Pay Estimate No. 5 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">6.</td>\n      <td>  Approve Pay Estimate No. 1 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111101\"  name=\"document111101\" class=\"Document Document2\" onclick=\"\">Approve Pay Estimate No. 1 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">7.</td>\n      <td>  Approve Final Pay Estimate No. 3 Release of Retention for the Administrative Building Roof Replacement Project\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111103\"  name=\"document111103\" class=\"Document Document2\" onclick=\"\"> Approve Final Pay Estimate No. 3 Release of Retention for the Administrative Building Roof Replacement Project</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">8.</td>\n      <td>  Approve Pay Estimate No. 4 for the Madden Creek Water System Improvement Project, Phase 4\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111105\"  name=\"document111105\" class=\"Document Document2\" onclick=\"\">Approve Pay Estimate No. 4 for the Madden Creek Water System Improvement Project, Phase 4</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>E.</strong></td>\n      <td>  \n  \n  <strong>ACTION ITEMS / GENERAL BUSINESS – DISCUSSION AND POSSIBLE ACTION</strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">1.</td>\n      <td>  <a name=\"agenda111107\" class=\"Agenda Agenda1\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111107\" onclick=\"\">Employee Recognition - CSDA Staff Member of the Year Award</a>\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111108\"  name=\"document111108\" class=\"Document Document2\" onclick=\"\">Employee Recognition - CSDA Staff Member of the Year Award</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">2.</td>\n      <td>  <a name=\"agenda111109\" class=\"Agenda Agenda1\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111109\" onclick=\"\">Update on the District&rsquo;s Information Technology Strategic Plan and Cybersecurity Disaster Response Plan</a>\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111110\"  name=\"document111110\" class=\"Document Document2\" onclick=\"\">Update on the District&rsquo;s Information Technology Strategic Plan and Cybersecurity Disaster Response Plan</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">3.</td>\n      <td>  <a name=\"agenda111111\" class=\"Agenda Agenda1\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111111\" onclick=\"\">Approve a Professional Services Agreement with ClientFirst for a Virtual Chief Information Officer (vCIO)</a>\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111112\"  name=\"document111112\" class=\"Document Document2\" onclick=\"\">Approve a Professional Services Agreement with ClientFirst for a Virtual Chief Information Officer (vCIO)</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111202\"  name=\"document111202\" class=\"Document Document2\" onclick=\"\">ClientFirst Presentation</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">4.</td>\n      <td>  <a name=\"agenda111113\" class=\"Agenda Agenda1\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111113\" onclick=\"\">Discussion on the Community Meeting for the Tahoe City Community Center Planning and Feasibility Study Project</a>\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111114\"  name=\"document111114\" class=\"Document Document2\" onclick=\"\">Discussion on the Community Meeting for the Tahoe City Community Center Planning and Feasibility Study Project</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111204\"  name=\"document111204\" class=\"Document Document2\" onclick=\"\">Tahoe City Community Center Planning and Feasibility Study Presentation</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">5.</td>\n      <td>  <a name=\"agenda111115\" class=\"Agenda Agenda1\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111115\" onclick=\"\">Adopt 2027-2031 Strategic Plan</a>\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111116\"  name=\"document111116\" class=\"Document Document2\" onclick=\"\">Adopt 2027-2031 Strategic Plan</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">6.</td>\n      <td>  <a name=\"agenda111117\" class=\"Agenda Agenda1\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111117\" onclick=\"\">2027 Training and Conference Opportunities for Board of Directors - Discussion for 2027 Budget</a>\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111118\"  name=\"document111118\" class=\"Document Document2\" onclick=\"\">2027 Training and Conference Opportunities for Board of Directors - Discussion for 2027 Budget</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>F.</strong></td>\n      <td>  \n  \n  <strong><a name=\"agenda111119\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111119\" onclick=\"\">DEPARTMENT REPORTS AND UPDATES (Informational Only)</a></strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">1.</td>\n      <td>  Governance & Administrative Services Department Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111121\"  name=\"document111121\" class=\"Document Document2\" onclick=\"\">Governance & Administrative Services Department Report</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">2.</td>\n      <td>  Utilities Department Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111123\"  name=\"document111123\" class=\"Document Document2\" onclick=\"\">Utilities Department Report</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">3.</td>\n      <td>  Engineering Department Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111125\"  name=\"document111125\" class=\"Document Document2\" onclick=\"\">Engineering Department Report</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">4.</td>\n      <td>  Parks and Recreation Department Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111127\"  name=\"document111127\" class=\"Document Document2\" onclick=\"\">Parks and Recreation Department Report</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">5.</td>\n      <td>  General Manager’s Report\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111129\"  name=\"document111129\" class=\"Document Document2\" onclick=\"\">General Manager&rsquo;s Report</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">6.</td>\n      <td>  Additional Verbal Reports – T-TSA, Board Member Reports on Meetings on Behalf of TCPUD\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>G.</strong></td>\n      <td>  \n  \n  <strong><a name=\"agenda111131\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111131\" onclick=\"\">CORRESPONDENCE \n* Gerwer Emails Re: Tahoe Cedars \n* TTSA Agenda and Minutes \n* Various TCPUD Publications and Articles</a></strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111132\"  name=\"document111132\" class=\"Document Document1\" onclick=\"\">CORRESPONDENCE </a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>     <div><a href=\"https://tahoecitypud.granicus.com/MetaViewer.php?view_id=2&clip_id=1735&meta_id=111139\"  name=\"document111139\" class=\"Document Document1\" onclick=\"\">Additional Correspondence Received</a></div>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>H.</strong></td>\n      <td>  \n  \n  <strong><a name=\"agenda111133\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111133\" onclick=\"\">DIRECTOR’S FORUM</a></strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">1.</td>\n      <td>  Director’s Comments and Correspondence\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>I.</strong></td>\n      <td>  \n  \n  <strong><a name=\"agenda111135\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111135\" onclick=\"\">MEETING REVIEW AND STAFF DIRECTION</a></strong>\n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\">  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\">1.</td>\n      <td>  Staff will Review Board Action and Direction Given at this Meeting\n  \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote>  \n     <table><tbody>\n      <tr>\n      <td class = \"numberspace\"><strong>J.</strong></td>\n      <td>  \n  \n    <strong><a name=\"agenda111137\" class=\"Agenda Agenda0\" href=\"https://tahoecitypud.granicus.com/MediaPlayer.php?view_id=2&clip_id=1735&meta_id=111137\" onclick=\"\">ADJOURNMENT</a></strong>\n  \n          \n                \n    \n  </td>\n      </tr>\n     </tbody></table>\n  <br/>\n  \n  <blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote>  \n    \n  \n    \n  <span style = \"font-size: 10pt\">\n  \n  <br/>\n  Public participation is encouraged.  Agenda copies and a complete agenda packet are located on the Public Information table in the meeting room.  The meeting location is accessible to people with disabilities.  The District will provide appropriate auxiliary aids or services when necessary to ensure effective communications with members of the public who have hearing, sight, or speech impairments, unless to do so would result in a fundamental alteration of its programs or an undue administrative or financial burden.  To request an accommodation or an auxiliary aid or service, please contact the District Clerk at (530) 580-6052, or by email at tviehmann@tcpud.org at least 48 hours in advance of the meeting.\n  <br/><br/>\n  Any public record relating to an open session agenda item distributed prior to the meeting is available for public inspection at the District Offices located at 221 Fairway Drive during normal business hours, or can be viewed on the District website www.tahoecitypud.com. \n  \n  </span>\n  \n  <br/><br/>\n  \n  \n  <table width=\"100%\">\n  <tr>\n  <td width=\"50%\"> \n  Posted: Friday, September 11, 2026\n  </td>\n  <td style = \"text-align: left\">\n  <span style = \"text-decoration: underline\">&nbsp;&nbsp;Terri Viehmann&nbsp;&nbsp;</span><br/>Terri Viehmann, District Clerk\n  </td>\n  </tr>\n  </table>\n  \n  \n    </div>\n  "
+ },
+ "expected": {
+  "A": null,
+  "B": null,
+  "C": null,
+  "D.1": null,
+  "D.2": null,
+  "D.3": {
+   "page_start": 1,
+   "page_end": 43,
+   "url_end": "meta_id=111095",
+   "heading": "MEMORANDUM"
+  },
+  "D.4": null,
+  "D.5": null,
+  "D.6": null,
+  "D.7": null,
+  "D.8": null,
+  "E.1": {
+   "page_start": 1,
+   "page_end": 4,
+   "url_end": "meta_id=111108",
+   "heading": "MEMORANDUM"
+  },
+  "E.2": {
+   "page_start": 1,
+   "page_end": 181,
+   "url_end": "meta_id=111110",
+   "heading": "MEMORANDUM"
+  },
+  "E.3": {
+   "page_start": 1,
+   "page_end": 14,
+   "url_end": "meta_id=111112",
+   "heading": "MEMORANDUM"
+  },
+  "E.4": {
+   "page_start": 1,
+   "page_end": 31,
+   "url_end": "meta_id=111114",
+   "heading": "MEMORANDUM"
+  },
+  "E.5": {
+   "page_start": 1,
+   "page_end": 11,
+   "url_end": "meta_id=111116",
+   "heading": "MEMORANDUM"
+  },
+  "E.6": {
+   "page_start": 1,
+   "page_end": 1,
+   "url_end": "meta_id=111118",
+   "heading": "MEMORANDUM"
+  },
+  "F.1": {
+   "page_start": 1,
+   "page_end": 21,
+   "url_end": "meta_id=111121",
+   "heading": "REPORT"
+  },
+  "F.2": {
+   "page_start": 1,
+   "page_end": 10,
+   "url_end": "meta_id=111123",
+   "heading": "REPORT"
+  },
+  "F.3": {
+   "page_start": 1,
+   "page_end": 15,
+   "url_end": "meta_id=111125",
+   "heading": "REPORT"
+  },
+  "F.4": {
+   "page_start": 1,
+   "page_end": 9,
+   "url_end": "meta_id=111127",
+   "heading": "REPORT"
+  },
+  "F.5": {
+   "page_start": 1,
+   "page_end": 14,
+   "url_end": "meta_id=111129",
+   "heading": "REPORT"
+  },
+  "F.6": null,
+  "G": null,
+  "H.1": null,
+  "I.1": null,
+  "J": null
+ }
+}

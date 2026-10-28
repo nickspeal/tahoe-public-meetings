@@ -173,15 +173,17 @@ def norm_number(value: str) -> str:
 
 # --- Temporary PDF reading ------------------------------------------------------
 
-def read_pdf(url: str, *, last_page: int | None = None, links: bool = False) -> dict:
+def read_pdf(url: str, *, last_page: int | None = None, links: bool = False, max_bytes: int = MAX_PDF_BYTES,
+             max_pages: int = MAX_PDF_PAGES) -> dict:
     """Download a PDF into a temporary directory and return its hash, page count, text, and (optionally) link annotations.
 
     Pages are ``[{"page_number", "text"}]`` from ``pdftotext -layout`` (all pages, or
     pages 1..``last_page``); links are ``[{"page", "url", "text"}]`` from ``pdftohtml -xml``.
-    Nothing is kept after the call returns.
+    ``max_bytes`` and ``max_pages`` bound the download; a rule may raise them for one
+    agency's known packet sizes. Nothing is kept after the call returns.
     """
     try:
-        raw, _ = fetch_bytes(url, max_bytes=MAX_PDF_BYTES, accept="application/pdf")
+        raw, _ = fetch_bytes(url, max_bytes=max_bytes, accept="application/pdf")
     except EndpointSkipped:
         raise
     except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
@@ -193,7 +195,7 @@ def read_pdf(url: str, *, last_page: int | None = None, links: bool = False) -> 
         path.write_bytes(raw)
         info = subprocess.run(["pdfinfo", str(path)], capture_output=True, text=True, timeout=30, check=True).stdout
         count = int(next(line for line in info.splitlines() if line.startswith("Pages:")).split(":", 1)[1])
-        if not 1 <= count <= MAX_PDF_PAGES:
+        if not 1 <= count <= max_pages:
             raise Uncertain(f"{url} has {count} pages")
         args = ["pdftotext", "-layout", "-enc", "UTF-8"] + (["-l", str(last_page)] if last_page else []) + [str(path), "-"]
         texts = subprocess.run(args, capture_output=True, timeout=180, check=True).stdout.decode("utf-8", "replace").split("\f")
@@ -254,9 +256,11 @@ class Context:
             time.sleep(self.delay)
         self.downloads += 1
 
-    def read(self, url: str, **kwargs) -> dict:
+    def read(self, url: str, *, max_bytes: int | None = None, max_pages: int | None = None, **kwargs) -> dict:
+        """A temporary PDF read (``read_pdf``); ``max_bytes``/``max_pages`` replace its default limits when given."""
         self._pause()
-        return self._reader(url, **kwargs)
+        limits = {k: v for k, v in (("max_bytes", max_bytes), ("max_pages", max_pages)) if v is not None}
+        return self._reader(url, **kwargs, **limits)
 
     def read_report(self, item: Item, url: str) -> dict | None:
         """One item's own report, or None (the item is skipped) when it cannot be read."""
@@ -299,12 +303,12 @@ class Context:
             self._cache[version_id] = self._stored(version_id)
         return self._cache[version_id]
 
-    def pages(self, document: Document, *, needed) -> dict[int, str]:
+    def pages(self, document: Document, *, needed, max_bytes: int | None = None, max_pages: int | None = None) -> dict[int, str]:
         """All page texts of a stored document, downloading it only when stored text lacks what ``needed`` looks for."""
         stored = self.stored_pages(document.version_id)
         if needed(stored):
             return stored
-        fetched = self.read(document.url)
+        fetched = self.read(document.url, max_bytes=max_bytes, max_pages=max_pages)
         if fetched["sha256"] != document.sha256:
             raise Uncertain(f"{document.title} changed since it was captured")
         return {p["page_number"]: p["text"] for p in fetched["pages"]}

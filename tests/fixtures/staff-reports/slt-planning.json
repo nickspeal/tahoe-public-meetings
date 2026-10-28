@@ -1,0 +1,995 @@
+{
+ "note": "City of South Lake Tahoe Planning Commission, September 17, 2026. The re-uploaded agenda PDF has no file links, so the clip's Granicus HTML agenda lists each item's files; first page of each linked staff report.",
+ "meeting": {
+  "id": "slt-planning:2906",
+  "agency_id": "slt-planning",
+  "title": "09 17 2026 Planning Commission",
+  "local_date": "2026-09-17",
+  "official_url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2320"
+ },
+ "items": [
+  {
+   "id": "slt-planning:2906:1",
+   "number": "1",
+   "title": "Planning Commission Meeting Minutes",
+   "section": "Consent",
+   "fingerprint": "e051209643605cb9239497711b49c6ee79b6c98870044890a3cb251a293cd30f",
+   "citations": []
+  },
+  {
+   "id": "slt-planning:2906:2",
+   "number": "2",
+   "title": "Revision of Major Design Review & Special Use Permit #25-029, File #REV26-002, 1050 Fremont Avenue, APN Nos. 027-170-012 and 027-381-001",
+   "section": "Unfinished Business",
+   "fingerprint": "7a11c65f56f76f0a107307830804915159b0892ff22669291b59b95179832b1d",
+   "citations": []
+  },
+  {
+   "id": "slt-planning:2906:3",
+   "number": "3",
+   "title": "Consideration of a Resolution Recommending City Council Adopt an Ordinance Amending South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and Advertising Structures) Article III",
+   "section": "New Business",
+   "fingerprint": "7d3c429709619c7b3155273506986c2ffbbbed64b2704680007485b6d3fe9da4",
+   "citations": []
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "slt-planning:2906:agenda-view_id-6-clip_id-2320:48e2d9b3a5731681",
+   "source_document_id": "agenda-view_id-6-clip_id-2320",
+   "title": "Official agenda",
+   "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2320",
+   "sha256": "48e2d9b3a57316812e79c3684ba86f16fb92fd529e3c0fbfe8fd9246beb0e1bd",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "slt-planning:2906:slt-planning-agenda-html:48e2d9b3a5731681",
+   "source_document_id": "slt-planning-agenda-html",
+   "title": "Agenda",
+   "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2320",
+   "sha256": "48e2d9b3a57316812e79c3684ba86f16fb92fd529e3c0fbfe8fd9246beb0e1bd",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "slt-planning:2906:agenda-view_id-6-clip_id-2320:48e2d9b3a5731681": {
+   "1": "City of South Lake Tahoe\n                               Planning Commission\n                              Meeting Agenda\n                  Thursday, September 17, 2026 at 3:00 pm\n   City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\nPlanning Commission\nJulia Lucksinger, Chair\nGavin Feiger, Vice Chair\nSteven Imhoff, Commissioner\nDouglas Williams, Commissioner\nErika Gonzalez, Commissioner\n\nPublic Participation\nPlanning Commission meetings are held in person at the time and location listed on this agenda. A\npublic agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City's website\nat https://www.cityofslt.gov/, or by contacting the City Clerk's Office, (530) 542-6005 or\nsblankenship@cityofslt.gov.\n\nProviding Public Comment:\n\nRemote Public Participation: If you would like to participate remotely, please join the ZOOM meeting\nby using this link: https://us02web.zoom.us/j/87165332454. If you would like to make a comment, wait\nfor the agenda item to begin, then press the \"raise hand\" button. Meetings are also live-streamed on\nChannel 21, the City website at https://www.cityofslt.gov/, and YouTube at\nhttps://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live.\n\nIn Person: Every agenda for regular meetings provides an opportunity for members of the public to\ndirectly address the legislative body (Planning Commission), on any item of public interest which is\nwithin the jurisdiction of the Planning Commission during Public Communications. For items on the\nagenda or in connection with any item which the Planning Commission will consider, the public is given\nthe opportunity to comment before or during the Planning Commission's consideration of the item\n[Government Code Section 54954.3(a)].\n\nIn Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to the\nPlanning Commission prior to the meeting. Written public comment regarding any item on this agenda\nmay be sent to PublicComment@cityofslt.gov. When emailing comments, identify the agenda item\nnumber in the subject line to which your comments relate. Any such comment that is a public record\nand is emailed to PublicComment@cityofslt.gov or otherwise provided to a majority of the Planning\nCommission before the meeting will be made available for public inspection during normal business\nhours at the City Clerk's Office located at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe\n[Government Code Section 54957.5(b)]. Written comments will not be read out loud during the meeting.\n\nSpanish Interpretations: The public may access Spanish interpretation using the ZOOM link listed on\nthe front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio\n\n\n09 17 2026 PC Agenda                                1",
+   "2": "capabilities and selecting the Spanish language option. Persons without an internet device may attend\nthe meeting in -person and a device will be provided while supplies last. Requests for interpreter\nservices to offer public comment may be made by contacting the City Clerk.\n\nThe City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable\neffort will be made to accommodate any person needing special assistance to attend this meeting.\nContact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance\n[28 CFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1,\n54954.2, and 54957.5].\n\nCall to Order/Pledge of Allegiance\n\nRoll Call\n\nPublic Communications\nThis is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall\nbe limited to three (3) minutes. In accordance with the Brown Act, the Planning Commission cannot\ndeliberate or vote on any matter raised under public communications but may briefly respond to\nstatements made or questions posed (Government Code Sections 54954.2).\n\nConsent\nPublic Comment - This is the public's opportunity to speak on any topic listed on the Consent Agenda.\nComments shall be limited to three (3) minutes.\n\nThe consent agenda consists of items of a repeating or routine nature considered under a single\naction. Any Commissioner may have an item on the consent agenda removed and considered\nseparately upon request.\n\nPass a Motion to adopt the Consent Agenda in one motion except as indicated at each item.\n\n1.   Planning Commission Meeting Minutes\n     Requested Action / Suggested Motions: Pass a Motion to approve the August 20, 2026 Planning\n     Commission meeting minutes.\n     Responsible Staff Member(s): Yvette Miranda-Yanez, Administrative Clerk II\n\nUnfinished Business\n2.   Revision of Major Design Review & Special Use Permit #25-029, File #REV26-002, 1050\n     Fremont Avenue, APN Nos. 027-170-012 and 027-381-001\n     Requested Action / Suggested Motions: Pass a Motion to: 1) adopt a Resolution finding the\n     revised project (#REV26-002) at 1050 Fremont Avenue remains categorically exempt from\n     CEQA pursuant to Section 15332, Class 32, Infill Developments; and 2) adopt a Resolution\n     approving the plan revision to the Major Design Review and the Special Use Permit, as\n     conditioned therein, under project file #REV26-002 and making all other findings set forth\n     therein.\n     CEQA Determination: The project is categorically exempt from CEQA under Section 15332,\n     Class 32, which consists of projects characterized as infill developments. When the eleven-unit\n     residential project Major Design Review & Special Use Permit was originally approved during\n     the August 21, 2025 Planning Commission meeting under Resolution 2025-008, a notice of\n     exemption was filed pursuant to CEQA guidelines. The proposed plan revision does not\n     constitute a new CEQA determination.\n     Responsible Staff Member(s): John Hitchcock, Planning Manager\n\n\n\n\n09 17 2026 PC Agenda                               2",
+   "3": "New Business\n3.  Consideration of a Resolution Recommending City Council Adopt an Ordinance Amending\n    South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and Advertising Structures) Article III\n    (General Provisions), Section 6.40.080 (Signs and Activities Not Requiring Permits) to Further\n    Equitable Access for Businesses and Promote Economic Activity\n    Requested Action / Suggested Motions: Pass a motion adopting a Resolution recommending\n    City Council adopt an Ordinance amending South Lake Tahoe City Code Title 6, Chapter 6.40,\n    Section 6.40.080 (Signs and Activities Not Requiring Permits).\n    CEQA Determination: Amendments to South Lake Tahoe City Code Title 6, Chapter 6.40,\n    Section 6.40.080 would be exempt from environmental review under California Environmental\n    Quality Act (CEQA) under CEQA Guidelines section 15304 (Minor Alterations to Land), and\n    Section 15061(b)(3) (Review for Exemptions – Common Sense Rule), in that it can be seen with\n    certainty that there is no possibility for this action to have a significant effect on the environment.\n    Responsible Staff Member(s): John Hitchcock, Planning Manager\n\nUpdates and Announcements - City Staff\n\nPlanning Commissioner Reports and Comments\n\nAdjournment\nI, Yvette Miranda, Administrative Clerk II for the City of South Lake Tahoe, declare that the foregoing\nagenda for the Thursday, September 17, 2026 meeting of the City of South Lake Tahoe Planning\nCommission was posted and available for review on September 10, 2026, at City Hall - 1901 Lisa\nMaloff Way, South Lake Tahoe, CA 96150. The agenda was also available on the city website at\nhttps://www.cityofslt.gov/.\n\nSigned September 10, 2026\nYvette Miranda, Administrative Clerk II\n\nNote: The decision of the Planning Commission to approve a design review permit or grant a use\npermit or a variance may be appealed to the City Council. This appeal shall be filed with the City Clerk\nwithin fifteen (15) days from the date of the decision and requires a payment of applicable fees.\n\n\n\n\n09 17 2026 PC Agenda                                 3"
+  },
+  "slt-planning:2906:slt-planning-agenda-html:48e2d9b3a5731681": {
+   "1": "City of South Lake Tahoe\n                               Planning Commission\n                              Meeting Agenda\n                  Thursday, September 17, 2026 at 3:00 pm\n   City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\nPlanning Commission\nJulia Lucksinger, Chair\nGavin Feiger, Vice Chair\nSteven Imhoff, Commissioner\nDouglas Williams, Commissioner\nErika Gonzalez, Commissioner\n\nPublic Participation\nPlanning Commission meetings are held in person at the time and location listed on this agenda. A\npublic agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City's website\nat https://www.cityofslt.gov/, or by contacting the City Clerk's Office, (530) 542-6005 or\nsblankenship@cityofslt.gov.\n\nProviding Public Comment:\n\nRemote Public Participation: If you would like to participate remotely, please join the ZOOM meeting\nby using this link: https://us02web.zoom.us/j/87165332454. If you would like to make a comment, wait\nfor the agenda item to begin, then press the \"raise hand\" button. Meetings are also live-streamed on\nChannel 21, the City website at https://www.cityofslt.gov/, and YouTube at\nhttps://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live.\n\nIn Person: Every agenda for regular meetings provides an opportunity for members of the public to\ndirectly address the legislative body (Planning Commission), on any item of public interest which is\nwithin the jurisdiction of the Planning Commission during Public Communications. For items on the\nagenda or in connection with any item which the Planning Commission will consider, the public is given\nthe opportunity to comment before or during the Planning Commission's consideration of the item\n[Government Code Section 54954.3(a)].\n\nIn Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to the\nPlanning Commission prior to the meeting. Written public comment regarding any item on this agenda\nmay be sent to PublicComment@cityofslt.gov. When emailing comments, identify the agenda item\nnumber in the subject line to which your comments relate. Any such comment that is a public record\nand is emailed to PublicComment@cityofslt.gov or otherwise provided to a majority of the Planning\nCommission before the meeting will be made available for public inspection during normal business\nhours at the City Clerk's Office located at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe\n[Government Code Section 54957.5(b)]. Written comments will not be read out loud during the meeting.\n\nSpanish Interpretations: The public may access Spanish interpretation using the ZOOM link listed on\nthe front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio\n\n\n09 17 2026 PC Agenda                                1",
+   "2": "capabilities and selecting the Spanish language option. Persons without an internet device may attend\nthe meeting in -person and a device will be provided while supplies last. Requests for interpreter\nservices to offer public comment may be made by contacting the City Clerk.\n\nThe City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable\neffort will be made to accommodate any person needing special assistance to attend this meeting.\nContact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance\n[28 CFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1,\n54954.2, and 54957.5].\n\nCall to Order/Pledge of Allegiance\n\nRoll Call\n\nPublic Communications\nThis is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall\nbe limited to three (3) minutes. In accordance with the Brown Act, the Planning Commission cannot\ndeliberate or vote on any matter raised under public communications but may briefly respond to\nstatements made or questions posed (Government Code Sections 54954.2).\n\nConsent\nPublic Comment - This is the public's opportunity to speak on any topic listed on the Consent Agenda.\nComments shall be limited to three (3) minutes.\n\nThe consent agenda consists of items of a repeating or routine nature considered under a single\naction. Any Commissioner may have an item on the consent agenda removed and considered\nseparately upon request.\n\nPass a Motion to adopt the Consent Agenda in one motion except as indicated at each item.\n\n1.   Planning Commission Meeting Minutes\n     Requested Action / Suggested Motions: Pass a Motion to approve the August 20, 2026 Planning\n     Commission meeting minutes.\n     Responsible Staff Member(s): Yvette Miranda-Yanez, Administrative Clerk II\n\nUnfinished Business\n2.   Revision of Major Design Review & Special Use Permit #25-029, File #REV26-002, 1050\n     Fremont Avenue, APN Nos. 027-170-012 and 027-381-001\n     Requested Action / Suggested Motions: Pass a Motion to: 1) adopt a Resolution finding the\n     revised project (#REV26-002) at 1050 Fremont Avenue remains categorically exempt from\n     CEQA pursuant to Section 15332, Class 32, Infill Developments; and 2) adopt a Resolution\n     approving the plan revision to the Major Design Review and the Special Use Permit, as\n     conditioned therein, under project file #REV26-002 and making all other findings set forth\n     therein.\n     CEQA Determination: The project is categorically exempt from CEQA under Section 15332,\n     Class 32, which consists of projects characterized as infill developments. When the eleven-unit\n     residential project Major Design Review & Special Use Permit was originally approved during\n     the August 21, 2025 Planning Commission meeting under Resolution 2025-008, a notice of\n     exemption was filed pursuant to CEQA guidelines. The proposed plan revision does not\n     constitute a new CEQA determination.\n     Responsible Staff Member(s): John Hitchcock, Planning Manager\n\n\n\n\n09 17 2026 PC Agenda                               2",
+   "3": "New Business\n3.  Consideration of a Resolution Recommending City Council Adopt an Ordinance Amending\n    South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and Advertising Structures) Article III\n    (General Provisions), Section 6.40.080 (Signs and Activities Not Requiring Permits) to Further\n    Equitable Access for Businesses and Promote Economic Activity\n    Requested Action / Suggested Motions: Pass a motion adopting a Resolution recommending\n    City Council adopt an Ordinance amending South Lake Tahoe City Code Title 6, Chapter 6.40,\n    Section 6.40.080 (Signs and Activities Not Requiring Permits).\n    CEQA Determination: Amendments to South Lake Tahoe City Code Title 6, Chapter 6.40,\n    Section 6.40.080 would be exempt from environmental review under California Environmental\n    Quality Act (CEQA) under CEQA Guidelines section 15304 (Minor Alterations to Land), and\n    Section 15061(b)(3) (Review for Exemptions – Common Sense Rule), in that it can be seen with\n    certainty that there is no possibility for this action to have a significant effect on the environment.\n    Responsible Staff Member(s): John Hitchcock, Planning Manager\n\nUpdates and Announcements - City Staff\n\nPlanning Commissioner Reports and Comments\n\nAdjournment\nI, Yvette Miranda, Administrative Clerk II for the City of South Lake Tahoe, declare that the foregoing\nagenda for the Thursday, September 17, 2026 meeting of the City of South Lake Tahoe Planning\nCommission was posted and available for review on September 10, 2026, at City Hall - 1901 Lisa\nMaloff Way, South Lake Tahoe, CA 96150. The agenda was also available on the city website at\nhttps://www.cityofslt.gov/.\n\nSigned September 10, 2026\nYvette Miranda, Administrative Clerk II\n\nNote: The decision of the Planning Commission to approve a design review permit or grant a use\npermit or a variance may be appealed to the City Council. This appeal shall be filed with the City Clerk\nwithin fifteen (15) days from the date of the decision and requires a payment of applicable fees.\n\n\n\n\n09 17 2026 PC Agenda                                 3"
+  }
+ },
+ "downloads": {
+  "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2320": {
+   "sha256": "48e2d9b3a57316812e79c3684ba86f16fb92fd529e3c0fbfe8fd9246beb0e1bd",
+   "page_count": 3,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "                              City of South Lake Tahoe\n                               Planning Commission\n                              Meeting Agenda\n                  Thursday, September 17, 2026 at 3:00 pm\n   City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\nPlanning Commission\nJulia Lucksinger, Chair\nGavin Feiger, Vice Chair\nSteven Imhoff, Commissioner\nDouglas Williams, Commissioner\nErika Gonzalez, Commissioner\n\nPublic Participation\nPlanning Commission meetings are held in person at the time and location listed on this agenda. A\npublic agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City's website\nat https://www.cityofslt.gov/, or by contacting the City Clerk's Office, (530) 542-6005 or\nsblankenship@cityofslt.gov.\n\nProviding Public Comment:\n\nRemote Public Participation: If you would like to participate remotely, please join the ZOOM meeting\nby using this link: https://us02web.zoom.us/j/87165332454. If you would like to make a comment, wait\nfor the agenda item to begin, then press the \"raise hand\" button. Meetings are also live-streamed on\nChannel 21, the City website at https://www.cityofslt.gov/, and YouTube at\nhttps://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live.\n\nIn Person: Every agenda for regular meetings provides an opportunity for members of the public to\ndirectly address the legislative body (Planning Commission), on any item of public interest which is\nwithin the jurisdiction of the Planning Commission during Public Communications. For items on the\nagenda or in connection with any item which the Planning Commission will consider, the public is given\nthe opportunity to comment before or during the Planning Commission's consideration of the item\n[Government Code Section 54954.3(a)].\n\nIn Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to the\nPlanning Commission prior to the meeting. Written public comment regarding any item on this agenda\nmay be sent to PublicComment@cityofslt.gov. When emailing comments, identify the agenda item\nnumber in the subject line to which your comments relate. Any such comment that is a public record\nand is emailed to PublicComment@cityofslt.gov or otherwise provided to a majority of the Planning\nCommission before the meeting will be made available for public inspection during normal business\nhours at the City Clerk's Office located at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe\n[Government Code Section 54957.5(b)]. Written comments will not be read out loud during the meeting.\n\nSpanish Interpretations: The public may access Spanish interpretation using the ZOOM link listed on\nthe front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio\n\n\n09 17 2026 PC Agenda                                1\n"
+    },
+    {
+     "page_number": 2,
+     "text": "capabilities and selecting the Spanish language option. Persons without an internet device may attend\nthe meeting in -person and a device will be provided while supplies last. Requests for interpreter\nservices to offer public comment may be made by contacting the City Clerk.\n\nThe City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable\neffort will be made to accommodate any person needing special assistance to attend this meeting.\nContact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance\n[28 CFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1,\n54954.2, and 54957.5].\n\nCall to Order/Pledge of Allegiance\n\nRoll Call\n\nPublic Communications\nThis is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall\nbe limited to three (3) minutes. In accordance with the Brown Act, the Planning Commission cannot\ndeliberate or vote on any matter raised under public communications but may briefly respond to\nstatements made or questions posed (Government Code Sections 54954.2).\n\nConsent\nPublic Comment - This is the public's opportunity to speak on any topic listed on the Consent Agenda.\nComments shall be limited to three (3) minutes.\n\nThe consent agenda consists of items of a repeating or routine nature considered under a single\naction. Any Commissioner may have an item on the consent agenda removed and considered\nseparately upon request.\n\nPass a Motion to adopt the Consent Agenda in one motion except as indicated at each item.\n\n1.   Planning Commission Meeting Minutes\n     Requested Action / Suggested Motions: Pass a Motion to approve the August 20, 2026 Planning\n     Commission meeting minutes.\n     Responsible Staff Member(s): Yvette Miranda-Yanez, Administrative Clerk II\n\nUnfinished Business\n2.   Revision of Major Design Review & Special Use Permit #25-029, File #REV26-002, 1050\n     Fremont Avenue, APN Nos. 027-170-012 and 027-381-001\n     Requested Action / Suggested Motions: Pass a Motion to: 1) adopt a Resolution finding the\n     revised project (#REV26-002) at 1050 Fremont Avenue remains categorically exempt from\n     CEQA pursuant to Section 15332, Class 32, Infill Developments; and 2) adopt a Resolution\n     approving the plan revision to the Major Design Review and the Special Use Permit, as\n     conditioned therein, under project file #REV26-002 and making all other findings set forth\n     therein.\n     CEQA Determination: The project is categorically exempt from CEQA under Section 15332,\n     Class 32, which consists of projects characterized as infill developments. When the eleven-unit\n     residential project Major Design Review & Special Use Permit was originally approved during\n     the August 21, 2025 Planning Commission meeting under Resolution 2025-008, a notice of\n     exemption was filed pursuant to CEQA guidelines. The proposed plan revision does not\n     constitute a new CEQA determination.\n     Responsible Staff Member(s): John Hitchcock, Planning Manager\n\n\n\n\n09 17 2026 PC Agenda                               2\n"
+    },
+    {
+     "page_number": 3,
+     "text": "New Business\n3.  Consideration of a Resolution Recommending City Council Adopt an Ordinance Amending\n    South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and Advertising Structures) Article III\n    (General Provisions), Section 6.40.080 (Signs and Activities Not Requiring Permits) to Further\n    Equitable Access for Businesses and Promote Economic Activity\n    Requested Action / Suggested Motions: Pass a motion adopting a Resolution recommending\n    City Council adopt an Ordinance amending South Lake Tahoe City Code Title 6, Chapter 6.40,\n    Section 6.40.080 (Signs and Activities Not Requiring Permits).\n    CEQA Determination: Amendments to South Lake Tahoe City Code Title 6, Chapter 6.40,\n    Section 6.40.080 would be exempt from environmental review under California Environmental\n    Quality Act (CEQA) under CEQA Guidelines section 15304 (Minor Alterations to Land), and\n    Section 15061(b)(3) (Review for Exemptions – Common Sense Rule), in that it can be seen with\n    certainty that there is no possibility for this action to have a significant effect on the environment.\n    Responsible Staff Member(s): John Hitchcock, Planning Manager\n\nUpdates and Announcements - City Staff\n\nPlanning Commissioner Reports and Comments\n\nAdjournment\nI, Yvette Miranda, Administrative Clerk II for the City of South Lake Tahoe, declare that the foregoing\nagenda for the Thursday, September 17, 2026 meeting of the City of South Lake Tahoe Planning\nCommission was posted and available for review on September 10, 2026, at City Hall - 1901 Lisa\nMaloff Way, South Lake Tahoe, CA 96150. The agenda was also available on the city website at\nhttps://www.cityofslt.gov/.\n\nSigned September 10, 2026\nYvette Miranda, Administrative Clerk II\n\nNote: The decision of the Planning Commission to approve a design review permit or grant a use\npermit or a variance may be appealed to the City Council. This appeal shall be filed with the City Clerk\nwithin fifteen (15) days from the date of the decision and requires a payment of applicable fees.\n\n\n\n\n09 17 2026 PC Agenda                                 3\n"
+    }
+   ],
+   "links": [
+    {
+     "page": 1,
+     "top": 552,
+     "left": 81,
+     "url": "https://www.cityofslt.gov/",
+     "text": "at"
+    },
+    {
+     "page": 1,
+     "top": 552,
+     "left": 100,
+     "url": "https://www.cityofslt.gov/",
+     "text": "https://www.cityofslt.gov/"
+    },
+    {
+     "page": 1,
+     "top": 552,
+     "left": 280,
+     "url": "https://www.cityofslt.gov/",
+     "text": ", or by contacting the City Clerk's Office, (530) 542-6005 or"
+    },
+    {
+     "page": 1,
+     "top": 571,
+     "left": 81,
+     "url": "mailto:sblankenship@cityofslt.gov",
+     "text": "sblankenship@cityofslt.gov"
+    },
+    {
+     "page": 1,
+     "top": 571,
+     "left": 280,
+     "url": "mailto:sblankenship@cityofslt.gov",
+     "text": "."
+    },
+    {
+     "page": 1,
+     "top": 666,
+     "left": 81,
+     "url": "https://us02web.zoom.us/j/87165332454",
+     "text": "by using this link:"
+    },
+    {
+     "page": 1,
+     "top": 666,
+     "left": 211,
+     "url": "https://us02web.zoom.us/j/87165332454",
+     "text": "https://us02web.zoom.us/j/87165332454"
+    },
+    {
+     "page": 1,
+     "top": 666,
+     "left": 507,
+     "url": "https://us02web.zoom.us/j/87165332454",
+     "text": ". If you would like to make a comment, wait"
+    },
+    {
+     "page": 1,
+     "top": 703,
+     "left": 81,
+     "url": "https://www.cityofslt.gov/",
+     "text": "Channel 21, the City website at"
+    },
+    {
+     "page": 1,
+     "top": 703,
+     "left": 314,
+     "url": "https://www.cityofslt.gov/",
+     "text": "https://www.cityofslt.gov/"
+    },
+    {
+     "page": 1,
+     "top": 703,
+     "left": 495,
+     "url": "https://www.cityofslt.gov/",
+     "text": ", and YouTube at"
+    },
+    {
+     "page": 1,
+     "top": 722,
+     "left": 81,
+     "url": "https://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live",
+     "text": "https://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live"
+    },
+    {
+     "page": 1,
+     "top": 722,
+     "left": 593,
+     "url": "https://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live",
+     "text": "."
+    },
+    {
+     "page": 1,
+     "top": 931,
+     "left": 81,
+     "url": "mailto:PublicComment@cityofslt.gov",
+     "text": "may be sent to"
+    },
+    {
+     "page": 1,
+     "top": 931,
+     "left": 194,
+     "url": "mailto:PublicComment@cityofslt.gov",
+     "text": "PublicComment@cityofslt.gov"
+    },
+    {
+     "page": 1,
+     "top": 931,
+     "left": 413,
+     "url": "mailto:PublicComment@cityofslt.gov",
+     "text": ". When emailing comments, identify the agenda item"
+    },
+    {
+     "page": 1,
+     "top": 969,
+     "left": 81,
+     "url": "mailto:PublicComment@cityofslt.gov",
+     "text": "and is emailed to"
+    },
+    {
+     "page": 1,
+     "top": 969,
+     "left": 211,
+     "url": "mailto:PublicComment@cityofslt.gov",
+     "text": "PublicComment@cityofslt.gov"
+    },
+    {
+     "page": 1,
+     "top": 969,
+     "left": 430,
+     "url": "mailto:PublicComment@cityofslt.gov",
+     "text": "or otherwise provided to a majority of the Planning"
+    },
+    {
+     "page": 3,
+     "top": 529,
+     "left": 81,
+     "url": "https://www.cityofslt.gov/",
+     "text": "https://www.cityofslt.gov/"
+    },
+    {
+     "page": 3,
+     "top": 529,
+     "left": 262,
+     "url": "https://www.cityofslt.gov/",
+     "text": "."
+    }
+   ],
+   "boxes": [
+    {
+     "page": 1,
+     "top": 69,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 84,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 99,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 114,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 136,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 299,
+     "left": 107,
+     "url": null,
+     "text": "City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe"
+    },
+    {
+     "page": 1,
+     "top": 324,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 343,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 362,
+     "left": 81,
+     "url": null,
+     "text": "Planning Commission"
+    },
+    {
+     "page": 1,
+     "top": 381,
+     "left": 81,
+     "url": null,
+     "text": "Julia Lucksinger, Chair"
+    },
+    {
+     "page": 1,
+     "top": 400,
+     "left": 81,
+     "url": null,
+     "text": "Gavin Feiger, Vice Chair"
+    },
+    {
+     "page": 1,
+     "top": 419,
+     "left": 81,
+     "url": null,
+     "text": "Steven Imhoff, Commissioner"
+    },
+    {
+     "page": 1,
+     "top": 438,
+     "left": 81,
+     "url": null,
+     "text": "Douglas Williams, Commissioner"
+    },
+    {
+     "page": 1,
+     "top": 457,
+     "left": 81,
+     "url": null,
+     "text": "Erika Gonzalez, Commissioner"
+    },
+    {
+     "page": 1,
+     "top": 476,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 495,
+     "left": 81,
+     "url": null,
+     "text": "Public Participation"
+    },
+    {
+     "page": 1,
+     "top": 514,
+     "left": 81,
+     "url": null,
+     "text": "Planning Commission meetings are held in person at the time and location listed on this agenda. A"
+    },
+    {
+     "page": 1,
+     "top": 533,
+     "left": 81,
+     "url": null,
+     "text": "public agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City's website"
+    },
+    {
+     "page": 1,
+     "top": 590,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 609,
+     "left": 81,
+     "url": null,
+     "text": "Providing Public Comment:"
+    },
+    {
+     "page": 1,
+     "top": 627,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 646,
+     "left": 81,
+     "url": null,
+     "text": "Remote Public Participation:"
+    },
+    {
+     "page": 1,
+     "top": 684,
+     "left": 81,
+     "url": null,
+     "text": "for the agenda item to begin, then press the \"raise hand\" button. Meetings are also live-streamed on"
+    },
+    {
+     "page": 1,
+     "top": 741,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 760,
+     "left": 81,
+     "url": null,
+     "text": "In Person:"
+    },
+    {
+     "page": 1,
+     "top": 779,
+     "left": 81,
+     "url": null,
+     "text": "directly address the legislative body (Planning Commission), on any item of public interest which is"
+    },
+    {
+     "page": 1,
+     "top": 798,
+     "left": 81,
+     "url": null,
+     "text": "within the jurisdiction of the Planning Commission during Public Communications. For items on the"
+    },
+    {
+     "page": 1,
+     "top": 817,
+     "left": 81,
+     "url": null,
+     "text": "agenda or in connection with any item which the Planning Commission will consider, the public is given"
+    },
+    {
+     "page": 1,
+     "top": 836,
+     "left": 81,
+     "url": null,
+     "text": "the opportunity to comment before or during the Planning Commission's consideration of the item"
+    },
+    {
+     "page": 1,
+     "top": 855,
+     "left": 81,
+     "url": null,
+     "text": "[Government Code Section 54954.3(a)]."
+    },
+    {
+     "page": 1,
+     "top": 874,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 893,
+     "left": 81,
+     "url": null,
+     "text": "In Writing:"
+    },
+    {
+     "page": 1,
+     "top": 912,
+     "left": 81,
+     "url": null,
+     "text": "Planning Commission prior to the meeting. Written public comment regarding any item on this agenda"
+    },
+    {
+     "page": 1,
+     "top": 950,
+     "left": 81,
+     "url": null,
+     "text": "number in the subject line to which your comments relate. Any such comment that is a public record"
+    },
+    {
+     "page": 1,
+     "top": 988,
+     "left": 81,
+     "url": null,
+     "text": "Commission before the meeting will be made available for public inspection during normal business"
+    },
+    {
+     "page": 1,
+     "top": 1007,
+     "left": 81,
+     "url": null,
+     "text": "hours at the City Clerk's Office located at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe"
+    },
+    {
+     "page": 1,
+     "top": 1026,
+     "left": 81,
+     "url": null,
+     "text": "[Government Code Section 54957.5(b)]. Written comments will not be read out loud during the meeting."
+    },
+    {
+     "page": 1,
+     "top": 1045,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 1064,
+     "left": 81,
+     "url": null,
+     "text": "Spanish Interpretations:"
+    },
+    {
+     "page": 1,
+     "top": 1083,
+     "left": 81,
+     "url": null,
+     "text": "the front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio"
+    },
+    {
+     "page": 1,
+     "top": 1150,
+     "left": 81,
+     "url": null,
+     "text": "09 17 2026 PC Agenda"
+    },
+    {
+     "page": 1,
+     "top": 1167,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 74,
+     "left": 81,
+     "url": null,
+     "text": "capabilities and selecting the Spanish language option. Persons without an internet device may attend"
+    },
+    {
+     "page": 2,
+     "top": 93,
+     "left": 81,
+     "url": null,
+     "text": "the meeting in -person and a device will be provided while supplies last. Requests for interpreter"
+    },
+    {
+     "page": 2,
+     "top": 112,
+     "left": 81,
+     "url": null,
+     "text": "services to offer public comment may be made by contacting the City Clerk."
+    },
+    {
+     "page": 2,
+     "top": 131,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 150,
+     "left": 81,
+     "url": null,
+     "text": "The City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable"
+    },
+    {
+     "page": 2,
+     "top": 169,
+     "left": 81,
+     "url": null,
+     "text": "effort will be made to accommodate any person needing special assistance to attend this meeting."
+    },
+    {
+     "page": 2,
+     "top": 188,
+     "left": 81,
+     "url": null,
+     "text": "Contact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance"
+    },
+    {
+     "page": 2,
+     "top": 207,
+     "left": 81,
+     "url": null,
+     "text": "[28 CFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1,"
+    },
+    {
+     "page": 2,
+     "top": 226,
+     "left": 81,
+     "url": null,
+     "text": "54954.2, and 54957.5]."
+    },
+    {
+     "page": 2,
+     "top": 245,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 263,
+     "left": 81,
+     "url": null,
+     "text": "Call to Order/Pledge of Allegiance"
+    },
+    {
+     "page": 2,
+     "top": 282,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 301,
+     "left": 81,
+     "url": null,
+     "text": "Roll Call"
+    },
+    {
+     "page": 2,
+     "top": 320,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 339,
+     "left": 81,
+     "url": null,
+     "text": "Public Communications"
+    },
+    {
+     "page": 2,
+     "top": 358,
+     "left": 81,
+     "url": null,
+     "text": "This is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall"
+    },
+    {
+     "page": 2,
+     "top": 378,
+     "left": 81,
+     "url": null,
+     "text": "be limited to three (3) minutes. In accordance with the Brown Act, the Planning Commission cannot"
+    },
+    {
+     "page": 2,
+     "top": 396,
+     "left": 81,
+     "url": null,
+     "text": "deliberate or vote on any matter raised under public communications but may briefly respond to"
+    },
+    {
+     "page": 2,
+     "top": 415,
+     "left": 81,
+     "url": null,
+     "text": "statements made or questions posed (Government Code Sections 54954.2)."
+    },
+    {
+     "page": 2,
+     "top": 434,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 453,
+     "left": 81,
+     "url": null,
+     "text": "Consent"
+    },
+    {
+     "page": 2,
+     "top": 472,
+     "left": 81,
+     "url": null,
+     "text": "Public Comment - This is the public's opportunity to speak on any topic listed on the Consent Agenda."
+    },
+    {
+     "page": 2,
+     "top": 491,
+     "left": 81,
+     "url": null,
+     "text": "Comments shall be limited to three (3) minutes."
+    },
+    {
+     "page": 2,
+     "top": 510,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 529,
+     "left": 81,
+     "url": null,
+     "text": "The consent agenda consists of items of a repeating or routine nature considered under a single"
+    },
+    {
+     "page": 2,
+     "top": 548,
+     "left": 81,
+     "url": null,
+     "text": "action. Any Commissioner may have an item on the consent agenda removed and considered"
+    },
+    {
+     "page": 2,
+     "top": 567,
+     "left": 81,
+     "url": null,
+     "text": "separately upon request."
+    },
+    {
+     "page": 2,
+     "top": 586,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 605,
+     "left": 81,
+     "url": null,
+     "text": "Pass a Motion to adopt the Consent Agenda in one motion except as indicated at each item."
+    },
+    {
+     "page": 2,
+     "top": 624,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 643,
+     "left": 81,
+     "url": null,
+     "text": "1."
+    },
+    {
+     "page": 2,
+     "top": 719,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 738,
+     "left": 81,
+     "url": null,
+     "text": "Unfinished Business"
+    },
+    {
+     "page": 2,
+     "top": 757,
+     "left": 81,
+     "url": null,
+     "text": "2."
+    },
+    {
+     "page": 2,
+     "top": 1041,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 1060,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 1079,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 1150,
+     "left": 81,
+     "url": null,
+     "text": "09 17 2026 PC Agenda"
+    },
+    {
+     "page": 2,
+     "top": 1167,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 74,
+     "left": 81,
+     "url": null,
+     "text": "New Business"
+    },
+    {
+     "page": 3,
+     "top": 93,
+     "left": 81,
+     "url": null,
+     "text": "3."
+    },
+    {
+     "page": 3,
+     "top": 339,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 358,
+     "left": 81,
+     "url": null,
+     "text": "Updates and Announcements - City Staff"
+    },
+    {
+     "page": 3,
+     "top": 377,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 396,
+     "left": 81,
+     "url": null,
+     "text": "Planning Commissioner Reports and Comments"
+    },
+    {
+     "page": 3,
+     "top": 415,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 434,
+     "left": 81,
+     "url": null,
+     "text": "Adjournment"
+    },
+    {
+     "page": 3,
+     "top": 453,
+     "left": 81,
+     "url": null,
+     "text": "I, Yvette Miranda, Administrative Clerk II for the City of South Lake Tahoe, declare that the foregoing"
+    },
+    {
+     "page": 3,
+     "top": 472,
+     "left": 81,
+     "url": null,
+     "text": "agenda for the Thursday, September 17, 2026 meeting of the City of South Lake Tahoe Planning"
+    },
+    {
+     "page": 3,
+     "top": 491,
+     "left": 81,
+     "url": null,
+     "text": "Commission was posted and available for review on September 10, 2026, at City Hall - 1901 Lisa"
+    },
+    {
+     "page": 3,
+     "top": 510,
+     "left": 81,
+     "url": null,
+     "text": "Maloff Way, South Lake Tahoe, CA 96150. The agenda was also available on the city website at"
+    },
+    {
+     "page": 3,
+     "top": 548,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 567,
+     "left": 81,
+     "url": null,
+     "text": "Signed September 10, 2026"
+    },
+    {
+     "page": 3,
+     "top": 586,
+     "left": 81,
+     "url": null,
+     "text": "Yvette Miranda, Administrative Clerk II"
+    },
+    {
+     "page": 3,
+     "top": 605,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 3,
+     "top": 624,
+     "left": 81,
+     "url": null,
+     "text": "Note: The decision of the Planning Commission to approve a design review permit or grant a use"
+    },
+    {
+     "page": 3,
+     "top": 643,
+     "left": 81,
+     "url": null,
+     "text": "permit or a variance may be appealed to the City Council. This appeal shall be filed with the City Clerk"
+    },
+    {
+     "page": 3,
+     "top": 662,
+     "left": 81,
+     "url": null,
+     "text": "within fifteen (15) days from the date of the decision and requires a payment of applicable fees."
+    },
+    {
+     "page": 3,
+     "top": 1150,
+     "left": 81,
+     "url": null,
+     "text": "09 17 2026 PC Agenda"
+    },
+    {
+     "page": 3,
+     "top": 1167,
+     "left": 81,
+     "url": null,
+     "text": ""
+    }
+   ]
+  },
+  "https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218982": {
+   "sha256": "a726dc4351974792342bf5c37cc89d246801370d53779efedccbd30f43c081c6",
+   "page_count": 9,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe\n                          Report to Planning Commission\n\n\nMeeting Date: September 17, 2026\n\nTitle: Revision of Major Design Review & Special Use Permit #25-029, File #REV26-002\n\nLocation: 1050 Fremont Avenue, APN 027-170-012 and 027-381-001\n\nResponsible Staff Member: John Hitchcock, Planning Manager\n\nBACKGROUND\n\nEsoteric Holding LP, represented by Exline & Company, Inc., submitted a plan revision application\nfor a previously approved Major Design Review and Special Use Permit to construct eleven multi-\nfamily units at 1050 Fremont Avenue. The original project was approved at the August 21, 2025\nPlanning Commission meeting through Resolution 2025-008, and the project materials are saved\nunder File #25-029. The plan revision application was submitted for the purpose of increasing the\nheight of the proposed residential buildings allowed under the Mid-Town Area Plan design\nstandards. The City Council's adopted the Mid-Town Area Plan on September 9, 2026.\n\nThe project was scheduled for a public hearing at the August 20, 2026, Planning Commission\nhearing. However, at the request of City staff and agreement from the applicant, the item was\ncontinued and rescheduled to September 17, 2026.\n\nISSUE AND DISCUSSION\n\nProject Description\n\nThe approved project under File #25-029 involved the development of eleven residential units\nwithin six three-story structures. The previously approved plans showed each unit containing four\nbedrooms and three and a half bathrooms. Other amenities include an in-unit washer and dryer,\npersonal balconies, and two covered parking spaces. The site will be served by one driveway,\nand each condominium will have a personal bear box. The revised plan set proposes increasing\nthe number of bathrooms per unit from three and a half to four and a half. The density, number of\nbuildings, number of bedrooms, and proposed amenities have not changed through this plan\nrevision application. Reference Attachment 02 for the Plan Set previously"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218999": {
+   "sha256": "30044ae9b9909b5a75013b292245edbd2e9cd191d604076069f9b7e24e5cd55f",
+   "page_count": 3,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "City of South Lake Tahoe\n                     Report to Planning Commission\n\n\n\nMeeting Date: September 17, 2026\n\nTitle: Consideration of a Resolution Recommending City Council Adopt an Ordinance\nAmending South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and Advertising\nStructures) Article III (General Provisions), Section 6.40.080 (Signs and Activities Not\nRequiring Permits)\n\nLocation:     Citywide\n\nResponsible Staff Member:      John Hitchcock, Planning Manager & Zachary\nThomas, Director of Development Services\n\nBackground: On August 12, 2025, Mayor Pro Tem Bass requested a presentation on\nSouth Lake Tahoe City Code Title 6, Chapter 6.40, Section 6.40.080 and a discussion\nof potential Code amendments, for example, being more permissive with sandwich\nboards. Council member Jinkens seconded the request. On November 4, 2025,\nDevelopment Services presented on the request by providing a history of this Code\nsection, current standards, and enforcement issues.\n\nStaff's presentation focused primarily on the history, use, and enforcement of temporary\nsignage (Banners and A-frames), and Council's previous decisions implementing\ntemporary signage as a mechanism to boost economic activity.\n\nFollowing public comments and deliberation among the City Council, Councilmember\nRobbins made a motion, seconded by Councilmember Roberts, to direct staff to bring\nback to the City Council proposed amendments to South Lake Tahoe City Code Title 6,\nChapter 6.40, Section 6.40.080 to ensure equitable access to signage for local\nbusinesses and promote economic activity.\n\nThe Council formed an Ad Hoc committee, including Mayor Bass and Councilmember\nRobbins, to provide input on the proposed amendments and directed staff to seek input\nfrom interested stakeholders on signage.\n\nIssue and Discussion: City staff met with the Tahoe Chamber CEO and\nrepresentatives of the Tahoe Chamber South Tahoe Restaurant Association.\nFeedback focused primarily on allowing portable signage, providing additional"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://slt.granicus.com/GeneratedAgendaViewer.php?view_id=6&clip_id=2320": "<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-1LHE231GHR\"></script>\n\n<script>\n    window.dataLayer = window.dataLayer || [];\n    function gtag() { dataLayer.push(arguments); }\n    gtag('js', new Date());\n    gtag('config', 'G-1LHE231GHR', { 'request_origin':'external' });\n</script>\n      \n<style>\nbody{ margin-top: 0; margin-bottom: 0; margin-right: .5in ; margin-left: .5in; }\n</style>\n\n<title>09 17 2026 Planning Commission</title> \n<style>\nbody {\nfont-size: 12pt;\nfont-family: arial;\n}\ntd {\nfont-size: 12pt;\nfont-family: arial;\n}\ntr {\nfont-size: 12pt;\nfont-family: arial;\n}\n</style>\n \n<div align=center><span style=\"FONT-FAMILY: arial\"><strong><u><em><span style=\"FONT-SIZE: 14pt\"><span style=\"FONT-SIZE: 12pt\">ALL CITY COUNCIL MEETINGS ARE OPEN TO THE PUBLIC &amp; <br>PUBLIC PARTICIPATION IS ENCOURAGED</span></span></em></u></strong></span> <br></div>\n<div align=center><span style=\"FONT-SIZE: 8pt\"><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 10pt\"><span style=\"FONT-SIZE: 8pt\">A public agenda packet is available for review at the meeting, on the City's Website:</span></span></strong></span><span style=\"FONT-SIZE: 8pt\"> </span></span></div>\n<div align=center><a href=\"http://www.cityofslt.us/\"><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 10pt\"><span style=\"FONT-SIZE: 8pt\"><span style=\"FONT-SIZE: 8pt\">www.cityofslt.us</span></span></span></strong></span></a><span style=\"FONT-SIZE: 8pt\"><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 10pt\"><span style=\"FONT-SIZE: 8pt\"> or at the City Clerk's Office, City Administrative Center, 1901 Airport Rd</span>.</span></strong></span> </span></div>\n<div>&nbsp; <br>\n<center>\n<table cellSpacing=0 cellPadding=0 width=\"100%\" border=0>\n<tbody>\n<tr vAlign=top align=middle bgColor=#e0e0e0>\n<td style=\"FONT-SIZE: 12pt\">\n<div align=center><span style=\"FONT-SIZE: 10pt; FONT-FAMILY: arial; mso-fareast-font-family: 'times new roman'; mso-ansi-language: en-us; mso-fareast-language: en-us; mso-bidi-language: ar-sa\"><strong><span style=\"FONT-SIZE: 10pt; FONT-FAMILY: arial; mso-fareast-font-family: 'times new roman'; mso-ansi-language: en-us; mso-fareast-language: en-us; mso-bidi-language: ar-sa; mso-bidi-font-family: 'times new roman'\">PLEASE NOTE:<span style=\"mso-spacerun: yes\">&nbsp; </span></span><span style=\"FONT-SIZE: 10pt; FONT-FAMILY: arial; mso-fareast-font-family: 'times new roman'; mso-ansi-language: en-us; mso-fareast-language: en-us; mso-bidi-language: ar-sa\">ALL</span></strong><span style=\"FONT-SIZE: 10pt; FONT-FAMILY: arial; mso-fareast-font-family: 'times new roman'; mso-ansi-language: en-us; mso-fareast-language: en-us; mso-bidi-language: ar-sa\"> <strong>CITY COUNCIL MEETINGS ARE VIDEOTAPED AND PLAYED DAILY AT 9:00 A.M. AND<span style=\"mso-spacerun: yes\">&nbsp; </span><span style=\"mso-spacerun: yes\">&nbsp;</span>7:00 P.M. ON GOVERNMENT ACCESS CHANNEL 21; AND ARE AVAILABLE FOR VIEWING LIVE AND ON-DEMAND 24/7 THROUGH INTERNET STREAMING VIDEO VIA THE CITY&#8217;S WEBSITE </strong><a href=\"http://www.cityofslt.us/\"><strong>WWW.CITYOFSLT.US</strong></a></span></span> </div></td></tr></tbody></table><br></center></div>\n<div>\n<table style=\"BORDER-COLLAPSE: collapse\" borderColor=#000000 cellSpacing=0 cellPadding=0 width=\"100%\" border=1>\n<tbody>\n<tr>\n<td vAlign=top align=middle>\n<table cellSpacing=0 cellPadding=0 width=\"100%\" border=0>\n<tbody>\n<tr>\n<td vAlign=top align=middle>\n<div><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 14pt\">CITY COUNCIL/</span></strong></span> </div>\n<div><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 14pt\">SOUTH TAHOE REDEVELOPMENT AGENCY</span></strong></span> </div>\n<div><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 14pt\">SOUTH TAHOE JOINT POWERS PARKING AUTHORITY</span></strong></span> </div>\n<div><span style=\"FONT-FAMILY: arial\"><strong><span style=\"FONT-SIZE: 14pt\">MEETING AGENDA</span></strong></span> </div><span style=\"FONT-FAMILY: arial\"><strong>Thursday, September 17, 2026 3:00 P.M.</strong></span> \n<div><span style=\"FONT-FAMILY: arial\"><strong>City Council Chambers, 1901 Airport Road</strong></span> </div>\n<div><span style=\"FONT-FAMILY: arial\"><strong>South Lake Tahoe, California 96150</strong></span> </div>\n<div></div></td></tr>\n<tr>\n<td style=\"BORDER-TOP: #000000 1px solid\" vAlign=top align=middle bgColor=#efefef><span style=\"FONT-FAMILY: arial\"><span style=\"FONT-SIZE: 14pt\"><strong></strong></span></span> </td></tr></tbody></table></td></tr></tbody></table></div><br>\n<div>\n<table style=\"BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; BORDER-LEFT: #666666 1px solid; BORDER-BOTTOM: #666666 1px solid\" width=\"100%\">\n<tbody>\n<tr>\n<td style=\"BORDER-RIGHT: #666666 1px solid; FONT-FAMILY: arial\" vAlign=top align=left width=\"50%\">\n<div><strong><u><em>Mission of the City Council:</em></u></strong> </div>\n<div><strong>The City Council exists to </strong></div>\n<div><strong>represent the public interest</strong> </div>\n<div><strong>to oversee the City's operations,</strong> </div>\n<div><strong>and to plan for the City's future</strong> </div></td>\n<td style=\"FONT-FAMILY: arial\" vAlign=top align=right width=\"50%\">\n<div><strong>Kathay Lovell, Mayor <br>Mike Weber, Mayor&nbsp;Pro Tem <br>Councilmembers:</strong> </div>\n<div><strong>Jerry Birdwell</strong> </div>\n<div><strong>Bill&nbsp;Crawford</strong> </div>\n<div><strong>Ted Long</strong> </div></td></tr></tbody></table></div>\n<table style=\"BORDER-COLLAPSE: collapse\" borderColor=#000000 width=\"100%\" border=1>\n<tbody>\n<tr>\n<td bgColor=#efefef height=4>\n<div>\n<div style=\"FONT-FAMILY: arial\" align=center><span style=\"FONT-SIZE: 8pt\">PLEASE NOTE: THE CITY COUNCIL CHAMBERS MEETING FACILITY IS ACCESSIBLE TO PEOPLE WITH DISABILITIES. EVERY REASONABLE EFFORT WILL BE MADE TO ACCOMMODATE ANY PERSON NEEDING SPECIAL ASSISTANCE TO ATTEND THIS MEETING; PLEASE CONTACT THE CITY CLERK AT (530) 542-6004 AT LEAST 24 HOURS IN ADVANCE OF THE MEETING FOR ASSISTANCE.</span> </div></div></td></tr>\n<tr>\n<td align=right></td></tr></tbody></table>\n<div>&nbsp; </div>\n<div>&nbsp;</div>\n<style>blockquote { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px; }@media print { a { color: black; } }</style><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"><div style=\"FONT-FAMILY: arial\"></div> \n<div>\n<table>\n<tbody>\n<tr>\n<td style=\"FONT-FAMILY: arial\" vAlign=top width=35>1) </td>\n<td style=\"FONT-FAMILY: arial\" vAlign=top><a name=\"agenda218974\" class=\"Agenda Agenda1\" href=\"https://slt.granicus.com/MediaPlayer.php?view_id=6&clip_id=2320&meta_id=218974\" onclick=\"\">Planning Commission Meeting Minutes</a> </td></tr></tbody></table></div>  \n<div>\n<table>\n<tbody>\n<tr>\n<td width=70></td>\n<td><strong><u>RECOMMENDED ACTION:</u> Pass a Motion to approve the August 20, 2026 Planning Commission meeting minutes.</strong> </td></tr></tbody></table></div> <br>\n<div style=\"FONT-FAMILY: arial\"> </div>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218975\"  name=\"document218975\" class=\"Document Document2\" onclick=\"\">08 20 2026 PC Minutes.pdf</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"><div style=\"FONT-FAMILY: arial\"></div> \n<div>\n<table>\n<tbody>\n<tr>\n<td style=\"FONT-FAMILY: arial\" vAlign=top width=35>2) </td>\n<td style=\"FONT-FAMILY: arial\" vAlign=top><a name=\"agenda218981\" class=\"Agenda Agenda1\" href=\"https://slt.granicus.com/MediaPlayer.php?view_id=6&clip_id=2320&meta_id=218981\" onclick=\"\">Revision of Major Design Review & Special Use Permit #25-029, File #REV26-002, 1050 Fremont Avenue, APN Nos. 027-170-012 and 027-381-001 </a> </td></tr></tbody></table></div>  \n<div>\n<table>\n<tbody>\n<tr>\n<td width=70></td>\n<td><strong><u>RECOMMENDED ACTION:</u> Pass a Motion to: 1) adopt a Resolution finding the revised project (#REV26-002) at 1050 Fremont Avenue remains categorically exempt from CEQA pursuant to Section 15332, Class 32, Infill Developments; and 2) adopt a Resolution approving the plan revision to the Major Design Review and the Special Use Permit, as conditioned therein, under project file #REV26-002 and making all other findings set forth therein.</strong> </td></tr></tbody></table></div> <br>\n<div style=\"FONT-FAMILY: arial\"> </div>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218982\"  name=\"document218982\" class=\"Document Document2\" onclick=\"\">01 - Staff Report</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218983\"  name=\"document218983\" class=\"Document Document2\" onclick=\"\">02 - 1050FremontAve_ApprovedPlanSet(#25-029)_REV26-002</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218984\"  name=\"document218984\" class=\"Document Document2\" onclick=\"\">03 - 1050FremontAve_PlanSet_REV26-002</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218985\"  name=\"document218985\" class=\"Document Document2\" onclick=\"\">04 - 1050FremontAve_PublishedNOE_EDC_Doc#FW2025-0072</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218986\"  name=\"document218986\" class=\"Document Document2\" onclick=\"\">05 - 1050FremontAve_PublishedNOE_LCI_SCH#2025081172</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218987\"  name=\"document218987\" class=\"Document Document2\" onclick=\"\">06 - Public_Comments_Received_Aug20206PCMeeting</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218988\"  name=\"document218988\" class=\"Document Document2\" onclick=\"\">07 - ProofofMailing_Sept172026_Redacted_20260902</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218989\"  name=\"document218989\" class=\"Document Document2\" onclick=\"\">08 - PublicNotice_ProofofPublication</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218990\"  name=\"document218990\" class=\"Document Document2\" onclick=\"\">09 - Resolution - CEQA Findings</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218991\"  name=\"document218991\" class=\"Document Document2\" onclick=\"\">10 - Resolution - Plan Consistency, Permit Approval and Additional Findings</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218992\"  name=\"document218992\" class=\"Document Document2\" onclick=\"\">11 - Exhibit A to Attachment 10 - Revised City Permit</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"><div style=\"FONT-FAMILY: arial\"></div> \n<div>\n<table>\n<tbody>\n<tr>\n<td style=\"FONT-FAMILY: arial\" vAlign=top width=35>3) </td>\n<td style=\"FONT-FAMILY: arial\" vAlign=top><a name=\"agenda218998\" class=\"Agenda Agenda1\" href=\"https://slt.granicus.com/MediaPlayer.php?view_id=6&clip_id=2320&meta_id=218998\" onclick=\"\">Consideration of a Resolution Recommending City Council Adopt an Ordinance Amending South Lake Tahoe City Code Title 6, Chapter 6.40 (Signs and Advertising Structures) Article III (General Provisions), Section 6.40.080 (Signs and Activities Not Requiring Permits) to Further Equitable Access for Businesses and Promote Economic Activity</a> </td></tr></tbody></table></div>  \n<div>\n<table>\n<tbody>\n<tr>\n<td width=70></td>\n<td><strong><u>RECOMMENDED ACTION:</u> Pass a motion adopting a Resolution recommending City Council adopt an Ordinance amending South Lake Tahoe City Code Title 6, Chapter 6.40, Section 6.40.080 (Signs and Activities Not Requiring Permits).</strong> </td></tr></tbody></table></div> <br>\n<div style=\"FONT-FAMILY: arial\"> </div>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=218999\"  name=\"document218999\" class=\"Document Document2\" onclick=\"\">01 - Staff Report</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=219000\"  name=\"document219000\" class=\"Document Document2\" onclick=\"\">02 - Sandwich Board Dimensions</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=219001\"  name=\"document219001\" class=\"Document Document2\" onclick=\"\">03 - Sandwich Board Examples</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=219002\"  name=\"document219002\" class=\"Document Document2\" onclick=\"\">04 - Proposed Code Amendments (redline)</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=219003\"  name=\"document219003\" class=\"Document Document2\" onclick=\"\">05 - Resolution</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=219004\"  name=\"document219004\" class=\"Document Document2\" onclick=\"\">06 - Resolution Exhibit 1 - Proposed Ordinance</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\" align=justify><a href=\"https://slt.granicus.com/MetaViewer.php?view_id=6&clip_id=2320&meta_id=219005\"  name=\"document219005\" class=\"Document Document2\" onclick=\"\">07 - Public Notice</a></div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote></blockquote></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div style=\"FONT-FAMILY: arial\"> </div><br>\n<blockquote dir=\"ltr\" style=\"MARGIN-RIGHT=0px;\"></blockquote><div align=justify><span style=\"FONT-SIZE: 12pt\"></span></div>\n"
+ },
+ "expected": {
+  "1": null,
+  "2": {
+   "page_start": 1,
+   "page_end": 9,
+   "url_end": "hp?view_id=6&clip_id=2320&meta_id=218982",
+   "heading": "Planning Commission"
+  },
+  "3": {
+   "page_start": 1,
+   "page_end": 3,
+   "url_end": "hp?view_id=6&clip_id=2320&meta_id=218999",
+   "heading": "Planning Commission"
+  }
+ }
+}

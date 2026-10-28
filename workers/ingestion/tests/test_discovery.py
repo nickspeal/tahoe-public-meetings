@@ -20,6 +20,19 @@ def test_ttd_discovery_is_bounded_and_only_keeps_official_upload_pdfs():
     assert len(rows[0]["documents"]) == 1
 
 
+def test_ttd_committee_discovery_keeps_only_its_own_posts():
+    titles = {7174: "TTD Regional and Transit Capital Programs Committee Meeting – November 2, 2026",
+              7172: "TTD Board of Directors Meeting – November 4, 2026",
+              7173: "TTD Finance and Personnel Committee Meeting – November 4, 2026",
+              6013: "TTD Regional Transit &amp; Capital Programs Committee Mtg-June 2, 2025",
+              6042: "Regional Transit and Capital Programs Committee Meeting – March 30, 2026"}
+    api = json.dumps([{"id": i, "link": f"https://tahoetransportation.org/meeting/{i}/", "title": {"rendered": t},
+                       "modified": "2026-10-13"} for i, t in titles.items()])
+    rows = discover_ttd(limit=5, fetch=lambda url: api if "wp-json" in url else "", delay=0,
+                        body_pattern="Regional (?:and )?Transit (?:and |& )?Capital Programs")
+    assert [r["source_id"] for r in rows] == ["7174", "6013", "6042"]
+    assert [r["source_id"] for r in discover_ttd(limit=5, fetch=lambda url: api if "wp-json" in url else "",
+                                                 delay=0)] == ["7172"]
 def test_slt_publisher_row_uses_clip_id_and_packet_pdf():
     markup = '''<table><tr><td id="10-06-2026-City-Council">City Council</td>
       <td><a href="AgendaViewer.php?view_id=6&clip_id=2339">Agenda</a></td>

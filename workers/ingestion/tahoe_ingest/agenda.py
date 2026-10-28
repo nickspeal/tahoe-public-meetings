@@ -1,6 +1,7 @@
 """Conservative agenda segmentation.
 
-TTD, SLT, and Truckee keep their original hand-written parsers below; other
+TTD (board and Regional Transit and Capital Programs Committee), SLT, and Truckee
+keep their original hand-written parsers below; other
 agencies use the declarative layouts in ``agenda_layouts`` (or the custom
 parsers in ``agenda_custom``). Only a complete, sequential agenda is returned
 for automatic publication. The title quote is copied exactly from one
@@ -210,7 +211,7 @@ def _ttd_title_part(raw: str) -> str:
 
 def parse_ttd(document_id: str, pages: list[dict]) -> ParseResult:
     head = pages[0]["text"] if pages else ""
-    if "TAHOE TRANSPORTATION DISTRICT" not in head or "Notice of Agenda" not in head:
+    if "TAHOE TRANSPORTATION DISTRICT" not in head or not re.search(r"Notice of Agenda|Meeting Agenda", head):
         return _result([], False, "TTD agenda cover was not recognized; items require review.")
     lines = _lines(pages, first_pages=6)
     entries = []
@@ -239,7 +240,7 @@ def parse_ttd(document_id: str, pages: list[dict]) -> ParseResult:
                 if other.page != line.page:
                     break
                 value_text = other.text.strip()
-                if value_text.startswith(("At this time", "COMPLIANCE WITH")):
+                if value_text.startswith(("At this time", "This portion of the agenda", "COMPLIANCE WITH")):
                     break
                 if re.match(r"^(?:[A-Z]|[IVX]{1,5})\.\s+", value_text) or value_text.startswith("Agenda Page"):
                     break
@@ -298,8 +299,9 @@ def parse_ttd(document_id: str, pages: list[dict]) -> ParseResult:
     return _result(items, len(items) >= 5 and roman_numbers == list(range(1, roman_numbers[-1] + 1)))
 
 
-LEGACY_PARSERS = {"ttd": parse_ttd, "slt": parse_slt, "truckee": parse_truckee}
-LEGACY_COVERS = {"ttd": "TAHOE TRANSPORTATION DISTRICT", "slt": "City of South Lake Tahoe", "truckee": "Town Council"}
+LEGACY_PARSERS = {"ttd": parse_ttd, "ttd-rtcpc": parse_ttd, "slt": parse_slt, "truckee": parse_truckee}
+LEGACY_COVERS = {"ttd": "TAHOE TRANSPORTATION DISTRICT", "ttd-rtcpc": "TAHOE TRANSPORTATION DISTRICT",
+                 "slt": "City of South Lake Tahoe", "truckee": "Town Council"}
 
 
 def has_parser(agency: str) -> bool:

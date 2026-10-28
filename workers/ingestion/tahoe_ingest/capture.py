@@ -56,7 +56,7 @@ def discover_agency(agency_id: str, config: dict, *, limit: int, year: int | Non
     now = datetime.now(PACIFIC)
     if adapter in ("configured", "ttd", "slt"):
         candidates = (discover_configured(agency_id, config["discovery"], limit=limit) if adapter == "configured" else
-                      discover_ttd(limit=limit) if adapter == "ttd" else discover_slt(limit=limit))
+                      discover_ttd(limit=limit, body_pattern=config.get("discovery", {}).get("bodyPattern", "board")) if adapter == "ttd" else discover_slt(limit=limit))
     elif year is None and month is None:
         candidates = _discover_truckee_months(truckee_months(now.date()), limit)
     else:

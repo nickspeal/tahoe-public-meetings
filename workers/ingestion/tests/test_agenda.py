@@ -34,6 +34,37 @@ def test_known_agendas_recover_ordered_items_with_page_exact_quotes():
                 assert not re.search(r"(?:\b\d{1,3}\s+LINK\b|\bPage$)", item["title"]), item
 
 
+def test_ttd_committee_meeting_agenda_cover_parses_like_the_board():
+    page1 = """                         TAHOE TRANSPORTATION DISTRICT (TTD)
+                   REGIONAL TRANSIT AND CAPITAL PROGRAMS COMMITTEE
+
+                                           Meeting Agenda
+
+  I.      CALL TO ORDER AND GENERAL MATTERS
+            A. Roll Call and Determination of Quorum
+            B. For Possible Action: Approval of Agenda for November 2, 2026
+            C. For Possible Action: Approval of Minutes of August 3, 2026                      Page
+                                                                                                1
+                                            Agenda Page 1"""
+    page2 = """ II.    PUBLIC INTEREST COMMENTS
+        All comments are to be limited to no more than three minutes per person.
+
+ III.   DISCUSSION ITEMS
+                                                                                               Page
+          A.   Informational Only: Informational Summary Update on the Overall Park               5
+               Tahoe® Program
+
+ IV.     COMMITTEE MEMBER REQUESTS AND COMMENTS
+        This portion of the agenda is for members to make requests for future agenda items.
+
+ V.     ADJOURNMENT
+                                            Agenda Page 2"""
+    pages = [{"document_id": "a", "page_number": 1, "text": page1}, {"document_id": "a", "page_number": 2, "text": page2}]
+    parsed = parse_agenda("ttd-rtcpc", [{"id": "a"}], pages)
+    assert parsed.complete, parsed.warning
+    titles = {i["source_number"]: i["title"] for i in parsed.items}
+    assert titles["III.A"] == "Informational Only: Informational Summary Update on the Overall Park Tahoe® Program"
+    assert titles["IV"] == "COMMITTEE MEMBER REQUESTS AND COMMENTS"
 def test_unknown_layout_is_review_only():
     pages = [{"document_id": "x", "page_number": 1, "text": "Agenda items need no evidence. 1. Adopt everything."}]
     parsed = parse_agenda("slt", [{"id": "x"}], pages)

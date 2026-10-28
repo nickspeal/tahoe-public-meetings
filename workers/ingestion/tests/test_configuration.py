@@ -16,7 +16,7 @@ def test_csv_rows_remain_distinct_unverified_research():
     assert len(imported) == 41
     assert {a['legacy']['sourceRow'] for a in imported} == set(range(3, 44))
     assert all(a['legacy']['verification'] == 'unverified' for a in imported)
-    assert len(agencies) == 44  # Imported rows, Truckee, and two added parks commissions.
+    assert len(agencies) == 45  # Imported rows, Truckee, two added parks commissions, and the TTD RTCPC.
     assert {'slt', 'ttd', 'truckee'} <= {a['id'] for a in agencies if a.get('discoveryAdapter')}
     assert {a['id'] for a in agencies if not a['follow']} == {'douglas-newsletter','fows','lahontan-office','tahoe-fund','cal-epa','usace'}
     # Subsequent source verification may fill operational URLs; the imported

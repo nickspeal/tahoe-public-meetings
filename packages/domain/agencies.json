@@ -7,6 +7,9 @@
     "discoveryAdapter": "ttd",
     "officialUrl": "https://tahoetransportation.org/",
     "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
+    "discovery": {
+      "bodyPattern": "board"
+    },
     "schedule": {
       "source": "configured",
       "note": "Operator-configured 2026-10-20: TTD board meetings are on the first Wednesday of each month at 3 PM. learn-schedules independently matched 4 of 4 regular timed 2026 records.",
@@ -31,6 +34,23 @@
       "agendaPublishingSchedule": "About a week before",
       "notification": "",
       "website": "https://tahoetransportation.org/meetings-and-agendas/"
+    }
+  },
+  {
+    "id": "ttd-rtcpc",
+    "name": "TTD — Regional Transit and Capital Programs Committee",
+    "shortName": "TTD",
+    "aliases": [
+      "Tahoe Transportation District",
+      "RTCPC",
+      "Regional and Transit Capital Programs Committee"
+    ],
+    "follow": true,
+    "discoveryAdapter": "ttd",
+    "officialUrl": "https://tahoetransportation.org/",
+    "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
+    "discovery": {
+      "bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs"
     }
   },
   {

@@ -977,6 +977,29 @@
         "note": "The maintainer requested this separate committee. Official Oct13 2026 08:30 agenda (clip 1738) is verified; retain as a distinct body from TCPUD Board."
       },
       "implementation": "Three committee agendas are ingested (Aug11, Sep8, Oct13) with verified 08:30 times; supported structured HTML headings publish where validated."
+    },
+    {
+      "id": "SR-037",
+      "agencyId": "ttd-rtcpc",
+      "name": "TTD Regional Transit and Capital Programs Committee",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "The maintainer requested this TTD committee. Its meetings are posted in the same TTD WordPress meeting feed as the board, which board discovery filtered out by title.",
+      "nextStep": "Keep the separate body; discover its posts from the TTD feed by title.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "Official meeting notice",
+          "url": "https://tahoetransportation.org/meeting/ttd-regional-and-transit-capital-programs-committee-meeting-november-2-2026/"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-10-28",
+        "note": "The Nov 2 2026 notice links the committee's agenda packet; earlier posts spell the name several ways (\"Regional Transit and\", \"Regional and Transit\", \"Regional Transit &\")."
+      },
+      "implementation": "The built-in TTD adapter takes a per-agency title pattern; the TTD agenda parser and packet staff-report rule are shared with the board."
     }
   ]
 }

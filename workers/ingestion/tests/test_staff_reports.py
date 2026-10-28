@@ -117,6 +117,12 @@ def test_ttd_committee_footer_is_not_the_board_item():
     assert [m for m in ttd._TTD_FOOTER.findall(text)] == ["IV.A"]
 
 
+def test_ttd_rtcpc_footer_reads_with_or_without_the_committee_prefix():
+    text = "TS/lr          RTCPC AGENDA ITEM: III.A.\nCJ/lr          AGENDA ITEM: III.B.\nx          RTCPC AGENDA ITEM: IV"
+    assert ttd._RTCPC_FOOTER.findall(text) == ["III.A", "III.B", "IV"]
+    assert "ttd-rtcpc" in RULES
+
+
 def test_truckee_packet_must_open_with_the_captured_agenda():
     data = load("truckee")
     url = next(iter(data["downloads"]))

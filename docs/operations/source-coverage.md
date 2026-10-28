@@ -11,11 +11,11 @@ The scheduled job (`tahoe-ingest run-scheduled`, [decision 0018](../decisions/00
 
 An entry's coverage is therefore one of: **automatic**, **snapshot only**, or **blocked** (the official source refuses automated requests, so neither a better adapter nor a retry helps until the source or the agency changes). "Blocked" and "snapshot only" are different. A snapshot-only entry may just need an adapter written.
 
-## Automatic: live discovery (29 followed entries)
+## Automatic: live discovery (30 followed entries)
 
 | Registry ID | Platform / adapter |
 | --- | --- |
-| `ttd` | Built-in (WordPress meeting posts) |
+| `ttd`, `ttd-rtcpc` | Built-in (WordPress meeting posts), title filter |
 | `slt` | Built-in (Granicus, City Council) |
 | `truckee` | CivicPlus calendar, plus Municode agenda index |
 | `slt-planning`, `slt-parks-recreation-commission` | Granicus, body filter |
@@ -78,7 +78,7 @@ Items get a "Read the staff report" link and a verbatim summary only where `map-
 | Coverage | Registry IDs |
 | --- | --- |
 | Own report file per item | `trpa-governing`, `trpa-advisory` (also attachment lists), `slt` (also attachment lists), `slt-planning`, `slt-parks-recreation-commission`, `tcpud`, `tcpud-parks-recreation-committee`, `lahontan-board`, `california-fish-game`, `california-state-parks` (State Park and Recreation Commission only), `truckee-tahoe-airport`, `el-dorado-planning`, `washoe-commissioners`, `washoe-planning` |
-| Pages inside the packet | `ttd`, `truckee`, `douglas-commissioners`, `douglas-planning`, `douglas-transportation`, `stpud`, `ntpud`, `placer-transportation`, `ivgid`, `ndep` |
+| Pages inside the packet | `ttd`, `ttd-rtcpc`, `truckee`, `douglas-commissioners`, `douglas-planning`, `douglas-transportation`, `stpud`, `ntpud`, `placer-transportation`, `ivgid`, `ndep` |
 | Legislation text (HTML) | `el-dorado-supervisors` |
 | No reports published | `ntcd`, `trcd`, `south-shore-tma`, `truckee-north-shore-tma`, `nevada-state-parks`; OHMVR Commission reports carry no item numbers |
 | Blocked or no items | `placer-supervisors`, `placer-planning`, `placer-tahoe-design-review` (HTTP 403); `ctc`, `state-lands` (reports exist, agenda adapter missing) |

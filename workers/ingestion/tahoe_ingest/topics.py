@@ -48,7 +48,7 @@ def classify(agency_id: str, title: str, citations: list[dict]) -> dict[str, dic
     if "biking" in topic_ids() and "biking" not in matches and TRAIL.search(title) and TRAIL_CONTEXT.search(title):
         add("biking", "trail-with-transport-context", TRAIL.search(title).group())
 
-    if "transit" in topic_ids() and agency_id == "ttd" and "transit" not in matches:
+    if "transit" in topic_ids() and agency_id in ("ttd", "ttd-rtcpc") and "transit" not in matches:
         for rule, pattern in (("ttd-fleet", TTD_FLEET), ("ttd-operating-budget", TTD_BUDGET),
                               ("ttd-service-action", TTD_SERVICE)):
             found = pattern.search(title)

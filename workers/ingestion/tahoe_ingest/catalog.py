@@ -73,6 +73,8 @@ def agency_catalog() -> tuple[dict, ...]:
                 raise ValueError(f"invalid source configuration: {agency['id']}")
             re.compile(config.get("bodyPattern", "."), re.I)
             re.compile(config.get("documentPattern", "."), re.I)
+        if agency.get("discoveryAdapter") == "ttd":  # The board and each committee share one WordPress feed.
+            re.compile(agency.get("discovery", {}).get("bodyPattern", "board"), re.I)
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
         from urllib.parse import urlparse

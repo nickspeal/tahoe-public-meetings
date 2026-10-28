@@ -78,7 +78,8 @@ def _pdf_links(markup: str, base: str, agency: str) -> list[dict]:
     return found
 
 
-def discover_ttd(*, limit: int = 5, fetch=fetch_text, delay: float = 2.0) -> list[dict]:
+def discover_ttd(*, limit: int = 5, fetch=fetch_text, delay: float = 2.0, body_pattern: str = "board") -> list[dict]:
+    """TTD's WordPress meeting posts whose title matches ``body_pattern`` (the board, or one committee)."""
     if not 1 <= limit <= 20:
         raise ValueError("TTD discovery limit must be 1..20")
     raw = fetch(f"{TTD_API}/meeting?per_page={min(40, max(10, limit * 4))}&page=1&_fields=id,link,title,modified")
@@ -86,7 +87,7 @@ def discover_ttd(*, limit: int = 5, fetch=fetch_text, delay: float = 2.0) -> lis
     found = []
     for record in records:
         title = html.unescape(record["title"]["rendered"])
-        if "board" not in title.lower():
+        if not re.search(body_pattern, title, re.I):
             continue
         time.sleep(delay)
         page_url = record["link"]
@@ -173,12 +174,12 @@ def _title_date(title: str):
 
 
 def discover_ttd_range(*, since, until, fetch=fetch_text, delay: float = 2.0, max_pages: int = 10,
-                       post_margin_days: int = 180) -> tuple[list[dict], str | None]:
+                       post_margin_days: int = 180, body_pattern: str = "board") -> tuple[list[dict], str | None]:
     """Page TTD's WordPress meeting posts (newest first) until posts are older than ``since``.
 
     Posts are often published months before the meeting, so paging continues
     until a post's publication date is ``post_margin_days`` before ``since``.
-    The meeting date comes from the post title. An undated board post is kept
+    The meeting date comes from the post title. An undated matching post is kept
     when it was published within the range; its date comes from the agenda.
     """
     from datetime import timedelta
@@ -201,7 +202,7 @@ def discover_ttd_range(*, since, until, fetch=fetch_text, delay: float = 2.0, ma
             posted = (record.get("date") or "")[:10]
             if day:
                 earliest = min(earliest or day, day)
-            if "board" not in title.lower():
+            if not re.search(body_pattern, title, re.I):
                 continue
             if (day and not lo <= day <= hi) or (not day and not (posted and lo <= posted <= hi)):
                 continue

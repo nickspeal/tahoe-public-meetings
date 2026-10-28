@@ -90,7 +90,8 @@ def discover_agency_range(agency_id: str, config: dict, *, since: date, until: d
     if adapter == "configured":
         candidates, earliest, query_by_date = discover_configured_range(agency_id, config["discovery"], since=since, until=until)
     elif adapter == "ttd":
-        candidates, earliest = discover_ttd_range(since=since, until=until)
+        candidates, earliest = discover_ttd_range(since=since, until=until,
+                                                body_pattern=config.get("discovery", {}).get("bodyPattern", "board"))
     elif adapter == "slt":
         candidates, earliest = discover_slt_range(since=since, until=until)
     elif adapter == "truckee":

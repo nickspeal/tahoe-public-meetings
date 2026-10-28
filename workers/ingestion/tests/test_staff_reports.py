@@ -1,5 +1,6 @@
 """Staff report mapping (IDEA-013) and verbatim summary validation (IDEA-016); no network or model calls."""
 import copy
+import re
 import json
 from datetime import date
 from pathlib import Path
@@ -7,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from tahoe_ingest import item_summaries, staff_reports
+from tahoe_ingest.staff_report_rules import slt, ttd
 from tahoe_ingest.staff_reports import Context, Document, Item, Meeting, RULES
 
 FIXTURES = Path(__file__).resolve().parents[3] / "tests/fixtures/staff-reports"
@@ -17,10 +19,11 @@ def load(agency):
 
 
 def run_rule(data):
+    """Run the fixture's agency rule offline: ``downloads`` (url -> PDF) feed the PDF reader, ``html`` (url -> markup) the link reader."""
     m = data["meeting"]
     meeting = Meeting(m["id"], m["agency_id"], m["title"], date.fromisoformat(m["local_date"]),
                       [Item(i["id"], i["number"], i["title"], i["section"], i["fingerprint"], i["citations"]) for i in data["items"]],
-                      [Document(**d) for d in data["documents"]])
+                      [Document(**d) for d in data["documents"]], m.get("official_url"))
     downloads, read = data["downloads"], []
 
     def reader(url, *, last_page=None, links=False):
@@ -34,14 +37,21 @@ def run_rule(data):
     def stored(version_id):
         return {int(n): text for n, text in data["stored"].get(version_id, {}).items()}
 
-    ctx = Context(stored, meeting, reader)
+    def fetch_html(url):
+        read.append(url)
+        if url not in data.get("html", {}):
+            raise staff_reports.FetchFailed(f"{url}: not in fixture")
+        return data["html"][url]
+
+    ctx = Context(stored, meeting, reader, fetch_html=fetch_html)
     mappings = {m.item_id: m for m in RULES[m["agency_id"]](ctx)}
     return {i["number"]: mappings.get(i["id"]) for i in data["items"]}, ctx, read
 
 
-@pytest.mark.parametrize("agency", ["slt", "ttd", "truckee", "lahontan-board"])
+@pytest.mark.parametrize("agency", sorted(p.stem for p in FIXTURES.glob("*.json")))
 def test_each_item_cites_pages_of_its_own_staff_report(agency):
     data = load(agency)
+    assert data["meeting"]["agency_id"] in RULES
     found, ctx, _ = run_rule(data)
     assert set(found) == set(data["expected"])
     for number, expected in data["expected"].items():
@@ -53,13 +63,15 @@ def test_each_item_cites_pages_of_its_own_staff_report(agency):
         assert mapping.page_start == expected["page_start"]
         assert mapping.page_end == expected.get("page_end", mapping.page_end) >= mapping.page_start
         assert mapping.url.endswith(expected.get("url_end", mapping.url))
-        # The kept pages are the report's own leading pages, and the first one names this item.
+        # The kept pages are the report's own leading pages, and the first one names this item
+        # (as the fixture's "heading" prints it, or one of the common forms).
         numbers = [n for n, _ in mapping.pages]
         assert numbers and numbers[0] == mapping.page_start and all(mapping.page_start <= n <= mapping.page_end for n in numbers)
         first = mapping.pages[0][1]
         label = number.rstrip(".")
-        assert (f"#:{label}" in first or f"AGENDA ITEM: {label}." in first or f"AGENDA ITEM {label}." in first
-                or f"Item {label}" in first or f"ITEM {label}" in first), number
+        headings = [expected["heading"]] if "heading" in expected else [
+            f"#:{label}", f"AGENDA ITEM: {label}.", f"AGENDA ITEM {label}.", f"Item {label}", f"ITEM {label}"]
+        assert any(h in first for h in headings), number
         assert staff_reports.title_overlap(next(i["title"] for i in data["items"] if i["number"] == number), "\n".join(
             text for _, text in mapping.pages)) >= 0.5
 
@@ -96,7 +108,7 @@ def test_ttd_page_column_must_land_on_the_items_own_footer():
 
 def test_ttd_committee_footer_is_not_the_board_item():
     text = "JS/lr       AGENDA ITEM: IV.A.\n            FPC AGENDA ITEM: III.B.\nTahoe Transportation District Board ~ Page 8 ~"
-    assert [m for m in staff_reports._TTD_FOOTER.findall(text)] == ["IV.A"]
+    assert [m for m in ttd._TTD_FOOTER.findall(text)] == ["IV.A"]
 
 
 def test_truckee_packet_must_open_with_the_captured_agenda():
@@ -284,7 +296,7 @@ def test_slt_attachments_are_uncertain_when_a_printed_name_or_summary_number_dis
     ("03 - Professional Services Agreement-Zenith", "Professional Services Agreement-Zenith"),
 ])
 def test_attachment_labels_read_the_printed_file_name(name, label):
-    assert staff_reports.attachment_label(name) == label
+    assert slt.attachment_label(name) == label
 
 
 # --- Requested actions printed in the agenda ---------------------------------------
@@ -348,3 +360,202 @@ def test_a_list_entry_may_be_taken_on_its_own():
     page = "Recommended Action: That Council: (1) authorize staff to use the budget; and (2) approve the rebate program guidelines."
     text, _ = item_summaries.validate([sentence("Approve the rebate program guidelines.", page)], {1: page}, "doc")
     assert text == "Approve the rebate program guidelines."
+
+
+# --- Rule registry and generic helpers ----------------------------------------------
+
+def test_registry_merges_every_rule_module():
+    from tahoe_ingest import cli, staff_report_rules
+    assert staff_reports.SUPPORTED == tuple(sorted(RULES)) and {"slt", "ttd", "truckee", "lahontan-board"} <= set(RULES)
+    assert RULES is staff_report_rules.RULES and all(callable(rule) for rule in RULES.values())
+    parser = cli._parser()
+    assert parser.parse_args(["map-staff-reports", "--agency", "lahontan-board"]).agency == "lahontan-board"
+    with pytest.raises(SystemExit):
+        parser.parse_args(["map-staff-reports", "--agency", "no-such-agency"])
+
+
+def meeting(items=(), documents=(), *, official_url=None, day=date(2026, 10, 28)):
+    return Meeting("x:1", "x", "Board", day, list(items), list(documents), official_url)
+
+
+def item(number, title, citations=()):
+    return Item(f"x:1:{number or title}", number, title, None, "fp", list(citations))
+
+
+def pdf(pages, sha="a" * 64):
+    return {"sha256": sha, "page_count": len(pages), "pages": [{"page_number": n, "text": t} for n, t in enumerate(pages, 1)]}
+
+
+HTML_PAGE = """<html><body><a href="/docs/Agenda-Item-No-7-B-Aquatic-Invasive-Species.pdf">Agenda Item No. 7.B</a>
+<p><a href="mailto:clerk@example.gov">Clerk</a> <a href="https://other.example/Item-5.pdf">Item 5 &amp; 6</a></p></body></html>"""
+
+
+def test_html_links_are_absolute_in_order_cached_and_counted(monkeypatch):
+    pauses, fetched = [], []
+    monkeypatch.setattr(staff_reports.time, "sleep", pauses.append)
+
+    def fetch(url):
+        fetched.append(url)
+        return HTML_PAGE
+    ctx = Context(lambda v: {}, meeting(), lambda url, **_: pdf(["x"]), delay=1.5, fetch_html=fetch)
+    ctx.read("https://example.gov/agenda.pdf")
+    links = ctx.html_links("https://example.gov/meetings/oct")
+    assert links == [{"url": "https://example.gov/docs/Agenda-Item-No-7-B-Aquatic-Invasive-Species.pdf", "text": "Agenda Item No. 7.B"},
+                     {"url": "https://other.example/Item-5.pdf", "text": "Item 5 & 6"}]
+    assert ctx.html_links("https://example.gov/meetings/oct") == links and fetched == ["https://example.gov/meetings/oct"]
+    assert ctx.downloads == 2 and pauses == [1.5]
+
+
+def test_html_links_failures_retry_later_or_are_uncertain():
+    def broken(url):
+        raise OSError("connection reset")
+    with pytest.raises(staff_reports.FetchFailed, match="connection reset"):
+        Context(lambda v: {}, meeting(), None, fetch_html=broken).html_links("https://example.gov/m")
+    with pytest.raises(staff_reports.Uncertain, match="no links"):
+        Context(lambda v: {}, meeting(), None, fetch_html=lambda url: "<p>Agenda coming soon</p>").html_links("https://example.gov/m")
+
+
+def test_html_links_default_fetch_stays_offline_in_tests():
+    # conftest replaces discovery.fetch_text; the default reader looks it up on every call.
+    with pytest.raises(staff_reports.FetchFailed, match="offline test"):
+        Context(lambda v: {}, meeting(), None).html_links("https://example.gov/m")
+
+
+def test_report_names_item_needs_number_title_and_date():
+    page = ("TAHOE REGIONAL PLANNING AGENCY\nGoverning Board Meeting: October 28, 2026\n\n"
+            "Agenda Item No. 7.B\nAquatic Invasive Species Program Update\n\nSummary and Staff Recommendation: ...")
+    seven_b = item("7.B", "Aquatic Invasive Species Program Update")
+    patterns = [r"(?i)Agenda Item No\.?\s*{n}\b"]
+    assert staff_reports.report_names_item(page, seven_b, number_patterns=patterns, meeting_date=date(2026, 10, 28)) == {
+        "reportHeading": "Agenda Item No. 7.B", "titleOverlap": 1.0, "meetingDate": "2026-10-28"}
+    # Undated reports pass without date evidence; no date given, none checked.
+    undated = page.replace("Governing Board Meeting: October 28, 2026\n", "")
+    assert "meetingDate" not in staff_reports.report_names_item(undated, seven_b, number_patterns=patterns, meeting_date=date(2026, 10, 28))
+    assert "meetingDate" not in staff_reports.report_names_item(page, seven_b, number_patterns=patterns)
+    assert staff_reports.report_names_item(page, seven_b, number_patterns=patterns, meeting_date=date(2026, 9, 23)) == (
+        "report is for another meeting date")
+    assert staff_reports.report_names_item(page, item("7.C", "Aquatic Invasive Species Program Update"),
+                                           number_patterns=patterns).startswith("report does not name item 7.C")
+    assert staff_reports.report_names_item(page, item("7.B", "Shoreline Plan Amendments for Marinas"),
+                                           number_patterns=patterns) == "report title differs from the agenda item"
+    assert staff_reports.report_names_item(page, item("", "Aquatic Invasive Species Program Update"),
+                                           number_patterns=patterns) == "item has no number"
+
+
+@pytest.mark.parametrize("text,dates", [
+    ("MEETING OF OCTOBER 1-2, 2026", [(date(2026, 10, 1), date(2026, 10, 2))]),
+    ("Meeting Date: Wednesday, October 28, 2026", [(date(2026, 10, 28), date(2026, 10, 28))]),
+    ("Board Meeting 10/28/26", [(date(2026, 10, 28), date(2026, 10, 28))]),
+    ("Date: October 21, 2026", []),  # a memo's own date is not the meeting's
+])
+def test_printed_meeting_dates(text, dates):
+    assert staff_reports.printed_meeting_dates(text) == dates
+
+
+def test_linked_reports_reads_a_shared_report_once_and_maps_every_item_it_covers():
+    shared, own = "https://example.gov/Items-5-B-and-5-C-Filing-Fees.pdf", "https://example.gov/Item-6.pdf"
+    items = [item("5.B", "Filing Fees for Shoreline Permits"), item("5.C", "Filing Fees for Grading Permits"),
+             item("6", "Annual Audit Report"), item("8", "Transportation Plan")]
+    reports = {shared: pdf(["Items 5.B and 5.C\nFiling Fees for Shoreline and Grading Permits"] * 3 + ["Exhibit"]),
+               own: pdf(["Item 7\nAnnual Audit Report"])}
+    reads = []
+
+    def reader(url, *, last_page=None, links=False):
+        reads.append((url, last_page))
+        return reports[url]
+    ctx = Context(lambda v: {}, meeting(items), reader)
+
+    def verify(it, report):
+        found = staff_reports.report_names_item(report["pages"][0]["text"], it, number_patterns=[r"^Items? .*\b{n}\b"])
+        return {**found, "agendaLink": report["url"].rsplit("/", 1)[1]} if isinstance(found, dict) else found
+    mappings = staff_reports.linked_reports(ctx, items, {shared: {"5.b", "5.C."}, own: {"6"}}, verify=verify, kind="staff-report",
+                                            title="Item {number} staff report")
+    assert [(m.item_id, m.url, m.page_start, m.page_end, m.title) for m in mappings] == [
+        ("x:1:5.B", shared, 1, 4, "Item 5.B staff report"), ("x:1:5.C", shared, 1, 4, "Item 5.C staff report")]
+    assert reads == [(shared, staff_reports.LEADING_PAGES), (own, staff_reports.LEADING_PAGES)]
+    assert [n for n, _ in mappings[0].pages] == [1, 2, 3] and mappings[0].evidence["agendaLink"] == "Items-5-B-and-5-C-Filing-Fees.pdf"
+    assert ctx.skipped == {"x:1:6": "report does not name item 6", "x:1:8": "0 report links for item 8"}
+
+
+def test_linked_reports_prechecks_before_downloading_and_reuses_a_failed_read():
+    url = "https://example.gov/Item-1.pdf"
+    items = [item("1", "Budget Workshop Report"), item("1A", "Budget Workshop Followup"), item("2", "Parking Rates")]
+    calls = []
+
+    def reader(u, **_):
+        calls.append(u)
+        raise staff_reports.FetchFailed(f"{u}: HTTP 500")
+    ctx = Context(lambda v: {}, meeting(items), reader)
+    found = staff_reports.linked_reports(ctx, items, {"1": {url}, "1A": {url}, "2": {"https://example.gov/x.pdf", "https://example.gov/y.pdf"}},
+                                         verify=lambda it, r: {}, kind="staff-report", title=lambda it: it.title)
+    assert found == [] and calls == [url] and ctx.fetch_failures == [f"{url}: HTTP 500"]
+    assert ctx.skipped == {"x:1:1": "download failed", "x:1:1A": "download failed", "x:1:2": "2 report links for item 2"}
+    ctx = Context(lambda v: {}, meeting(items), reader)
+    staff_reports.linked_reports(ctx, items[:1], {"1": {url}}, verify=lambda it, r: {}, kind="staff-report", title="t",
+                                 precheck=lambda it, u: "link is not next to the item")
+    assert ctx.downloads == 0 and ctx.skipped == {"x:1:1": "link is not next to the item"}
+
+
+def test_packet_reports_take_uninterrupted_runs_of_labelled_pages():
+    pages = {1: "AGENDA", 2: "Agenda Item 3\nWater Rate Study", 3: "chart", 4: "Agenda Item 3\nmore", 5: "Agenda Item 4\nSnow Removal Contract",
+             6: "Agenda Item 5\nTree Removal Permits", 7: "Agenda Item 4\nappendix", 8: "Agenda Item 6\nParking Rates"}
+    items = [item("3", "Water Rate Study"), item("4", "Snow Removal Contract"), item("6", "Fire Station Design"), item("9", "Audit")]
+    packet = Document("v", "packet", "Agenda packet", "https://example.gov/packet.pdf", "b" * 64, 8, "application/pdf")
+    ctx = Context(lambda v: {}, meeting(items, [packet]), None)
+
+    def label(text):
+        found = re.match(r"Agenda Item (\d+)", text)
+        return staff_reports.norm_number(found.group(1)) if found else None
+    mappings = staff_reports.packet_reports(ctx, packet, pages, items, page_label=label, label_name="Agenda Item {number}")
+    assert [(m.item_id, m.page_start, m.page_end, m.evidence) for m in mappings] == [
+        ("x:1:3", 2, 4, {"header": "Agenda Item 3", "pages": "2-4"})]
+    assert ctx.skipped == {"x:1:4": "no single run of pages headed Agenda Item 4",  # item 5's page interrupts it
+                           "x:1:6": "staff report title differs from the agenda item",
+                           "x:1:9": "no single run of pages headed Agenda Item 9"}
+
+
+def test_agenda_page_column_reads_the_number_at_the_end_of_the_items_line():
+    agenda = "AGENDA                                                Page\n  A.  Aquatic Invasive Species Program Update      12\n  B. Filing fees\n"
+    ctx = Context(lambda v: {1: agenda}, meeting(), None)
+    assert staff_reports.agenda_page_column(item("A", "x", [{"documentId": "v", "page": 1, "quote": "Aquatic Invasive Species Program Update"}]), ctx) == 12
+    assert staff_reports.agenda_page_column(item("B", "x", [{"documentId": "v", "page": 1, "quote": "Filing fees"}]), ctx) is None
+
+
+def test_by_title_needs_a_unique_match_both_ways():
+    items = [item("", "Aquatic Invasive Species Program Update"), item("", "Shoreline Plan Implementation Update"),
+             item("", "Shoreline Plan Implementation Review"), item("", "Budget"), item("", "Approval of Minutes")]
+    texts = {"https://example.gov/ais.pdf": "Agenda-Item-No-7-B-Aquatic-Invasive-Species-Program-Update.pdf",
+             "https://example.gov/shoreline.pdf": "Shoreline Plan Implementation Update and Review",
+             "https://example.gov/budget.pdf": "Budget"}
+    ctx = Context(lambda v: {}, meeting(items), None)
+    assert ctx.by_title(texts) == {items[0].id: "https://example.gov/ais.pdf"}
+    assert ctx.skipped == {items[1].id: "the matching report title also matches another item",
+                           items[2].id: "the matching report title also matches another item",
+                           items[3].id: "no report title matches the item title"}  # one distinctive word is too few
+
+
+# --- Requested action labels ---------------------------------------------------------
+
+@pytest.mark.parametrize("label", [
+    "Required Motions:", "Required Motion(s):", "Summary and Staff Recommendation:", "Requested Board Action:", "Recommended Board Action:",
+    "Recommended Motion:", "Proposed Motion:", "Board Action Requested:", "Action Required:", "Recommended Actions:",
+    "Recommended Action(s):", "Staff Recommends:", "Requested Action / Suggested Motions:"])
+def test_requested_action_labels_agencies_print(label):
+    from tahoe_ingest.requested_actions import for_meeting
+    page = f"4.   Wastewater Rate Study.\n     {label} Approve the 2026 wastewater rate study and set a public hearing.\n\n5.   Adjournment\n"
+    items = [{"id": "a", "citations": [{"documentId": "v", "page": 1, "quote": "Wastewater Rate Study."}]},
+             {"id": "b", "citations": [{"documentId": "v", "page": 1, "quote": "Adjournment"}]}]
+    assert for_meeting(items, {("v", 1): page})["a"]["text"] == "Approve the 2026 wastewater rate study and set a public hearing."
+
+
+def test_staff_recommends_sentence_is_kept_whole_and_alone():
+    from tahoe_ingest.requested_actions import ACTION_LABELS, for_meeting
+    assert any("Required Motion" in label for label in ACTION_LABELS)
+    page = ("4.   Wastewater Rate Study.\n     Staff recommends that the Board approve the U.S. Forest Service agreement No. 5. The study\n"
+            "     was funded in 2025.\n\n5.   Snow Removal.\n     The Board staff recommends nothing here; this line does not start with it.\n\n6. Adjournment\n")
+    items = [{"id": i, "citations": [{"documentId": "v", "page": 1, "quote": q}]}
+             for i, q in (("a", "Wastewater Rate Study."), ("b", "Snow Removal."), ("c", "Adjournment"))]
+    actions = for_meeting(items, {("v", 1): page})
+    assert set(actions) == {"a"}
+    assert actions["a"]["text"] == "Staff recommends that the Board approve the U.S. Forest Service agreement No. 5."
+    assert actions["a"]["citation"]["quote"] in page

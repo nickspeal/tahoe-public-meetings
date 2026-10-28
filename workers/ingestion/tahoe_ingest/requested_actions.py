@@ -1,9 +1,11 @@
 """The requested or recommended action an agenda prints under an item, copied verbatim (no model).
 
 Many agendas state what the body is asked to do directly under each item, for example
-South Lake Tahoe's "Requested Action / Suggested Motions: Pass a Resolution ..." or
-Truckee's "Recommended Action: That Council ...". That text is already in the stored
-agenda pages, so it is read deterministically:
+South Lake Tahoe's "Requested Action / Suggested Motions: Pass a Resolution ...",
+Truckee's "Recommended Action: That Council ...", or "Requested Board Action:",
+"Required Motions:", and "Staff recommends that the Board ..." elsewhere
+(``ACTION_LABELS``, which staff report rules may reuse). That text is already in the
+stored agenda pages, so it is read deterministically:
 
 - The label must start a line between this item's cited title and the next item's
   (items are ordered by where their quotes sit in the same agenda document), so the
@@ -24,8 +26,24 @@ from .staff_reports import clean_text
 
 METHOD = "agenda-requested-action-v1"
 MIN_WORDS, MAX_WORDS = 5, 120
-_LABEL = re.compile(r"^[ \t]*(?:Requested Action\s*/\s*Suggested Motions?|Requested Actions?|Recommended Actions?|"
-                    r"Staff Recommendations?|Recommendations?|Suggested Motions?|Action Requested)[ \t]*:[ \t]*", re.I | re.M)
+_PLURAL = r"(?:s|\(s\))?"  # "Motion", "Motions", or "Motion(s)"
+# Each printed label that introduces what staff asks the body to do, as a regex fragment (longest forms first).
+# "For Possible Action:" is not one: TTD agendas print it at the start of the title itself.
+ACTION_LABELS: tuple[str, ...] = (
+    rf"Requested Action\s*/\s*Suggested Motion{_PLURAL}",
+    rf"Summary and Staff Recommendation{_PLURAL}",
+    rf"Required Motion{_PLURAL}",
+    rf"Requested Board Action{_PLURAL}", rf"Recommended Board Action{_PLURAL}", rf"Board Action{_PLURAL} Requested",
+    rf"Requested Action{_PLURAL}", rf"Recommended Action{_PLURAL}", rf"Action{_PLURAL} Requested", rf"Action{_PLURAL} Required",
+    rf"Recommended Motion{_PLURAL}", rf"Proposed Motion{_PLURAL}", rf"Suggested Motion{_PLURAL}",
+    rf"Staff Recommendation{_PLURAL}", r"Staff Recommends", rf"Recommendation{_PLURAL}",
+)
+# A labelled action: "Recommended Action: That Council ..." (the label is dropped).
+ACTION_LABEL = re.compile(rf"^[ \t]*(?:{'|'.join(ACTION_LABELS)})[ \t]*:[ \t]*", re.I | re.M)
+# An unlabelled recommendation sentence: "Staff recommends that the Board ..." (kept whole, so the quote starts at "Staff").
+ACTION_SENTENCE = re.compile(r"^[ \t]*(?=Staff recommends[ \t]+(?:that[ \t]+)?(?:the[ \t]+)?[A-Za-z])", re.I | re.M)
+_LABEL = ACTION_LABEL
+_SENTENCE_END = re.compile(r"(?<![A-Z])(?<!\bNo)(?<!\bSt)(?<!\bvs)\.(?=\s+[A-Z\"“])")  # not "U.S." or "No. 5"
 _STOP = re.compile(r"\n[ \t]*\n|\n[ \t]*[A-Z][\w /()'’,-]{2,48}:[ \t]|\n[^\n]*\.(?:pdf|docx?|xlsx?|pptx?)[ \t]*(?=\n|$)", re.I)
 
 
@@ -67,12 +85,17 @@ def for_meeting(items: list[dict], pages: dict) -> dict[str, dict]:
 
 
 def _action(block: str, offset: int, page_text: str) -> tuple[str, str] | None:
-    label = _LABEL.search(block)
+    label = ACTION_LABEL.search(block)
+    sentence = ACTION_SENTENCE.search(block)
+    if sentence and (not label or sentence.start() < label.start()):
+        label = sentence
     if not label:
         return None
     rest = block[label.end():]
     stop = _STOP.search(rest)
     quote = rest[:stop.start()] if stop else rest
+    if label is sentence and (end := _SENTENCE_END.search(quote)):
+        quote, stop = quote[:end.end()], end  # An unlabelled recommendation is its own first sentence only.
     quote = quote.rstrip()
     shown = " ".join(clean_text(quote).split())
     words = shown.split()

@@ -1,17 +1,19 @@
 """Map agenda items to their own staff reports (IDEA-013), one verified rule per agency.
 
-Each agency publishes an item's staff report differently:
+This module is the shared core: the data model, temporary PDF and HTML reading, text
+checks, generic matching helpers, and the run that stores results. Each agency's rule
+lives in its own module under ``staff_report_rules/`` (see its README), which exposes
+``RULES = {"agency-id": rule}``; the package merges every module's rules, so
+``RULES`` and ``SUPPORTED`` here cover every agency with a rule. A rule takes a
+``Context`` and returns ``Mapping`` rows, for example:
 
 - South Lake Tahoe (``slt``): the agenda PDF links "Item N- Executive Summary.pdf" for
-  each item. That file opens with an "Agenda Item Executive Summary" page that names
-  the item number and title, followed by the staff report and attachments.
+  each item, a file that opens by naming the item number and title (``linked_reports``).
 - Tahoe Transportation District (``ttd``): the agenda's Page column refers to the
-  packet's stamped "~ Page N ~" footer, and every page of a staff memo and its
-  attachments carries an "AGENDA ITEM: IV.A." footer.
+  packet's stamped "~ Page N ~" footer, and every page of a staff memo carries an
+  "AGENDA ITEM: IV.A." footer (``agenda_page_column``).
 - Truckee (``truckee``): staff report pages in the agenda packet carry an "Item 5.1"
-  header.
-- Lahontan Water Board (``lahontan-board``): the agenda links ``itemN.pdf``, whose
-  first page is headed "ITEM N" with the item's title.
+  header (``packet_reports``).
 
 A mapping is stored only when two independent signals agree (the agenda's link or
 page reference, and the item number printed on the staff report itself), plus a
@@ -41,7 +43,6 @@ from pathlib import Path
 from .http import EndpointSkipped, fetch_bytes
 
 METHOD_VERSION = "staff-report-map-v1"
-SUPPORTED = ("slt", "ttd", "truckee", "lahontan-board")
 LEADING_PAGES = 3  # pages of each report kept for summaries and their citations
 MAX_PAGE_CHARS = 8_000
 MAX_PDF_BYTES = 80 * 1024 * 1024
@@ -49,6 +50,7 @@ MAX_PDF_PAGES = 800
 RETRY_HOURS = 24  # a meeting whose downloads failed is scanned again after this long
 DEFAULT_MAX_MEETINGS = 6  # per scheduled run, nearest to today first; bounds downloads and statements
 MIN_TITLE_OVERLAP = 0.6
+TITLE_MATCH_FLOOR = 0.8  # by-title matching has no number to agree with, so it needs more of the title
 
 # Meeting mechanics and records that have no staff report worth linking or summarizing.
 PROCEDURAL = re.compile(
@@ -121,6 +123,7 @@ class Meeting:
     local_date: date | None
     items: list
     documents: list
+    official_url: str | None = None  # the meeting's official page, for rules that read its links
 
 
 # --- Text helpers ------------------------------------------------------------
@@ -163,7 +166,8 @@ def procedural(item: Item) -> bool:
     return bool(PROCEDURAL.match(" ".join(re.sub(r"^for (?:possible )?action:\s*", "", item.title, flags=re.I).split())))
 
 
-def _norm_number(value: str) -> str:
+def norm_number(value: str) -> str:
+    """An item number as rules compare it: no spaces or surrounding dots, upper case ("iv.a." -> "IV.A")."""
     return re.sub(r"\s+", "", value).strip(".").upper()
 
 
@@ -224,23 +228,34 @@ def pdf_links(xml: str) -> list[dict]:
     return [b for b in pdf_boxes(xml) if b["url"]]
 
 
-# --- Per-agency rules -----------------------------------------------------------
+# --- What a rule may use --------------------------------------------------------
+
+def _fetch_html(url: str) -> str:
+    from . import discovery  # looked up per call, so tests that replace discovery.fetch_text stay offline
+    return discovery.fetch_text(url)
+
 
 class Context:
-    """What a rule may use: the meeting, its stored pages (``stored(version_id) -> {page: text}``), and a temporary PDF reader."""
+    """What a rule may use: the meeting, its stored pages (``stored(version_id) -> {page: text}``), a temporary PDF
+    reader, and an HTML link reader (``fetch_html(url) -> markup``; tests pass fixture markup)."""
 
-    def __init__(self, stored, meeting: Meeting, reader, delay: float = 0.0):
+    def __init__(self, stored, meeting: Meeting, reader, delay: float = 0.0, fetch_html=None):
         self._stored, self.meeting, self._reader, self.delay = stored, meeting, reader, delay
+        self._fetch_html = fetch_html or _fetch_html
         self.downloads = 0
         self.skipped: dict[str, str] = {}
         self.fetch_failures: list[str] = []
         self.attachments: list[Attachments] = []
         self._cache: dict[str, dict] = {}
+        self._html: dict[str, list] = {}
 
-    def read(self, url: str, **kwargs) -> dict:
+    def _pause(self) -> None:
         if self.downloads and self.delay:
             time.sleep(self.delay)
         self.downloads += 1
+
+    def read(self, url: str, **kwargs) -> dict:
+        self._pause()
         return self._reader(url, **kwargs)
 
     def read_report(self, item: Item, url: str) -> dict | None:
@@ -255,6 +270,29 @@ class Context:
         except subprocess.SubprocessError:
             self.skip(item, "report PDF could not be read")
         return None
+
+    def html_links(self, url: str) -> list[dict]:
+        """Every http(s) link on an HTML page, absolute and in document order: ``[{"url", "text"}]``.
+
+        Counts as a download and honours the delay; each URL is fetched at most once per
+        context. A failed fetch raises ``FetchFailed`` (the meeting is retried later), a
+        skipped endpoint ``EndpointSkipped``, and markup with no links at all ``Uncertain``.
+        """
+        if url not in self._html:
+            from .discovery import anchors
+            self._pause()
+            try:
+                markup = self._fetch_html(url)
+            except (EndpointSkipped, FetchFailed, Uncertain):
+                raise
+            except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
+                raise FetchFailed(f"{url}: {exc}") from exc
+            links = [{"url": href, "text": text} for href, text in anchors(markup, url)
+                     if re.match(r"https?://", href, re.I)]
+            if not links:
+                raise Uncertain(f"{url} has no links")
+            self._html[url] = links
+        return [dict(link) for link in self._html[url]]
 
     def stored_pages(self, version_id: str) -> dict[int, str]:
         if version_id not in self._cache:
@@ -275,29 +313,71 @@ class Context:
         self.skipped[item.id] = reason
 
     def numbered(self) -> list[Item]:
-        """Numbered, non-procedural items with a unique number in this meeting."""
+        """Numbered, non-procedural items with a unique number in this meeting.
+
+        Items printed without a number are left out silently (no skip reason): a rule that
+        can only match them by title uses ``by_title``.
+        """
         counts = {}
         for item in self.meeting.items:
-            counts[_norm_number(item.number)] = counts.get(_norm_number(item.number), 0) + 1
+            counts[norm_number(item.number)] = counts.get(norm_number(item.number), 0) + 1
         chosen = []
         for item in self.meeting.items:
             if not item.number.strip():
                 continue
             if procedural(item):
                 self.skip(item, "procedural")
-            elif counts[_norm_number(item.number)] > 1:
+            elif counts[norm_number(item.number)] > 1:
                 self.skip(item, "item number repeats in this agenda")
             else:
                 chosen.append(item)
         return chosen
 
+    def by_title(self, texts: dict[str, str], items: list[Item] | None = None, *,
+                 floor: float = TITLE_MATCH_FLOOR) -> dict[str, str]:
+        """``{item id: key}`` pairing items with the one candidate whose printed text names them, for rules with no number.
 
-def _leading(pages: dict[int, str], start: int, end: int) -> list:
+        ``texts`` maps a key (usually a report URL) to its printed text (link text, file
+        name, or report heading). An item matches a key when at least ``floor`` (0.8) of the
+        title's distinctive words appear in the text, the title has at least two such words,
+        exactly one key matches the item, and no other item matches that key. Items are the
+        meeting's non-procedural items (numbered or not) unless given; the rest are skipped
+        with a reason. Title-only matching is one signal: the rule must still check the
+        report itself (``report_names_item`` or a heading check) before storing a mapping.
+        """
+        items = [i for i in self.meeting.items if not procedural(i)] if items is None else items
+        matches = {}
+        for item in items:
+            if len({w for w in words(item.title) if len(w) > 3 and w not in _STOP}) < 2:
+                matches[item.id] = []
+                continue
+            matches[item.id] = [key for key, text in texts.items() if title_overlap(item.title, text) >= floor]
+        claimed: dict[str, int] = {}
+        for keys in matches.values():
+            for key in keys:
+                claimed[key] = claimed.get(key, 0) + 1
+        found = {}
+        for item in items:
+            keys = matches[item.id]
+            if len(keys) != 1:
+                self.skip(item, f"{len(keys)} report titles match the item title" if keys else "no report title matches the item title")
+            elif claimed[keys[0]] > 1:
+                self.skip(item, "the matching report title also matches another item")
+            else:
+                found[item.id] = keys[0]
+        return found
+
+
+# --- Generic helpers for rules -----------------------------------------------------
+
+def leading(pages: dict[int, str], start: int, end: int) -> list:
+    """The report's kept pages: up to ``LEADING_PAGES`` non-blank pages from ``start`` (and no later than ``end``), cleaned."""
     return [(n, clean_text(pages.get(n, "")).strip()[:MAX_PAGE_CHARS]) for n in range(start, min(end, start + LEADING_PAGES - 1) + 1)
             if pages.get(n, "").strip()]
 
 
-def _pdf_agenda(ctx: Context, *, prefer: str) -> Document:
+def pdf_agenda(ctx: Context, *, prefer: str) -> Document:
+    """The meeting's single agenda PDF (not a packet, minutes, supplement, or addendum), preferring titles matching ``prefer``."""
     pdfs = [d for d in ctx.meeting.documents if d.media_type == "application/pdf"
             and not re.search(r"packet|minutes|supplement|addendum", d.source_document_id + " " + d.title, re.I)]
     chosen = [d for d in pdfs if re.search(prefer, d.source_document_id + " " + d.title, re.I)] or pdfs
@@ -306,184 +386,18 @@ def _pdf_agenda(ctx: Context, *, prefer: str) -> Document:
     return chosen[0]
 
 
-def _long_date(day: date) -> str:
+def long_date(day: date) -> str:
+    """``October 1, 2026``: the way most reports print a meeting date."""
     return f"{day:%B} {day.day}, {day.year}"
 
 
-def map_slt(ctx: Context) -> list[Mapping]:
-    agenda = _pdf_agenda(ctx, prefer=r"agenda")
-    fetched = ctx.read(agenda.url, last_page=1, links=True)
-    if fetched["sha256"] != agenda.sha256:
-        raise Uncertain("the agenda PDF changed since it was captured")
-    ctx.attachments = slt_attachments(ctx, fetched, ctx.stored_pages(agenda.version_id))
-    links: dict[str, set] = {}
-    for link in fetched["links"]:
-        label = re.fullmatch(r"Item\s*(\d+)\s*-\s*Executive Summary\.pdf", link["text"], re.I)
-        named = re.search(r"/Item_(\d+)-_Executive_Summary\.pdf$", link["url"], re.I)
-        if label and named and label.group(1) == named.group(1):
-            links.setdefault(label.group(1), set()).add((link["url"], link["page"]))
-    mappings = []
-    for item in ctx.numbered():
-        found = links.get(_norm_number(item.number), set())
-        if len({url for url, _ in found}) != 1:
-            ctx.skip(item, f"{len(found)} executive summary links for item {item.number}")
-            continue
-        url, link_page = next(iter(found))
-        cited = {int(c["page"]) for c in item.citations}
-        if cited and not min(cited) <= link_page <= max(cited) + 1:
-            ctx.skip(item, "executive summary link is not next to the item")
-            continue
-        report = ctx.read_report(item, url)
-        if report is None:
-            continue
-        first = report["pages"][0]["text"] if report["pages"] else ""
-        if not re.search(r"Agenda Item Executive Summary", first, re.I) or not re.search(
-                rf"Agenda Item #:\s*{re.escape(_norm_number(item.number))}\b", first):
-            ctx.skip(item, "executive summary does not name this item number")
-            continue
-        named_title = re.search(r"Agenda Item:\s*(.+?)\n\s*\n", first, re.S)
-        if title_overlap(item.title, named_title.group(1) if named_title else first) < MIN_TITLE_OVERLAP:
-            ctx.skip(item, "executive summary title differs from the agenda item")
-            continue
-        stated = re.search(r"Meeting Date:\s*([A-Z][a-z]+ \d{1,2}, \d{4})", first)
-        if stated and ctx.meeting.local_date and stated.group(1) != _long_date(ctx.meeting.local_date):
-            ctx.skip(item, "executive summary is for another meeting date")
-            continue
-        pages = {p["page_number"]: p["text"] for p in report["pages"]}
-        mappings.append(Mapping(item.id, item.fingerprint, "executive-summary", f"Item {item.number} executive summary",
-                                url, 1, report["page_count"], report["page_count"], report["sha256"],
-                                {"agendaLink": f"Item {item.number}- Executive Summary.pdf", "agendaPage": link_page,
-                                 "reportHeading": f"Agenda Item #:{item.number}"},
-                                _leading(pages, 1, report["page_count"])))
-    return mappings
+def agenda_page_column(item: Item, ctx: Context) -> int | None:
+    """The packet page number an agenda's Page column prints at the end of the item's first title line, or None.
 
-
-_KINDS = re.compile(r"^(staff\s*report|SR\b|resolution|ordinance|presentation|proclamation|(?:attachment|exhibit|att)\s*[A-Z0-9]+\b)"
-                    r"\s*[-–:]?\s*(.*)$", re.I)
-
-
-def attachment_label(name: str) -> str:
-    """A printed attachment file name made readable: "01-SR_Paradise_Ave_Abandonment.docx" -> "Staff report: Paradise Ave Abandonment"."""
-    base = re.sub(r"\.(?:pdf|docx?|xlsx?|pptx?|csv|txt)$", "", name.strip(), flags=re.I).replace("_", " ")
-    base = re.sub(r"^\s*Item\s*\d+\s*-\s*", "", base, flags=re.I)
-    base = " ".join(re.sub(r"^\s*\d{1,2}\s*[-–.]\s*", "", base).split())
-    kind = _KINDS.match(base)
-    if not kind:
-        return base or name
-    head = kind.group(1)
-    if re.fullmatch(r"staff\s*report|SR", head, re.I):
-        head = "Staff report"
-    elif re.match(r"(attachment|exhibit|att)\s*", head, re.I):
-        word, ident = re.match(r"(attachment|exhibit|att)\s*(.+)", head, re.I).groups()
-        head = f"{'Exhibit' if word.lower() == 'exhibit' else 'Attachment'} {ident}"
-    else:
-        head = head.capitalize()
-    rest = kind.group(2).strip(" -–:")
-    return f"{head}: {rest}" if rest else head
-
-
-SLT_MARGIN = 110  # item numbers and section headings sit at the left margin; item text and links are indented
-
-
-def slt_attachments(ctx: Context, fetched: dict, agenda_pages: dict[int, str]) -> list[Attachments]:
-    """Each numbered item's attachment links: those between its "N." heading and the next left-margin heading.
-
-    Every printed file name must also appear on that page of the stored agenda text, and an
-    "Item M- Executive Summary.pdf" under item N (M != N) makes the whole item uncertain.
+    Reads the stored agenda page each citation points to and finds the line holding the
+    citation's first line; the number must be the line's last field, set off by two or
+    more spaces (optionally "Page 12").
     """
-    margin = [b for b in fetched.get("boxes", []) if b["left"] < SLT_MARGIN and b["text"]]
-    headings: dict[str, list] = {}
-    for box in margin:
-        if number := re.fullmatch(r"(\d+)\.", box["text"]):
-            headings.setdefault(number.group(1), []).append(box)
-    page_text = {n: " ".join(clean_text(t).split()) for n, t in agenda_pages.items()}
-    found = []
-    for item in ctx.meeting.items:
-        heads = headings.get(_norm_number(item.number), []) if item.number.strip() else []
-        if len(heads) != 1:
-            continue
-        start = (heads[0]["page"], heads[0]["top"])
-        following = [(b["page"], b["top"]) for b in margin if (b["page"], b["top"]) > start]
-        end = min(following) if following else (10**6, 0)
-        files = []
-        for link in fetched["links"]:
-            if not start < (link["page"], link["top"]) < end:
-                continue
-            if files and files[-1]["url"] == link["url"]:  # a file name wrapped onto a second line
-                files[-1]["name"] = f"{files[-1]['name']} {link['text']}".strip()
-                continue
-            files.append({"url": link["url"], "name": link["text"], "page": link["page"]})
-        if not files:
-            continue
-        problem = None
-        for f in files:
-            other = re.match(r"Item\s*(\d+)\s*-\s*Executive Summary", f["name"], re.I)
-            if not f["name"] or not f["url"].startswith("https://"):
-                problem = "an attachment link has no printed name"
-            elif other and other.group(1) != _norm_number(item.number):
-                problem = f"lists the executive summary of item {other.group(1)}"
-            elif f["name"] not in page_text.get(f["page"], ""):
-                problem = f"“{f['name']}” is not printed on agenda page {f['page']}"
-            if problem:
-                break
-        if problem:
-            ctx.skip(item, f"attachments: {problem}")
-            continue
-        found.append(Attachments(item.id, item.fingerprint, [
-            {"url": f["url"], "name": f["name"], "label": attachment_label(f["name"])}
-            for f in files], {"agendaPages": sorted({f["page"] for f in files}), "heading": f"{item.number}."}))
-    return found
-
-
-def map_lahontan(ctx: Context) -> list[Mapping]:
-    agenda = _pdf_agenda(ctx, prefer=r"agenda")
-    fetched = ctx.read(agenda.url, last_page=1, links=True)
-    if fetched["sha256"] != agenda.sha256:
-        raise Uncertain("the agenda PDF changed since it was captured")
-    base = agenda.url.rsplit("/", 1)[0] + "/"
-    links: dict[str, set] = {}
-    for link in fetched["links"]:
-        named = re.fullmatch(re.escape(base) + r"item(\d+)\.pdf", link["url"], re.I)
-        if named:
-            links.setdefault(named.group(1), set()).add(link["url"])
-    mappings = []
-    for item in ctx.numbered():
-        found = links.get(_norm_number(item.number), set())
-        if len(found) != 1:
-            ctx.skip(item, f"{len(found)} item links for item {item.number}")
-            continue
-        url = next(iter(found))
-        report = ctx.read_report(item, url)
-        if report is None:
-            continue
-        first = report["pages"][0]["text"] if report["pages"] else ""
-        heading = re.search(rf"^\s*ITEM\s+{re.escape(_norm_number(item.number))}\s*$", first, re.M)
-        if not heading:
-            ctx.skip(item, "report does not name this item number")
-            continue
-        if title_overlap(item.title, first[heading.end():heading.end() + 400]) < MIN_TITLE_OVERLAP:
-            ctx.skip(item, "report title differs from the agenda item")
-            continue
-        meeting_of = re.search(r"MEETING OF\s+([A-Z]+)\s+\d{1,2}(?:\s*[-–]\s*\d{1,2})?,\s*(\d{4})", first)
-        day = ctx.meeting.local_date
-        if meeting_of and day and (meeting_of.group(1).title(), int(meeting_of.group(2))) != (f"{day:%B}", day.year):
-            ctx.skip(item, "report is for another meeting")
-            continue
-        pages = {p["page_number"]: p["text"] for p in report["pages"]}
-        mappings.append(Mapping(item.id, item.fingerprint, "staff-report", f"Item {item.number} staff report",
-                                url, 1, report["page_count"], report["page_count"], report["sha256"],
-                                {"agendaLink": url.rsplit("/", 1)[1], "reportHeading": f"ITEM {item.number}"},
-                                _leading(pages, 1, report["page_count"])))
-    return mappings
-
-
-_TTD_STAMP = re.compile(r"~\s*Page\s+(\d+)\s*~")
-# The board's own footer, not a committee's ("FPC AGENDA ITEM: III.B." follows it on finance memos).
-_TTD_FOOTER = re.compile(r"(?:^|\s{2,})AGENDA ITEM:?\s*([IVXLC]+(?:\.[A-Z0-9]+)*)\.?", re.M)
-
-
-def _ttd_agenda_page(item: Item, ctx: Context) -> int | None:
-    """The packet page the agenda's Page column gives on the item's first line."""
     for citation in item.citations:
         text = ctx.stored_pages(citation["documentId"]).get(int(citation["page"]), "")
         quote = citation["quote"].strip()
@@ -495,145 +409,195 @@ def _ttd_agenda_page(item: Item, ctx: Context) -> int | None:
     return None
 
 
-def map_ttd(ctx: Context) -> list[Mapping]:
-    candidates = ctx.numbered()
-    pdfs = [d for d in ctx.meeting.documents if d.media_type == "application/pdf"]
-    packets = [d for d in pdfs if re.search(r"packet", d.source_document_id + " " + d.title, re.I)]
-    if len(packets) != 1:  # A single posted PDF is both the agenda and the packet.
-        cited = {c["documentId"] for item in candidates for c in item.citations}
-        packets = [d for d in pdfs if d.version_id in cited]
-    if len(packets) != 1:
-        raise Uncertain("no single agenda packet")
-    packet = packets[0]
-    wanted = {}
-    for item in candidates:
-        page = _ttd_agenda_page(item, ctx)
-        if page is None:
-            ctx.skip(item, "agenda gives no packet page")
-        else:
-            wanted[item.id] = page
-    if not wanted:
-        return []
+_MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
+_MEETING_DATE = re.compile(
+    r"\bmeeting(?:\s+date)?\s*(?:of|:|[-–])?\s*(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,?\s+)?"
+    rf"(?:(?P<month>{_MONTHS})\.?\s+(?P<day>\d{{1,2}})(?:\s*[-–]\s*(?P<last>\d{{1,2}}))?,?\s+(?P<year>\d{{4}})"
+    r"|(?P<m>\d{1,2})/(?P<d>\d{1,2})/(?P<y>\d{2}(?:\d{2})?))", re.I)
 
-    def has_stamps(pages):
-        stamps = {int(m) for text in pages.values() for m in _TTD_STAMP.findall(text)}
-        return set(wanted.values()) <= stamps
-    pages = ctx.pages(packet, needed=has_stamps)
-    stamp_to_page: dict[int, list] = {}
-    footers = {}
-    for number, text in pages.items():
-        for stamp in set(_TTD_STAMP.findall(text)):
-            stamp_to_page.setdefault(int(stamp), []).append(number)
-        labels = _TTD_FOOTER.findall(text)
-        if labels:
-            footers[number] = _norm_number(labels[-1])
+
+def printed_meeting_dates(text: str) -> list[tuple[date, date]]:
+    """Each date range printed after a "Meeting", "Meeting Date:", or "Meeting of" label, as (first day, last day)."""
+    found = []
+    for m in _MEETING_DATE.finditer(text):
+        try:
+            if m["month"]:
+                month = [x.casefold() for x in _MONTHS.split("|")].index(m["month"].casefold()) + 1
+                first = date(int(m["year"]), month, int(m["day"]))
+                found.append((first, first.replace(day=int(m["last"])) if m["last"] else first))
+            else:
+                year = int(m["y"]) + (2000 if len(m["y"]) == 2 else 0)
+                first = date(year, int(m["m"]), int(m["d"]))
+                found.append((first, first))
+        except ValueError:
+            continue
+    return found
+
+
+def report_names_item(first_page_text: str, item: Item, *, number_patterns, meeting_date: date | None = None,
+                      window: int = 600, min_overlap: float = MIN_TITLE_OVERLAP) -> dict | str:
+    """Check that a report's first page names this item: an evidence dict, or the reason to skip it.
+
+    - Number: one of ``number_patterns`` (regex templates; ``{n}`` stands for the escaped,
+      normalised item number, e.g. ``r"^\\s*ITEM\\s+{n}\\s*$"`` or ``r"Agenda Item No\\.?\\s*{n}\\b"``)
+      must match, searched with ``re.M`` (add ``(?i)`` in the template for case-insensitive).
+    - Title: at least ``min_overlap`` of the item title's distinctive words appear within
+      ``window`` characters from the start of the matched heading.
+    - Date: when ``meeting_date`` is given and the page prints a meeting date (a
+      "Meeting Date:", "Meeting of", or "Board Meeting" label), it must cover that day.
+      An undated report passes without a ``meetingDate`` entry.
+
+    Evidence is ``{"reportHeading", "titleOverlap", "meetingDate"?}``. Items without a
+    number cannot pass; use ``Context.by_title`` and a title-only check for those.
+    """
+    number = norm_number(item.number)
+    if not number:
+        return "item has no number"
+    heading = None
+    for template in number_patterns:
+        heading = re.search(template.replace("{n}", re.escape(number)), first_page_text, re.M)
+        if heading:
+            break
+    if not heading:
+        return f"report does not name item {item.number}"
+    overlap = title_overlap(item.title, first_page_text[heading.start():heading.end() + window])
+    if overlap < min_overlap:
+        return "report title differs from the agenda item"
+    evidence = {"reportHeading": " ".join(heading.group().split()), "titleOverlap": round(overlap, 2)}
+    if meeting_date:
+        printed = printed_meeting_dates(first_page_text)
+        if printed and not any(first <= meeting_date <= last for first, last in printed):
+            return "report is for another meeting date"
+        if printed:
+            evidence["meetingDate"] = meeting_date.isoformat()
+    return evidence
+
+
+def _url_keyed(candidates: dict) -> bool:
+    return bool(candidates) and all(re.match(r"https?://", key, re.I) for key in candidates)
+
+
+def linked_reports(ctx: Context, items: list[Item], candidates: dict[str, set], *, verify, kind: str, title,
+                   precheck=None, missing: str = "{count} report links for item {number}") -> list[Mapping]:
+    """Map items that each link their own report file (one PDF per item, or one PDF covering several items).
+
+    ``candidates`` maps a normalised item number to the set of report URLs found for it,
+    or (when every key is a URL) a report URL to the set of normalised item numbers it
+    covers, so one report may serve several items. An item needs exactly one URL, else it
+    is skipped with ``missing`` (``{count}`` URLs, item ``{number}``). ``precheck(item,
+    url) -> skip reason | None`` runs before any download. Each URL is read once (its
+    first ``LEADING_PAGES`` pages); ``verify(item, report) -> evidence dict | skip reason``
+    then checks the report itself (``report["url"]`` is set; ``report_names_item`` covers
+    the usual heading, title, and date checks). A verified item maps to the whole file:
+    pages 1..page_count, keeping its leading pages. ``title`` is a string formatted with
+    ``{number}`` or a callable ``title(item) -> str``.
+    """
+    if _url_keyed(candidates):
+        by_number: dict[str, set] = {}
+        for url, numbers in candidates.items():
+            for number in numbers:
+                by_number.setdefault(norm_number(number), set()).add(url)
+        candidates = by_number
+    read: dict[str, dict | str] = {}
     mappings = []
-    for item in candidates:
-        if item.id not in wanted:
+    for item in items:
+        found = candidates.get(norm_number(item.number), set()) if item.number.strip() else set()
+        if len(found) != 1:
+            ctx.skip(item, missing.format(count=len(found), number=item.number))
             continue
-        start = stamp_to_page.get(wanted[item.id], [])
-        if len(start) != 1:
-            ctx.skip(item, f"packet page {wanted[item.id]} is stamped on {len(start)} pages")
+        url = next(iter(found))
+        if precheck and (problem := precheck(item, url)):
+            ctx.skip(item, problem)
             continue
-        start = start[0]
-        label = _norm_number(item.number)
-        if footers.get(start) != label:
-            ctx.skip(item, f"packet page {wanted[item.id]} is not marked AGENDA ITEM: {item.number}")
+        if url not in read:
+            report = ctx.read_report(item, url)
+            read[url] = {**report, "url": url} if report is not None else ctx.skipped[item.id]
+            if report is None:
+                continue
+        report = read[url]
+        if isinstance(report, str):
+            ctx.skip(item, report)
             continue
-        end = start
-        while footers.get(end + 1) == label:
-            end += 1
-        mappings.append(Mapping(item.id, item.fingerprint, "staff-memo", "Staff memo in the agenda packet",
-                                packet.url, start, end, packet.page_count, packet.sha256,
-                                {"agendaPageColumn": wanted[item.id], "packetStamp": f"~ Page {wanted[item.id]} ~",
-                                 "footer": f"AGENDA ITEM: {item.number}."},
-                                _leading(pages, start, end)))
+        evidence = verify(item, report)
+        if isinstance(evidence, str):
+            ctx.skip(item, evidence)
+            continue
+        pages = {p["page_number"]: p["text"] for p in report["pages"]}
+        mappings.append(Mapping(item.id, item.fingerprint, kind, title(item) if callable(title) else title.format(number=item.number),
+                                url, 1, report["page_count"], report["page_count"], report["sha256"], evidence,
+                                leading(pages, 1, report["page_count"])))
     return mappings
 
 
-_TRUCKEE_HEADER = re.compile(r"(?:^|\s{2,})Item\s+(\d+(?:\.\d+)*)\s*$")
+def packet_reports(ctx: Context, packet: Document, pages: dict[int, str], items: list[Item], *, page_label,
+                   label_name: str = "Item {number}", kind: str = "staff-report", title: str = "Staff report in the agenda packet",
+                   min_overlap: float = MIN_TITLE_OVERLAP) -> list[Mapping]:
+    """Map items whose reports are runs of packet pages labelled with the item number (a header or footer on each page).
 
-
-def map_truckee(ctx: Context) -> list[Mapping]:
-    candidates = ctx.numbered()
-    packets = [d for d in ctx.meeting.documents if d.media_type == "application/pdf"
-               and re.search(r"packet", d.source_document_id + " " + d.title + " " + d.url, re.I)]
-    wanted = {_norm_number(i.number) for i in candidates}
-
-    def has_headers(pages):
-        return wanted <= {_norm_number(m.group(1)) for text in pages.values()
-                          if (m := _TRUCKEE_HEADER.search("\n".join(text.strip().splitlines()[:1])))}
-    if len(packets) == 1:
-        packet = packets[0]
-        pages = ctx.pages(packet, needed=has_headers)
-    elif not packets:
-        packet, pages = _municode_packet(ctx)
-    else:
-        raise Uncertain("more than one agenda packet")
-    # Pages headed with the same item number form one report, as long as no other item's pages fall between them.
-    # Charts and slides may lack the header or carry it beside other text on the first line.
+    ``page_label(page_text) -> normalised item number | None`` reads one page's label.
+    Pages with the same label form one report from its first to its last labelled page,
+    as long as no page between them carries another label (unlabelled pages, such as
+    charts and slides, are included). The first page must also share ``min_overlap`` of
+    the item title's distinctive words. ``label_name`` (formatted with ``{number}``)
+    describes the label in skip reasons and evidence.
+    """
     labels = {}
     for number, text in pages.items():
-        header = _TRUCKEE_HEADER.search("\n".join(text.strip().splitlines()[:1]))
-        if header:
-            labels[number] = _norm_number(header.group(1))
+        if label := page_label(text):
+            labels[number] = label
     blocks: dict[str, list] = {}
     for label in set(labels.values()):
         numbers = sorted(n for n, other in labels.items() if other == label)
         interrupted = any(labels.get(n, label) != label for n in range(numbers[0], numbers[-1] + 1))
         blocks[label] = [] if interrupted else [[numbers[0], numbers[-1]]]
     mappings = []
-    for item in candidates:
-        found = blocks.get(_norm_number(item.number), [])
+    for item in items:
+        named = label_name.format(number=item.number)
+        found = blocks.get(norm_number(item.number), [])
         if len(found) != 1:
-            ctx.skip(item, f"no single run of pages headed Item {item.number}")
+            ctx.skip(item, f"no single run of pages headed {named}")
             continue
         start, end = found[0]
-        if title_overlap(item.title, pages[start]) < MIN_TITLE_OVERLAP:
+        if title_overlap(item.title, pages[start]) < min_overlap:
             ctx.skip(item, "staff report title differs from the agenda item")
             continue
-        mappings.append(Mapping(item.id, item.fingerprint, "staff-report", "Staff report in the agenda packet",
-                                packet.url, start, end, packet.page_count, packet.sha256,
-                                {"header": f"Item {item.number}", "pages": f"{start}-{end}"},
-                                _leading(pages, start, end)))
+        mappings.append(Mapping(item.id, item.fingerprint, kind, title, packet.url, start, end, packet.page_count, packet.sha256,
+                                {"header": named, "pages": f"{start}-{end}"}, leading(pages, start, end)))
     return mappings
 
 
-def _municode_packet(ctx: Context) -> tuple[Document, dict[int, str]]:
-    """The packet Municode publishes beside a captured agenda PDF, verified to open with that agenda.
+# --- Rule registry ---------------------------------------------------------------------
 
-    Municode names a meeting's files MEET-Agenda-<id>.pdf and MEET-Packet-<id>.pdf (its
-    meeting list gives both); scheduled discovery captures only the agenda.
-    """
-    agendas = [d for d in ctx.meeting.documents if d.media_type == "application/pdf"
-               and re.search(r"/MEET-Agenda-[0-9a-f]{32}\.pdf", d.url)]
-    if len(agendas) != 1:
-        raise Uncertain("no agenda packet, and no single Municode agenda PDF to find it from")
-    agenda = agendas[0]
-    url = agenda.url.replace("/MEET-Agenda-", "/MEET-Packet-", 1).replace("&n=Agenda-", "&n=AgendaPacket-", 1)
-    fetched = ctx.read(url)
-    pages = {p["page_number"]: p["text"] for p in fetched["pages"]}
-    opening = ctx.stored_pages(agenda.version_id).get(1, "")
-    agenda_words = set(words(opening))
-    if not agenda_words or len(agenda_words & set(words(pages.get(1, "")))) < 0.9 * len(agenda_words):
-        raise Uncertain("the Municode packet does not open with the captured agenda")
-    return Document("", "municode-packet", "Agenda packet", url, fetched["sha256"], fetched["page_count"], "application/pdf"), pages
+def _rules() -> dict:
+    from .staff_report_rules import RULES as merged  # imported on first use: rule modules import this module
+    return merged
 
 
-RULES = {"slt": map_slt, "ttd": map_ttd, "truckee": map_truckee, "lahontan-board": map_lahontan}
+def _supported() -> tuple[str, ...]:
+    return tuple(sorted(_rules()))
+
+
+def __getattr__(name: str):
+    """``RULES`` (agency ID -> rule) and ``SUPPORTED`` (sorted agency IDs), merged from ``staff_report_rules``."""
+    if name == "RULES":
+        return _rules()
+    if name == "SUPPORTED":
+        return _supported()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 # --- Run ----------------------------------------------------------------------------
 
 def _load(conn, *, agency: str | None, meeting: str | None) -> dict[str, Meeting]:
-    agencies = [agency] if agency else list(SUPPORTED)
+    agencies = [agency] if agency else list(_supported())
     meetings: dict[str, Meeting] = {}
     for r in conn.execute("""SELECT i.id,i.meeting_id,i.number,i.title,i.section,i.source_fingerprint,i.citations,
-            m.agency_id,m.title AS meeting_title,m.local_date
+            m.agency_id,m.title AS meeting_title,m.local_date,m.official_url
             FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id
             WHERE i.active AND m.quarantine_reason IS NULL AND m.agency_id=ANY(%s) AND (%s::text IS NULL OR m.id=%s)
             ORDER BY i.meeting_id,i.item_order,i.id""", (agencies, meeting, meeting)):
-        m = meetings.setdefault(r["meeting_id"], Meeting(r["meeting_id"], r["agency_id"], r["meeting_title"], r["local_date"], [], []))
+        m = meetings.setdefault(r["meeting_id"], Meeting(r["meeting_id"], r["agency_id"], r["meeting_title"], r["local_date"], [], [],
+                                                                  r["official_url"]))
         citations = r["citations"] if isinstance(r["citations"], list) else json.loads(r["citations"])
         m.items.append(Item(r["id"], r["number"] or "", r["title"], r["section"], r["source_fingerprint"], citations))
     if meetings:
@@ -669,10 +633,11 @@ def _pending(conn, meetings: dict[str, Meeting], *, force: bool, today: date) ->
 
 def map_staff_reports(conn, *, agency: str | None = None, meeting: str | None = None, max_meetings: int | None = None,
                       force: bool = False, dry_run: bool = False, reader=read_pdf, delay: float = 1.0,
-                      today: date | None = None) -> dict:
+                      today: date | None = None, fetch_html=None) -> dict:
     """Find and store each pending meeting's item-to-staff-report mappings."""
-    if agency and agency not in RULES:
-        raise SystemExit(f"{agency}: no staff report mapping rule (supported: {', '.join(SUPPORTED)})")
+    rules = _rules()
+    if agency and agency not in rules:
+        raise SystemExit(f"{agency}: no staff report mapping rule (supported: {', '.join(_supported())})")
     meetings = _load(conn, agency=agency, meeting=meeting)
     pending = _pending(conn, meetings, force=force, today=today or date.today())
     report = {"meetingsPending": len(pending), "dryRun": dry_run, "meetingsScanned": 0, "itemsMapped": 0,
@@ -688,10 +653,10 @@ def map_staff_reports(conn, *, agency: str | None = None, meeting: str | None = 
         return {r["page_number"]: r["text"] for r in conn.execute(
             "SELECT page_number,text FROM document_pages WHERE document_version_id=%s", (version_id,))}
     for m in pending:
-        ctx = Context(stored, m, reader, delay)
+        ctx = Context(stored, m, reader, delay, fetch_html)
         status, mappings, problem = "done", [], None
         try:
-            mappings = RULES[m.agency_id](ctx)
+            mappings = rules[m.agency_id](ctx)
         except Uncertain as exc:
             problem = str(exc)
         except (FetchFailed, EndpointSkipped) as exc:

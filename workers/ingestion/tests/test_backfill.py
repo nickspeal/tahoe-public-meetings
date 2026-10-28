@@ -156,7 +156,7 @@ def test_cli_validates_and_prints_summary(db, monkeypatch, capsys):
     assert json.loads(capsys.readouterr().out)["status"] == "ok"
 
 
-# ---------------------------------------------------------------- date-range adapters
+# ---------------------------------------------------------------- date-range discovery types
 
 class Pages:
     def __init__(self, pages):
@@ -172,7 +172,7 @@ class Pages:
         raise AssertionError(f"unexpected fetch {url}")
 
 
-def test_ttd_range_pages_until_posts_predate_since():
+def test_wordpress_range_pages_until_posts_predate_since():
     def post(pid, title, posted):
         return {"id": pid, "link": f"https://tahoetransportation.org/meeting/{pid}/", "title": {"rendered": title},
                 "date": posted + "T10:00:00", "modified": posted + "T10:00:00"}
@@ -186,7 +186,8 @@ def test_ttd_range_pages_until_posts_predate_since():
     detail = '<a href="https://tahoetransportation.org/wp-content/uploads/agenda.pdf">Agenda</a>'
     fetch = Pages({"page=1&": json.dumps(page1), "page=2&": json.dumps(page2), "page=3&": AssertionError("stop"),
                    "/meeting/": detail})
-    found, earliest = discovery.discover_ttd_range(since=SINCE, until=UNTIL, fetch=fetch, delay=0)
+    config = {"type": "wordpress-meetings", "indexUrl": "https://tahoetransportation.org/wp-json/wp/v2/meeting", "bodyPattern": "board"}
+    found, earliest = discovery.wordpress_meetings_range("ttd", config, since=SINCE, until=UNTIL, fetch=fetch, delay=0)
     by_id = {c["source_id"]: c for c in found}
     # In range by title date, or undated but posted in range; committees and old meetings are skipped.
     assert set(by_id) == {"1", "3", "4"}
@@ -196,27 +197,17 @@ def test_ttd_range_pages_until_posts_predate_since():
     assert not any("page=3&" in url for url in fetch.calls)  # page 2 reached posts older than the margin
 
 
-def test_slt_range_reads_whole_publisher_archive():
+def test_granicus_row_ids_range_reads_whole_publisher_archive():
     def row(key, clip):
         return (f'<tr><td id="{key}">x</td><td><a href="https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id={clip}">Agenda</a>'
                 f'<a href="https://slt.granicus.com/agenda{clip}.pdf">Agenda PDF</a></td></tr>')
     markup = row("10-06-2026-City-Council", 9) + row("10-01-2026-Planning-Commission", 8) + \
         row("07-14-2026-City-Council", 7) + row("06-02-2026-City-Council", 6) + row("03-02-2021-City-Council", 1)
-    found, earliest = discovery.discover_slt_range(since=SINCE, until=UNTIL, fetch=lambda url: markup)
+    config = {"type": "granicus-row-ids", "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6", "bodyPattern": "City Council"}
+    found, earliest, by_date = source_discovery.discover_configured_range("slt", config, since=SINCE, until=UNTIL,
+                                                                          fetch=lambda url: markup)
     assert sorted((c["source_id"], c["date"]) for c in found) == [("7", "2026-07-14"), ("9", "2026-10-06")]
-    assert earliest == "2021-03-02"
-
-
-def test_truckee_range_reads_each_month(monkeypatch):
-    months = []
-
-    def fake(*, year, month, limit, fetch):
-        months.append((year, month))
-        return [{"agency": "truckee", "source_id": f"{year}{month}", "date": f"{year}-{month:02}-14", "documents": []}]
-    monkeypatch.setattr(discovery, "discover_truckee", fake)
-    found, earliest = discovery.discover_truckee_range(since=date(2026, 11, 20), until=date(2027, 2, 1), delay=0)
-    assert months == [(2026, 11), (2026, 12), (2027, 1), (2027, 2)]
-    assert [c["date"] for c in found] == ["2026-12-14", "2027-01-14"] and earliest == "2026-11-14"
+    assert earliest == "2021-03-02" and by_date is False
 
 
 def test_civicclerk_range_pages_until_older_than_since():
@@ -282,12 +273,14 @@ def test_municode_range_queries_the_date_range():
         return [{"meeting": "Town Council Regular Meeting", "date": "7/14/2026", "meetingId": "m1", "time": "5:00 PM",
                  "agenda": "https://mccmeetings.blob.core.usgovcloudapi.net/a.pdf"},
                 {"meeting": "Planning Commission", "date": "7/15/2026", "meetingId": "m2"}]
-    markup = '<iframe src="https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA"></iframe>'
-    config = {"type": "civicplus", "indexUrl": "https://townoftruckee.gov/304/x", "bodyPattern": "Town Council"}
+    config = {"type": "municode", "indexUrl": "https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA",
+              "bodyPattern": "Town Council"}
     found, earliest, by_date = source_discovery.discover_configured_range(
-        "truckee", config, since=SINCE, until=UNTIL, fetch=lambda url: markup, municode_json=fetch_json)
+        "truckee", config, since=SINCE, until=UNTIL, fetch=lambda url: pytest.fail("no page is read"), municode_json=fetch_json)
     assert sent[0]["meetingDateFrom"] == "2026-07-01" and sent[0]["meetingDateTo"] == "2026-12-31"
+    assert sent[0]["displayClientCode"] == "TRUCKEECA"
     assert [(c["source_id"], c["date"], c["start_time"]) for c in found] == [("m1", "2026-07-14", "17:00")]
+    assert found[0]["official_url"].endswith("?clientCode=TRUCKEECA&meetingId=m1")
     assert by_date is True and earliest == "2026-07-14"
 
 

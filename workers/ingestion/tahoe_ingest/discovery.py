@@ -1,7 +1,9 @@
-"""Bounded discovery of official meeting pages and linked PDFs.
+"""Shared fetch and link helpers, and the `wordpress-meetings` and `granicus-row-ids` discovery types.
 
-Discovery returns candidates for capture/review. It does not infer agenda items,
-votes, or exact meeting logistics from arbitrary page text.
+`source_discovery` dispatches every agency's `discovery` block by its `type`; these
+two types live here beside the PDF link helper they use. Discovery returns
+candidates for capture/review. It does not infer agenda items, votes, or exact
+meeting logistics from arbitrary page text.
 """
 from __future__ import annotations
 
@@ -11,15 +13,12 @@ import json
 import re
 import time
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timedelta
 from html.parser import HTMLParser
 
 from .http import fetch_bytes
 from .records import granicus_links
 
-TTD_API = "https://tahoetransportation.org/wp-json/wp/v2"
-SLT_INDEX = "https://slt.granicus.com/ViewPublisher.php?view_id=6"
-TRUCKEE_INDEX = "https://townoftruckee.gov/Calendar.aspx?CID=0&month={month}&view=list&year={year}"
 MAX_HTML = 6 * 1024 * 1024
 
 
@@ -78,117 +77,55 @@ def _pdf_links(markup: str, base: str, agency: str) -> list[dict]:
     return found
 
 
-def discover_ttd(*, limit: int = 5, fetch=fetch_text, delay: float = 2.0, body_pattern: str = "board") -> list[dict]:
-    """TTD's WordPress meeting posts whose title matches ``body_pattern`` (the board, or one committee)."""
+# ---------------------------------------------------------------- wordpress-meetings
+# A WordPress REST collection of meeting posts (`indexUrl`, e.g. .../wp-json/wp/v2/meeting).
+# A board and its committees can share one feed; `bodyPattern` selects one by post title.
+
+def _wordpress_post(agency: str, config: dict, record: dict, title: str, fetch) -> dict:
+    """One post as a candidate: its uploaded PDFs, with IDs prefixed by `documentIdPrefix` (default: the agency ID)."""
+    page_url = record["link"]
+    page = fetch(page_url)
+    docs = [d for d in _pdf_links(page, page_url, config.get("documentIdPrefix", agency)) if "/wp-content/uploads/" in d["url"]]
+    return {"agency": agency, "source_id": str(record["id"]), "title": title, "official_url": page_url,
+            "documents": docs, "source_modified": record.get("modified"),
+            "warnings": ["Meeting date and agenda items require source review."]}
+
+
+def wordpress_meetings(agency: str, config: dict, *, limit: int = 5, fetch=fetch_text, delay: float = 2.0) -> list[dict]:
+    """The newest matching posts. They state no meeting date (capture reads it from the title or agenda)."""
     if not 1 <= limit <= 20:
-        raise ValueError("TTD discovery limit must be 1..20")
-    raw = fetch(f"{TTD_API}/meeting?per_page={min(40, max(10, limit * 4))}&page=1&_fields=id,link,title,modified")
-    records = json.loads(raw)
+        raise ValueError("discovery limit must be 1..20")
+    body = re.compile(config.get("bodyPattern", "."), re.I)
+    raw = fetch(f"{config['indexUrl']}?per_page={min(40, max(10, limit * 4))}&page=1&_fields=id,link,title,modified")
     found = []
-    for record in records:
+    for record in json.loads(raw):
         title = html.unescape(record["title"]["rendered"])
-        if not re.search(body_pattern, title, re.I):
+        if not body.search(title):
             continue
         time.sleep(delay)
-        page_url = record["link"]
-        page = fetch(page_url)
-        docs = [d for d in _pdf_links(page, page_url, "ttd") if "/wp-content/uploads/" in d["url"]]
-        found.append({"agency": "ttd", "source_id": str(record["id"]),
-                      "title": title, "official_url": page_url,
-                      "documents": docs, "source_modified": record.get("modified"),
-                      "warnings": ["Meeting date and agenda items require source review."]})
+        found.append(_wordpress_post(agency, config, record, title, fetch))
         if len(found) >= limit:
             break
     return found
 
 
-def discover_slt(*, limit: int = 5, fetch=fetch_text) -> list[dict]:
-    if not 1 <= limit <= 20:
-        raise ValueError("SLT discovery limit must be 1..20")
-    markup = fetch(SLT_INDEX)
-    found = []
-    # Granicus publisher rows have IDs such as 10-06-2026-City-Council.
-    for match in re.finditer(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', markup, re.I):
-        if "City-Council" not in match.group("key"):
-            continue
-        row_end = markup.find("</tr>", match.start())
-        if row_end < 0:
-            continue
-        row = markup[match.start():row_end]
-        links = anchors(row, SLT_INDEX)
-        clip = next((re.search(r"[?&]clip_id=(\d+)", url) for url, _ in links if "AgendaViewer.php" in url), None)
-        if not clip:
-            continue
-        title = match.group("key").replace("-", " ")
-        found.append({"agency": "slt", "source_id": clip.group(1), "title": title,
-                      "official_url": next(url for url, _ in links if "AgendaViewer.php" in url),
-                      "date": datetime.strptime(match.group("key")[:10], "%m-%d-%Y").date().isoformat(),
-                      "documents": _pdf_links(row, SLT_INDEX, "slt"),
-                      "warnings": ["Publisher row date/time and agenda items require source review."],
-                      **granicus_links(links, html.unescape(row), SLT_INDEX)})
-        if len(found) >= limit:
-            break
-    return found
-
-
-def discover_truckee(*, year: int, month: int, limit: int = 5, fetch=fetch_text) -> list[dict]:
-    if not 1 <= month <= 12 or not 2020 <= year <= 2100 or not 1 <= limit <= 20:
-        raise ValueError("Truckee year/month/limit are outside bounds")
-    index_url = TRUCKEE_INDEX.format(year=year, month=month)
-    markup = fetch(index_url)
-    event_links = []
-    seen = set()
-    for match in re.finditer(r'<a\b(?=[^>]*\bid="eventTitle_(\d+)")[^>]*>(.*?)</a>', markup, re.I | re.S):
-        eid = match.group(1)
-        label = html.unescape(re.sub(r"<[^>]+>", " ", match.group(2))).strip()
-        if eid in seen or "town council" not in label.lower():
-            continue
-        href = re.search(r'\bhref="([^"]+)"', match.group(0), re.I)
-        if not href:
-            continue
-        event_links.append((eid, label, urllib.parse.urljoin(index_url, html.unescape(href.group(1)))))
-        seen.add(eid)
-        if len(event_links) >= limit:
-            break
-    found = []
-    for eid, label, event_url in event_links:
-        page = fetch(event_url)
-        start_match = re.search(r'itemprop="startDate"[^>]*>\s*(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})', page, re.I)
-        found.append({"agency": "truckee", "source_id": eid, "title": label,
-                      "official_url": event_url, "documents": _pdf_links(page, event_url, "truckee"),
-                      "date": start_match.group(1) if start_match else None,
-                      "start_time": start_match.group(2) if start_match else None,
-                      "status": "canceled" if re.search(r"cancel(l)?ation|canceled|cancelled", label, re.I) else "scheduled",
-                      "warnings": ["Calendar event date/time and agenda items require source review."]})
-    return found
-
-
-# ---------------------------------------------------------------- date-range discovery (backfill)
-# Variants of the adapters above, not bounded by a candidate count, for a one-time
-# history backfill. Each returns (candidates dated since..until, earliest date the
-# source listed or None).
-
-def _title_date(title: str):
-    from .source_discovery import date_in  # Local import: source_discovery imports this module.
-    return date_in(title)
-
-
-def discover_ttd_range(*, since, until, fetch=fetch_text, delay: float = 2.0, max_pages: int = 10,
-                       post_margin_days: int = 180, body_pattern: str = "board") -> tuple[list[dict], str | None]:
-    """Page TTD's WordPress meeting posts (newest first) until posts are older than ``since``.
+def wordpress_meetings_range(agency: str, config: dict, *, since, until, fetch=fetch_text, delay: float = 2.0,
+                             max_pages: int = 10, post_margin_days: int = 180) -> tuple[list[dict], str | None]:
+    """Page the posts (newest first) until they are older than ``since``.
 
     Posts are often published months before the meeting, so paging continues
     until a post's publication date is ``post_margin_days`` before ``since``.
     The meeting date comes from the post title. An undated matching post is kept
     when it was published within the range; its date comes from the agenda.
     """
-    from datetime import timedelta
+    from .source_discovery import date_in  # Local import: source_discovery imports this module.
+    body = re.compile(config.get("bodyPattern", "."), re.I)
     stop = (since - timedelta(days=post_margin_days)).isoformat()
     lo, hi = since.isoformat(), until.isoformat()
     found, earliest = [], None
     for page_number in range(1, max_pages + 1):
         try:
-            raw = fetch(f"{TTD_API}/meeting?per_page=100&page={page_number}&_fields=id,link,title,modified,date")
+            raw = fetch(f"{config['indexUrl']}?per_page=100&page={page_number}&_fields=id,link,title,modified,date")
         except Exception as exc:  # WordPress answers HTTP 400 past the last page.
             if page_number > 1 and "400" in str(exc):
                 break
@@ -198,66 +135,73 @@ def discover_ttd_range(*, since, until, fetch=fetch_text, delay: float = 2.0, ma
             break
         for record in records:
             title = html.unescape(record["title"]["rendered"])
-            day = _title_date(title)
+            day = date_in(title)
             posted = (record.get("date") or "")[:10]
             if day:
                 earliest = min(earliest or day, day)
-            if not re.search(body_pattern, title, re.I):
+            if not body.search(title):
                 continue
             if (day and not lo <= day <= hi) or (not day and not (posted and lo <= posted <= hi)):
                 continue
             if delay:
                 time.sleep(delay)
-            page_url = record["link"]
-            page = fetch(page_url)
-            docs = [d for d in _pdf_links(page, page_url, "ttd") if "/wp-content/uploads/" in d["url"]]
-            found.append({"agency": "ttd", "source_id": str(record["id"]), "title": title, "official_url": page_url,
-                          "date": day, "documents": docs, "source_modified": record.get("modified"),
-                          "warnings": ["Meeting date and agenda items require source review."]})
+            found.append({**_wordpress_post(agency, config, record, title, fetch), "date": day})
         if len(records) < 100 or min((r.get("date") or "9999")[:10] for r in records) < stop:
             break
     return found, earliest
 
 
-def discover_slt_range(*, since, until, fetch=fetch_text) -> tuple[list[dict], str | None]:
-    """Every SLT City Council row in the Granicus publisher (a full archive) dated since..until."""
-    markup = fetch(SLT_INDEX)
-    found, earliest = {}, None
-    lo, hi = since.isoformat(), until.isoformat()
-    for match in re.finditer(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', markup, re.I):
-        if "City-Council" not in match.group("key"):
+# ---------------------------------------------------------------- granicus-row-ids
+# A Granicus publisher whose rows are named by their first cell's ID, such as
+# `10-06-2026-City-Council`. The ID gives the date and the title ("10 06 2026 City
+# Council"), which `bodyPattern` matches. Documents are the row's PDFs only; the
+# agenda viewer is the official URL and its clip_id the source ID. (The `granicus`
+# type reads rows by their text instead, and also captures the HTML agenda.)
+
+GRANICUS_ROW_ID = re.compile(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', re.I)
+
+
+def _granicus_id_rows(agency: str, config: dict, markup: str):
+    """(date, candidate) for each matching row; the candidate is None when the row links no agenda clip."""
+    index = config["indexUrl"]
+    body = re.compile(config.get("bodyPattern", "."), re.I)
+    for match in GRANICUS_ROW_ID.finditer(markup):
+        title = match.group("key").replace("-", " ")
+        if not body.search(title):
             continue
         day = datetime.strptime(match.group("key")[:10], "%m-%d-%Y").date().isoformat()
-        earliest = min(earliest or day, day)
         row_end = markup.find("</tr>", match.start())
-        if row_end < 0 or not lo <= day <= hi:
-            continue
-        row = markup[match.start():row_end]
-        links = anchors(row, SLT_INDEX)
-        clip = next((re.search(r"[?&]clip_id=(\d+)", url) for url, _ in links if "AgendaViewer.php" in url), None)
+        row = markup[match.start():row_end] if row_end >= 0 else ""
+        links = anchors(row, index)
+        agenda = next((url for url, _ in links if "AgendaViewer.php" in url), None)
+        clip = re.search(r"[?&]clip_id=(\d+)", agenda) if agenda else None
         if not clip:
+            yield day, None
             continue
-        found.setdefault(clip.group(1), {
-            "agency": "slt", "source_id": clip.group(1), "title": match.group("key").replace("-", " "),
-            "official_url": next(url for url, _ in links if "AgendaViewer.php" in url), "date": day,
-            "documents": _pdf_links(row, SLT_INDEX, "slt"),
-            "warnings": ["Publisher row date/time and agenda items require source review."],
-            **granicus_links(links, html.unescape(row), SLT_INDEX)})
+        yield day, {"agency": agency, "source_id": clip.group(1), "title": title, "official_url": agenda, "date": day,
+                    "documents": _pdf_links(row, index, agency),
+                    "warnings": ["Publisher row date/time and agenda items require source review."],
+                    **granicus_links(links, html.unescape(row), index)}
+
+
+def granicus_row_ids(agency: str, config: dict, *, limit: int = 5, fetch=fetch_text) -> list[dict]:
+    if not 1 <= limit <= 20:
+        raise ValueError("discovery limit must be 1..20")
+    found = []
+    for _, row in _granicus_id_rows(agency, config, fetch(config["indexUrl"])):
+        if row:
+            found.append(row)
+            if len(found) >= limit:
+                break
+    return found
+
+
+def granicus_row_ids_range(agency: str, config: dict, *, since, until, fetch=fetch_text) -> tuple[list[dict], str | None]:
+    """Every matching row of the publisher (a full archive) dated since..until."""
+    found, earliest = {}, None
+    lo, hi = since.isoformat(), until.isoformat()
+    for day, row in _granicus_id_rows(agency, config, fetch(config["indexUrl"])):
+        earliest = min(earliest or day, day)
+        if row and lo <= day <= hi:
+            found.setdefault(row["source_id"], row)
     return list(found.values()), earliest
-
-
-def discover_truckee_range(*, since, until, fetch=fetch_text, delay: float = 1.0) -> tuple[list[dict], str | None]:
-    """Read the Truckee calendar month by month from ``since`` through ``until``."""
-    found, earliest = [], None
-    year, month = since.year, since.month
-    while (year, month) <= (until.year, until.month):
-        if (year, month) != (since.year, since.month) and delay:
-            time.sleep(delay)
-        for candidate in discover_truckee(year=year, month=month, limit=20, fetch=fetch):
-            day = candidate.get("date")
-            if day:
-                earliest = min(earliest or day, day)
-            if not day or since.isoformat() <= day <= until.isoformat():
-                found.append(candidate)
-        year, month = (year + 1, 1) if month == 12 else (year, month + 1)
-    return found, earliest

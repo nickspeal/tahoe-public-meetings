@@ -214,31 +214,13 @@ def test_failed_downloads_of_settled_age_meetings_retry_daily(db):
 def test_index_limits():
     opts = options()
     assert opts.discovery_limit == scheduled.INDEX_LIMIT == 20
-    assert scheduled._index_limit({"discoveryAdapter": "ttd"}, opts) == scheduled.UNDATED_INDEX_LIMIT
-    assert scheduled._index_limit({"discoveryAdapter": "configured"}, opts) == 20
+    assert scheduled._index_limit({"discovery": {"type": "wordpress-meetings"}}, opts) == scheduled.UNDATED_INDEX_LIMIT
+    assert scheduled._index_limit({"discovery": {"type": "granicus-row-ids"}}, opts) == 20
     undated = {"source_id": "t", "date": None}
-    assert scheduled._window_reason(undated, TODAY, opts) is None  # TTD posts are bounded by count instead
+    assert scheduled._window_reason(undated, TODAY, opts) is None  # WordPress posts are bounded by count instead
     assert scheduled._window_reason({"date": "2025-12-31"}, date(2026, 1, 20), opts) == "beforeCoverage"
     assert [c["source_id"] for c in scheduled._nearest_first(
         [{"source_id": "a", "date": "2026-06-01"}, {"source_id": "b", "date": "2026-03-01"}, undated], TODAY)] == ["t", "b", "a"]
-
-
-def test_truckee_calendar_months(monkeypatch):
-    from tahoe_ingest import capture
-    assert capture.truckee_months(date(2026, 1, 5)) == [(2025, 12), (2026, 1), (2026, 2)]
-    assert capture.truckee_months(date(2026, 12, 20)) == [(2026, 12), (2027, 1)]
-    calls = []
-
-    def fake_truckee(*, year, month, limit):
-        calls.append((year, month, limit))
-        return [{"source_id": f"{month}", "title": "Town Council"}, {"source_id": "shared", "title": "Town Council"}]
-    monkeypatch.setattr(capture, "discover_truckee", fake_truckee)
-    found = capture.discover_agency("truckee", {"discoveryAdapter": "truckee"}, limit=5)
-    assert len(calls) in (2, 3) and all(c[2] == 5 for c in calls)
-    assert [c["source_id"] for c in found].count("shared") == 1 and all(c["agency"] == "truckee" for c in found)
-    calls.clear()
-    capture.discover_agency("truckee", {"discoveryAdapter": "truckee"}, limit=5, year=2026, month=4)
-    assert calls == [(2026, 4, 5)]
 
 
 def test_invalid_or_empty_export_is_not_stored_or_deployed(db, monkeypatch, tmp_path):

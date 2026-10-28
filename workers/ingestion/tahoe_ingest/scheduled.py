@@ -8,7 +8,7 @@ stops the run, but an invalid export is never published:
 3. one-offs          config/one-off-meetings.json (idempotent upsert)
 4. comment-periods   config/public-comment-periods.json (fetches and verifies notices)
 5. verified-sources  config/verified-agency-meetings-*.json; captures meetings not yet stored
-6. discover          each followed agency with an adapter: recent and upcoming meetings, polite delays
+6. discover          each followed agency with a discovery block: recent and upcoming meetings, polite delays
 7. quarantine        config/quarantined-meeting-candidates.json
 8. reparse           stored text of meetings without items
 9. reclassify        rule topic tags
@@ -53,7 +53,7 @@ from .one_offs import load_one_offs
 from .reparse import reparse_meetings
 from .schedules import DEFAULT_FORECAST_DAYS
 from .source import download_extract
-from .source_discovery import date_in
+from .source_discovery import UNDATED_TYPES, date_in
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
 RETAINED_EXPORTS = 5
@@ -69,9 +69,9 @@ MAX_LISTED_FAILURES = 100
 # Discovery policy. History is filled once by a separate backfill; the scheduled
 # job only keeps recent and upcoming meetings current. Stored meetings are kept
 # forever, whatever the window.
-COVERAGE_START = date(2026, 1, 1)  # Never capture a dated meeting before this day (undated TTD posts excepted).
-INDEX_LIMIT = 20                   # Rows requested from each index (the adapters' maximum); the window is applied afterwards.
-UNDATED_INDEX_LIMIT = 6            # TTD posts are undated and each costs a page fetch, so they stay bounded by count.
+COVERAGE_START = date(2026, 1, 1)  # Never capture a dated meeting before this day (undated posts excepted).
+INDEX_LIMIT = 20                   # Rows requested from each index (discovery's maximum); the window is applied afterwards.
+UNDATED_INDEX_LIMIT = 6            # Rows of UNDATED_TYPES (WordPress posts) each cost a page fetch, so they stay bounded by count.
 PAST_DAYS = 60                     # Look-back for newly linked documents on past meetings (minutes, revised packets).
 FUTURE_DAYS = 120                  # Horizon for posted notices; covers the 90-day forecast.
 RECAPTURE_PAST_DAYS = 7            # Past meetings this recent are re-downloaded every run (same-URL corrections, cancellations).
@@ -255,7 +255,7 @@ def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
 def _window_reason(candidate: dict, today: date, options: Options) -> str | None:
     """Why a candidate is outside the scheduled window, or None. Stored meetings are never removed for this."""
     if not candidate.get("date"):
-        return None  # Undated candidates (TTD posts) cannot be windowed; their count is bounded by UNDATED_INDEX_LIMIT.
+        return None  # Undated candidates (WordPress posts) cannot be windowed; their count is bounded by UNDATED_INDEX_LIMIT.
     day = date.fromisoformat(candidate["date"])
     if day < options.coverage_start:
         return "beforeCoverage"
@@ -284,7 +284,7 @@ def _skip_reason(stored: StoredMeetings, meeting_id: str, candidate: dict, today
 
 
 def _index_limit(config: dict, options: Options) -> int:
-    if config.get("discoveryAdapter") == "ttd":
+    if config["discovery"]["type"] in UNDATED_TYPES:
         return min(options.discovery_limit, UNDATED_INDEX_LIMIT)
     return options.discovery_limit
 
@@ -297,7 +297,7 @@ def _nearest_first(candidates: list[dict], today: date) -> list[dict]:
 def discover_sources(conn, root: Path, run: Run, options: Options, discover, fetch, today: date):
     """Capture each followed agency's recent and upcoming meetings.
 
-    Each index is read up to the adapters' maximum and only then filtered to the
+    Each index is read up to discovery's maximum and only then filtered to the
     coverage floor and window, so far-future postings never crowd out recent past
     meetings. Settled meetings are skipped, and at most `max_captures_per_agency`
     of the rest are captured, nearest to today first; the remainder wait for the
@@ -308,7 +308,7 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
     # Each agency's captures only add that agency's meetings, so one snapshot serves every agency's selection.
     stored = stored_meetings(conn)
     agencies, checked = {}, []
-    for aid in sorted(a for a, config in followed.items() if config.get("discoveryAdapter")):
+    for aid in sorted(a for a, config in followed.items() if config.get("discovery")):
         report = agencies[aid] = {}
         try:
             candidates = discover(aid, followed[aid], limit=_index_limit(followed[aid], options))

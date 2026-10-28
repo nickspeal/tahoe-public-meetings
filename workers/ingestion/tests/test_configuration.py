@@ -17,7 +17,7 @@ def test_csv_rows_remain_distinct_unverified_research():
     assert {a['legacy']['sourceRow'] for a in imported} == set(range(3, 44))
     assert all(a['legacy']['verification'] == 'unverified' for a in imported)
     assert len(agencies) == 45  # Imported rows, Truckee, two added parks commissions, and the TTD RTCPC.
-    assert {'slt', 'ttd', 'truckee'} <= {a['id'] for a in agencies if a.get('discoveryAdapter')}
+    assert {'slt', 'ttd', 'truckee'} <= {a['id'] for a in agencies if a.get('discovery')}
     assert {a['id'] for a in agencies if not a['follow']} == {'douglas-newsletter','fows','lahontan-office','tahoe-fund','cal-epa','usace'}
     # Subsequent source verification may fill operational URLs; the imported
     # research must preserve the original missing website cell independently.
@@ -88,6 +88,6 @@ def test_invalid_one_offs_fail_before_writes(tmp_path, changes):
 
 
 def test_unimplemented_discovery_is_explicit(tmp_path):
-    with pytest.raises(SystemExit, match='no discovery adapter'):
+    with pytest.raises(SystemExit, match='no discovery source'):
         main(['discover', 'ltbmu', '--out', str(tmp_path / 'out.json')])
     assert not (tmp_path / 'out.json').exists()

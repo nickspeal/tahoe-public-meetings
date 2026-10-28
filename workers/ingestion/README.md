@@ -29,10 +29,9 @@ downloads and extracts with bounded bytes/pages, then records the hash and text.
 That marks affected summaries pending until items are reprocessed. An OCR or
 item parsing failure remains visible as an operator task.
 
-`discover ttd|slt|truckee --limit 5 --out candidates.json` inspects the
-official indexes with bounded result counts. Truckee also accepts `--year`
-and `--month`. The initial filters cover SLT City Council and Truckee Town
-Council; TTD uses its meeting posts. `capture candidates.json` downloads up
+`discover AGENCY_ID --limit 5 --out candidates.json` inspects the agency's
+official index, as its `discovery` block in the registry describes, with a
+bounded result count. `capture candidates.json` downloads up
 to five meetings and two PDFs each into temporary scratch space and stores
 page text and hashes. It recognizes the tested TTD Board, SLT City Council,
 and Truckee Town Council agenda layouts, plus one declarative layout per other
@@ -120,7 +119,7 @@ the public export carries only the latest summary text.
 
 ## Configured coverage and one-off notices
 
-See the [configuration guide](../../config/README.md). Shared topic rules and agencies live in `packages/domain/`; `ingest-one-offs --dry-run` validates `config/one-off-meetings.json`, and `ingest-one-offs` upserts notices without fabricating agendas or start times. `agencies` lists followed entries and adapter readiness. Run `init-db` after registry edits, and `reclassify` after topic edits. Entries without a `discoveryAdapter` are snapshot-only; see [source coverage](../../docs/operations/source-coverage.md).
+See the [configuration guide](../../config/README.md). Shared topic rules and agencies live in `packages/domain/`; `ingest-one-offs --dry-run` validates `config/one-off-meetings.json`, and `ingest-one-offs` upserts notices without fabricating agendas or start times. `agencies` lists followed entries and adapter readiness. Run `init-db` after registry edits, and `reclassify` after topic edits. Entries without a `discovery` block are snapshot-only; see [source coverage](../../docs/operations/source-coverage.md).
 
 `learn-schedules [--agency ID] [--dry-run | --write] [--registry PATH] [--json]` infers regular meeting patterns from stored meetings. It needs 3+ matches and a 60%+ match rate, and `--write` never replaces a `configured` schedule. `export --forecast-days N` (default 90, or `TAHOE_FORECAST_DAYS`; 0 disables) adds expected meetings derived from those schedules. Forecasts are never written to the database. See [Meeting schedules and expected meetings](../../config/README.md#meeting-schedules-and-expected-meetings).
 
@@ -139,11 +138,10 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 3. `one-offs` and 4. `comment-periods` from `config/` (comment notices are fetched and verified).
 5. `verified-sources`: `config/verified-agency-meetings-*.json` candidates not yet stored; missing documents are retried at most once a day. Candidates in `config/quarantined-meeting-candidates.json` are skipped.
 6. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
-   - Each index is read up to the adapters' maximum (`--discovery-limit 20`; TTD's undated posts, which each cost a page fetch, stay at 6). The window is applied after reading, so far-future postings never crowd out recent past meetings.
-   - Window: 60 days back (`--past-days`) to 120 days ahead (`--future-days`). The look-back lets minutes and revised packets linked after a monthly or bimonthly body's next meeting still be picked up. Dated meetings before the coverage floor, 2026-01-01, are never captured; undated TTD posts are exempt.
+   - Each index is read up to discovery's maximum (`--discovery-limit 20`; undated WordPress posts, which each cost a page fetch, stay at 6). The window is applied after reading, so far-future postings never crowd out recent past meetings.
+   - Window: 60 days back (`--past-days`) to 120 days ahead (`--future-days`). The look-back lets minutes and revised packets linked after a monthly or bimonthly body's next meeting still be picked up. Dated meetings before the coverage floor, 2026-01-01, are never captured; undated WordPress posts are exempt.
    - Upcoming meetings and meetings from the last 7 days are re-downloaded every run, which catches revised agendas and cancellations. An older meeting is settled, and skipped, once every document a capture would fetch (the first 2) is already stored at the same URL. A newly linked document makes it captured again. Its failed downloads are retried at most once a day.
    - At most 10 meetings per agency are captured per run, nearest to today first; the rest wait for the next run. At most 2 documents per meeting, 1 second between downloads.
-   - The legacy Truckee calendar adapter reads the current and next month, plus the previous month during the first 14 days of a month. The followed Truckee entry uses the configured Municode feed, which already spans 90 days on each side.
    - Stored meetings outside the window are never deleted or hidden.
    - Minutes and video links on each listing row are kept with the candidate. For meetings not captured this run (settled, deferred, or outside the window) they update the stored meeting directly, without a download (decision 0025).
 7. `quarantine`, 8. `reparse`, 9. `reclassify`.
@@ -156,14 +154,16 @@ A failure in steps 2–15 is recorded (`processing_runs`, agency status, the sum
 
 ### History backfill
 
-`tahoe-ingest backfill --since YYYY-MM-DD [--until YYYY-MM-DD] [--agency ID ...] [--dry-run]` captures every meeting dated in a range. Coverage starts on 2026-01-01, so the full-year run is `backfill --since 2026-01-01`. `--until` defaults to 120 days ahead. Each followed agency with a discovery adapter is enumerated through the date-range variant of its adapter:
+`tahoe-ingest backfill --since YYYY-MM-DD [--until YYYY-MM-DD] [--agency ID ...] [--dry-run]` captures every meeting dated in a range. Coverage starts on 2026-01-01, so the full-year run is `backfill --since 2026-01-01`. `--until` defaults to 120 days ahead. Each followed agency with a `discovery` block is enumerated by `source_discovery.discover_configured_range`, through the date-range variant of its type:
 
-| Adapter | Range function | How it reaches back |
-| --- | --- | --- |
-| `ttd` | `discovery.discover_ttd_range` | Pages WordPress meeting posts until they are 180 days older than `--since`. The date comes from the post title. An undated board post published in the range is kept |
-| `slt` | `discovery.discover_slt_range` | Reads the Granicus publisher, a full archive |
-| `truckee` (custom calendar) | `discovery.discover_truckee_range` | Reads the calendar month by month |
-| `configured` | `source_discovery.discover_configured_range` | Granicus, link-index, and TRPA read the whole index page. `dated-table` reads one yearly page per year. CivicPlus with a Municode embed queries Municode by date. Legistar queries the web API by date and adds department-page rows for dates the API does not cover. CivicClerk is paged until events are older than `--since` |
+| Discovery type | How it reaches back |
+| --- | --- |
+| `granicus`, `granicus-row-ids`, `link-index`, `trpa`, `civicplus`, `rss`, `meeting-files` | Reads the whole index page |
+| `dated-table` | Reads one yearly page per year (`indexUrlTemplate`) |
+| `municode` | Queries the Municode API by date |
+| `legistar` | Queries the web API by date and adds department-page rows for dates the API does not cover |
+| `civicclerk` | Pages the event list until events are older than `--since` |
+| `wordpress-meetings` | Pages the posts until they are 180 days older than `--since`. The date comes from the post title. An undated matching post published in the range is kept |
 
 Meetings already stored with documents are skipped, and quarantined candidates are ignored, so the command is resumable. A rerun downloads only what is missing, including documents that failed earlier. Capture uses the scheduled run's path: `capture.capture_candidates`, incremental commits, 2 documents per meeting, and at least 1 second between downloads (`--delay`). Each failing index or document is recorded and never stops the run. Stored meetings still take the minutes and video links their listings show. After capture, the backfill runs the scheduled post-steps from `scheduled.py`: quarantine, reparse, reclassify, meeting-records, draft-minutes, classify-topics within the same cost guards, export, validate, store, and the deploy hook. With `YOUTUBE_API_KEY` set (a free YouTube Data API key), meeting-records reads each configured channel's uploads back to `--since` instead of the 15-video feed; without it, older recordings wait for a later backfill with a key. `--no-publish` stops after validation. `--dry-run` only discovers and reports.
 

@@ -12,18 +12,15 @@ continues where a stopped run left off. It takes the same PostgreSQL advisory
 lock as `run-scheduled`, so the two never overlap: the backfill waits for a
 running scheduled run, and a scheduled run that starts during a backfill skips.
 
-Per-agency enumeration is layered on the adapter modules. Each adapter has a
-date-range variant next to its bounded one:
+Per-agency enumeration is `source_discovery.discover_configured_range`, which
+reads each discovery type's date-range variant:
 
-    ttd      discovery.discover_ttd_range       WordPress posts, paged until older than --since
-    slt      discovery.discover_slt_range       Granicus publisher (full archive)
-    truckee  discovery.discover_truckee_range   calendar, month by month
-    configured  source_discovery.discover_configured_range
-             granicus, link-index, trpa: the whole index page
-             dated-table: one yearly page per year in the range
-             civicplus with a Municode embed: Municode date-range query
-             legistar: web API date-range query, plus department-page rows
-             civicclerk: event list paged until older than --since
+    granicus, granicus-row-ids, link-index, trpa, civicplus, rss, meeting-files: the whole index page
+    dated-table: one yearly page per year in the range
+    municode: date-range query
+    legistar: web API date-range query, plus department-page rows
+    civicclerk: event list paged until older than --since
+    wordpress-meetings: posts paged until older than --since
 """
 from __future__ import annotations
 
@@ -40,7 +37,6 @@ from .capture import capture_candidates
 from .http import EndpointSkipped
 from .catalog import followed_agencies
 from .core import export_public, init_db, record_failure, stable_id
-from .discovery import discover_slt_range, discover_truckee_range, discover_ttd_range
 from .draft_minutes import link_draft_minutes
 from .scheduled import RUN_LOCK, log
 from .source import download_extract
@@ -77,28 +73,15 @@ class Options:
 
 
 def discover_agency_range(agency_id: str, config: dict, *, since: date, until: date) -> dict:
-    """All candidates from one agency's adapter dated since..until.
+    """All candidates from one agency's `discovery` block dated since..until.
 
     Returns ``candidates``, ``earliestListed`` (the oldest date the source showed,
     or for date-range APIs the oldest meeting returned), and ``queryByDate`` (the
     source was asked for the range directly, so it reaches ``since`` by design).
     """
-    adapter = config.get("discoveryAdapter")
-    if not adapter:
-        raise ValueError(f"{agency_id}: no discovery adapter")
-    query_by_date = False
-    if adapter == "configured":
-        candidates, earliest, query_by_date = discover_configured_range(agency_id, config["discovery"], since=since, until=until)
-    elif adapter == "ttd":
-        candidates, earliest = discover_ttd_range(since=since, until=until,
-                                                body_pattern=config.get("discovery", {}).get("bodyPattern", "board"))
-    elif adapter == "slt":
-        candidates, earliest = discover_slt_range(since=since, until=until)
-    elif adapter == "truckee":
-        candidates, earliest = discover_truckee_range(since=since, until=until)
-        query_by_date = True
-    else:
-        raise ValueError(f"{agency_id}: unknown discovery adapter {adapter}")
+    if not config.get("discovery"):
+        raise ValueError(f"{agency_id}: no discovery source")
+    candidates, earliest, query_by_date = discover_configured_range(agency_id, config["discovery"], since=since, until=until)
     for candidate in candidates:
         candidate["agency"] = agency_id
     return {"candidates": candidates, "earliestListed": earliest, "queryByDate": query_by_date}
@@ -154,11 +137,11 @@ def stored_counts(conn) -> dict:
 
 def _selected_agencies(options: Options) -> dict[str, dict]:
     followed = followed_agencies()
-    adapters = {aid: config for aid, config in followed.items() if config.get("discoveryAdapter")}
-    unknown = [aid for aid in options.agencies if aid not in adapters]
+    discoverable = {aid: config for aid, config in followed.items() if config.get("discovery")}
+    unknown = [aid for aid in options.agencies if aid not in discoverable]
     if unknown:
-        raise ValueError(f"not a followed agency with a discovery adapter: {', '.join(unknown)}")
-    return {aid: adapters[aid] for aid in sorted(options.agencies or adapters)}
+        raise ValueError(f"not a followed agency with live discovery: {', '.join(unknown)}")
+    return {aid: discoverable[aid] for aid in sorted(options.agencies or discoverable)}
 
 
 def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dict, discover) -> dict:

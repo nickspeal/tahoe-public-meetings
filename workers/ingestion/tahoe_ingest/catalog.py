@@ -7,6 +7,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from .schedules import validate_schedule
+from .source_discovery import validate_discovery
 
 
 @lru_cache(maxsize=1)
@@ -65,16 +66,7 @@ def agency_catalog() -> tuple[dict, ...]:
         aliases = agency.get("aliases", [])
         if not isinstance(aliases, list) or not all(isinstance(a, str) and a.strip() for a in aliases):
             raise ValueError(f"invalid aliases: {agency['id']}")
-        if agency.get("discoveryAdapter") not in (None, "ttd", "slt", "truckee", "configured"):
-            raise ValueError(f"unknown discovery adapter: {agency['id']}")
-        if agency.get("discoveryAdapter") == "configured":
-            config = agency.get("discovery", {})
-            if config.get("type") not in {"civicplus", "legistar", "granicus", "link-index", "civicclerk", "trpa", "rss", "dated-table", "meeting-files"} or not config.get("indexUrl", "").startswith("https://"):
-                raise ValueError(f"invalid source configuration: {agency['id']}")
-            re.compile(config.get("bodyPattern", "."), re.I)
-            re.compile(config.get("documentPattern", "."), re.I)
-        if agency.get("discoveryAdapter") == "ttd":  # The board and each committee share one WordPress feed.
-            re.compile(agency.get("discovery", {}).get("bodyPattern", "board"), re.I)
+        validate_discovery(agency)
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
         from urllib.parse import urlparse

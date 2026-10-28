@@ -83,8 +83,6 @@ def _parser() -> argparse.ArgumentParser:
     discover = sub.add_parser("discover", help="List bounded candidates from official meeting indexes")
     discover.add_argument("agency", choices=list(followed_agencies()))
     discover.add_argument("--limit", type=int, default=5)
-    discover.add_argument("--year", type=int, default=datetime.now().year)
-    discover.add_argument("--month", type=int, default=datetime.now().month)
     discover.add_argument("--out", required=True)
     reparse = sub.add_parser("reparse", help="Re-run agenda parsers over stored document text (no source fetch)")
     reparse.add_argument("--agency", help="Only this agency ID")
@@ -191,9 +189,9 @@ def main(argv=None) -> int:
             print(json.dumps(bundle, indent=2))
             return 0
     if args.command == "discover":
-        if not followed_agencies()[args.agency].get("discoveryAdapter"):
-            raise SystemExit(f"{args.agency}: no discovery adapter yet; use ingest-one-offs or ingest-manifest")
-        candidates = discover_agency(args.agency, followed_agencies()[args.agency], limit=args.limit, year=args.year, month=args.month)
+        if not followed_agencies()[args.agency].get("discovery"):
+            raise SystemExit(f"{args.agency}: no discovery source yet; use ingest-one-offs or ingest-manifest")
+        candidates = discover_agency(args.agency, followed_agencies()[args.agency], limit=args.limit)
         dest = Path(args.out)
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(json.dumps({"captured_at": datetime.now(timezone.utc).isoformat(), "candidates": candidates}, indent=2) + "\n")

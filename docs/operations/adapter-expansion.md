@@ -37,7 +37,7 @@ Method for each entry:
   delays, bounded requests, no bursts). Use `python3 scripts/project.py worker discover <id>
   --limit 3 --out <scratch file>` then `worker capture` on a few results to test end to end.
   Put scratch output outside the repo or under ignored data/.
-- Add the `discoveryAdapter: "configured"` and `discovery` object to packages/domain/agencies.json
+- Add a `discovery` object (a supported `type`, `indexUrl`, and `bodyPattern`) to packages/domain/agencies.json
   with a precise `bodyPattern` so unrelated commissions are not pulled in. Verify the result is
   only meetings of the intended body.
 - Add or update tests with a saved fixture of the index page. Run `python3 scripts/project.py test`.

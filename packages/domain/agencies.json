@@ -4,10 +4,11 @@
     "name": "Tahoe Transportation District",
     "shortName": "TTD",
     "follow": true,
-    "discoveryAdapter": "ttd",
     "officialUrl": "https://tahoetransportation.org/",
     "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
     "discovery": {
+      "type": "wordpress-meetings",
+      "indexUrl": "https://tahoetransportation.org/wp-json/wp/v2/meeting",
       "bodyPattern": "board"
     },
     "schedule": {
@@ -46,11 +47,13 @@
       "Regional and Transit Capital Programs Committee"
     ],
     "follow": true,
-    "discoveryAdapter": "ttd",
     "officialUrl": "https://tahoetransportation.org/",
     "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
     "discovery": {
-      "bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs"
+      "type": "wordpress-meetings",
+      "indexUrl": "https://tahoetransportation.org/wp-json/wp/v2/meeting",
+      "bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs",
+      "documentIdPrefix": "ttd"
     }
   },
   {
@@ -63,7 +66,11 @@
       "City Council"
     ],
     "follow": true,
-    "discoveryAdapter": "slt",
+    "discovery": {
+      "type": "granicus-row-ids",
+      "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+      "bodyPattern": "City Council"
+    },
     "officialUrl": "https://www.cityofslt.gov/",
     "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
     "legacy": {
@@ -88,7 +95,6 @@
       "City of South Lake Tahoe"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.cityofslt.gov/114/Planning-Commission",
     "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
     "discovery": {
@@ -138,7 +144,6 @@
       "APC"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.trpa.gov/",
     "sourceUrl": "https://www.trpa.gov/meeting-materials/",
     "legacy": {
@@ -168,7 +173,6 @@
       "Tahoe Regional Planning Agency"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.trpa.gov/",
     "sourceUrl": "https://www.trpa.gov/meeting-materials/",
     "legacy": {
@@ -200,7 +204,6 @@
       "BOCC"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.douglascountynv.gov/government/board-of-county-commissioners",
     "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
     "schedule": {
@@ -258,7 +261,6 @@
       "DCNV"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.douglascountynv.gov/government/county_boards_and_commissions",
     "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
     "schedule": {
@@ -305,7 +307,6 @@
     "name": "Douglas County — Newsletter",
     "shortName": "Douglas County",
     "follow": false,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.douglascountynv.gov/",
     "sourceUrl": "https://www.douglascountynv.gov/home",
     "legacy": {
@@ -331,7 +332,6 @@
       "RTC"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://douglascountynv.gov/",
     "sourceUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
     "legacy": {
@@ -361,7 +361,6 @@
       "BOS"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.eldoradocounty.ca.gov/County-Government/Board-of-Supervisors",
     "sourceUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
     "legacy": {
@@ -391,7 +390,6 @@
       "EDC"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
     "sourceUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
     "schedule": {
@@ -449,7 +447,6 @@
       "BCC"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.washoecounty.gov/bcc/board_committees/",
     "sourceUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=30765&GUID=4B8B322D-C2C5-48F3-899F-45F45D87C758",
     "legacy": {
@@ -476,7 +473,6 @@
     "name": "Washoe County — Planning Commission",
     "shortName": "Washoe County",
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
     "sourceUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
     "schedule": {
@@ -525,7 +521,6 @@
       "BOS"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.placer.ca.gov/bos",
     "sourceUrl": "https://www.placer.ca.gov/10616/_2026",
     "legacy": {
@@ -546,7 +541,6 @@
     "name": "Placer County — Planning Commission",
     "shortName": "Placer County",
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.placer.ca.gov/2403/Planning-Commission",
     "sourceUrl": "https://www.placer.ca.gov/10617/_2026",
     "legacy": {
@@ -571,7 +565,6 @@
       "PCTPA"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.pctpa.net/",
     "sourceUrl": "https://www.pctpa.net/pctpa-board",
     "schedule": {
@@ -622,7 +615,6 @@
       "Tahoe Basin Design Review Committee"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.placer.ca.gov/3636/Tahoe-Basin-Design-Review-Committee",
     "sourceUrl": "https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13",
     "legacy": {
@@ -652,7 +644,6 @@
       "SS-TMA"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://ss-tma.org/",
     "sourceUrl": "https://ss-tma.org/board-meetings/",
     "schedule": {
@@ -704,7 +695,6 @@
       "TNT TMA"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://tnttma.com/",
     "sourceUrl": "https://tnttma.com/tma-board-agenda/",
     "legacy": {
@@ -736,7 +726,6 @@
       "North Tahoe PUD"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://ntpud.org/",
     "sourceUrl": "https://ntpud.org/category/meetings/",
     "legacy": {
@@ -767,7 +756,6 @@
       "Tahoe City PUD"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.tcpud.org/",
     "sourceUrl": "https://www.tcpud.org/meetings",
     "legacy": {
@@ -797,7 +785,6 @@
       "Incline Village"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.yourtahoeplace.com/about-ivgid",
     "sourceUrl": "https://ivgid.portal.civicclerk.com/",
     "legacy": {
@@ -825,7 +812,6 @@
     "name": "FOWS — E-News",
     "shortName": "FOWS",
     "follow": false,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.friendswestshore.org/",
     "sourceUrl": "https://www.friendswestshore.org/newsletter",
     "legacy": {
@@ -852,7 +838,6 @@
       "LRWQCB"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.waterboards.ca.gov/lahontan/",
     "sourceUrl": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html",
     "legacy": {
@@ -880,7 +865,6 @@
     "name": "Lahontan — Main office",
     "shortName": "Lahontan",
     "follow": false,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.waterboards.ca.gov/lahontan/",
     "sourceUrl": "https://www.waterboards.ca.gov/lahontan/",
     "legacy": {
@@ -906,7 +890,6 @@
       "USFS"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.fs.usda.gov/r05/laketahoebasin",
     "sourceUrl": "https://www.fs.usda.gov/r05/laketahoebasin/newsroom",
     "legacy": {
@@ -934,7 +917,6 @@
       "Tahoe Conservancy"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://tahoe.ca.gov/",
     "sourceUrl": "https://tahoe.ca.gov/board-meetings-agendas/",
     "schedule": {
@@ -985,7 +967,6 @@
       "Tahoe RCD"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://tahoercd.org/",
     "sourceUrl": "https://tahoercd.specialdistrict.org/board-meetings",
     "legacy": {
@@ -1014,7 +995,6 @@
       "Nevada Tahoe Conservation District"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://ntcd.org/",
     "sourceUrl": "https://ntcd.org/board-of-supervisors/",
     "legacy": {
@@ -1043,7 +1023,6 @@
       "Nevada Division of Environmental Protection"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects",
     "sourceUrl": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/",
     "legacy": {
@@ -1077,7 +1056,6 @@
       "SLC"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": null,
     "sourceUrl": null,
     "legacy": {
@@ -1098,7 +1076,6 @@
     "name": "Cal EPA",
     "shortName": "Cal EPA",
     "follow": false,
-    "discoveryAdapter": null,
     "officialUrl": "https://calepa.ca.gov/",
     "sourceUrl": "https://calepa.ca.gov/",
     "legacy": {
@@ -1123,7 +1100,6 @@
       "Fish and Wildlife"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.fws.gov/office/reno-fish-and-wildlife",
     "sourceUrl": "https://www.fws.gov/office/reno-fish-and-wildlife/news",
     "legacy": {
@@ -1148,7 +1124,6 @@
     "name": "USACE",
     "shortName": "USACE",
     "follow": false,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.spk.usace.army.mil/",
     "sourceUrl": "https://www.spk.usace.army.mil/Missions/Regulatory/References/Regulatory-Program-Workshop/",
     "legacy": {
@@ -1173,7 +1148,6 @@
       "South Tahoe PUD"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://www.stpud.us/",
     "sourceUrl": "https://www.stpud.us/board-meetings",
     "legacy": {
@@ -1202,7 +1176,6 @@
     "name": "Tahoe Fund — E-news",
     "shortName": "Tahoe Fund",
     "follow": false,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.tahoefund.org/",
     "sourceUrl": "https://www.tahoefund.org/latestnews/",
     "legacy": {
@@ -1227,7 +1200,6 @@
       "California Department of Parks and Recreation"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.parks.ca.gov/",
     "sourceUrl": "https://ohv.parks.ca.gov/?page_id=27160",
     "legacy": {
@@ -1252,7 +1224,6 @@
       "Nevada Division of State Parks"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://parks.nv.gov/",
     "sourceUrl": "https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks",
     "legacy": {
@@ -1277,7 +1248,6 @@
       "Forest Service"
     ],
     "follow": true,
-    "discoveryAdapter": null,
     "officialUrl": "https://www.fs.usda.gov/r05/tahoe",
     "sourceUrl": "https://www.fs.usda.gov/r05/tahoe/newsroom",
     "legacy": {
@@ -1306,7 +1276,6 @@
       "FGC"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://fgc.ca.gov/",
     "sourceUrl": "https://fgc.ca.gov/Meetings/2026",
     "legacy": {
@@ -1338,7 +1307,6 @@
       "TTAD"
     ],
     "follow": true,
-    "discoveryAdapter": "configured",
     "officialUrl": "https://truckeetahoeairport.com/",
     "sourceUrl": "https://truckeetahoeairport.com/administration/board/meetings",
     "legacy": {
@@ -1377,7 +1345,6 @@
       "sourceUrl": "https://www.townoftruckee.gov/305/Guide-to-Town-Council-Meetings",
       "checkedOn": "2026-10-27"
     },
-    "discoveryAdapter": "configured",
     "schedule": {
       "source": "learned",
       "rules": [
@@ -1406,8 +1373,8 @@
       }
     },
     "discovery": {
-      "type": "civicplus",
-      "indexUrl": "https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes",
+      "type": "municode",
+      "indexUrl": "https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA",
       "bodyPattern": "Town Council"
     }
   },
@@ -1422,7 +1389,6 @@
     "follow": true,
     "officialUrl": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings",
     "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
-    "discoveryAdapter": "configured",
     "discovery": {
       "type": "granicus",
       "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
@@ -1441,7 +1407,6 @@
     "follow": true,
     "officialUrl": "https://www.tcpud.org/",
     "sourceUrl": "https://www.tcpud.org/meetings",
-    "discoveryAdapter": "configured",
     "discovery": {
       "type": "granicus",
       "indexUrl": "https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2",

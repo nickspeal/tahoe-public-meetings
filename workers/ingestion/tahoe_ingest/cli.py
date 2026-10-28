@@ -110,10 +110,10 @@ def _parser() -> argparse.ArgumentParser:
     part.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
     part.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
                       help="USD; refuse to run once month-to-date AI spend reaches it")
-    reports = sub.add_parser("map-staff-reports", help="Link agenda items to their own staff reports for every agency with a "
-                             "mapping rule (staff_report_rules/); downloads PDFs temporarily")
+    reports = sub.add_parser("map-staff-reports", help="Link agenda items to their own staff reports for every agency whose "
+                             "registry entry names a rule (staffReports; staff_report_rules/); downloads PDFs temporarily")
     reports.add_argument("--agency", choices=staff_reports.SUPPORTED, metavar="AGENCY",
-                         help="Only this agency ID (any agency with a staff report rule)")
+                         help="Only this agency ID (any agency with a staffReports rule)")
     reports.add_argument("--meeting", help="Only this meeting ID")
     reports.add_argument("--max-meetings", type=int, help="Scan at most this many pending meetings, nearest to today first")
     reports.add_argument("--force", action="store_true", help="Rescan meetings whose items and documents have not changed")

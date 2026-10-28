@@ -35,6 +35,25 @@
       "agendaPublishingSchedule": "About a week before",
       "notification": "",
       "website": "https://tahoetransportation.org/meetings-and-agendas/"
+    },
+    "staffReports": {
+      "rule": "ttd-packet"
+    },
+    "topicHints": {
+      "transit": [
+        {
+          "rule": "ttd-fleet",
+          "pattern": "\\bfleet\\b"
+        },
+        {
+          "rule": "ttd-operating-budget",
+          "pattern": "\\b(?:operating budget|transit budget|service budget)\\b"
+        },
+        {
+          "rule": "ttd-service-action",
+          "pattern": "\\b(?:service (?:change|planning|expansion|reduction)|route \\d+)\\b"
+        }
+      ]
     }
   },
   {
@@ -54,6 +73,26 @@
       "indexUrl": "https://tahoetransportation.org/wp-json/wp/v2/meeting",
       "bodyPattern": "Regional (?:and )?Transit (?:and |& )?Capital Programs",
       "documentIdPrefix": "ttd"
+    },
+    "staffReports": {
+      "rule": "ttd-packet",
+      "footer": "(?:RTCPC\\s+)?AGENDA ITEM"
+    },
+    "topicHints": {
+      "transit": [
+        {
+          "rule": "ttd-fleet",
+          "pattern": "\\bfleet\\b"
+        },
+        {
+          "rule": "ttd-operating-budget",
+          "pattern": "\\b(?:operating budget|transit budget|service budget)\\b"
+        },
+        {
+          "rule": "ttd-service-action",
+          "pattern": "\\b(?:service (?:change|planning|expansion|reduction)|route \\d+)\\b"
+        }
+      ]
     }
   },
   {
@@ -84,6 +123,9 @@
       "agendaPublishingSchedule": "2nd and 4th Thursdays",
       "notification": "https://www.cityofslt.us/list.aspx",
       "website": "https://cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+    },
+    "staffReports": {
+      "rule": "slt-executive-summary"
     }
   },
   {
@@ -133,6 +175,10 @@
       "agendaPublishingSchedule": "",
       "notification": "https://www.cityofslt.us/list.aspx",
       "website": "https://cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
+    },
+    "staffReports": {
+      "rule": "slt-commission-report",
+      "body": "Planning Commission"
     }
   },
   {
@@ -163,6 +209,10 @@
       "indexUrl": "https://www.trpa.gov/meeting-materials/",
       "bodyPattern": "Advisory Planning Commission",
       "documentPattern": "APC|Advisory Planning Commission"
+    },
+    "staffReports": {
+      "rule": "trpa-meeting-materials",
+      "packetName": "APC(?:\\s+Meeting)?"
     }
   },
   {
@@ -191,6 +241,10 @@
       "type": "trpa",
       "indexUrl": "https://www.trpa.gov/meeting-materials/",
       "bodyPattern": "Governing Board"
+    },
+    "staffReports": {
+      "rule": "trpa-meeting-materials",
+      "packetName": "Governing\\s+Board"
     }
   },
   {
@@ -250,6 +304,9 @@
       "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
       "bodyPattern": "(?s)^(?!.*Supplement)\\s*Board of County Commissioners",
       "titlePrefix": "Douglas County "
+    },
+    "staffReports": {
+      "rule": "douglas-packet"
     }
   },
   {
@@ -300,6 +357,9 @@
       "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
       "bodyPattern": "(?s)^(?!.*Supplement)\\s*Planning Commission",
       "titlePrefix": "Douglas County "
+    },
+    "staffReports": {
+      "rule": "douglas-packet"
     }
   },
   {
@@ -350,6 +410,9 @@
       "type": "granicus",
       "indexUrl": "https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1",
       "bodyPattern": "Regional Transportation Commission"
+    },
+    "staffReports": {
+      "rule": "douglas-packet"
     }
   },
   {
@@ -380,6 +443,12 @@
       "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
       "bodyPattern": "Board of Supervisors",
       "title": "El Dorado County Board of Supervisors Meeting"
+    },
+    "staffReports": {
+      "rule": "legistar",
+      "client": "eldorado",
+      "body": "Board of Supervisors",
+      "report": "legislation-text"
     }
   },
   {
@@ -435,6 +504,12 @@
       "type": "legistar",
       "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=E85584F9-B2BA-464D-8D34-A85046210F50&ID=4415",
       "bodyPattern": "Planning Commission"
+    },
+    "staffReports": {
+      "rule": "legistar",
+      "client": "eldorado",
+      "body": "Planning Commission",
+      "report": "planning-attachment"
     }
   },
   {
@@ -466,6 +541,12 @@
       "indexUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=30765&GUID=4B8B322D-C2C5-48F3-899F-45F45D87C758",
       "bodyPattern": "Board of County Commissioners",
       "title": "Washoe County Board of County Commissioners Meeting"
+    },
+    "staffReports": {
+      "rule": "legistar",
+      "client": "washoe-nv",
+      "body": "Board of County Commissioners",
+      "report": "staff-report"
     }
   },
   {
@@ -511,6 +592,12 @@
       "type": "legistar",
       "indexUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
       "bodyPattern": "Planning Commission"
+    },
+    "staffReports": {
+      "rule": "legistar",
+      "client": "washoe-nv",
+      "body": "Washoe County Planning Commission",
+      "report": "agenda-item"
     }
   },
   {
@@ -534,6 +621,9 @@
       "agendaPublishingSchedule": "72 hours before",
       "notification": "",
       "website": "https://www.placer.ca.gov/2231/Board-of-Supervisors"
+    },
+    "staffReports": {
+      "note": "Blocked: the county site answers HTTP 403 (SOURCE-001)."
     }
   },
   {
@@ -554,6 +644,9 @@
       "agendaPublishingSchedule": "72 hours before",
       "notification": "",
       "website": "https://www.placer.ca.gov/2403/Planning-Commission"
+    },
+    "staffReports": {
+      "note": "Blocked: the county site answers HTTP 403 (SOURCE-001)."
     }
   },
   {
@@ -605,6 +698,9 @@
       "bodyPattern": "PCTPA",
       "title": "Placer County Transportation Planning Agency Board of Directors Meeting",
       "minutesLinks": true
+    },
+    "staffReports": {
+      "rule": "pctpa-packet"
     }
   },
   {
@@ -633,6 +729,9 @@
       "type": "civicplus",
       "indexUrl": "https://www.placer.ca.gov/AgendaCenter/Tahoe-Basin-Design-Review-Committee-13",
       "bodyPattern": "Tahoe Basin Design Review Committee"
+    },
+    "staffReports": {
+      "note": "Blocked: the county site answers HTTP 403 (SOURCE-001)."
     }
   },
   {
@@ -683,6 +782,10 @@
       "indexUrl": "https://ss-tma.org/board-meetings/",
       "bodyPattern": "Board",
       "title": "South Shore Transportation Management Association Board of Directors Meeting"
+    },
+    "staffReports": {
+      "published": false,
+      "note": "A one-page agenda with unnumbered items and no staff reports."
     }
   },
   {
@@ -715,6 +818,10 @@
       "bodyPattern": "Board Meeting|TNT.?TMA",
       "idPrefix": "board-",
       "minutesLinks": true
+    },
+    "staffReports": {
+      "published": false,
+      "note": "A two-page agenda whose item numbers restart in each section, and no staff reports."
     }
   },
   {
@@ -745,6 +852,9 @@
       "indexUrl": "https://ntpud.org/category/meetings/feed/",
       "bodyPattern": "Board of Directors",
       "titlePrefix": "North Tahoe Public Utility District "
+    },
+    "staffReports": {
+      "rule": "ntpud-packet"
     }
   },
   {
@@ -774,6 +884,9 @@
       "type": "granicus",
       "indexUrl": "https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2",
       "bodyPattern": "Board of Directors"
+    },
+    "staffReports": {
+      "rule": "tcpud-memo"
     }
   },
   {
@@ -805,6 +918,9 @@
       "bodyPattern": "Trustees",
       "apiUrl": "https://ivgid.api.civicclerk.com/v1",
       "portalUrl": "https://ivgid.portal.civicclerk.com"
+    },
+    "staffReports": {
+      "rule": "civicclerk-packet"
     }
   },
   {
@@ -858,6 +974,9 @@
       "indexUrlTemplate": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/{year}_schedule.html",
       "bodyPattern": "Board",
       "title": "Lahontan Board Meeting"
+    },
+    "staffReports": {
+      "rule": "lahontan-item-files"
     }
   },
   {
@@ -956,6 +1075,10 @@
       "agendaPublishingSchedule": "https://tahoe.ca.gov/board-meetings-agendas/",
       "notification": "yes",
       "website": ""
+    },
+    "staffReports": {
+      "published": true,
+      "note": "Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to."
     }
   },
   {
@@ -985,6 +1108,10 @@
       "type": "link-index",
       "indexUrl": "https://tahoercd.specialdistrict.org/board-meetings",
       "bodyPattern": "Board Meeting"
+    },
+    "staffReports": {
+      "published": false,
+      "note": "The agenda's page column refers to a packet the district does not publish."
     }
   },
   {
@@ -1013,6 +1140,10 @@
       "type": "link-index",
       "indexUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4aTYmjstsH_N06j4NGelCESd-ONVcib4QUp2i4gUn_7nROGirLdlGbSI5WwMcNjHIxY0t-WCTeU7e/pubhtml/sheet?headers=false&gid=0",
       "bodyPattern": "Board Meeting Library"
+    },
+    "staffReports": {
+      "published": false,
+      "note": "Publishes one-page agreement summaries, not staff reports."
     }
   },
   {
@@ -1044,6 +1175,9 @@
       "title": "Nevada Board for Financing Water Projects Meeting",
       "datePattern": "^\\s*\\d{1,2}/\\d{1,2}/\\d{2}\\s*$",
       "horizonDays": 120
+    },
+    "staffReports": {
+      "rule": "ndep-material-packet"
     }
   },
   {
@@ -1069,6 +1203,10 @@
       "agendaPublishingSchedule": "",
       "notification": "https://www.slc.ca.gov/meetings/",
       "website": ""
+    },
+    "staffReports": {
+      "published": true,
+      "note": "Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to."
     }
   },
   {
@@ -1169,6 +1307,9 @@
       "title": "South Tahoe Public Utility District Board Meeting",
       "qualifySpecial": true,
       "minutesLinks": true
+    },
+    "staffReports": {
+      "rule": "stpud-packet"
     }
   },
   {
@@ -1213,6 +1354,10 @@
       "agendaPublishingSchedule": "https://signup.e2ma.net/signup/1867760/1810553/",
       "notification": "https://signup.e2ma.net/signup/1867760/1810553/",
       "website": ""
+    },
+    "staffReports": {
+      "rule": "state-parks-cover-pages",
+      "note": "State Park and Recreation Commission only: the OHMVR Commission names its staff reports by topic and prints no item number, so a title would be the only signal."
     }
   },
   {
@@ -1237,6 +1382,10 @@
       "agendaPublishingSchedule": "no",
       "notification": "no",
       "website": "http://parks.nv.gov/about/public-notices"
+    },
+    "staffReports": {
+      "published": false,
+      "note": "A public hearing notice, not an agenda with staff reports."
     }
   },
   {
@@ -1296,6 +1445,9 @@
       "indexUrlTemplate": "https://fgc.ca.gov/Meetings/{year}",
       "bodyPattern": "Commission|Committee",
       "title": "California Fish and Game Commission"
+    },
+    "staffReports": {
+      "rule": "fish-game-staff-summaries"
     }
   },
   {
@@ -1325,6 +1477,9 @@
       "type": "meeting-files",
       "indexUrl": "https://truckeetahoeairport.com/administration/board/meetings",
       "title": "Truckee Tahoe Airport District Regular Board Meeting"
+    },
+    "staffReports": {
+      "rule": "airport-tab-files"
     }
   },
   {
@@ -1376,6 +1531,9 @@
       "type": "municode",
       "indexUrl": "https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA",
       "bodyPattern": "Town Council"
+    },
+    "staffReports": {
+      "rule": "truckee-packet"
     }
   },
   {
@@ -1393,6 +1551,10 @@
       "type": "granicus",
       "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
       "bodyPattern": "Parks and Recreation Commission"
+    },
+    "staffReports": {
+      "rule": "slt-commission-report",
+      "body": "Parks and Recreation Commission"
     }
   },
   {
@@ -1411,6 +1573,9 @@
       "type": "granicus",
       "indexUrl": "https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2",
       "bodyPattern": "Parks and Recreation Committee"
+    },
+    "staffReports": {
+      "rule": "tcpud-memo"
     }
   }
 ]

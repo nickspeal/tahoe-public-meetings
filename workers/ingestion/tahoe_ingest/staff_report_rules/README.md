@@ -1,29 +1,78 @@
 # Staff report mapping rules
 
 `tahoe-ingest map-staff-reports` links an agenda item to its own staff report (IDEA-013, decision 0024). Each module in
-this package holds the rule for one agency or platform. The shared core is `tahoe_ingest/staff_reports.py`.
+this package holds a rule for one publishing format, registered under a rule name, and each agency's entry in
+[`packages/domain/agencies.json`](../../../../packages/domain/agencies.json) picks a rule and gives its parameters. The
+shared core is `tahoe_ingest/staff_reports.py`.
 
-## Adding a rule
+## Pointing an agency at a rule
 
-1. Create `staff_report_rules/<agency_or_platform>.py`. It needs a module docstring that says what the agency
-   publishes and which two signals the rule checks, and a module-level dict:
+An agency whose documents follow a format that already has a rule needs only configuration, a fixture, and its source
+review record. Add a `staffReports` entry to the agency:
+
+```json
+"staffReports": {"rule": "ttd-packet", "footer": "(?:RTCPC\\s+)?AGENDA ITEM"}
+```
+
+The other keys are the rule's parameters (see the rule's module docstring and its keyword-only arguments). The registry
+is checked when it loads: an unknown rule name, a missing or unknown parameter, a value outside a parameter's choices,
+or a regular expression that doesn't compile stops it loading. `staff_reports.SUPPORTED`, the CLI's `--agency` choices,
+and the scheduled run are every agency whose entry names a rule. An optional `note` says anything a reader of the
+coverage table needs ("State Park and Recreation Commission only").
+
+An agency without a rule may still say why, so the coverage page can be generated from the registry:
+`{"published": false, "note": "..."}` when it publishes nothing a rule could use, `{"published": true, "note": "..."}`
+when reports exist but can't be reached or attached yet, or just a `note` when that isn't known (a blocked source).
+
+| Rule | Format | Parameters |
+| --- | --- | --- |
+| `airport-tab-files` | Truckee Tahoe Airport District: one file per agenda TAB on the meeting's attachments page | |
+| `civicclerk-packet` | CivicClerk packet (Incline Village GID): "ITEM G.1." stamps on dated memos | |
+| `douglas-packet` | Douglas County Granicus packet: an item cover page before each item's attachments | |
+| `fish-game-staff-summaries` | Fish and Game Commission: "Staff Summary" files linked from the meeting documents index | |
+| `lahontan-item-files` | Water board agenda linking `itemN.pdf`, headed "ITEM N" | |
+| `legistar` | Legistar Web API: the item's file, attachments, or legislation text | `client`, `body`, `report` |
+| `ndep-material-packet` | Nevada water projects board: project sections of the "Material" packet | |
+| `ntpud-packet` | North Tahoe PUD: the packet's own agenda prints each item's page range | |
+| `pctpa-packet` | PCTPA: the agenda's "Pg." stamp opens a memo in the packet | |
+| `slt-commission-report` | South Lake Tahoe commissions: the linked "Report to <body>" staff report | `body` |
+| `slt-executive-summary` | South Lake Tahoe City Council: the linked "Item N- Executive Summary.pdf" | |
+| `state-parks-cover-pages` | State Park and Recreation Commission: "Agenda Item NN" links to cover pages | |
+| `stpud-packet` | South Tahoe PUD: "BOARD AGENDA ITEM 6c" memos in the packet | |
+| `tcpud-memo` | Tahoe City PUD's Granicus HTML agenda: the memo linked with the item title | |
+| `trpa-meeting-materials` | TRPA: each item's own report file and attachments, else the body's packet | `packetName` |
+| `truckee-packet` | Municode packet pages headed "Item 5.1" | |
+| `ttd-packet` | The agenda's Page column into a packet whose pages carry an item footer | `footer` (default `AGENDA ITEM`) |
+
+## Registering a new rule
+
+When no rule fits, write one for the format, not for the agency.
+
+1. Create `staff_report_rules/<format_or_platform>.py`. It needs a module docstring that names the rule, says what the
+   publisher prints and which two signals the rule checks, and a module-level dict keyed by the rule name, which
+   describes the format (lower case and hyphens, never an agency ID):
 
    ```python
-   RULES = {"trpa-governing": map_trpa, "trpa-advisory": map_trpa}
+   RULES = {"trpa-meeting-materials": map_trpa}
    ```
 
-   Every module is discovered when the package loads (`__init__.py`), so you don't edit a shared registry. Two modules
-   that claim the same agency ID raise an error at import. `staff_reports.SUPPORTED`, the CLI's `--agency` choices,
-   and the scheduled run all come from the merged registry. Modules whose names start with `_` are skipped, which is
-   where private helpers go.
-2. A rule is `rule(ctx: Context) -> list[Mapping]`. Return a `Mapping` only for items you verified. For every other
-   item call `ctx.skip(item, reason)`. Raise `Uncertain` when the whole meeting can't be verified (for example, the
-   agenda changed since it was captured). Download failures raise `FetchFailed`, and the meeting is retried after
-   `RETRY_HOURS`. A file over its download limit raises `TooLarge` (a `FetchFailed`): fetching it again would fail
-   the same way, so `ctx.read_report` skips that item for good ("report is larger than the download limit") instead
-   of retrying; a rule that downloads a whole packet should turn it into `Uncertain`.
-3. Add a fixture (see below). The shared test picks it up automatically. Add tests for the rule's own failure modes
-   too (another meeting's report, a link to the wrong item, an interrupted page run).
+   Every module is discovered when the package loads (`__init__.py`) and merged into `REGISTRY`, so you don't edit a
+   shared registry. Two modules that register the same name raise an error at import. Modules whose names start with
+   `_` are skipped, which is where private helpers go.
+2. A rule is `rule(ctx: Context, *, params...) -> list[Mapping]`. Whatever differs between agencies that share the
+   format (a body's name, a footer label, an API client) is a keyword-only parameter, never a lookup by
+   `ctx.meeting.agency_id`. Its annotation says what the registry accepts: `str` for text, `staff_reports.Regex` for
+   a regular expression (passed as text, compiled at load to check it), or `Literal["a", "b"]` for a choice. A
+   parameter with a default is optional. Agencies set it in camelCase (`packet_name` -> `packetName`).
+3. Return a `Mapping` only for items you verified. For every other item call `ctx.skip(item, reason)`. Raise
+   `Uncertain` when the whole meeting can't be verified (for example, the agenda changed since it was captured).
+   Download failures raise `FetchFailed`, and the meeting is retried after `RETRY_HOURS`. A file over its download
+   limit raises `TooLarge` (a `FetchFailed`): fetching it again would fail the same way, so `ctx.read_report` skips
+   that item for good ("report is larger than the download limit") instead of retrying; a rule that downloads a whole
+   packet should turn it into `Uncertain`.
+4. Point an agency at it (above), add the rule to the table above, and add a fixture (see below). The shared test
+   picks it up automatically. Add tests for the rule's own failure modes too (another meeting's report, a link to the
+   wrong item, an interrupted page run).
 
 ### Two signals must agree
 
@@ -93,8 +142,9 @@ Number normalisation: `norm_number(" iv.a. ") == "IV.A"`. Compare normalised num
 
 ## Fixtures
 
-Each rule has `tests/fixtures/staff-reports/<name>.json` at the repository root. `test_each_item_cites_pages_of_its_own_staff_report`
-runs every file in that directory. The rule comes from `meeting.agency_id`.
+Each agency that has a rule should have `tests/fixtures/staff-reports/<agency id>.json` at the repository root.
+`test_each_item_cites_pages_of_its_own_staff_report` runs every file in that directory. The rule and its parameters come
+from `meeting.agency_id`'s registry entry.
 
 ```jsonc
 {

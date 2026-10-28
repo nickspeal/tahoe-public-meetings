@@ -1,4 +1,4 @@
-"""Placer County Transportation Planning Agency (``placer-transportation``): memos in the agenda packet.
+"""Rule ``pctpa-packet``: Placer County Transportation Planning Agency memos in the agenda packet.
 
 PCTPA posts one PDF per meeting ("PCTPA Agenda with Memos"), stored as the agenda: three
 or four agenda pages, then the packet, whose pages carry a bare stamp at the bottom
@@ -191,4 +191,4 @@ def map_pctpa(ctx: Context) -> list[Mapping]:
     return mappings
 
 
-RULES = {"placer-transportation": map_pctpa}
+RULES = {"pctpa-packet": map_pctpa}

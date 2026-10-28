@@ -1,4 +1,4 @@
-"""California State Parks (``california-state-parks``): State Park and Recreation Commission staff report cover pages.
+"""Rule ``state-parks-cover-pages``: California State Park and Recreation Commission staff report cover pages.
 
 Two commissions share this agency. The State Park and Recreation Commission's meeting
 page lists, after each meeting's "Meeting Agenda" link, one "Agenda Item NN <title>"
@@ -100,4 +100,4 @@ def map_state_parks(ctx: Context) -> list[Mapping]:
                           missing="{count} \"Agenda Item\" links for item {number}")
 
 
-RULES = {"california-state-parks": map_state_parks}
+RULES = {"state-parks-cover-pages": map_state_parks}

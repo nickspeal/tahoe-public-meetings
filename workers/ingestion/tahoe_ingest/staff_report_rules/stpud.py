@@ -1,4 +1,4 @@
-"""South Tahoe Public Utility District (``stpud``): board memos in the single agenda packet.
+"""Rule ``stpud-packet``: South Tahoe Public Utility District board memos in the single agenda packet.
 
 Each regular meeting posts one PDF, "<date> District Board Agenda Packet.pdf": the agenda
 pages, then a memo for each consent and action item. Discovery stores that packet as the
@@ -104,4 +104,4 @@ def map_stpud(ctx: Context) -> list[Mapping]:
     return mappings
 
 
-RULES = {"stpud": map_stpud}
+RULES = {"stpud-packet": map_stpud}

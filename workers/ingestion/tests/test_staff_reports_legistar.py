@@ -23,6 +23,12 @@ def no_antiword(monkeypatch):
     monkeypatch.setattr(legistar, "antiword_available", lambda: False)
 
 
+def test_every_report_an_agency_may_configure_has_a_check():
+    from typing import get_args
+    from tahoe_ingest import staff_report_rules
+    assert set(get_args(staff_report_rules._params("legistar", legistar.map_legistar)["report"][1])) == set(legistar._REPORTS)
+
+
 @pytest.mark.parametrize("agency", ["el-dorado-planning", "el-dorado-supervisors", "washoe-commissioners", "washoe-planning"])
 def test_reports_link_the_agency_site_with_their_media_type(agency):
     found, _, _ = run_rule(load(agency))
@@ -211,7 +217,7 @@ def test_oversized_reports_are_skipped_for_good():
     def too_big(url, **kwargs):
         raise staff_reports.TooLarge(f"{url}: source exceeds 83886080 byte limit")
     ctx = staff_reports.Context(lambda v: {}, ctx.meeting, too_big, fetch_bytes=too_big)
-    run_ = legistar._Run(ctx, legistar.AGENCIES["washoe-planning"], None, {})
+    run_ = legistar._Run(ctx, "washoe-nv", None, {})
     pdf, word = (next(i for i in ctx.meeting.items if i.number == n) for n in ("8.C", "8.B"))
     assert run_.pdf(pdf, "https://example.invalid/report.pdf") is None
     assert run_.word(word, "https://example.invalid/report.docx") is None

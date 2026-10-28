@@ -1,4 +1,4 @@
-"""Incline Village GID (``ivgid``, CivicClerk): staff memos inside the stored agenda packet.
+"""Rule ``civicclerk-packet``: Incline Village GID (CivicClerk) staff memos inside the stored agenda packet.
 
 Every memo in the packet opens with the item's stamp and a dated memo header:
 "ITEM G.1." / "MEMORANDUM" / "SUBJECT: <item title>" / "DATE: October 14, 2026". The
@@ -87,4 +87,4 @@ def map_ivgid(ctx: Context) -> list[Mapping]:
     return mappings
 
 
-RULES = {"ivgid": map_ivgid}
+RULES = {"civicclerk-packet": map_ivgid}

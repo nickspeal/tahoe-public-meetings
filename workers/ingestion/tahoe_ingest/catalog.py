@@ -69,6 +69,8 @@ def agency_catalog() -> tuple[dict, ...]:
         validate_discovery(agency)
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
+        from .staff_report_rules import check_config  # imported here: rule modules load only with the registry
+        check_config(agency)
         from urllib.parse import urlparse
         for key in ("officialUrl", "sourceUrl"):
             if agency.get(key) is not None:

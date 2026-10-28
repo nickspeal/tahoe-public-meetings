@@ -8,7 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from tahoe_ingest import item_summaries, staff_reports
+from tahoe_ingest import item_summaries, staff_report_rules, staff_reports
+from tahoe_ingest.catalog import agency_catalog
 from tahoe_ingest.staff_report_rules import slt, ttd
 from tahoe_ingest.staff_reports import Context, Document, Item, Meeting, RULES
 
@@ -112,15 +113,34 @@ def test_ttd_page_column_must_land_on_the_items_own_footer():
     assert "190" in ctx.skipped["ttd:7110:VII"]  # the executive director's report carries no item footer
 
 
+def staff_report_config(agency_id):
+    return next(a for a in agency_catalog() if a["id"] == agency_id)["staffReports"]
+
+
 def test_ttd_committee_footer_is_not_the_board_item():
     text = "JS/lr       AGENDA ITEM: IV.A.\n            FPC AGENDA ITEM: III.B.\nTahoe Transportation District Board ~ Page 8 ~"
-    assert [m for m in ttd._TTD_FOOTER.findall(text)] == ["IV.A"]
+    assert "footer" not in staff_report_config("ttd") and RULES["ttd"].keywords == {}  # the rule's own default
+    assert ttd.footer_pattern("AGENDA ITEM").findall(text) == ["IV.A"]
 
 
 def test_ttd_rtcpc_footer_reads_with_or_without_the_committee_prefix():
     text = "TS/lr          RTCPC AGENDA ITEM: III.A.\nCJ/lr          AGENDA ITEM: III.B.\nx          RTCPC AGENDA ITEM: IV"
-    assert ttd._RTCPC_FOOTER.findall(text) == ["III.A", "III.B", "IV"]
-    assert "ttd-rtcpc" in RULES
+    assert ttd.footer_pattern(staff_report_config("ttd-rtcpc")["footer"]).findall(text) == ["III.A", "III.B", "IV"]
+
+
+def test_ttd_rtcpc_maps_memos_by_its_configured_footer():
+    data = load("ttd")
+    for pages in data["stored"].values():
+        for number, text in pages.items():
+            pages[number] = re.sub(r"(^|\s{2,})AGENDA ITEM\b", r"\1RTCPC AGENDA ITEM", text, flags=re.M)
+    board, ctx, _ = run_rule(data)
+    assert not any(board.values()) and "not marked" in ctx.skipped["ttd:7110:IV.B"]  # the board's footer reads no committee page
+    data["meeting"]["agency_id"] = "ttd-rtcpc"
+    found, _, _ = run_rule(data)
+    expected = {number: (e["page_start"], e.get("page_end")) for number, e in data["expected"].items() if e}
+    assert expected and {n: (m.page_start, expected[n][1] and m.page_end) for n, m in found.items() if m} == expected
+    assert RULES["ttd-rtcpc"].func is ttd.map_ttd
+    assert RULES["ttd-rtcpc"].keywords == {"footer": staff_report_config("ttd-rtcpc")["footer"]}
 
 
 def test_truckee_packet_must_open_with_the_captured_agenda():
@@ -376,14 +396,78 @@ def test_a_list_entry_may_be_taken_on_its_own():
 
 # --- Rule registry and generic helpers ----------------------------------------------
 
-def test_registry_merges_every_rule_module():
-    from tahoe_ingest import cli, staff_report_rules
-    assert staff_reports.SUPPORTED == tuple(sorted(RULES)) and {"slt", "ttd", "truckee", "lahontan-board"} <= set(RULES)
-    assert RULES is staff_report_rules.RULES and all(callable(rule) for rule in RULES.values())
+def test_each_configured_agency_gets_its_rule_with_its_parameters():
+    from tahoe_ingest import cli
+    configured = {a["id"]: a["staffReports"] for a in agency_catalog() if "rule" in a.get("staffReports", {})}
+    assert staff_reports.SUPPORTED == tuple(sorted(RULES)) == tuple(sorted(configured))
+    assert {"slt", "ttd", "truckee", "lahontan-board"} <= set(RULES) and RULES is staff_report_rules.agency_rules()
+    for agency, config in configured.items():
+        assert RULES[agency].func is staff_report_rules.REGISTRY[config["rule"]]
+    assert RULES["washoe-planning"].keywords == {"client": "washoe-nv", "body": "Washoe County Planning Commission",
+                                                 "report": "agenda-item"}
+    assert RULES["trpa-advisory"].keywords == {"packet_name": r"APC(?:\s+Meeting)?"}
     parser = cli._parser()
     assert parser.parse_args(["map-staff-reports", "--agency", "lahontan-board"]).agency == "lahontan-board"
     with pytest.raises(SystemExit):
         parser.parse_args(["map-staff-reports", "--agency", "no-such-agency"])
+
+
+def test_the_registry_holds_rules_by_format_name():
+    assert "legistar" in staff_report_rules.REGISTRY and "ttd-packet" in staff_report_rules.REGISTRY
+    assert not set(staff_report_rules.REGISTRY) & {a["id"] for a in agency_catalog()}  # names describe formats, not agencies
+
+
+@pytest.mark.parametrize("config,problem", [
+    ({"rule": "no-such-rule"}, "unknown staff report rule"),
+    ({"rule": "ttd-packet", "footr": "AGENDA ITEM"}, "takes no footr"),
+    ({"rule": "ttd-packet", "published": True}, "takes no published"),
+    ({"rule": "legistar", "client": "eldorado", "body": "Board of Supervisors"}, "needs report"),
+    ({"rule": "legistar", "client": "eldorado", "body": "Board of Supervisors", "report": "minutes"}, "must be one of"),
+    ({"rule": "ttd-packet", "footer": "(?:RTCPC AGENDA ITEM"}, "not a regular expression"),
+    ({"rule": "slt-commission-report", "body": " "}, "non-empty text"),
+    ({"rule": "trpa-meeting-materials", "packetName": ["Governing Board"]}, "non-empty text"),
+    ({"rule": "douglas-packet", "note": ""}, "invalid"),
+    ({"published": False}, "invalid"),
+    ({"published": "no", "note": "A notice only."}, "invalid"),
+    ([], "invalid"),
+])
+def test_staff_report_entries_are_checked_when_the_registry_loads(config, problem):
+    with pytest.raises(ValueError, match=problem):
+        staff_report_rules.check_config({"id": "x", "staffReports": config})
+
+
+def test_valid_staff_report_entries_load():
+    for config in ({"rule": "douglas-packet"}, {"rule": "ttd-packet", "footer": "RTCPC AGENDA ITEM", "note": "Committee."},
+                   {"published": False, "note": "One-page agenda."}, {"note": "Blocked."}):
+        staff_report_rules.check_config({"id": "x", "staffReports": config})
+    staff_report_rules.check_config({"id": "x"})
+
+
+def test_a_bad_staff_report_entry_stops_the_registry_from_loading(tmp_path, monkeypatch):
+    from tahoe_ingest import catalog
+    agencies = json.loads(catalog.agency_catalog_path().read_text())
+    next(a for a in agencies if a["id"] == "ttd-rtcpc")["staffReports"]["footer"] = "(RTCPC"
+    path = tmp_path / "agencies.json"
+    path.write_text(json.dumps(agencies))
+    monkeypatch.setattr(catalog, "agency_catalog_path", lambda: path)
+    catalog.agency_catalog.cache_clear()
+    try:
+        with pytest.raises(ValueError, match="footer is not a regular expression"):
+            catalog.agency_catalog()
+    finally:
+        monkeypatch.undo()
+        catalog.agency_catalog.cache_clear()
+
+
+def test_rule_parameters_are_keyword_only_and_typed():
+    def untyped(ctx, *, footer):
+        return []
+
+    def positional(ctx, footer: str):
+        return []
+    for rule in (untyped, positional):
+        with pytest.raises(TypeError):
+            staff_report_rules._params("x", rule)
 
 
 def meeting(items=(), documents=(), *, official_url=None, day=date(2026, 10, 28)):

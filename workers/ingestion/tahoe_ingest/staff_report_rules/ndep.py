@@ -1,4 +1,5 @@
-"""Nevada Board for Financing Water Projects (``ndep``): project staff reports in the meeting's "Material" packet.
+"""Rule ``ndep-material-packet``: Nevada Board for Financing Water Projects, project staff reports in the meeting's
+"Material" packet.
 
 The board's meeting page has one table row per meeting with "Agenda", "Minutes",
 "Material", and "Presentation" links. The Material PDF opens with the agenda, then the
@@ -150,4 +151,4 @@ def map_ndep(ctx: Context) -> list[Mapping]:
     return mappings
 
 
-RULES = {"ndep": map_ndep}
+RULES = {"ndep-material-packet": map_ndep}

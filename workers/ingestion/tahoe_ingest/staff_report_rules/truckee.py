@@ -1,4 +1,4 @@
-"""Truckee (``truckee``, Municode): staff report pages in the agenda packet carry an "Item 5.1" header.
+"""Rule ``truckee-packet``: Town of Truckee (Municode) staff report pages in the agenda packet carry an "Item 5.1" header.
 
 When discovery captured only the agenda, the packet Municode publishes beside it is
 read instead, after checking that it opens with the captured agenda.
@@ -58,4 +58,4 @@ def _municode_packet(ctx: Context) -> tuple[Document, dict[int, str]]:
     return Document("", "municode-packet", "Agenda packet", url, fetched["sha256"], fetched["page_count"], "application/pdf"), pages
 
 
-RULES = {"truckee": map_truckee}
+RULES = {"truckee-packet": map_truckee}

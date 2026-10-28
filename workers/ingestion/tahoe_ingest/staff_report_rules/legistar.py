@@ -18,7 +18,7 @@ agencies; ``AGENCIES`` says which report each one publishes and how it is checke
 - Washoe Board of County Commissioners: the attachment named as a staff report (or the
   item's only Word file), which the agenda's "Attachments:" list under the item names
   too. It opens "STAFF REPORT / BOARD MEETING DATE: <date> / SUBJECT: <item title>". Most
-  are Word files: .docx is read here, legacy .doc only when ``antiword`` is installed.
+  are Word files: .docx is read here, legacy .doc only when ``antiword`` (or macOS ``textutil``) is installed.
 - Washoe Planning Commission: the "... - Staff Report" PDF listed under the item, which
   prints "Meeting Date: <date>  Agenda Item: 8A". Agendas from before Legistar
   (washoecounty.gov) are out of reach.
@@ -61,9 +61,18 @@ AGENCIES = {
 }
 
 
+def doc_reader() -> list[str] | None:
+    """The command that prints a legacy .doc file's text: ``antiword`` (in the worker image), or macOS's ``textutil``."""
+    if shutil.which("antiword"):
+        return ["antiword", "-w", "0"]
+    if shutil.which("textutil"):
+        return ["textutil", "-convert", "txt", "-stdout"]
+    return None
+
+
 def antiword_available() -> bool:
-    """Whether legacy .doc files can be read (the worker image installs antiword)."""
-    return shutil.which("antiword") is not None
+    """Whether legacy .doc files can be read on this machine."""
+    return doc_reader() is not None
 
 
 class _Api:
@@ -226,11 +235,14 @@ def docx_text(raw: bytes) -> str:
 
 
 def doc_text(raw: bytes) -> str:
-    """The text of a legacy .doc file through ``antiword`` (callers check that it is installed)."""
+    """The text of a legacy .doc file through ``doc_reader()`` (callers check that one is installed)."""
+    command = doc_reader()
+    if command is None:
+        raise RuntimeError("no legacy Word reader is installed")
     with tempfile.TemporaryDirectory(prefix="tahoe-report-") as scratch:
         path = Path(scratch) / "source.doc"
         path.write_bytes(raw)
-        out = subprocess.run(["antiword", "-w", "0", str(path)], capture_output=True, timeout=120, check=True).stdout
+        out = subprocess.run([*command, str(path)], capture_output=True, timeout=120, check=True).stdout
     return tidy(out.decode("utf-8", "replace"))
 
 

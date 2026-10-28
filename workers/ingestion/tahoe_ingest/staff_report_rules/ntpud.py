@@ -1,7 +1,7 @@
 """Rule ``ntpud-packet``: North Tahoe Public Utility District staff reports in the stored agenda packet.
 
 Each meeting page links an "Agenda and Packet" PDF, which discovery stores as
-``ntpud-agenda-packet``. Its first pages are the agenda, and unlike the standalone agenda
+``<agency>-agenda-packet``. Its first pages are the agenda, and unlike the standalone agenda
 they end each item with the packet pages of its report::
 
     E.   CONSENT CALENDAR: ...
@@ -114,7 +114,7 @@ def map_ntpud(ctx: Context) -> list[Mapping]:
         else:
             items.append(item)
     packets = {d.sha256: d for d in ctx.meeting.documents if d.media_type == "application/pdf" and (
-        d.source_document_id == "ntpud-agenda-packet" or re.search(r"-Agenda-and-Packet\.pdf$", d.url, re.I))}
+        d.source_document_id == f"{ctx.meeting.agency_id}-agenda-packet" or re.search(r"-Agenda-and-Packet\.pdf$", d.url, re.I))}
     if len(packets) > 1:
         raise Uncertain("more than one agenda packet")
     if not packets:

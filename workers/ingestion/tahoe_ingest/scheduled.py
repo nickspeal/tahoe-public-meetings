@@ -16,7 +16,7 @@ stops the run, but an invalid export is never published:
 11. draft-minutes    draft minutes found through later agendas (stored items only)
 12. classify-topics  Claude tags, only with Claude credentials, within cost guards
 13. participation    Claude reads location, remote links, and comment instructions from agendas; same guards
-14. staff-reports    link items to their own staff reports (SLT, TTD, Truckee, Lahontan); a few meetings per run
+14. staff-reports    link items to their own staff reports (agencies whose staffReports names a rule); a few meetings per run
 15. summarize-items  Claude selects summary sentences from those reports; its own per-run cost limit
 16. export           public JSON (mode "live")
 17. validate         the same checks as scripts/check_export.py, plus a minimum size

@@ -124,9 +124,9 @@ def test_moved_comment_period_deletes_the_old_row_and_exports_previous_ids(db):
     assert ingest_comment_periods(db, {'comment_periods': [period(previous_ids=['other:west-shore-trail'])]}, fetch=FETCH)['failed'] == 1
 
 
-def test_real_comment_period_config_moves_west_shore_trail_to_other():
+def test_real_comment_period_config_puts_west_shore_trail_under_other():
     from pathlib import Path
     config = json.loads((Path(__file__).resolve().parents[3] / 'config/public-comment-periods.json').read_text())
     row = next(p for p in config['comment_periods'] if p['id'] == 'west-shore-trail-meeks-bay-dl-bliss-nop')
     assert (row['agency'], row['host']) == ('other', 'TRPA and El Dorado County')
-    assert row['previous_ids'] == ['trpa-governing:west-shore-trail-meeks-bay-dl-bliss-nop']
+    assert 'previous_ids' not in row  # the old TRPA page was dropped, not redirected

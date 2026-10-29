@@ -18,20 +18,23 @@ Two signals must agree: the agenda lists exactly one staff report under the item
 that report's first page reads "Report to <body>", the agency's ``body`` parameter
 ("Planning Commission", "Parks and Recreation Commission"), with "Meeting Date:" this
 meeting and a "Title:" sharing
-``MIN_TITLE_OVERLAP`` of the item title. Every file listed under an item is also kept as
-its attachment list.
+``MIN_TITLE_OVERLAP`` of the item title. A body whose reports carry another heading gives
+it as the ``heading`` pattern, in which ``{body}`` stands for the body's name (the South
+Tahoe Transit JPA's reports open "<body> (JPA) Board Report"). Every file listed under an
+item is also kept as its attachment list.
 """
 from __future__ import annotations
 
 import html
 import re
 
-from ..staff_reports import (MIN_TITLE_OVERLAP, Attachments, Context, Mapping, Uncertain, linked_reports, long_date,
-                             norm_number, title_overlap, words)
+from ..staff_reports import (MIN_TITLE_OVERLAP, Attachments, Context, Mapping, Regex, Uncertain, linked_reports,
+                             long_date, norm_number, title_overlap, words)
 from . import _granicus
 from .slt import attachment_label, slt_attachments
 
 STAFF_REPORT = re.compile(r"staff[\s_-]*report", re.I)
+DEFAULT_HEADING = r"Report to\s+{body}"  # a staff report's first page; {body} is the body's name
 OPENS_WITH_AGENDA = 0.9  # share of a captured agenda page's words that the packet's page must print
 
 _GAV_ROW = re.compile(r'<td[^>]*vAlign=top width=35>\s*(?P<number>\d+)\)\s*</td>\s*<td[^>]*>(?P<title>.*?)</td>', re.S | re.I)
@@ -115,7 +118,7 @@ def _from_packet(ctx: Context, agenda) -> list[Attachments]:
     return slt_attachments(ctx, front, {n: t for n, t in pages.items() if n <= last})
 
 
-def map_slt_commission(ctx: Context, *, body: str) -> list[Mapping]:
+def map_slt_commission(ctx: Context, *, body: str, heading: Regex = DEFAULT_HEADING) -> list[Mapping]:
     agenda = _agenda(ctx)
     fetched = ctx.read(agenda.url, last_page=1, links=True)
     if fetched["sha256"] != agenda.sha256:
@@ -143,15 +146,15 @@ def map_slt_commission(ctx: Context, *, body: str) -> list[Mapping]:
 
     def verify(item, report):
         first = report["pages"][0]["text"] if report["pages"] else ""
-        evidence = report_heading(first, item.title, body, ctx.meeting.local_date)
+        evidence = report_heading(first, item.title, body, ctx.meeting.local_date, heading)
         return evidence if isinstance(evidence, str) else {"agendaLink": names[item.id], "agendaSource": source, **evidence}
     items = [i for i in ctx.meeting.items if i.id in names]
     return linked_reports(ctx, items, candidates, verify=verify, kind="staff-report", title="Staff report")
 
 
-def report_heading(first_page: str, title: str, body: str, meeting_date) -> dict | str:
+def report_heading(first_page: str, title: str, body: str, meeting_date, pattern: str = DEFAULT_HEADING) -> dict | str:
     """Evidence that a commission staff report's first page is for this item and meeting, or the reason it is not."""
-    heading = re.search(rf"Report to\s+{re.escape(body)}", first_page)
+    heading = re.search(pattern.replace("{body}", re.escape(body)), first_page)
     if not heading:
         return f"report is not addressed to the {body}"
     stated = re.search(r"Meeting Date:\s*([A-Z][a-z]+ \d{1,2}, \d{4})", first_page)

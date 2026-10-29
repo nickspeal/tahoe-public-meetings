@@ -145,6 +145,16 @@ def test_slt_commission_report_to_another_body_is_not_stored():
     assert found["2"] is not None
 
 
+def test_slt_transit_jpa_report_needs_its_own_board_report_heading():
+    data = load("slt-transit-jpa")
+    url = next(u for u in data["downloads"] if u.endswith("Staff_Report_Budget_20261022.pdf"))
+    first = data["downloads"][url]["pages"][0]
+    first["text"] = first["text"].replace("(JPA)\n                   Board Report", "Report to City Council", 1)
+    found, ctx, _ = run_rule(data)
+    assert found["4"] is None and "not addressed" in ctx.skipped["slt-transit-jpa:1530:4"]
+    assert found["2"] is not None and found["3"] is not None
+
+
 def test_slt_commission_html_agenda_with_another_title_for_the_number_is_not_used():
     data = load("slt-planning")
     url = next(iter(data["html"]))

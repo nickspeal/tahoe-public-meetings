@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **46 entries**. **39 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **29** have live discovery, **3** are blocked by a skipped endpoint, and **7** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **47 entries**. **40 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **30** have live discovery, **3** are blocked by a skipped endpoint, and **7** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -29,6 +29,7 @@ An entry's coverage is therefore one of: **automatic**, **snapshot only**, or **
 | `douglas-transportation` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `Regional Transportation Commission` | `douglas-county-joint-board-rtc` |
 | `slt-parks-recreation-commission` | `granicus` | [slt.granicus.com](https://slt.granicus.com/ViewPublisher.php?view_id=6) | `Parks and Recreation Commission` | `slt-parks-commission` |
 | `slt-planning` | `granicus` | [slt.granicus.com](https://slt.granicus.com/ViewPublisher.php?view_id=6) | `Planning Commission` | `slt-planning-commission` |
+| `slt-transit-jpa` | `granicus` | [slt.granicus.com](https://slt.granicus.com/ViewPublisher.php?view_id=6) | `South Tahoe Transit` | `slt-transit-jpa` |
 | `tcpud` | `granicus` | [tahoecitypud.granicus.com](https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2) | `Board of Directors` | `tcpud-board` |
 | `tcpud-parks-recreation-committee` | `granicus` | [tahoecitypud.granicus.com](https://tahoecitypud.granicus.com/ViewPublisher.php?view_id=2) | `Parks and Recreation Committee` | — |
 | `slt` | `granicus-row-ids` | [slt.granicus.com](https://slt.granicus.com/ViewPublisher.php?view_id=6) | `City Council` | `slt-council` |
@@ -131,7 +132,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `ndep-material-packet` | `ndep` |
 | `ntpud-packet` | `ntpud` |
 | `pctpa-packet` | `placer-transportation` |
-| `slt-commission-report` | `slt-planning`, `slt-parks-recreation-commission` |
+| `slt-commission-report` | `slt-planning`, `slt-parks-recreation-commission`, `slt-transit-jpa` |
 | `slt-executive-summary` | `slt` |
 | `state-parks-cover-pages` | `california-state-parks` (State Park and Recreation Commission only: the OHMVR Commission names its staff reports by topic and prints no item number, so a title would be the only signal.) |
 | `stpud-packet` | `stpud` |

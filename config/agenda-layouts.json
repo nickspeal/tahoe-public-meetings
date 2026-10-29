@@ -173,6 +173,16 @@
       "stop": "^(?:Requested Action|Responsible Staff|\\S.*\\.(?:docx?|pdf)$)",
       "maxTitleLines": 2
     },
+    "slt-transit-jpa": {
+      "label": "South Tahoe Transit Joint Powers Authority agenda",
+      "cover": ["South Tahoe Transit Joint Powers Authority", "Meeting Agenda"],
+      "levels": ["NUM"],
+      "firstPages": 6,
+      "headings": "@SLT_HEADINGS",
+      "headingItems": "^(?:Call to Order|Roll Call|Public Communications?|Updates and Announcements|Boardmember Reports)",
+      "stop": "^(?:Requested Action|Responsible Staff|\\S.*\\.(?:docx?|pdf)$)",
+      "maxTitleLines": 2
+    },
     "south-shore-tma-board": {
       "label": "South Shore TMA agenda",
       "cover": ["Board of Directors Agenda"],

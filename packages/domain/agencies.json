@@ -1729,6 +1729,55 @@
     }
   },
   {
+    "id": "slt-transit-jpa",
+    "name": "South Tahoe Transit Joint Powers Authority",
+    "shortName": "South Tahoe Transit JPA",
+    "aliases": [
+      "STTJPA",
+      "Transit JPA",
+      "South Tahoe Transit JPA",
+      "SLT",
+      "City of South Lake Tahoe"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings",
+    "sourceUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+    "discovery": {
+      "type": "granicus",
+      "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6",
+      "bodyPattern": "South Tahoe Transit"
+    },
+    "agenda": {
+      "layouts": [
+        "slt-transit-jpa"
+      ]
+    },
+    "staffReports": {
+      "rule": "slt-commission-report",
+      "body": "South Tahoe Transit Joint Powers Authority",
+      "heading": "{body}\\s+\\(JPA\\)\\s+Board Report"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the Fiscal Year 2026/2027 regular meeting calendar on the October 29, 2026 agenda (item 2, Exhibit A): January 28, April 29, June 24, and September 30, each the last Thursday of its month, at 9:30 AM. Recheck when the next fiscal year's calendar is adopted.",
+      "rules": [
+        {
+          "ordinal": "last",
+          "weekday": "thursday",
+          "months": [
+            1,
+            4,
+            6,
+            9
+          ],
+          "time": "09:30",
+          "timezone": "America/Los_Angeles",
+          "label": "South Tahoe Transit Joint Powers Authority Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "tcpud-parks-recreation-committee",
     "name": "TCPUD — Parks and Recreation Committee",
     "shortName": "TCPUD",

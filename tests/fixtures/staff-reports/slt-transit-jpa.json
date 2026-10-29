@@ -1,0 +1,758 @@
+{
+ "note": "South Tahoe Transit Joint Powers Authority, October 29, 2026. The agenda PDF's link annotations and left-margin headings, and the first page of each linked staff report, which opens \"South Tahoe Transit Joint Powers Authority (JPA) Board Report\".",
+ "meeting": {
+  "id": "slt-transit-jpa:1530",
+  "agency_id": "slt-transit-jpa",
+  "title": "10 29 2026 South Tahoe Transit Joint Powers Authority",
+  "local_date": "2026-10-29",
+  "official_url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1530"
+ },
+ "items": [
+  {
+   "id": "slt-transit-jpa:1530:1",
+   "number": "1",
+   "title": "South Tahoe Transit Joint Powers Authority Meeting Minutes",
+   "section": "Consent Agenda",
+   "fingerprint": "48c91427f3125952672253059cd68de2146c89179164c983987be0b21ba1bde4",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "South Tahoe Transit Joint Powers Authority Meeting Minutes",
+     "documentId": "slt-transit-jpa:1530:slt-transit-jpa-agenda-html:2391de96b91ee648"
+    }
+   ]
+  },
+  {
+   "id": "slt-transit-jpa:1530:2",
+   "number": "2",
+   "title": "Fiscal Year 2026/2027 Meeting Calendar",
+   "section": "Consent Agenda",
+   "fingerprint": "d1c557a827d7cf16aede9b5ae5883c86a63828c7644b360aa79f196461ea9944",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Fiscal Year 2026/2027 Meeting Calendar",
+     "documentId": "slt-transit-jpa:1530:slt-transit-jpa-agenda-html:2391de96b91ee648"
+    }
+   ]
+  },
+  {
+   "id": "slt-transit-jpa:1530:3",
+   "number": "3",
+   "title": "Tahoe Transit Funding Memo Presentation",
+   "section": "Unfinished Business",
+   "fingerprint": "1158a012b99c24bc24b40d678e09cd1788472aba32006f2f93a39b5d55bca3f7",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Tahoe Transit Funding Memo Presentation",
+     "documentId": "slt-transit-jpa:1530:slt-transit-jpa-agenda-html:2391de96b91ee648"
+    }
+   ]
+  },
+  {
+   "id": "slt-transit-jpa:1530:4",
+   "number": "4",
+   "title": "South Tahoe Transit JPA Fiscal Year 2026/2027 Budget",
+   "section": "New Business",
+   "fingerprint": "78ebec1803c1ac92b3c25fb72326e905ea6f227160e59c35fecaf8fbb366c6ab",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "South Tahoe Transit JPA Fiscal Year 2026/2027 Budget",
+     "documentId": "slt-transit-jpa:1530:slt-transit-jpa-agenda-html:2391de96b91ee648"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "slt-transit-jpa:1530:slt-transit-jpa-agenda-html:2391de96b91ee648",
+   "source_document_id": "slt-transit-jpa-agenda-html",
+   "title": "Agenda",
+   "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1530",
+   "sha256": "2391de96b91ee64861be2f3ee482f6a3f4e07b3a1ed2d5cb5676526697ed244c",
+   "page_count": 2,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "slt-transit-jpa:1530:slt-transit-jpa-agenda-packet:27559e9944518046",
+   "source_document_id": "slt-transit-jpa-agenda-packet",
+   "title": "Agenda Packet",
+   "url": "https://d3n9y02raazwpg.cloudfront.net/slt/688ea753-c10f-11f1-89ef-005056a84798-5c7c4fe4-84cb-4317-b8ef-0c329738dcd2-1793028888.pdf",
+   "sha256": "27559e9944518046ad6d3a98d38eb395daf8b561c41ae53198a5013ee5012006",
+   "page_count": 13,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "slt-transit-jpa:1530:slt-transit-jpa-agenda-html:2391de96b91ee648": {
+   "1": "South Tahoe Transit Joint Powers Authority\n                              Meeting Agenda\n                    Thursday, October 29, 2026 at 9:30 am\n    City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\nSouth Tahoe Transit Joint Powers Authority\nBrooke Laine, El Dorado County Board of Supervisors- Chair\nCody Bass, City Councilmember- Vice Chair\nKeith Roberts, City Councilmember\n\n\n\nPublic Participation\nSouth Tahoe Transit JPA Board meetings are held in person at the time and location listed on this agenda.\nA public agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City’s Website at\nwww.cityofslt.us, or by contacting the City Clerk's Office, (530) 542-6005 or sblankenship@cityofslt.us\nPublic Comment provided in person: Every agenda for regular meetings provides an opportunity for members\nof the public to directly address the JPA Board on any item on the agenda or in connection with any item which\nthe South Tahoe Transit JPA Board will consider. The public is given the opportunity to comment before or\nduring the South Tahoe Transit JPA Board’s consideration of the item [Government Code Section 54954.3(a)].\n\nIn Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to South Tahoe\nTransit JPA Board prior to the meeting. Written public comment regarding any item on this agenda may be\nsent to PublicComment@cityofslt.us. When emailing comments, identify the agenda item number in the subject\nline to which your comments relate. Any such comment that is a public record and is emailed to\nPublicComment@cityofslt.us or otherwise provided to a majority of the South Tahoe Transit JPA Board before\nthe meeting will be made available for public inspection during normal business hours at the City Clerk's Office\nlocated at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe [Government Code Section 54957.5(b)]. Written\ncomments will not be read out loud during the meeting.\n\nThe meeting facility is accessible to people with disabilities. Every reasonable effort will be made to\naccommodate any person needing special assistance to attend this meeting. Contact the City Clerk at (530)\n542-6005 at least 48 hours in advance of the meeting for assistance [28 CFR 35.102.35.104 ADA Title II and\nBrown Act Government Code Sections 54953.2, 54954.1, 54954.2, and 54957.5].\n\nCall to Order/Pledge of Allegiance\n\nRoll Call\n\nPublic Communications\nThis is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall be\nlimited to four (4) minutes. In accordance with the Brown Act, the South Tahoe Transit JPA cannot\ndeliberate or vote on any matter raised under public communications, but may briefly respond to\nstatements made or questions posed. (Government Code Sections 54954.2)\n\nConsent Agenda",
+   "2": "1.   South Tahoe Transit Joint Powers Authority Meeting Minutes\n     Requested Action / Suggested Motions: Pass a Motion approving the meeting minutes of July 30,\n     2026.\n     Responsible Staff Member(s): Susan Carpenter, Secretary\n     07_30_2026_South_Tahoe_Transit_JPA.docx\n\n2.   Fiscal Year 2026/2027 Meeting Calendar\n     Requested Action / Suggested Motions: Pass a Resolution adopting the Fiscal Year 2026/2027 JPA\n     regular Board meeting calendar.\n     Responsible Staff Member(s): Hilary Roverud, JPA Executive Director\n     01-Staff Report_Calendar\n     02-Resolution FY 2026 2027 Meeting Calendar\n\nUnfinished Business\n\n3.   Tahoe Transit Funding Memo Presentation\n     Requested Action / Suggested Motions: Receive presentation and file.\n     Responsible Staff Member(s): Hilary Roverud, City Manager\n     Staff Report_TRPA Transit Study_20261029.docx\n\nNew Business\n\n4.   South Tahoe Transit JPA Fiscal Year 2026/2027 Budget\n     Requested Action / Suggested Motions: Pass a Resolution approving the Fiscal Year 2026/2027\n     Budget (October 1, 2026 through September 30, 2027) South Tahoe Transit JPA Budget and\n     directing staff to send requests to the City of South Lake Tahoe and El Dorado County to submit\n     funding to the JPA.\n     Responsible Staff Member(s): Hilary Roverud, JPA Executive Director\n     01-Staff_Report_Budget\n     02-Resolution FY 2026 2027 Transit JPA Budget\n\nUpdates and Announcements – South Tahoe Transit JPA Staff\n\nBoardmember Reports and Comments\n\nAdjournment\nI, Susan Carpenter, Secretary for the South Tahoe Transit JPA, declare that the foregoing agenda for the\nThursday, October 29, 2026, South Tahoe Transit JPA meeting was posted and available for review on\nMonday, October 26, 2026, at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe, CA 96150. The\nagenda was also available on the City's website at https://www.cityofslt.us.\nSigned October 23, 2026\n\\\\sc\\\\ Susan Carpenter, Secretary"
+  }
+ },
+ "downloads": {
+  "https://slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1530": {
+   "sha256": "2391de96b91ee64861be2f3ee482f6a3f4e07b3a1ed2d5cb5676526697ed244c",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "              South Tahoe Transit Joint Powers Authority\n                              Meeting Agenda\n                    Thursday, October 29, 2026 at 9:30 am\n    City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\nSouth Tahoe Transit Joint Powers Authority\nBrooke Laine, El Dorado County Board of Supervisors- Chair\nCody Bass, City Councilmember- Vice Chair\nKeith Roberts, City Councilmember\n\n\n\nPublic Participation\nSouth Tahoe Transit JPA Board meetings are held in person at the time and location listed on this agenda.\nA public agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City’s Website at\nwww.cityofslt.us, or by contacting the City Clerk's Office, (530) 542-6005 or sblankenship@cityofslt.us\nPublic Comment provided in person: Every agenda for regular meetings provides an opportunity for members\nof the public to directly address the JPA Board on any item on the agenda or in connection with any item which\nthe South Tahoe Transit JPA Board will consider. The public is given the opportunity to comment before or\nduring the South Tahoe Transit JPA Board’s consideration of the item [Government Code Section 54954.3(a)].\n\nIn Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to South Tahoe\nTransit JPA Board prior to the meeting. Written public comment regarding any item on this agenda may be\nsent to PublicComment@cityofslt.us. When emailing comments, identify the agenda item number in the subject\nline to which your comments relate. Any such comment that is a public record and is emailed to\nPublicComment@cityofslt.us or otherwise provided to a majority of the South Tahoe Transit JPA Board before\nthe meeting will be made available for public inspection during normal business hours at the City Clerk's Office\nlocated at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe [Government Code Section 54957.5(b)]. Written\ncomments will not be read out loud during the meeting.\n\nThe meeting facility is accessible to people with disabilities. Every reasonable effort will be made to\naccommodate any person needing special assistance to attend this meeting. Contact the City Clerk at (530)\n542-6005 at least 48 hours in advance of the meeting for assistance [28 CFR 35.102.35.104 ADA Title II and\nBrown Act Government Code Sections 54953.2, 54954.1, 54954.2, and 54957.5].\n\nCall to Order/Pledge of Allegiance\n\nRoll Call\n\nPublic Communications\nThis is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall be\nlimited to four (4) minutes. In accordance with the Brown Act, the South Tahoe Transit JPA cannot\ndeliberate or vote on any matter raised under public communications, but may briefly respond to\nstatements made or questions posed. (Government Code Sections 54954.2)\n\nConsent Agenda\n"
+    }
+   ],
+   "links": [
+    {
+     "page": 2,
+     "top": 139,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4452381/07_30_2026_South_Tahoe_Transit_JPA.pdf",
+     "text": "07_30_2026_South_Tahoe_Transit_JPA.docx"
+    },
+    {
+     "page": 2,
+     "top": 250,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4451167/Staff_Report_Calendar_20261022.pdf",
+     "text": "01-Staff Report_Calendar"
+    },
+    {
+     "page": 2,
+     "top": 269,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4452327/Resolution_2026_2027_MeetingCalendar.pdf",
+     "text": "02-Resolution FY 2026 2027 Meeting Calendar"
+    },
+    {
+     "page": 2,
+     "top": 396,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4450305/Staff_Report_TRPA_Transit_Study_20261029.pdf",
+     "text": "Staff Report_TRPA Transit Study_20261029.docx"
+    },
+    {
+     "page": 2,
+     "top": 580,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4451170/Staff_Report_Budget_20261022.pdf",
+     "text": "01-Staff_Report_Budget"
+    },
+    {
+     "page": 2,
+     "top": 598,
+     "left": 118,
+     "url": "https://slt.granicus.com/services/legistar/download/pdf/4452341/Resolution_Budget_20261022.pdf",
+     "text": "02-Resolution FY 2026 2027 Transit JPA Budget"
+    }
+   ],
+   "boxes": [
+    {
+     "page": 1,
+     "top": 175,
+     "left": 828,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 177,
+     "left": 453,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 198,
+     "left": 176,
+     "url": null,
+     "text": "South Tahoe Transit Joint Powers Authority"
+    },
+    {
+     "page": 1,
+     "top": 231,
+     "left": 377,
+     "url": null,
+     "text": "Meeting Agenda"
+    },
+    {
+     "page": 1,
+     "top": 256,
+     "left": 266,
+     "url": null,
+     "text": "Thursday, October 29, 2026 at 9:30 am"
+    },
+    {
+     "page": 1,
+     "top": 281,
+     "left": 109,
+     "url": null,
+     "text": "City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe"
+    },
+    {
+     "page": 1,
+     "top": 345,
+     "left": 81,
+     "url": null,
+     "text": "South Tahoe Transit Joint Powers Authority"
+    },
+    {
+     "page": 1,
+     "top": 345,
+     "left": 494,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 364,
+     "left": 81,
+     "url": null,
+     "text": "Brooke Laine, El Dorado County Board of Supervisors- Chair"
+    },
+    {
+     "page": 1,
+     "top": 383,
+     "left": 81,
+     "url": null,
+     "text": "Cody Bass, City Councilmember- Vice Chair"
+    },
+    {
+     "page": 1,
+     "top": 402,
+     "left": 81,
+     "url": null,
+     "text": "Keith Roberts, City Councilmember"
+    },
+    {
+     "page": 1,
+     "top": 421,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 1,
+     "top": 476,
+     "left": 81,
+     "url": null,
+     "text": "Public Participation"
+    },
+    {
+     "page": 1,
+     "top": 495,
+     "left": 81,
+     "url": null,
+     "text": "South Tahoe Transit JPA Board meetings are held in person at the time and location listed on this agenda."
+    },
+    {
+     "page": 1,
+     "top": 513,
+     "left": 81,
+     "url": null,
+     "text": "A public agenda packet is available for review at City Hall, 1901 Lisa Maloff Way, on the City’s Website at"
+    },
+    {
+     "page": 1,
+     "top": 531,
+     "left": 81,
+     "url": null,
+     "text": "www.cityofslt.us, or by contacting the City Clerk's Office, (530) 542-6005 or sblankenship@cityofslt.us"
+    },
+    {
+     "page": 1,
+     "top": 549,
+     "left": 81,
+     "url": null,
+     "text": "Public Comment provided in person: Every agenda for regular meetings provides an opportunity for members"
+    },
+    {
+     "page": 1,
+     "top": 567,
+     "left": 81,
+     "url": null,
+     "text": "of the public to directly address the JPA Board on any item on the agenda or in connection with any item which"
+    },
+    {
+     "page": 1,
+     "top": 585,
+     "left": 81,
+     "url": null,
+     "text": "the South Tahoe Transit JPA Board will consider. The public is given the opportunity to comment before or"
+    },
+    {
+     "page": 1,
+     "top": 603,
+     "left": 81,
+     "url": null,
+     "text": "during the South Tahoe Transit JPA Board’s consideration of the item [Government Code Section 54954.3(a)]."
+    },
+    {
+     "page": 1,
+     "top": 640,
+     "left": 81,
+     "url": null,
+     "text": "In Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to South Tahoe"
+    },
+    {
+     "page": 1,
+     "top": 658,
+     "left": 81,
+     "url": null,
+     "text": "Transit JPA Board prior to the meeting. Written public comment regarding any item on this agenda may be"
+    },
+    {
+     "page": 1,
+     "top": 676,
+     "left": 81,
+     "url": null,
+     "text": "sent to PublicComment@cityofslt.us. When emailing comments, identify the agenda item number in the subject"
+    },
+    {
+     "page": 1,
+     "top": 694,
+     "left": 81,
+     "url": null,
+     "text": "line to which your comments relate. Any such comment that is a public record and is emailed to"
+    },
+    {
+     "page": 1,
+     "top": 712,
+     "left": 81,
+     "url": null,
+     "text": "PublicComment@cityofslt.us or otherwise provided to a majority of the South Tahoe Transit JPA Board before"
+    },
+    {
+     "page": 1,
+     "top": 730,
+     "left": 81,
+     "url": null,
+     "text": "the meeting will be made available for public inspection during normal business hours at the City Clerk's Office"
+    },
+    {
+     "page": 1,
+     "top": 748,
+     "left": 81,
+     "url": null,
+     "text": "located at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe [Government Code Section 54957.5(b)]. Written"
+    },
+    {
+     "page": 1,
+     "top": 766,
+     "left": 81,
+     "url": null,
+     "text": "comments will not be read out loud during the meeting."
+    },
+    {
+     "page": 1,
+     "top": 803,
+     "left": 81,
+     "url": null,
+     "text": "The meeting facility is accessible to people with disabilities. Every reasonable effort will be made to"
+    },
+    {
+     "page": 1,
+     "top": 821,
+     "left": 81,
+     "url": null,
+     "text": "accommodate any person needing special assistance to attend this meeting. Contact the City Clerk at (530)"
+    },
+    {
+     "page": 1,
+     "top": 839,
+     "left": 81,
+     "url": null,
+     "text": "542-6005 at least 48 hours in advance of the meeting for assistance [28 CFR 35.102.35.104 ADA Title II and"
+    },
+    {
+     "page": 1,
+     "top": 857,
+     "left": 81,
+     "url": null,
+     "text": "Brown Act Government Code Sections 54953.2, 54954.1, 54954.2, and 54957.5]."
+    },
+    {
+     "page": 1,
+     "top": 891,
+     "left": 81,
+     "url": null,
+     "text": "Call to Order/Pledge of Allegiance"
+    },
+    {
+     "page": 1,
+     "top": 926,
+     "left": 81,
+     "url": null,
+     "text": "Roll Call"
+    },
+    {
+     "page": 1,
+     "top": 961,
+     "left": 81,
+     "url": null,
+     "text": "Public Communications"
+    },
+    {
+     "page": 1,
+     "top": 980,
+     "left": 81,
+     "url": null,
+     "text": "This is the public's opportunity to speak on any topic NOT LISTED on this agenda. Comments shall be"
+    },
+    {
+     "page": 1,
+     "top": 999,
+     "left": 81,
+     "url": null,
+     "text": "limited to four (4) minutes. In accordance with the Brown Act, the South Tahoe Transit JPA cannot"
+    },
+    {
+     "page": 1,
+     "top": 1018,
+     "left": 81,
+     "url": null,
+     "text": "deliberate or vote on any matter raised under public communications, but may briefly respond to"
+    },
+    {
+     "page": 1,
+     "top": 1037,
+     "left": 81,
+     "url": null,
+     "text": "statements made or questions posed. (Government Code Sections 54954.2)"
+    },
+    {
+     "page": 1,
+     "top": 1072,
+     "left": 81,
+     "url": null,
+     "text": "Consent Agenda"
+    },
+    {
+     "page": 2,
+     "top": 64,
+     "left": 81,
+     "url": null,
+     "text": "1."
+    },
+    {
+     "page": 2,
+     "top": 64,
+     "left": 118,
+     "url": null,
+     "text": "South Tahoe Transit Joint Powers Authority Meeting Minutes"
+    },
+    {
+     "page": 2,
+     "top": 83,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 83,
+     "left": 118,
+     "url": null,
+     "text": "Requested Action / Suggested Motions: Pass a Motion approving the meeting minutes of July 30,"
+    },
+    {
+     "page": 2,
+     "top": 102,
+     "left": 118,
+     "url": null,
+     "text": "2026."
+    },
+    {
+     "page": 2,
+     "top": 121,
+     "left": 118,
+     "url": null,
+     "text": "Responsible Staff Member(s): Susan Carpenter, Secretary"
+    },
+    {
+     "page": 2,
+     "top": 175,
+     "left": 81,
+     "url": null,
+     "text": "2."
+    },
+    {
+     "page": 2,
+     "top": 175,
+     "left": 118,
+     "url": null,
+     "text": "Fiscal Year 2026/2027 Meeting Calendar"
+    },
+    {
+     "page": 2,
+     "top": 193,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 193,
+     "left": 118,
+     "url": null,
+     "text": "Requested Action / Suggested Motions: Pass a Resolution adopting the Fiscal Year 2026/2027 JPA"
+    },
+    {
+     "page": 2,
+     "top": 212,
+     "left": 118,
+     "url": null,
+     "text": "regular Board meeting calendar."
+    },
+    {
+     "page": 2,
+     "top": 231,
+     "left": 118,
+     "url": null,
+     "text": "Responsible Staff Member(s): Hilary Roverud, JPA Executive Director"
+    },
+    {
+     "page": 2,
+     "top": 304,
+     "left": 81,
+     "url": null,
+     "text": "Unfinished Business"
+    },
+    {
+     "page": 2,
+     "top": 339,
+     "left": 81,
+     "url": null,
+     "text": "3."
+    },
+    {
+     "page": 2,
+     "top": 339,
+     "left": 118,
+     "url": null,
+     "text": "Tahoe Transit Funding Memo Presentation"
+    },
+    {
+     "page": 2,
+     "top": 358,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 358,
+     "left": 118,
+     "url": null,
+     "text": "Requested Action / Suggested Motions: Receive presentation and file."
+    },
+    {
+     "page": 2,
+     "top": 377,
+     "left": 118,
+     "url": null,
+     "text": "Responsible Staff Member(s): Hilary Roverud, City Manager"
+    },
+    {
+     "page": 2,
+     "top": 431,
+     "left": 81,
+     "url": null,
+     "text": "New Business"
+    },
+    {
+     "page": 2,
+     "top": 466,
+     "left": 81,
+     "url": null,
+     "text": "4."
+    },
+    {
+     "page": 2,
+     "top": 466,
+     "left": 118,
+     "url": null,
+     "text": "South Tahoe Transit JPA Fiscal Year 2026/2027 Budget"
+    },
+    {
+     "page": 2,
+     "top": 485,
+     "left": 81,
+     "url": null,
+     "text": ""
+    },
+    {
+     "page": 2,
+     "top": 485,
+     "left": 118,
+     "url": null,
+     "text": "Requested Action / Suggested Motions: Pass a Resolution approving the Fiscal Year 2026/2027"
+    },
+    {
+     "page": 2,
+     "top": 504,
+     "left": 118,
+     "url": null,
+     "text": "Budget (October 1, 2026 through September 30, 2027) South Tahoe Transit JPA Budget and"
+    },
+    {
+     "page": 2,
+     "top": 523,
+     "left": 118,
+     "url": null,
+     "text": "directing staff to send requests to the City of South Lake Tahoe and El Dorado County to submit"
+    },
+    {
+     "page": 2,
+     "top": 542,
+     "left": 118,
+     "url": null,
+     "text": "funding to the JPA."
+    },
+    {
+     "page": 2,
+     "top": 561,
+     "left": 118,
+     "url": null,
+     "text": "Responsible Staff Member(s): Hilary Roverud, JPA Executive Director"
+    },
+    {
+     "page": 2,
+     "top": 634,
+     "left": 81,
+     "url": null,
+     "text": "Updates and Announcements – South Tahoe Transit JPA Staff"
+    },
+    {
+     "page": 2,
+     "top": 669,
+     "left": 81,
+     "url": null,
+     "text": "Boardmember Reports and Comments"
+    },
+    {
+     "page": 2,
+     "top": 704,
+     "left": 81,
+     "url": null,
+     "text": "Adjournment"
+    },
+    {
+     "page": 2,
+     "top": 723,
+     "left": 81,
+     "url": null,
+     "text": "I, Susan Carpenter, Secretary for the South Tahoe Transit JPA, declare that the foregoing agenda for the"
+    },
+    {
+     "page": 2,
+     "top": 742,
+     "left": 81,
+     "url": null,
+     "text": "Thursday, October 29, 2026, South Tahoe Transit JPA meeting was posted and available for review on"
+    },
+    {
+     "page": 2,
+     "top": 760,
+     "left": 81,
+     "url": null,
+     "text": "Monday, October 26, 2026, at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe, CA 96150. The"
+    },
+    {
+     "page": 2,
+     "top": 779,
+     "left": 81,
+     "url": null,
+     "text": "agenda was also available on the City's website at https://www.cityofslt.us."
+    },
+    {
+     "page": 2,
+     "top": 798,
+     "left": 81,
+     "url": null,
+     "text": "Signed October 23, 2026"
+    },
+    {
+     "page": 2,
+     "top": 817,
+     "left": 81,
+     "url": null,
+     "text": "\\\\sc\\\\ Susan Carpenter, Secretary"
+    }
+   ]
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4451167/Staff_Report_Calendar_20261022.pdf": {
+   "sha256": "bdf52fcaaf85b697ba6b1ea8fb4be748f801ff04a55204bb198e6439f034e4e3",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "     South Tahoe Transit Joint Powers Authority\n                       (JPA)\n                   Board Report\nMeeting Date: October 29, 2026\n\nTitle: Fiscal Year 2026/2027 Meeting Calendar\n\nAction: Pass a resolution adopting the Fiscal Year 2026/2027 JPA regular Board\nmeeting calendar\n\nIssue and Discussion: The proposed regular meeting calendar includes quarterly\nmeetings. Although regular meetings are proposed, they may be cancelled or special\nmeetings scheduled on an as needed basis.\n\nMeetings will begin at 9:30 a.m. and be held in the City Council Chambers at the Lake\nTahoe Airport. All meetings are proposed to be held in person only.\n\nEnvironmental Considerations: Adopting the meeting calendar is not a project subject\nto\nreview under the California Environmental Quality Act (CEQA) under CEQA Guidelines\nsection 15378(5) (organizational or administrative activities that will not result in direct or\nindirect physical changes to the environment)\n\nFinancial Implications: There are no financial obligations associated with this action.\n\n\n\n\nTransit JPA Board Report              October 29, 2026                            Page 1 of 1\n"
+    },
+    {
+     "page_number": 2,
+     "text": ""
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4450305/Staff_Report_TRPA_Transit_Study_20261029.pdf": {
+   "sha256": "62e1957baedd8ed963588cdb432c0382753713243d5dec7c6f566b6026981d1e",
+   "page_count": 1,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "     South Tahoe Transit Joint Powers Authority\n                       (JPA)\n                   Board Report\nMeeting Date: October 29, 2026\n\nTitle: Tahoe Transit Funding Memo Presentation\nAction: Receive presentation\n\nBackground: TRPA staff, in collaboration with regional transit partners, initiated the\nTahoe Transit Study in late 2025 to help create a more coordinated, efficient, and\nsustainable transit system through the Tahoe Basin. The multi-stage planning process\nwill consist of a transit governance study, regional comprehensive operational analysis,\nand optimized transit funding model. Planning efforts will utilize and build upon recently\ncompleted transit and transportation plans including TTD’s Short Range Transit Plan\n(adopted January 2025), Placer County’s Tahoe Truckee Area Regional Transit Systems\nPlan Update (adopted November 2025), and the Connections 2050: Regional\nTransportation Plan (adopted July 2025).\n\nThe Tahoe Transit Study and deliverables will be overseen by the Transit Working\nGroup, which is an informal collaborative body dedicated to addressing local and\nregional transit issues within the Lake Tahoe Basin. The Transit Working Group is\nfacilitated by TRPA staff and has staff level representatives from each local jurisdiction,\nTTD, the South Shore Transportation Management Association (SSTMA), and the\nTruckee North Tahoe Transportation Management Association (TNT/TMA).\n\nIssue and Discussion: TRPA Staff will present an analysis from the Funding Memo\nand provide information on additional deliverables and the project timeline. Project\ninformation is available at www.trpa.gov/transitstudy .\n\nEnvironmental Considerations: Receiving a presentation is not a project requiring\nenvironmental review under the California Environmental Quality Act (CEQA) under\nCEQA Guidelines section 15378(b)(5) (organizational or administrative activities that will\nnot result in direct or indirect physical changes to the environment).\n\nFinancial Implications: None.\n\n\n\n\n                                                                                Page 1 of 1\nSouth Tahoe Transit JPA              October 29, 2026\n"
+    },
+    {
+     "page_number": 2,
+     "text": ""
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://slt.granicus.com/services/legistar/download/pdf/4451170/Staff_Report_Budget_20261022.pdf": {
+   "sha256": "c969406209f047216e5ed4d1c9b909d92eeea9035857abf505cf08ec7c6a6166",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "     South Tahoe Transit Joint Powers Authority\n                       (JPA)\n                   Board Report\nMeeting Date: October 29, 2026\n\nTitle: South Tahoe Transit JPA Fiscal Year 2026/2027 Budget\n\nAction: Pass a resolution approving the Fiscal Year 2026/2027 Budget (October 1,\n2026 through September 30, 2027) South Tahoe Transit JPA Budget and directing staff\nto send requests to the City of South Lake Tahoe and El Dorado County to submit\nfunding to the JPA.\n\nBackground: The JPA adopted the FY 25/26 budget on October 30, 2026 and directed\nthe Executive Director to submit requests for funding to El Dorado County and the City\nof South Lake Tahoe. El Dorado County did not approve the $25,775 requested budget\nallocation. The City approved allocation of $51,551. With that allocation, the Transit JPA\nwas able to meet three times in the 25/26 fiscal year to discuss priorities and\nengagement in regional planning processes.\n\nIssue and Discussion: The City as the Managing Agency has developed a cost\nestimate for administrative costs for Fiscal Year 2026/2027 (Resolution Exhibit A). The\ncost estimate includes the following assumptions:\n     that the Assistant City Manager will be designated as the Executive Director and\n       10% of their time will be dedicated to the JPA;\n     5% of the City Finance Director’s time will be dedicated to serving as the JPA\n       Treasurer;\n     5% of the City Clerk’s time will be dedicated to serving as the JPA Secretary;\n     The Transit JPA Board will meet quarterly\n     Legal counsel costs for the period will not exceed $10,000;\n     Financial Officer Bond premium costs will not exceed $5,000; and\n     The Transit JPA will not require indemnification or liability insurance due to not\n       proceeding with directly operating transit this fiscal year.\n\nExpenses are anticipated to be limited to administrative costs incurred by the City as the\nManaging Agency totaling $67,326. To reflect the makeup of the JPA Board\nrepresentation, it is recommended that 2/3 of the total cost be attributed to the City and\n1/3 to the County.\n\n                                                    Amount\n                      City of South Lake Tahoe      $44,884\n                      El Dorado County              $22,442\n                      Total                         $67,326\n\nThese costs are based generally on the following 2026/2027 Transit JPA activities:\n    Implementing an advocacy approach for JPA adopted goals and priorities\n\nTransit JPA Board Report            October 29, 2026                          Page 1 of 2\n"
+    },
+    {
+     "page_number": 2,
+     "text": "       South Tahoe Transit Joint Powers Authority\n                         (JPA)\n                     Board Report\n      Securing JPA financial officer surety bond\n      Continued coordination and discussion with other agencies\n      Participating in the Lake Tahoe Transit Working Group to conduct a\n       comprehensive operational analysis of transit services in the region.\n\nEnvironmental Considerations: The approval of a budget is not a project requiring\nenvironmental review under the California Environmental Quality Act (CEQA) under\nCEQA Guidelines section 15378(b)(5) (organizational or administrative activities that will\nnot result in direct or indirect physical changes to the environment).\n\nFinancial Implications: Approval of the budget will create financial obligations for both\nthe City and County to cover administrative costs of the JPA.\n\n\n\n\nTransit JPA Board Report            October 29, 2026                           Page 2 of 2\n"
+    },
+    {
+     "page_number": 3,
+     "text": ""
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {},
+ "expected": {
+  "1": null,
+  "2": {
+   "page_start": 1,
+   "page_end": 1,
+   "url_end": "51167/Staff_Report_Calendar_20261022.pdf",
+   "heading": "South Tahoe Transit Joint Powers Authority"
+  },
+  "3": {
+   "page_start": 1,
+   "page_end": 1,
+   "url_end": "f_Report_TRPA_Transit_Study_20261029.pdf",
+   "heading": "South Tahoe Transit Joint Powers Authority"
+  },
+  "4": {
+   "page_start": 1,
+   "page_end": 2,
+   "url_end": "4451170/Staff_Report_Budget_20261022.pdf",
+   "heading": "South Tahoe Transit Joint Powers Authority"
+  }
+ }
+}

@@ -1000,6 +1000,33 @@
         "note": "The Nov 2 2026 notice links the committee's agenda packet; earlier posts spell the name several ways (\"Regional Transit and\", \"Regional and Transit\", \"Regional Transit &\")."
       },
       "implementation": "The built-in TTD adapter takes a per-agency title pattern; the TTD agenda parser and packet staff-report rule are shared with the board."
+    },
+    {
+      "id": "SR-038",
+      "agencyId": "slt-transit-jpa",
+      "name": "South Tahoe Transit Joint Powers Authority",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "The maintainer requested this joint powers authority of the City of South Lake Tahoe and El Dorado County. The City publishes its agendas on the same Granicus site as the City Council and commissions (view 6).",
+      "nextStep": "Keep the separate body; discover its rows from the City's Granicus index by name.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "October 29, 2026 agenda",
+          "url": "https://granicus_production_attachments.s3.amazonaws.com/slt/8ca5991d9a8a5b45fc469cbe8b5eceb30.pdf"
+        },
+        {
+          "label": "Official source",
+          "url": "https://slt.granicus.com/ViewPublisher.php?view_id=6"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-10-29",
+        "note": "The index lists quarterly meetings since January 2025 and an August 2025 cancellation notice; four agendas (Oct 30 2025, Apr 30, Jul 30, Oct 29 2026) were captured and parsed."
+      },
+      "implementation": "Body-filtered Granicus discovery, a JPA agenda layout using the SLT commission headings, and the SLT commission staff report rule with the JPA's \"(JPA) Board Report\" heading."
     }
   ]
 }

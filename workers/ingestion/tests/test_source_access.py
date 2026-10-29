@@ -150,6 +150,18 @@ def test_douglas_publisher_splits_bodies_and_drops_supplement_duplicates():
     assert not any('Library' in r['title'] or 'Supplement' in r['title'] for r in bcc+pc)
 
 
+def test_slt_publisher_keeps_the_transit_jpa_apart_from_the_city_commissions():
+    markup=_fixture('slt-granicus-transit-jpa-2026-10-29.html')
+    jpa=discover_configured('slt-transit-jpa',_live_config('slt-transit-jpa'),limit=20,fetch=lambda _:markup)
+    assert [(r['source_id'],r['date'],r['status']) for r in jpa]==[
+        ('1530','2026-10-29','unknown'),('2443','2026-07-30','unknown'),('2198','2026-04-30','unknown'),
+        ('2195','2025-10-30','unknown'),('2406','2025-08-28','canceled'),('1890','2025-02-28','unknown'),('1867','2025-01-30','unknown')]
+    assert jpa[0]['start_time']=='09:30' and jpa[1]['start_time'] is None  # an archive row's time is playback
+    assert [d['id'] for d in jpa[0]['documents']]==['slt-transit-jpa-agenda-html','slt-transit-jpa-agenda-packet']
+    parks=discover_configured('slt-parks-recreation-commission',_live_config('slt-parks-recreation-commission'),limit=20,fetch=lambda _:markup)
+    assert [r['source_id'] for r in parks]==['2440','2357']
+
+
 def test_county_legistar_departments_are_scoped_and_keep_cancellations():
     ed=discover_configured('el-dorado-supervisors',_live_config('el-dorado-supervisors'),fetch=lambda _:_fixture('el-dorado-board-of-supervisors.html'))
     assert [(r['source_id'],r['date'],r['start_time']) for r in ed]==[('1440017','2026-10-20','09:00')]

@@ -12,7 +12,9 @@ import hashlib
 import json
 import re
 import time
+import urllib.error
 import urllib.parse
+from contextlib import contextmanager
 from datetime import datetime, timedelta
 from html.parser import HTMLParser
 
@@ -22,9 +24,48 @@ from .records import granicus_links
 MAX_HTML = 6 * 1024 * 1024
 
 
+RETRY_PAUSE = 5.0  # seconds before the one retry of a timed-out or dropped index read
+_shared: dict[tuple[str, int], str] | None = None
+
+
+def _transient(exc: BaseException) -> bool:
+    """A timeout or dropped connection, which a second try may get past; HTTP errors and TLS failures are not."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return False
+    if isinstance(exc, urllib.error.URLError):
+        exc = exc.reason if isinstance(exc.reason, BaseException) else exc
+    return isinstance(exc, (TimeoutError, ConnectionError)) or (isinstance(exc, OSError) and exc.errno in (60, 110))
+
+
 def fetch_text(url: str, *, max_bytes=MAX_HTML) -> str:
-    data, _ = fetch_bytes(url, max_bytes=max_bytes, accept="text/html, application/xml, application/json")
-    return data.decode("utf-8-sig", "replace")
+    """An index or listing page as text. A timeout or dropped connection is retried once after ``RETRY_PAUSE``.
+    Inside ``shared_pages()`` each URL is read once, so agencies that share an index (one Granicus publisher for
+    several bodies) fetch it once per run."""
+    key = (url, max_bytes)
+    if _shared is not None and key in _shared:
+        return _shared[key]
+    try:
+        data, _ = fetch_bytes(url, max_bytes=max_bytes, accept="text/html, application/xml, application/json")
+    except (OSError, urllib.error.URLError) as exc:
+        if not _transient(exc):
+            raise
+        time.sleep(RETRY_PAUSE)
+        data, _ = fetch_bytes(url, max_bytes=max_bytes, accept="text/html, application/xml, application/json")
+    text = data.decode("utf-8-sig", "replace")
+    if _shared is not None:
+        _shared[key] = text
+    return text
+
+
+@contextmanager
+def shared_pages():
+    """Within the block, ``fetch_text`` reads each URL once (one discovery pass; pages are dropped afterwards)."""
+    global _shared
+    outer, _shared = _shared, ({} if _shared is None else _shared)
+    try:
+        yield
+    finally:
+        _shared = outer
 
 
 class Anchors(HTMLParser):

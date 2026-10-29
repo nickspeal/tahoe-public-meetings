@@ -56,6 +56,7 @@ from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
 from .comment_periods import ingest_comment_periods
 from .core import export_public, ingest_bundle, init_db, reclassify_topics, record_failure, stable_id
+from .discovery import shared_pages
 from .draft_minutes import link_draft_minutes
 from .export_check import validate_export
 from .one_offs import load_one_offs
@@ -321,6 +322,13 @@ def _nearest_first(candidates: list[dict], today: date) -> list[dict]:
 
 
 def discover_sources(conn, root: Path, run: Run, options: Options, discover, fetch, today: date):
+    """``_discover_sources`` with each index page read once: several bodies share one publisher's index (the
+    Granicus publishers of Douglas County and South Lake Tahoe hold three and four bodies on one 4 MB page)."""
+    with shared_pages():
+        return _discover_sources(conn, root, run, options, discover, fetch, today)
+
+
+def _discover_sources(conn, root: Path, run: Run, options: Options, discover, fetch, today: date):
     """Capture each followed agency's recent and upcoming meetings.
 
     Each index is read up to discovery's maximum and only then filtered to the

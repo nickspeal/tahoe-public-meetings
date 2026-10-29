@@ -1,11 +1,13 @@
 import json
+import urllib.error
 from datetime import date
 
 import pytest
 
-from tahoe_ingest import backfill, capture, source_discovery
+from tahoe_ingest import backfill, capture, discovery, source_discovery
 from tahoe_ingest.catalog import agency_catalog
 from tahoe_ingest.discovery import _pdf_links, granicus_row_ids, wordpress_meetings
+from tahoe_ingest.discovery import fetch_text  # the real reader; conftest replaces the module's copy offline
 from tahoe_ingest.source_discovery import validate_discovery
 
 TTD_FEED = "https://tahoetransportation.org/wp-json/wp/v2/meeting"
@@ -132,3 +134,45 @@ def test_valid_discovery_blocks_and_entries_without_one_pass():
     validate_discovery({"id": "example", "discovery": wordpress(RTCPC, documentIdPrefix="ttd")})
     validate_discovery({"id": "example", "discovery": {"type": "dated-table", "indexUrl": "https://example.gov/2026",
                                                        "indexUrlTemplate": "https://example.gov/{year}", "horizonDays": 120}})
+
+
+def _flaky(monkeypatch, failures):
+    """fetch_bytes raising each of ``failures`` in turn, then serving the page; returns the list of URLs fetched."""
+    calls, pending = [], list(failures)
+
+    def fetch(url, **_):
+        calls.append(url)
+        if pending:
+            raise pending.pop(0)
+        return b"<html>index</html>", "text/html"
+    monkeypatch.setattr(discovery, "fetch_bytes", fetch)
+    monkeypatch.setattr(discovery, "RETRY_PAUSE", 0)
+    return calls
+
+
+@pytest.mark.parametrize("error", [TimeoutError("The read operation timed out"), ConnectionResetError(54, "reset"),
+                                   urllib.error.URLError(OSError(60, "Operation timed out"))])
+def test_index_read_retries_one_timeout_or_dropped_connection(monkeypatch, error):
+    calls = _flaky(monkeypatch, [error])
+    assert fetch_text("https://example.gov/index") == "<html>index</html>" and len(calls) == 2
+    calls = _flaky(monkeypatch, [error, error])
+    with pytest.raises(type(error)):
+        fetch_text("https://example.gov/index")
+    assert len(calls) == 2  # one retry, not more
+
+
+def test_index_read_does_not_retry_http_errors(monkeypatch):
+    calls = _flaky(monkeypatch, [urllib.error.HTTPError("https://example.gov/index", 404, "missing", {}, None)])
+    with pytest.raises(urllib.error.HTTPError):
+        fetch_text("https://example.gov/index")
+    assert len(calls) == 1
+
+
+def test_bodies_sharing_an_index_read_it_once_per_discovery_pass(monkeypatch):
+    calls = _flaky(monkeypatch, [])
+    with discovery.shared_pages():
+        for _ in range(3):
+            fetch_text("https://example.gov/index")
+        fetch_text("https://example.gov/other")
+    fetch_text("https://example.gov/index")  # outside the pass: read again
+    assert calls == ["https://example.gov/index", "https://example.gov/other", "https://example.gov/index"]

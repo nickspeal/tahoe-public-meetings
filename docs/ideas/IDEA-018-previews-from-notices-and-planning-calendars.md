@@ -1,6 +1,6 @@
 # IDEA-018: Meetings and agenda previews from notices and planning calendars
 
-Status: proposed; maintainer decisions recorded 2026-10-29
+Status: proposed; maintainer decisions recorded 2026-10-29, open questions resolved the same day
 Stage: MVP polish
 
 ## Problem and audience
@@ -17,6 +17,11 @@ Readers who filter by topic should see these meetings and planned subjects befor
 3. Extracted meetings and previews publish automatically, with no review step.
 4. Read only notices that are already tracked: today, the official notices of configured public comment periods. Finding new notices automatically comes later.
 5. Agenda planning calendars (South Lake Tahoe City Council, TTD board) populate previews for that agency's future meetings. Each newer calendar replaces the previous one.
+6. Each planning calendar format gets its own deterministic parser (R4); no model reads calendars.
+7. A co-hosted meeting under Other appears only under the Other filter, not under its co-hosts' filters (R1).
+8. One-off meetings show in the default timeline, since they never get an agenda (R3).
+9. Planned meetings whose source states a start time get a calendar download (R6, R7).
+10. Subject-to-change notes are concise: a few words, never a sentence of explanation. The linked source line says where the information came from (R7).
 
 Everything else below is a proposed default unless it restates one of these decisions.
 
@@ -33,7 +38,7 @@ Everything else below is a proposed default unless it restates one of these deci
 - Meetings and comment periods gain an optional `host` text field. It is required under a per-record-host agency. Wherever the agency name appears today, the host replaces it: meeting cards, meeting pages, comment period pages, and calendar files.
 - For extracted records, the host is built only from organization names that appear in the source text, for example "TRPA and El Dorado County". Manual entries in `config/one-off-meetings.json` and `config/public-comment-periods.json` may set `host` directly; `one_offs.py` and `ingest_comment_periods` accept it.
 - A one-off goes under a followed body only when the source names exactly one registry entry as host, matched by name or alias. Otherwise it goes under Other. "TRPA" matches both TRPA bodies, so a TRPA staff open house goes under Other.
-- The Agency filter lists **Other** last whenever an exported meeting uses it, and the bookmark is `?agency=other`. Its search terms include the hosts of its current meetings, so typing "El Dorado" offers both the El Dorado bodies and Other.
+- The Agency filter lists **Other** last whenever an exported meeting uses it, and the bookmark is `?agency=other`. A meeting under Other matches only the Other filter, never its co-hosts' agency filters (decision 7). Its search terms include the hosts of its current meetings, so typing "El Dorado" offers both the El Dorado bodies and Other.
 - The West Shore Trail comment period moves to Other with host "TRPA and El Dorado County". Its page URL contains the agency (`/comment-periods/<agency>/<id>/`), so the old URL must redirect to the new one.
 
 ### R2. Reading tracked notices
@@ -55,7 +60,7 @@ Everything else below is a proposed default unless it restates one of these deci
 - **Where events go:** `one-off` events become stored meetings (R3), and `regular-meeting` events become previews (R5) whose source is the notice.
 - **Revised notices.** A revised notice (new hash) is read again, and events are matched to earlier ones by normalized title:
   - A changed date or time updates the same meeting and marks it rescheduled.
-  - An event missing from the revision stays published with the warning "No longer listed in the latest version of the notice." Removal never deletes, as with configured one-offs.
+  - An event missing from the revision stays published with the note "Not in the latest notice." Removal never deletes, as with configured one-offs.
 
 ### R3. One-off meetings from notices
 - The ID is stable: `one-off-<comment period id>-<YYYY-MM-DD>`, with `-2`, `-3` for further events on the same day. Records are stored through the same `ingest_bundle` path as configured one-offs. `declared_topics` are the comment period's topics.
@@ -67,8 +72,8 @@ Everything else below is a proposed default unless it restates one of these deci
   - official URL: the notice;
   - participation instructions from the quote.
 - A stated end time sets the calendar download's end, replacing the estimated duration ([decision 0013](../decisions/0013-estimated-meeting-durations.md)).
-- Each record carries the warning "Listed in <notice title>; check the official notice for changes."
-- A one-off never gets an agenda, so the notice counts as its posted document. A new agenda-availability kind, `notice` ("Meeting notice posted"), shows it in the default timeline without the "Expected · no agenda yet" badge.
+- Each record carries the note "Check the notice for changes." The source line already names and links the notice.
+- A one-off never gets an agenda, so the notice counts as its posted document. A new agenda-availability kind, `notice` ("Meeting notice posted"), shows it in the default timeline without the "Expected · no agenda yet" badge (decision 8).
 - An entry in `config/one-off-meetings.json` with the same ID overrides the extracted fields.
 
 ### R4. Planning calendars
@@ -77,7 +82,7 @@ Everything else below is a proposed default unless it restates one of these deci
   - **`attachment` (South Lake Tahoe City Council).** The calendar is the attachment labeled `APC MM DD YYYY` on the agenda item titled "Agenda Planning Calendar". The SLT staff report rule already lists it in `item_attachments`. Store the stable Granicus download URL (`slt.granicus.com/services/legistar/download/pdf/<id>/...`), not the expiring S3 redirect. Download the file temporarily and keep its page text, hash, and URL ([decision 0004](../decisions/0004-source-first-storage.md)). Fetch only calendar URLs not yet seen.
   - **`packet-pages` (TTD).** The calendar is the run of consecutive pages headed "Tentative Agenda Calendar" in the meeting's current agenda packet. Those pages are already stored in `document_pages`, so nothing is downloaded. A date block can continue across a page break.
 - `bodies` maps the calendar's body labels to followed registry entries; unmapped labels are skipped. TTD maps `TTD` → `ttd` and `RTCPC` → `ttd-rtcpc`; its TTC and Finance & Personnel columns are not followed bodies. South Lake Tahoe maps the whole calendar to `slt`.
-- **Parsing is deterministic per format,** in line with [decision 0015](../decisions/0015-deterministic-agenda-layouts.md). Each format has one reviewed fixture from a real calendar in `tests/fixtures/planning-calendars/`.
+- **Parsing is deterministic per format** (decision 6), in line with [decision 0015](../decisions/0015-deterministic-agenda-layouts.md). Each format has one reviewed fixture from a real calendar in `tests/fixtures/planning-calendars/`.
   - **South Lake Tahoe:** an Excel-exported table with columns for meeting date and time, department, item, section, and requester initials.
     - A date cell starts a block, and rows without a date belong to the block above, including across pages.
     - Repeated page headers are ignored.
@@ -124,7 +129,7 @@ Everything else below is a proposed default unless it restates one of these deci
   - **Title:** from the format's per-body configuration (for example "City Council Meeting"). Add "Special" when the calendar says "Special Mtg", so the bridge's qualifiers agree.
   - **Start time and location:** only when the source states them for that date. Examples: "Nov 3, 9:30 a.m."; "9:30 a.m. at 128 Market Street in Stateline, Nevada, with a virtual attendance option".
   - **Official URL:** the source document.
-  - **Warning:** "Planned in <source>; the date, time, and items can change before the agenda is posted."
+  - **Note:** "Subject to change." The source line names and links the document.
 - **Adoption:** when discovery later captures that body's meeting on the same date, the existing same-date bridge in `capture.source_identity` adopts the planned record and writes an alias. The meeting keeps its URL and its previews. South Lake Tahoe uses Granicus event IDs, which cannot be predicted, and TRPA uses dates, so test both.
 - A planned meeting is a stored record, so it suppresses that body's forecast within three days, as today ([decision 0012](../decisions/0012-forecast-meetings-from-schedule-patterns.md)).
 - **Withdrawal:** a planned meeting is withdrawn from the export, but kept in the database, once two things are both true:
@@ -140,14 +145,14 @@ Everything else below is a proposed default unless it restates one of these deci
   - It matches a topic filter through its preview topics: `meetingTopicIds` includes them while previews are shown.
   - The card lists "Planned:" with the subjects that match the selected topic, or the first three and "and N more".
 - **Meeting page:**
-  - A "Planned for this agenda" section appears above the empty-agenda message. Each preview shows its subject, section, topic tags, and a source line linked to the official document, such as "From the agenda planning calendar updated September 30, 2026" or "From the West Shore Trail Notice of Preparation".
-  - The section ends with "Planned items can move or be dropped before the agenda is posted."
+  - A "Planned for this agenda · subject to change" section appears above the empty-agenda message. Each preview shows its subject, section, topic tags, and a source line linked to the official document, such as "From the agenda planning calendar updated September 30, 2026" or "From the West Shore Trail Notice of Preparation".
+  - No other caveat is added; decision 10 keeps these notes short.
 - **Topic pages** list previews alongside agenda items, labeled as planned.
 - **Once the agenda is posted** (items listed, or the official agenda captured), previews stop showing on that meeting and topics come from items only.
-  - For a notice preview, the notice's project name is extracted and validated word for word. If no item title contains it, the page says "Announced in <notice> but not found on the posted agenda."
+  - For a notice preview, the notice's project name is extracted and validated word for word. If no item title contains it, the page says "Not on the posted agenda."
   - Calendar previews disappear quietly, because the next calendar carries a moved item forward.
 - Forecasts never carry previews: a valid preview always produces a stored record. Past meetings never show previews.
-- Calendar downloads for planned meetings with a stated time put the subject-to-change note in the event description.
+- Planned meetings whose source states a start time get a calendar download (decision 9). Its event description starts with "Subject to change." Planned meetings without a stated time get none, as today.
 
 ### R8. Export and checks
 - **New export fields:**
@@ -177,7 +182,6 @@ Everything else below is a proposed default unless it restates one of these deci
 - Planning calendars from other agencies. Stored agendas show that Lahontan, California Fish and Game, Washoe County Planning, and the Truckee Tahoe Airport district have "future agenda items" sections; each needs a format.
 - Using a calendar's "CANCELED" block state to mark meetings canceled.
 - Matching calendar previews to posted agenda items.
-- Listing an Other meeting under the filters of the followed bodies that co-host it.
 
 ## Evidence and dependencies
 - `config/public-comment-periods.json` holds one record (West Shore Trail, added 2026-10-27). Its instructions already restate both meetings by hand. `config/one-off-meetings.json` is empty.
@@ -219,12 +223,9 @@ Everything else below is a proposed default unless it restates one of these deci
 10. `scripts/check_export.py` passes with the new invariants, and the export's query count stays constant.
 
 ## Open questions
-- **Parser approach:** deterministic calendar parsing (proposed, per decision 0015) or Claude with validation (as in decision 0021)? Deterministic costs nothing but needs one layout per format, and previews stop when an agency redesigns its calendar until the layout is fixed.
-- **Co-hosted filters:** should a co-hosted Other meeting also appear under the filters of its followed co-hosts? Proposed: not in this version; host search terms cover finding it.
-- **Default visibility for one-offs:** they never get an agenda, so they are proposed to show by default (R3).
-- **Calendar downloads for planned meetings** with an agency-stated time: proposed yes, with the subject-to-change note.
 - **Moved items:** should readers see that a preview moved ("Moved from November 17")? Proposed no, because the public sees only the latest calendar.
 
 ## Links and updates
 - Related decisions: [0009](../decisions/0009-configurable-coverage-and-one-off-meetings.md) (one-off notices), [0012](../decisions/0012-forecast-meetings-from-schedule-patterns.md) (forecasts), [0014](../decisions/0014-reviewed-sources-and-public-comment-periods.md) (comment periods), [0015](../decisions/0015-deterministic-agenda-layouts.md) (deterministic layouts), [0020](../decisions/0020-database-operation-budget.md) (operation budget), [0021](../decisions/0021-participation-details-from-agendas.md) (participation from agendas), [0022](../decisions/0022-timeline-default-view.md) (default view), [0027](../decisions/0027-agency-definitions-in-configuration.md) (registry). Related ideas: [IDEA-003](IDEA-003-calendar.md), [IDEA-012](IDEA-012-coverage-admin.md).
-- 2026-10-29: proposed after the maintainer noticed that the meetings named in the West Shore Trail notice were missing from the timeline. The maintainer decided default visibility, flexible hosts with an Other filter, automatic publication, notice scope, and the use of planning calendars (above).
+- 2026-10-29: proposed after the maintainer noticed that the meetings named in the West Shore Trail notice were missing from the timeline. The maintainer decided default visibility, flexible hosts with an Other filter, automatic publication, notice scope, and the use of planning calendars (decisions 1–5).
+- 2026-10-29: the maintainer resolved four open questions: a deterministic parser per calendar format, Other meetings only under the Other filter, one-off meetings shown by default, and calendar downloads for planned meetings with a stated time (decisions 6–9). The maintainer also asked for concise subject-to-change notes (decision 10). A calendar redesign stops that agency's previews until its layout is updated.

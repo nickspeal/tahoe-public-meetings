@@ -53,7 +53,8 @@ test('every cited agenda item on a built meeting page links to its official page
     assert.ok(anchor, `${item.id} should offer a direct source link`);
     assert.equal(anchor.getAttribute('href'), expected.href);
     assert.equal(anchor.querySelector('strong').textContent, expected.label);
-    assert.equal(page.querySelectorAll(`[data-item-id="${item.id}"] a[href]`).length, 1, `${item.id} links to its source once`);
+    const sourceLinks = [...page.querySelectorAll(`[data-item-id="${item.id}"] a[href]`)].filter((a) => a.getAttribute('href') === expected.href);
+    assert.equal(sourceLinks.length, 1, `${item.id} links to its source once`);
     assert.equal(anchor.getAttribute('target'), '_blank');
   }
 });

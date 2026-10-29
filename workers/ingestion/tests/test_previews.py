@@ -73,7 +73,7 @@ def test_replace_stores_rows_creates_planned_meetings_and_reruns_without_writes(
     nov3 = meetings["slt:planned-2026-11-03"]
     assert nov3["title"] == "City Council Meeting" and nov3["status"] == "scheduled" and nov3["change"] == "new"
     assert nov3["starts_at"] == datetime(2026, 11, 3, 9, 30, tzinfo=ZoneInfo("America/Los_Angeles"))
-    assert nov3["warnings"] == ["Subject to change."] and nov3["official_url"] == "https://www.cityofslt.gov/"
+    assert nov3["warnings"] == ["Subject to change."] and nov3["official_url"] == "https://www.cityofslt.gov/84/Watch-City-CouncilCommission-Meetings"
     assert pv.is_planned(nov3)
     dec15 = meetings["slt:planned-2026-12-15"]
     assert dec15["title"] == "Special City Council Meeting" and dec15["starts_at"] is None

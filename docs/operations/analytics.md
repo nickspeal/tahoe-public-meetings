@@ -1,6 +1,6 @@
 # Usage analytics
 
-The site counts page views and a small set of named events with hosted [GoatCounter](https://www.goatcounter.com/), so the maintainer can see how many people visit and which pages and links they use. GoatCounter sets no cookies and does not store IP addresses. The dashboard is private. See [decision 0029](../decisions/0029-usage-analytics.md) and [IDEA-019](../ideas/IDEA-019-usage-analytics.md). The About page carries the reader-facing privacy statement.
+The site counts page views and a small set of named events with hosted [GoatCounter](https://www.goatcounter.com/), so the maintainer can see how many people visit and which pages and links they use. GoatCounter sets no cookies and does not store IP addresses. The dashboard is private. See [decision 0029](../decisions/0029-usage-analytics.md) and [IDEA-019](../ideas/IDEA-019-usage-analytics.md). The Privacy page (`apps/web/src/pages/privacy.astro`, linked from the footer) carries the reader-facing statement.
 
 ## How it works
 
@@ -81,5 +81,5 @@ Visit `https://tahoepublicmeetings.org/#toggle-goatcounter` once in each browser
 ## Later options
 
 - Reduce blocker loss by serving the endpoint from a custom domain on the site's domain, or by hosting count.js on the site.
-- Turn on **individual pageviews** in GoatCounter to see which pages a visit viewed together and to export pageviews as CSV. GoatCounter then stores each view with the visit's random code, which it otherwise keeps only in memory for eight hours. The About page statement already describes this.
+- Turn on **individual pageviews** in GoatCounter to see which pages a visit viewed together and to export pageviews as CSV. GoatCounter then stores each view with the visit's random code, which it otherwise keeps only in memory for eight hours. The Privacy page statement already describes this.
 - Self-host GoatCounter (the same open-source program) to remove reliance on the hosted service. This adds a server to run and pay for, so weigh it against the monthly budget and record it as a new decision.

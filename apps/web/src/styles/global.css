@@ -340,7 +340,6 @@ button, a, select, summary { touch-action: manipulation; }
 /* About */
 .about-prose { max-width: 700px; }
 .about-prose p { color: var(--ink); font-size: 17px; line-height: 1.65; }
-.about-prose h2 { margin-top: 2rem; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 38px; }
 .about-grid h2, .correction-guide h2 { margin: 0 0 10px; color: var(--forest-dark); font-size: 24px; font-weight: 700; }
 .about-grid p:not(.eyebrow), .correction-guide p:not(.eyebrow) { color: var(--muted); font-size: 16px; line-height: 1.65; }

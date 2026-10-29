@@ -78,10 +78,11 @@ test('click attributes name the event, the page, and the agency when known', () 
   assert.equal(analytics.documentEvent('FY26 Budget and Capital Plan'), 'outbound-attachment');
 });
 
-test('the About page carries the privacy statement', async () => {
-  const html = await readFile(resolve(dist, 'about/index.html'), 'utf8');
+test('the Privacy page carries the privacy statement and the footer links to it', async () => {
+  const html = await readFile(resolve(dist, 'privacy/index.html'), 'utf8');
   const text = new JSDOM(html).window.document.querySelector('main').textContent.replace(/\s+/g, ' ');
-  assert.match(html, /<h2[^>]*>Privacy<\/h2>/);
+  assert.match(html, /<h1[^>]*>Privacy<\/h1>/);
+  assert.match(html, /<a href="\/privacy\/">Privacy<\/a>/);
   assert.ok(text.includes("I count page views with GoatCounter, an open-source tool with no cookies and no stored IP addresses, so I can see which pages and links people use. Each visit gets a random code that expires after eight hours, so I can tell which pages are viewed together, but not who you are or whether you've been here before. Nothing is shared with advertisers."));
   assert.match(html, /href="https:\/\/www\.goatcounter\.com\/"/);
 });

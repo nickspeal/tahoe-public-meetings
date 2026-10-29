@@ -54,8 +54,8 @@ Answered by the maintainer on 2026-10-29 (decision 0029):
 - Return frequency: start without a persistent browser identifier and decide after a quarter of daily-unique trend data.
 - Public dashboard: no.
 - The maintainer's own browsers are excluded with count.js's `#toggle-goatcounter` opt-out, repeated once in each browser.
-- GoatCounter's "individual pageviews" setting stays off for now. The About page's privacy statement is written so it stays true if it is turned on later.
+- GoatCounter's "individual pageviews" setting stays off for now. The Privacy page's statement is written so it stays true if it is turned on later.
 
 ## Links and updates
 - 2026-10-29: options surveyed; GoatCounter proposed as default. Related: decisions 0016, 0017, 0020; IDEA-009 (promotion, which needs referrer data to evaluate).
-- 2026-10-29: accepted as [decision 0029](../decisions/0029-usage-analytics.md): hosted GoatCounter, cookieless, configured only in the Vercel Production environment, no public dashboard. Operations guide: [analytics](../operations/analytics.md).
+- 2026-10-29: accepted as [decision 0029](../decisions/0029-usage-analytics.md): hosted GoatCounter, cookieless, configured only in the Vercel Production environment, no public dashboard. Operations guide: [analytics](../operations/analytics.md). The statement moved from the About page to its own Privacy page, linked from the footer, the same day.

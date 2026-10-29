@@ -169,6 +169,28 @@ test('renders compact date badges and truthful agenda availability on a meeting 
   dom.window.close();
 });
 
+test('meeting cards badge their topics in catalog order and mark the selected topic', async () => {
+  const dom = await openPage('index.html', '/?topic=transit');
+  const { document } = dom.window;
+  const catalog = publicData.topics.map((topic) => topic.id);
+  const badged = (row) => [...row.querySelectorAll('[data-card-topic]')].map((badge) => badge.dataset.cardTopic);
+  const selected = (row) => [...row.querySelectorAll('.meeting-topic-selected')].map((badge) => badge.dataset.cardTopic);
+  const rows = [...document.querySelectorAll('[data-meeting-row]')];
+  for (const row of rows) {
+    assert.deepEqual(badged(row), catalog.filter((id) => JSON.parse(row.dataset.topics).includes(id)), meetingId(row));
+  }
+  const transit = rows.find((row) => badged(row).includes('transit') && badged(row).length > 1);
+  assert.ok(transit, 'the fixture needs a meeting with transit and another topic');
+  assert.deepEqual(selected(transit), ['transit']);
+  assert.match(transit.querySelector('.meeting-topics').textContent, /^Topics: /);
+
+  const topic = document.querySelector('#topic-filter');
+  topic.value = '';
+  change(dom, topic);
+  assert.ok(rows.every((row) => selected(row).length === 0));
+  dom.window.close();
+});
+
 test('a page built yesterday moves Today to the reader’s Lake Tahoe date', async () => {
   const html = await readFile(resolve(root, 'dist', 'index.html'), 'utf8');
   const dom = new JSDOM(html, { url: 'http://localhost/', runScripts: 'outside-only' });

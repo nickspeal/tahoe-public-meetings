@@ -52,6 +52,7 @@ if (topicSelect && agencySelect) {
     for (const row of rows) {
       const topics = JSON.parse(row.dataset.topics ?? '[]') as string[];
       const matches = (!topic || topics.includes(topic)) && (!agency || row.dataset.agency === agency);
+      for (const badge of row.querySelectorAll<HTMLElement>('[data-card-topic]')) badge.classList.toggle('meeting-topic-selected', badge.dataset.cardTopic === topic);
       if (row.dataset.bucket === 'earlier') {
         row.hidden = true;
         if (matches) earlierMatches.push(row);

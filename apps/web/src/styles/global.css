@@ -148,6 +148,10 @@ button, a, select, summary { touch-action: manipulation; }
 .meeting-previews-label { font-weight: 700; }
 .meeting-preview:not([hidden]) ~ .meeting-preview:not([hidden])::before { content: ' · '; }
 .meeting-preview-more::before { content: ' '; }
+.meeting-topics { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.meeting-card-copy .meeting-topic { padding: 2px 7px; font-size: 12px; font-weight: 600; }
+.meeting-card-copy .meeting-topic-selected { background: var(--forest); color: #fff; }
+.meeting-card-canceled .meeting-topic { background: #e3e6e2; color: var(--muted); }
 .meeting-card-forecast { border: 1px dashed #8fa79b; background: #fbfcf9; }
 .meeting-card-forecast .meeting-card-main:hover { background: #f4f7f2; }
 .meeting-card-forecast .meeting-date { border: 1px dashed #9db3a7; background: transparent; }

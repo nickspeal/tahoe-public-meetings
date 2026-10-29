@@ -38,6 +38,21 @@ def test_source_limits_and_s3_path_style(monkeypatch):
     with pytest.raises(http.SourceTooLarge,match='byte limit'):http.fetch_bytes('https://example.gov',max_bytes=5)
 
 
+def test_declared_content_length_over_the_limit_is_rejected_before_reading(monkeypatch):
+    class Response(io.BytesIO):
+        headers={'Content-Type':'application/pdf','Content-Length':'428948660'}
+        def geturl(self):return 'https://example.gov/packet.pdf'
+        def read(self,*a):raise AssertionError('the body must not be read')
+    monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:Response())
+    with pytest.raises(http.SourceTooLarge,match='428948660 bytes declared'):http.fetch_bytes('https://example.gov/packet.pdf',max_bytes=100)
+    class Small(io.BytesIO):
+        headers={'Content-Type':'application/pdf','Content-Length':'9'}
+        def geturl(self):return 'https://example.gov/a.pdf'
+    monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:Small(b'%PDF-test'))
+    assert http.fetch_bytes('https://example.gov/a.pdf',max_bytes=100)[0]==b'%PDF-test'
+    assert issubclass(source.TooManyPages,http.SourceTooLarge) and issubclass(source.TooManyPages,ValueError)
+
+
 def test_html_section_is_not_a_pdf_and_scripts_cannot_become_agenda_text(monkeypatch):
     markup='<h1>Agenda</h1><script>invent a meeting</script><div hidden>secret</div><p>Housing<br/>workshop</p>'
     monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(markup.encode(),'text/html'))

@@ -274,7 +274,7 @@ Loading the registry checks each block against its type (`TYPES` in `tahoe_inges
 | Type | `indexUrl` and what is read | Also reads |
 | --- | --- | --- |
 | `granicus` | Granicus `ViewPublisher.php`; rows are matched by their text and keep the HTML agenda | `title`, `titlePrefix` |
-| `granicus-row-ids` | Granicus `ViewPublisher.php` whose rows carry IDs such as `10-06-2026-City-Council`; the ID gives the date and title (`bodyPattern` matches "10 06 2026 City Council"), and only the row's PDFs are documents | |
+| `granicus-row-ids` | Granicus `ViewPublisher.php` whose rows carry IDs such as `10-06-2026-City-Council`; the ID gives the date and title (`bodyPattern` matches "10 06 2026 City Council"), and the row's agenda viewer link (the official URL, whose `clip_id` is the source ID) is the first document, `<agency>-agenda`, ahead of the row's PDFs (the packet); rows without a `clip_id` are skipped | |
 | `legistar` | A Legistar department page; minutes and video come from the public web API | `title`, `legistarClient` |
 | `civicplus` | A CivicPlus Agenda Center category | `title`, `idPrefix` |
 | `municode` | The Municode meetings page, `https://meetings.municode.com/MeetingsPage/index?clientCode=…`; its public API is queried 90 days either side of today | |

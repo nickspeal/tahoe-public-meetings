@@ -44,7 +44,17 @@ summaries if the source changed, and flags item review. These parsers do not
 interpret votes, adoption, or supporting attachments. Scanned PDFs without
 extractable text require OCR/manual review. The parsing pass inspects only
 the first 6 TTD, 12 SLT, or 8 Truckee pages, and the PDF downloader caps each
-file at 80 MiB and 800 pages.
+file at 80 MiB (`MAX_PDF_BYTES`; a larger declared Content-Length is refused
+before the body is read) and 800 pages (`MAX_PAGES`).
+A packet over either limit beside another captured document of the meeting
+(the agenda) is left out rather than failed: items parse from the agenda, the
+meeting shows no retrieval warning, the agency keeps its status, and a
+`processing_runs` row (stage `capture`, status `oversized`, detail `url` and
+`reason`) records the URL so it is never downloaded again; staff report rules
+read such packets themselves with their own limits. An oversized document that
+is not a packet, or a packet with nothing else captured, fails as any other
+download does ("Some official documents could not be retrieved…", the agency
+shown as unable to verify its source, a daily retry).
 
 ### Agency agenda layouts
 
@@ -167,7 +177,7 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 7. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
    - Each index is read up to discovery's maximum (`--discovery-limit 20`; undated WordPress posts, which each cost a page fetch, stay at 6). The window is applied after reading, so far-future postings never crowd out recent past meetings.
    - Window: 60 days back (`--past-days`) to 120 days ahead (`--future-days`). The look-back lets minutes and revised packets linked after a monthly or bimonthly body's next meeting still be picked up. Dated meetings before the coverage floor, 2026-01-01, are never captured; undated WordPress posts are exempt.
-   - Upcoming meetings and meetings from the last 7 days are re-downloaded every run, which catches revised agendas and cancellations. An older meeting is settled, and skipped, once every document a capture would fetch (the first 2) is already stored at the same URL. A newly linked document makes it captured again. Its failed downloads are retried at most once a day.
+   - Upcoming meetings and meetings from the last 7 days are re-downloaded every run, which catches revised agendas and cancellations. An older meeting is settled, and skipped, once every document a capture would fetch (the first 2) is already stored at the same URL (an oversized packet counts as stored). A newly linked document makes it captured again. Its failed downloads are retried at most once a day.
    - At most 10 meetings per agency are captured per run, nearest to today first; the rest wait for the next run. At most 2 documents per meeting, 1 second between downloads.
    - Stored meetings outside the window are never deleted or hidden.
    - Minutes and video links on each listing row are kept with the candidate. For meetings not captured this run (settled, deferred, or outside the window) they update the stored meeting directly, without a download (decision 0025).

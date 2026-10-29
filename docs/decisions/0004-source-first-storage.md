@@ -11,3 +11,6 @@ Source PDFs may become unavailable or change after analysis. A hash identifies t
 
 ## Open implementation choices
 Set temporary-file cleanup/retry bounds and the cadence of link checks during implementation. Database choice remains proposed; the maintainer has no SQL/NoSQL preference.
+
+## Update 2026-10-29: oversized packets
+Temporary downloads are bounded (80 MiB and 800 pages per file). A meeting packet over either limit is not stored when the meeting's agenda was captured: its items parse from the agenda, the packet stays linked from the official meeting page, and its URL is recorded (a `capture` run with status `oversized`) so it is not downloaded again. Staff report rules may read such a packet temporarily with higher, per-format limits. Any other oversized document still fails capture and is retried.

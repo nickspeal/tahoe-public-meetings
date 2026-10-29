@@ -11,7 +11,7 @@ from pathlib import Path
 import psycopg
 import pytest
 
-from tahoe_ingest import cli, scheduled, staff_reports
+from tahoe_ingest import capture, cli, scheduled, source, staff_reports
 from tahoe_ingest.core import init_db
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -211,6 +211,76 @@ def test_failed_downloads_of_settled_age_meetings_retry_daily(db):
     scheduled.discover_sources(db, ROOT, run, options(), discover_one(rows), fake_fetch, TODAY)
     report, fetched = discover_report(db, rows)
     assert report["retryLater"] == 1 and fetched == []
+
+
+PACKET_URL = "https://example.gov/planning/packet.pdf"
+SLT_AGENDA = next(m for m in json.loads((ROOT / "tests/fixtures/meetings.json").read_text())["meetings"] if m["id"] == "2351")
+
+
+def oversized_fetch(fetched):
+    """The packet is over the page limit; the agenda is a real South Lake Tahoe agenda."""
+    def fetch(url):
+        fetched.append(url)
+        if url == PACKET_URL:
+            raise source.TooManyPages("PDF page count outside 1..800: 1316")
+        if url != AGENDA_URL:
+            return fake_fetch(url)
+        pages = [{"page_number": p["page_number"], "text": p["text"]} for p in SLT_AGENDA["pages"]]
+        return {"sha256": hashlib.sha256(json.dumps(pages).encode()).hexdigest(), "page_count": len(pages),
+                "warnings": [], "media_type": "application/pdf", "pages": pages}
+    return fetch
+
+
+def packet_meeting(source_id, day, documents, agency="slt-planning"):
+    return {**meeting(source_id, day), "agency": agency, "documents": [
+        {"id": f"{agency}-{source_id}-{n}", "title": title, "url": url} for n, (title, url) in enumerate(documents)]}
+
+
+def test_oversized_packet_beside_a_captured_agenda_is_left_out_without_a_failure(db):
+    init_db(db)
+    rows = [packet_meeting("old", TODAY - timedelta(days=20), [("Agenda", AGENDA_URL), ("Agenda Packet", PACKET_URL)], "slt")]
+    fetched = []
+    result = capture.capture_candidates(db, rows, fetch=oversized_fetch(fetched))
+    assert result["processed"] == 1 and result["captureFailures"] == [] and fetched == [AGENDA_URL, PACKET_URL]
+    stored = db.execute("SELECT warnings FROM meetings WHERE id='slt:old'").fetchone()
+    assert not any("could not be retrieved" in w or "require review" in w for w in stored["warnings"])
+    assert db.execute("SELECT count(*) AS n FROM agenda_items WHERE meeting_id='slt:old' AND active").fetchone()["n"] == 11
+    runs = db.execute("SELECT status,meeting_id,detail FROM processing_runs WHERE stage='capture'").fetchall()
+    assert [(r["status"], r["meeting_id"], r["detail"]["url"]) for r in runs] == [("oversized", "slt:old", PACKET_URL)]
+    assert "1316" in runs[0]["detail"]["reason"]
+    assert db.execute("SELECT status FROM agencies WHERE id='slt'").fetchone()["status"] == "ok"
+    # The packet is never downloaded again, and the past meeting settles.
+    fetched.clear()
+    capture.capture_candidates(db, rows, fetch=oversized_fetch(fetched))
+    assert fetched == [AGENDA_URL]
+    assert db.execute("SELECT count(*) AS n FROM processing_runs WHERE stage='capture'").fetchone()["n"] == 1
+    stored = scheduled.stored_meetings(db)
+    assert stored.oversized == {PACKET_URL}
+    assert scheduled._skip_reason(stored, "slt:old", rows[0], TODAY, options()) == "settled"
+
+
+def test_the_same_file_at_a_new_address_moves_the_link_so_the_meeting_settles(db):
+    init_db(db)
+    viewer = "https://example.gov/AgendaViewer.php?clip_id=7"
+    row = packet_meeting("moved", TODAY - timedelta(days=20), [("Agenda", AGENDA_URL)])
+    capture.capture_candidates(db, [row], fetch=fake_fetch)
+    row["documents"][0]["url"] = viewer  # the agenda viewer redirects to the same PDF
+    capture.capture_candidates(db, [row], fetch=lambda url: fake_fetch(AGENDA_URL))
+    assert [r["url"] for r in db.execute("SELECT url FROM document_versions WHERE meeting_id='slt-planning:moved'")] == [viewer]
+    assert scheduled._skip_reason(scheduled.stored_meetings(db), "slt-planning:moved", row, TODAY, options()) == "settled"
+
+
+def test_oversized_packet_with_nothing_else_captured_still_fails(db):
+    init_db(db)
+    rows = [packet_meeting("alone", TODAY - timedelta(days=20), [("Agenda Packet", PACKET_URL)]),
+            packet_meeting("agenda", TODAY - timedelta(days=21), [("Agenda", PACKET_URL), ("Minutes", AGENDA_URL)])]
+    result = capture.capture_candidates(db, rows, fetch=oversized_fetch([]))
+    assert len(result["captureFailures"]) == 2
+    for source_id in ("alone", "agenda"):
+        stored = db.execute("SELECT warnings FROM meetings WHERE id=%s", (f"slt-planning:{source_id}",)).fetchone()
+        assert any("could not be retrieved" in w for w in stored["warnings"])
+    assert {r["status"] for r in db.execute("SELECT status FROM processing_runs WHERE stage='capture'")} == {"failed"}
+    assert db.execute("SELECT status FROM agencies WHERE id='slt-planning'").fetchone()["status"] == "error"
 
 
 def test_index_limits():

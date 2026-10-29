@@ -250,7 +250,7 @@ def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
     conn.commit()
     log("INFO", f"verified-sources: capturing {len(pending)} candidates", counts=counts)
     result = capture_candidates(conn, pending, max_documents=options.max_documents, fetch=fetch,
-                                incremental=True, delay=options.delay)
+                                incremental=True, delay=options.delay, oversized=stored.oversized)
     for error in result["errors"] + result["captureFailures"]:
         run.fail("verified-sources", error)
     counts.update(captured=result["processed"], failed=result["failed"], documentFailures=len(result["captureFailures"]))
@@ -350,7 +350,7 @@ def discover_sources(conn, root: Path, run: Run, options: Options, discover, fet
                 report["linksUpdated"] = updated
             conn.commit()
             result = capture_candidates(conn, selected, max_documents=options.max_documents, fetch=fetch,
-                                        incremental=True, delay=options.delay)
+                                        incremental=True, delay=options.delay, oversized=stored.oversized)
             report.update(captured=result["processed"], failed=result["failed"])
             if result["captureFailures"]:
                 report["documentFailures"] = len(result["captureFailures"])

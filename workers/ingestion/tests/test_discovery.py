@@ -54,7 +54,7 @@ def test_wordpress_committee_keeps_only_its_own_posts_and_the_feed_document_ids(
     assert row["documents"][0]["id"] == "ttd-rtcpc-agenda-packet"
 
 
-def test_granicus_row_ids_use_clip_id_row_title_and_packet_pdf_only():
+def test_granicus_row_ids_use_clip_id_row_title_and_agenda_viewer_before_packet():
     config = {"type": "granicus-row-ids", "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6", "bodyPattern": "City Council"}
     markup = '''<table><tr><td id="10-13-2026-Special-City-Council">Special City Council</td>
       <td><a href="AgendaViewer.php?view_id=6&clip_id=2351">Agenda</a></td>
@@ -67,7 +67,10 @@ def test_granicus_row_ids_use_clip_id_row_title_and_packet_pdf_only():
     assert [(r["source_id"], r["date"], r["title"]) for r in rows] == [("2351", "2026-10-13", "10 13 2026 Special City Council"),
                                                                       ("2339", "2026-10-06", "10 06 2026 City Council")]
     assert rows[0]["official_url"] == "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2351"
-    assert rows[0]["documents"] == [{"id": "slt-agenda-packet", "title": "Agenda Packet", "url": "https://d3n.example/slt/packet.pdf"}]
+    # The agenda viewer redirects to the compact agenda PDF: first, under the ID stored meetings hold their agenda under.
+    assert rows[0]["documents"] == [{"id": "slt-agenda", "title": "Agenda", "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2351"},
+                                    {"id": "slt-agenda-packet", "title": "Agenda Packet", "url": "https://d3n.example/slt/packet.pdf"}]
+    assert [d["id"] for d in rows[1]["documents"]] == ["slt-agenda"]
 
 
 def test_document_identifiers_do_not_depend_on_link_order():

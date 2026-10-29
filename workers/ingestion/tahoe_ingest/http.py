@@ -21,7 +21,12 @@ class EndpointSkipped(RuntimeError):
 
 
 class SourceTooLarge(ValueError):
-    """The response is larger than the caller's ``max_bytes``; fetching it again would fail the same way."""
+    """The source is over a size limit; fetching it again would fail the same way.
+
+    Raised for a response larger than the caller's ``max_bytes`` (from its
+    Content-Length header before the body is read, or while reading), and as
+    ``source.TooManyPages`` for a PDF over the page limit.
+    """
 
 
 def _skip_file() -> Path:
@@ -89,6 +94,10 @@ def fetch_bytes(url: str, *, max_bytes: int, accept: str = '*/*', payload: bytes
         with urllib.request.urlopen(request, timeout=45) as response:
             if urlparse(response.geturl()).scheme != 'https':
                 raise ValueError('source redirected outside HTTPS')
+            declared = response.headers.get('Content-Length', '')
+            if declared.strip().isdigit() and int(declared) > max_bytes:
+                # Rejected before the body is read; servers that omit the header are bounded by the read below.
+                raise SourceTooLarge(f'source exceeds {max_bytes} byte limit ({int(declared)} bytes declared)')
             data = response.read(max_bytes + 1)
             if len(data) > max_bytes:
                 raise SourceTooLarge(f'source exceeds {max_bytes} byte limit')

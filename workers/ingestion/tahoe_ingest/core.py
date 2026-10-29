@@ -219,6 +219,21 @@ def record_failure(conn, agency_id: str, source_id: str, stage: str, error: str)
                      (error[:1000], agency_id))
 
 
+def record_oversized(conn, agency_id: str, source_id: str, url: str, reason: str) -> None:
+    """Record a packet left out for being over the capture limits, so it is not downloaded again.
+
+    Not a failure: the agency's status is untouched. Written after the meeting is
+    ingested so its ID resolves; a URL already recorded for the meeting is skipped.
+    """
+    meeting_id = stable_id(agency_id, source_id)
+    with conn.transaction():
+        conn.execute("""INSERT INTO processing_runs(agency_id,meeting_id,stage,status,finished_at,detail)
+            SELECT %s,m.id,'capture','oversized',now(),%s FROM meetings m WHERE m.id=%s AND NOT EXISTS (
+                SELECT 1 FROM processing_runs r WHERE r.meeting_id=m.id AND r.stage='capture'
+                AND r.status='oversized' AND r.detail->>'url'=%s)""",
+            (agency_id, json.dumps({"url": url, "reason": reason[:1000]}), meeting_id, url))
+
+
 def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=None):
     if aid not in AGENCIES:
         raise ValueError(f"unknown agency {aid}")
@@ -294,8 +309,8 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
     # Rereading an unchanged meeting is the common case, so current state is read up front
     # and statements that would rewrite identical rows are skipped.
     current_versions = {r["source_document_id"]: r for r in conn.execute(
-        """SELECT c.source_document_id,c.version_id,(SELECT count(*) FROM document_pages p WHERE p.document_version_id=c.version_id) AS pages
-        FROM document_current c WHERE c.meeting_id=%s""", (meeting_id,))}
+        """SELECT c.source_document_id,c.version_id,v.url,(SELECT count(*) FROM document_pages p WHERE p.document_version_id=c.version_id) AS pages
+        FROM document_current c JOIN document_versions v ON v.id=c.version_id WHERE c.meeting_id=%s""", (meeting_id,))}
     previous_document_ids = set(current_versions)
     version_ids = {}
     revised_documents = set()
@@ -328,6 +343,10 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             raise ValueError(f"no extracted pages for {doc_id}; refusing empty publication")
         version_ids[doc_id] = version_id
         if current and current["version_id"] == version_id and current["pages"] >= len(pages):
+            if current["url"] != doc["url"]:
+                # The same file at a new address (South Lake Tahoe's agenda viewer link for the
+                # attachment URL stored earlier): the link follows, so the meeting can settle.
+                conn.execute("UPDATE document_versions SET url=%s WHERE id=%s", (doc["url"], version_id))
             continue  # The same file with all of its pages is already current.
         conn.execute("""INSERT INTO document_versions(id,meeting_id,source_document_id,title,url,sha256,fetched_at,page_count,status,warnings,media_type)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'extracted',%s,%s) ON CONFLICT(id) DO NOTHING""",

@@ -11,9 +11,9 @@ import time
 from datetime import date, datetime, timezone
 
 from .agenda import ParseResult, parse_agenda
-from .core import ingest_bundle, record_failure, stable_id
+from .core import ingest_bundle, record_failure, record_oversized, stable_id
 from .source_discovery import discover_configured
-from .http import EndpointSkipped
+from .http import EndpointSkipped, SourceTooLarge
 from .records import apply_links, links_of, match_meeting, qualifiers
 from .source import download_extract
 from .start_times import agenda_date
@@ -70,6 +70,9 @@ class StoredMeetings:
     The scheduled run checks hundreds of candidates; every hosted query is a billed
     operation, so these checks read this snapshot instead of querying per candidate.
     Load it before a batch of decisions. Captures made afterwards are not reflected.
+
+    A packet recorded as over the capture limits (see `oversized_urls`) counts as
+    stored in ``document_urls``, so a meeting whose agenda was captured settles.
     """
 
     def __init__(self, conn, *, failure_hours: int):
@@ -83,6 +86,10 @@ class StoredMeetings:
         self.document_urls = {}
         for r in conn.execute("""SELECT c.meeting_id,v.url FROM document_current c JOIN document_versions v ON v.id=c.version_id"""):
             self.document_urls.setdefault(r["meeting_id"], set()).add(r["url"])
+        oversized = oversized_urls(conn)
+        self.oversized = frozenset(url for _, url in oversized)  # for `capture_candidates`, from the same snapshot
+        for meeting_id, url in oversized:
+            self.document_urls.setdefault(meeting_id, set()).add(url)
         self.failed = {r["meeting_id"] for r in conn.execute(
             """SELECT DISTINCT meeting_id FROM processing_runs WHERE stage='capture' AND status='failed'
             AND meeting_id IS NOT NULL AND started_at > now() - make_interval(hours => %s)""", (failure_hours,))}
@@ -128,19 +135,50 @@ class StoredMeetings:
         return row["local_date"] if row else None
 
 
-def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, failure_records: list, delay: float) -> dict:
+def oversized_urls(conn) -> set[tuple[str, str]]:
+    """(meeting ID, URL) of every packet recorded as over the capture limits, in one query."""
+    return {(r["meeting_id"], r["url"]) for r in conn.execute(
+        """SELECT DISTINCT meeting_id,detail->>'url' AS url FROM processing_runs
+        WHERE stage='capture' AND status='oversized' AND meeting_id IS NOT NULL AND detail ? 'url'""")}
+
+
+def _is_packet(document: dict) -> bool:
+    """The `staff_reports.pdf_agenda` convention: a packet says so in its ID or title."""
+    return bool(re.search(r"packet", f"{document.get('id', '')} {document.get('title', '')}", re.I))
+
+
+def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, failure_records: list, delay: float,
+                 *, known_oversized: frozenset = frozenset(), oversized: list | None = None) -> dict:
+    """One meeting's ingest row from its first ``max_documents`` documents.
+
+    A packet over the size or page limits (``SourceTooLarge``) beside another captured
+    document is left out without a failure: the agenda still parses, and the URL is
+    appended to ``oversized`` as ``(agency, source_id, url, reason)`` so it can be
+    recorded and never downloaded again. URLs in ``known_oversized`` are treated that
+    way without being fetched. An oversized document that is not a packet, or a packet
+    with nothing else captured, is a document error as before.
+    """
     docs = []
     pages = []
     html_items = None
     document_errors = []
     skipped = []
+    too_large = []
+    fetched_any = False
     for index, document in enumerate(candidate["documents"][:max_documents]):
-        if index and delay:
+        if document["url"] in known_oversized:
+            too_large.append((document, "previously exceeded the capture limits; not downloaded again"))
+            continue
+        if fetched_any and delay:
             time.sleep(delay)
+        fetched_any = True
         try:
             fetched = fetch(document["url"])
         except EndpointSkipped as exc:
             skipped.append(str(exc))
+            continue
+        except SourceTooLarge as exc:
+            too_large.append((document, str(exc)))
             continue
         except (OSError, RuntimeError, ValueError) as exc:
             document_errors.append(str(exc))
@@ -156,6 +194,15 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
                      "page_count": fetched["page_count"], "media_type": fetched.get("media_type", "application/pdf"),
                      "warnings": fetched["warnings"]})
         pages.extend({"document_id": document["id"], **page} for page in fetched["pages"])
+    omitted = bool(too_large)
+    for document, reason in too_large:
+        if docs and _is_packet(document):
+            if oversized is not None:
+                oversized.append((candidate["agency"], candidate["source_id"], document["url"], reason))
+            continue
+        document_errors.append(reason)
+        failures.append(f"{candidate['agency']}:{candidate['source_id']}: {reason}")
+        failure_records.append((candidate["agency"], candidate["source_id"], reason))
     complete_document_set = not document_errors and not skipped and len(candidate["documents"]) <= max_documents
     parsed = ParseResult(html_items, True) if html_items else (
         parse_agenda(candidate["agency"], docs, pages) if docs and complete_document_set else None)
@@ -180,20 +227,24 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
             "date": day, "start_time": candidate.get("start_time"),
             "timezone": "America/Los_Angeles", "location": candidate.get("location"),
             "warnings": warnings, "partial_logistics": True,
-            "documents": docs, "documents_complete": bool(candidate.get("documents_complete")) and complete_document_set,
+            "documents": docs, "documents_complete": bool(candidate.get("documents_complete")) and complete_document_set and not omitted,
             "pages": pages, "agenda_items": parsed.items if parsed and parsed.complete else [],
             "items_complete": bool(parsed and parsed.complete), **links_of(candidate)}
 
 
 def capture_candidates(conn, candidates: list[dict], *, max_documents: int = 2, fetch=download_extract,
-                       incremental: bool = False, delay: float = 0.0) -> dict:
+                       incremental: bool = False, delay: float = 0.0, oversized: frozenset | None = None) -> dict:
     """Download each candidate's first ``max_documents`` documents and ingest the meetings.
 
     With ``incremental`` each meeting is ingested and committed on its own, and
     no transaction stays open during downloads (for long scheduled runs against
     a remote database). Otherwise all meetings are ingested together at the end.
+
+    Packets recorded as oversized are not downloaded again. Pass ``oversized`` (a
+    `StoredMeetings.oversized` snapshot) to skip the one query that loads them.
     """
-    rows, failures, failure_records = [], [], []
+    rows, failures, failure_records, new_oversized = [], [], [], []
+    known_oversized = oversized if oversized is not None else frozenset(url for _, url in oversized_urls(conn))
     result = {"processed": 0, "failed": 0, "errors": []}
 
     def ingest(batch):
@@ -211,7 +262,8 @@ def capture_candidates(conn, candidates: list[dict], *, max_documents: int = 2, 
         if incremental:
             conn.commit()
         try:
-            row = _capture_row(candidate, max_documents, fetch, failures, failure_records, delay)
+            row = _capture_row(candidate, max_documents, fetch, failures, failure_records, delay,
+                               known_oversized=known_oversized, oversized=new_oversized)
         except Exception as exc:  # One bad source never stops the batch.
             failures.append(f"{candidate['agency']}:{candidate['source_id']}: {exc}")
             failure_records.append((candidate["agency"], candidate["source_id"], str(exc)))
@@ -225,6 +277,8 @@ def capture_candidates(conn, candidates: list[dict], *, max_documents: int = 2, 
         ingest(rows)
     for agency_id, source_id, error in failure_records:
         record_failure(conn, agency_id, source_id, "capture", error)
+    for agency_id, source_id, url, reason in new_oversized:
+        record_oversized(conn, agency_id, source_id, url, reason)
     if incremental:
         conn.commit()
     result["captureFailures"] = failures

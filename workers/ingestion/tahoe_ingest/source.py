@@ -7,9 +7,15 @@ import tempfile
 from pathlib import Path
 from urllib.parse import urlparse
 
+from .http import USER_AGENT, SourceTooLarge, fetch_bytes
+
 MAX_PDF_BYTES = 80 * 1024 * 1024
 MAX_PAGES = 800
-from .http import USER_AGENT, fetch_bytes
+
+
+class TooManyPages(SourceTooLarge):
+    """The PDF has more than ``MAX_PAGES`` pages; like a byte-limit failure, a retry would fail the same way."""
+
 from .html_source import html_text
 from .html_agenda import parse_html_agenda
 
@@ -51,7 +57,9 @@ def download_extract(url: str, *, max_bytes: int = MAX_PDF_BYTES) -> dict:
         if not page_line:
             raise ValueError("PDF has no page count")
         page_count = int(page_line.split(":", 1)[1].strip())
-        if page_count < 1 or page_count > MAX_PAGES:
+        if page_count > MAX_PAGES:
+            raise TooManyPages(f"PDF page count outside 1..{MAX_PAGES}: {page_count}")
+        if page_count < 1:
             raise ValueError(f"PDF page count outside 1..{MAX_PAGES}: {page_count}")
         extracted = subprocess.run(["pdftotext", "-layout", "-enc", "UTF-8", str(path), "-"],
                                    capture_output=True, timeout=120, check=True).stdout.decode("utf-8", "replace")

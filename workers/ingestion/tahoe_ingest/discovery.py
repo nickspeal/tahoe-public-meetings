@@ -154,9 +154,13 @@ def wordpress_meetings_range(agency: str, config: dict, *, since, until, fetch=f
 # ---------------------------------------------------------------- granicus-row-ids
 # A Granicus publisher whose rows are named by their first cell's ID, such as
 # `10-06-2026-City-Council`. The ID gives the date and the title ("10 06 2026 City
-# Council"), which `bodyPattern` matches. Documents are the row's PDFs only; the
-# agenda viewer is the official URL and its clip_id the source ID. (The `granicus`
-# type reads rows by their text instead, and also captures the HTML agenda.)
+# Council"), which `bodyPattern` matches. The row's agenda viewer link is the
+# official URL and its clip_id the source ID. It redirects to the compact agenda
+# PDF, which is the first document (`{agency}-agenda`, the ID stored meetings
+# already hold their agenda under, so a capture is a new version of it, not a
+# second agenda), ahead of the row's PDFs (the packet). Rows with no clip_id
+# (upcoming meetings listed only by event) are skipped. (The `granicus` type reads
+# rows by their text instead, and also captures the HTML agenda.)
 
 GRANICUS_ROW_ID = re.compile(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', re.I)
 
@@ -179,7 +183,9 @@ def _granicus_id_rows(agency: str, config: dict, markup: str):
             yield day, None
             continue
         yield day, {"agency": agency, "source_id": clip.group(1), "title": title, "official_url": agenda, "date": day,
-                    "documents": _pdf_links(row, index, agency),
+                    "documents": [{"id": f"{agency}-agenda", "title": "Agenda", "url": agenda},
+                                  *(d for d in _pdf_links(row, index, agency)
+                                    if d["url"] != agenda and not re.fullmatch(rf"{re.escape(agency)}-agenda(-[0-9a-f]{{12}})?", d["id"]))],
                     "warnings": ["Publisher row date/time and agenda items require source review."],
                     **granicus_links(links, html.unescape(row), index)}
 

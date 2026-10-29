@@ -87,9 +87,11 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
                                       fetch=fake_fetch, post=hook, read_pdf=no_staff_reports)
     json.dumps(summary)  # One JSON line for Cloud Logging.
     steps = {s["name"]: s for s in summary["steps"]}
-    assert list(steps) == ["init-db", "seed-fixtures", "one-offs", "comment-periods", "verified-sources", "discover",
+    assert list(steps) == ["init-db", "seed-fixtures", "comment-periods", "notices", "one-offs", "verified-sources", "discover",
                            "quarantine", "reparse", "reclassify", "meeting-records", "draft-minutes", "classify-topics", "participation",
-                           "staff-reports", "summarize-items", "export", "validate", "store", "deploy-hook"]
+                           "staff-reports", "planning-calendars", "classify-subjects", "summarize-items", "export", "validate",
+                           "store", "deploy-hook"]
+    assert steps["notices"]["status"] == "skipped" and steps["classify-subjects"]["status"] == "skipped"
     # Source failures degrade the run but never stop publication.
     assert summary["status"] == "degraded" and summary["exportId"]
     assert steps["classify-topics"]["status"] == "skipped" and steps["summarize-items"]["status"] == "skipped"
@@ -296,3 +298,68 @@ def test_publish_export_cli(db, monkeypatch, tmp_path):
     path.write_text(json.dumps(broken))
     assert cli.main(["--database-url", "unused", "publish-export", "--file", str(path)]) == 1
     assert db.execute("SELECT count(*) AS n FROM public_exports").fetchone()["n"] == 1
+
+
+CALENDARS = ROOT / "tests/fixtures/planning-calendars"
+
+
+def test_planning_calendars_in_the_scheduled_run(db, monkeypatch, tmp_path):
+    """A stored SLT agenda's calendar becomes previews and planned meetings once; a broken one is named and skipped."""
+    from datetime import datetime, timezone
+    from tahoe_ingest import core
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setattr(core, "now", lambda: datetime(2026, 10, 7, 19, tzinfo=timezone.utc))
+    today = date(2026, 10, 7)
+    out = tmp_path / "public.json"
+    calendar = json.loads((CALENDARS / "slt-apc-2026-09-30.json").read_text())
+    documents = {calendar["url"]: calendar}
+    calls = []
+
+    def reader(url, **_):
+        calls.append(url)
+        data = documents[url]
+        return {"sha256": data["sha256"], "page_count": data["page_count"], "pages": data["pages"], "links": []}
+
+    def run():
+        summary = scheduled.run_scheduled(db, options(out=out, skip_discovery=True, publish=False), fetch=fake_fetch,
+                                          today=today, read_pdf=reader)
+        return summary, {s["name"]: s for s in summary["steps"]}, {m["id"]: m for m in json.loads(out.read_text())["meetings"]}
+
+    def attach(files):
+        item = db.execute("""SELECT id,source_fingerprint FROM agenda_items WHERE meeting_id='slt:2339' AND active
+            AND title='Agenda Planning Calendar' ORDER BY item_order LIMIT 1""").fetchone()
+        db.execute("""INSERT INTO item_attachments(item_id,source_fingerprint,method,files,evidence) VALUES (%s,%s,%s,%s,'{}')
+            ON CONFLICT(item_id) DO UPDATE SET files=excluded.files""",
+                   (item["id"], item["source_fingerprint"], staff_reports.METHOD_VERSION, json.dumps(files)))
+        db.commit()
+
+    run()  # seeds the fixture agendas, slt:2339 (October 6, with its "Agenda Planning Calendar" item) among them
+    stored = {"url": calendar["url"], "name": calendar["attachmentName"], "label": "APC 09 30 2026"}
+    attach([stored])
+    summary, steps, meetings = run()
+    assert steps["planning-calendars"]["status"] == "ok" and calls == [calendar["url"]]
+    assert steps["planning-calendars"]["detail"]["calendarsRead"] == 1
+    assert steps["validate"]["status"] == "ok"
+    assert [m["date"] for m in meetings.values() if m.get("previews")] == ["2026-11-03", "2026-11-17", "2026-12-01", "2026-12-15"]
+    assert meetings["slt:planned-2026-12-01"]["planned"] is True and "biking" in meetings["slt:planned-2026-12-01"]["topics"]
+    assert "previews" not in meetings["slt:2351"]  # October 13: its agenda is posted
+    rows = db.execute("SELECT count(*) AS n FROM meeting_previews").fetchone()["n"]
+
+    summary, steps, again = run()
+    assert calls == [calendar["url"]] and steps["planning-calendars"]["detail"]["calendarsUnchanged"] == 1
+    assert steps["planning-calendars"]["detail"]["previewsInserted"] == 0
+    assert not [f for f in summary["failures"] if f.startswith("planning-calendars")]
+    assert db.execute("SELECT count(*) AS n FROM meeting_previews").fetchone()["n"] == rows
+    assert {k: m.get("previews") for k, m in again.items()} == {k: m.get("previews") for k, m in meetings.items()}
+
+    # A calendar whose layout fails validation publishes nothing, leaves the previous previews, and is named.
+    broken = json.loads(json.dumps(calendar))
+    broken.update(url="https://slt.granicus.com/services/legistar/download/pdf/9/APC_10_14_2026.pdf", sha256="f" * 64)
+    broken["pages"][0]["text"] = broken["pages"][0]["text"].replace("Agenda Planning Calendar", "Agenda Calendar", 1)
+    documents[broken["url"]] = broken
+    attach([stored, {"url": broken["url"], "name": "APC 10 14 2026.pdf", "label": "APC 10 14 2026"}])
+    summary, steps, after = run()
+    assert steps["planning-calendars"]["status"] == "degraded"
+    assert [r["url"] for r in steps["planning-calendars"]["detail"]["rejected"]] == [broken["url"]]
+    assert any(f.startswith("planning-calendars: slt calendar " + broken["url"]) for f in summary["failures"])
+    assert {k: m.get("previews") for k, m in after.items()} == {k: m.get("previews") for k, m in meetings.items()}

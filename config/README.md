@@ -82,11 +82,28 @@ The worker resolves `extends` when it loads the registry, so every consumer sees
 
 An entry with `"meetingHost": "per-record"` is not a body. `other` (named "Other") is the only one today: it holds one-off meetings and comment periods that no single followed body holds, such as an open house co-hosted by TRPA and El Dorado County. Every meeting and comment period under such an entry must name its `host`, which the website shows instead of the agency name. The loader rejects `meetingHost` with any other value, or on an entry with `discovery`, `agenda`, or `schedule`; `meetingHost` is never inherited through `extends`. The entry is the whole definition of Other: code asks `per_record_host_agencies()` for the entries that carry the property and never tests for the ID, and source coverage leaves these entries out of its counts.
 
+### Planning calendars
+
+Some agencies publish a tentative calendar of the subjects planned for their next meetings. An entry's optional `planningCalendar` block turns that calendar into previews: subjects shown on a future meeting, marked subject to change, before its agenda is posted (IDEA-018). Dates with no stored meeting get a planned meeting (`<agency>:planned-<YYYY-MM-DD>`), which the captured agenda later adopts.
+
+```json
+"planningCalendar": {"format": "slt-apc-attachment", "itemTitle": "Agenda Planning Calendar",
+                     "attachmentPattern": "^APC \\d{2} \\d{2} \\d{4}\\.pdf$", "title": "Agenda Planning Calendar",
+                     "bodies": {"*": {"id": "slt", "meetingTitle": "City Council Meeting"}}}
+```
+
+- `format` names a format in [`planning_calendar_rules/`](../workers/ingestion/tahoe_ingest/planning_calendar_rules/README.md); the other keys are its parameters. `slt-apc-attachment` reads the PDF attached to an agenda item (South Lake Tahoe), downloading each new calendar once. `ttd-packet-pages` reads the pages of the stored agenda packet headed `heading` (TTD), with no download.
+- `title` is text the calendar's title must contain.
+- `bodies` maps each body label the calendar prints to a followed entry and the title its planned meetings get; `"*"` maps a calendar that covers one body. Labels not listed are skipped, so TTD's TTC and Finance & Personnel columns are never read.
+- The block is never inherited through `extends`: it belongs to the body whose agenda carries the calendar, and its `bodies` map covers the siblings.
+
+Each calendar is parsed whole by deterministic rules. If any heading, column, or quote fails, nothing of it is published, the previous calendar's previews stay current, and the run summary names the calendar. A calendar redesign therefore stops that agency's previews until its format is updated. To add an agency on a known format, add the block, a reviewed fixture under `tests/fixtures/planning-calendars/`, and a test; then run `python3 scripts/project.py worker read-planning-calendars --agency ID --dry-run`, then without `--dry-run`. A new layout needs a format module (see the rules README).
+
 ### Adding an agency
 
 For a body whose website and documents use formats the worker already reads:
 
-1. Add an entry to `agencies.json` in canonical key order, with `"extends"` if it is a sibling of an existing entry. Give it `discovery` (a type from [the table below](#reviewed-source-configuration-and-repeatable-acquisition)), `agenda.layouts` (from [`agenda-layouts.json`](agenda-layouts.json)), and `staffReports` (a rule from the [rules README](../workers/ingestion/tahoe_ingest/staff_report_rules/README.md), or a note on why there is none). Add `schedule`, `duration`, or `topicHints` only when known.
+1. Add an entry to `agencies.json` in canonical key order, with `"extends"` if it is a sibling of an existing entry. Give it `discovery` (a type from [the table below](#reviewed-source-configuration-and-repeatable-acquisition)), `agenda.layouts` (from [`agenda-layouts.json`](agenda-layouts.json)), and `staffReports` (a rule from the [rules README](../workers/ingestion/tahoe_ingest/staff_report_rules/README.md), or a note on why there is none). Add `schedule`, `duration`, `topicHints`, or a [`planningCalendar`](#planning-calendars) only when known.
 2. Check discovery against the live index: `worker discover ID --limit 3 --out data/live/ID.json`, then `worker capture` on a few results.
 3. Add fixtures: a saved index page under `tests/fixtures/discovery/`, an agenda under `tests/fixtures/agenda-layouts/` with the reviewed items, and, with a rule, a staff report fixture under `tests/fixtures/staff-reports/`.
 4. Record the review in [`source-reviews.json`](source-reviews.json) and, for recordings or minutes on YouTube or Laserfiche, add a feed to [`meeting-records.json`](meeting-records.json).

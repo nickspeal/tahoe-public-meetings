@@ -3,27 +3,30 @@
 `tahoe-ingest run-scheduled` runs these steps in order; one source failing never
 stops the run, but an invalid export is never published:
 
-1. init-db           idempotent schema and agency registry
-2. seed-fixtures     tracked source bundle; only meetings not yet stored (never reapplied)
-3. one-offs          config/one-off-meetings.json (idempotent upsert)
-4. comment-periods   config/public-comment-periods.json (fetches and verifies notices)
-5. verified-sources  config/verified-agency-meetings-*.json; captures meetings not yet stored
-6. discover          each followed agency with a discovery block: recent and upcoming meetings, polite delays
-7. quarantine        config/quarantined-meeting-candidates.json
-8. reparse           stored text of meetings without items
-9. reclassify        rule topic tags
-10. meeting-records  YouTube and Laserfiche links from config/meeting-records.json (skipped with --skip-discovery)
-11. draft-minutes    draft minutes found through later agendas (stored items only)
-12. classify-topics  Claude tags, only with Claude credentials, within cost guards
-13. participation    Claude reads location, remote links, and comment instructions from agendas; same guards
-14. staff-reports    link items to their own staff reports (agencies whose staffReports names a rule); a few meetings per run
-15. summarize-items  Claude selects summary sentences from those reports; its own per-run cost limit
-16. export           public JSON (mode "live")
-17. validate         the same checks as scripts/check_export.py, plus a minimum size
-18. store            insert into public_exports, keep the latest 5
-19. deploy-hook      POST to VERCEL_DEPLOY_HOOK_URL when set
+1. init-db             idempotent schema and agency registry
+2. seed-fixtures       tracked source bundle; only meetings not yet stored (never reapplied)
+3. comment-periods     config/public-comment-periods.json (fetches and verifies notices)
+4. notices             Claude reads each changed tracked notice: one-off meetings and previews (IDEA-018); same guards as 14
+5. one-offs            config/one-off-meetings.json (idempotent upsert; after notices, so a configured entry overrides)
+6. verified-sources    config/verified-agency-meetings-*.json; captures meetings not yet stored
+7. discover            each followed agency with a discovery block: recent and upcoming meetings, polite delays
+8. quarantine          config/quarantined-meeting-candidates.json
+9. reparse             stored text of meetings without items
+10. reclassify         rule topic tags
+11. meeting-records    YouTube and Laserfiche links from config/meeting-records.json (skipped with --skip-discovery)
+12. draft-minutes      draft minutes found through later agendas (stored items only)
+13. classify-topics    Claude tags, only with Claude credentials, within cost guards
+14. participation      Claude reads location, remote links, and comment instructions from agendas; same guards
+15. staff-reports      link items to their own staff reports (agencies whose staffReports names a rule); a few meetings per run
+16. planning-calendars new agenda planning calendars (agencies with planningCalendar) become previews; new calendars only
+17. classify-subjects  Claude tags for new preview subjects; same guards as 13
+18. summarize-items    Claude selects summary sentences from those reports; its own per-run cost limit
+19. export             public JSON (mode "live")
+20. validate           the same checks as scripts/check_export.py, plus a minimum size
+21. store              insert into public_exports, keep the latest 5
+22. deploy-hook        POST to VERCEL_DEPLOY_HOOK_URL when set
 
-Only 16-19 failing makes the run fail.
+Only 19-22 failing makes the run fail.
 """
 from __future__ import annotations
 
@@ -41,7 +44,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import ai_topics, item_summaries, participation, records, staff_reports
+from . import ai_topics, item_summaries, notices, participation, planning_calendars, previews, records, staff_reports
 from .capture import StoredMeetings, capture_candidates, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
@@ -85,6 +88,7 @@ class Options:
                  max_cost=ai_topics.DEFAULT_MAX_RUN_COST, monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET,
                  summary_max_cost=item_summaries.DEFAULT_MAX_RUN_COST,
                  staff_report_meetings=staff_reports.DEFAULT_MAX_MEETINGS,
+                 max_calendars=planning_calendars.DEFAULT_MAX_CALENDARS,
                  out=None, skip_discovery=False, publish=True):
         self.root = Path(root)
         self.discovery_limit = discovery_limit
@@ -102,6 +106,7 @@ class Options:
         self.monthly_budget = monthly_budget
         self.summary_max_cost = summary_max_cost
         self.staff_report_meetings = staff_report_meetings
+        self.max_calendars = max_calendars
         self.out = out
         self.skip_discovery = skip_discovery
         self.publish = publish
@@ -397,6 +402,45 @@ def extract_participation(conn, options: Options):
     return status, report
 
 
+def extract_notices(conn, options: Options, today: date):
+    if not ai_topics.has_credentials():
+        return "skipped", {"reason": "no Claude credentials (API key or workload identity federation)"}
+    try:
+        report = notices.extract_notices(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget, today=today)
+    except SystemExit as exc:  # Budget and fatal-API guards stop extraction, not publication.
+        conn.rollback()
+        return "degraded", {"stopped": _short(exc)}
+    report.pop("dryRun", None)
+    return ("degraded" if report.get("failedPeriods") or report.get("stoppedEarly") else "ok"), report
+
+
+def read_planning_calendars(conn, options: Options, run: Run, reader, today: date):
+    if options.max_calendars <= 0:
+        return "skipped", {"reason": "--max-calendars 0"}
+    report = planning_calendars.read_planning_calendars(conn, reader=reader, delay=options.delay, today=today,
+                                                        max_calendars=options.max_calendars)
+    report.pop("dryRun", None)
+    # A calendar that fails validation publishes nothing; the summary names it so its layout can be updated.
+    for rejected in report["rejected"]:
+        run.fail("planning-calendars", f"{rejected['agency']} calendar {rejected['url']} rejected: {rejected['reason']}")
+    for failed in report["failed"]:
+        run.fail("planning-calendars", f"{failed['agency']} calendar {failed['url']}: {failed['reason']}")
+    return ("degraded" if report["rejected"] or report["failed"] else "ok"), report
+
+
+def classify_subjects(conn, options: Options):
+    if not ai_topics.has_credentials():
+        return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); rule tags stay in place"}
+    try:
+        report = previews.classify_subjects(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget)
+    except SystemExit as exc:  # Budget and fatal-API guards stop classification, not publication.
+        conn.rollback()
+        return "degraded", {"stopped": _short(exc)}
+    report.pop("promptSha256", None)
+    report.pop("dryRun", None)
+    return ("degraded" if report.get("failed") or report.get("stoppedEarly") else "ok"), report
+
+
 def map_staff_reports(conn, options: Options, reader, today: date):
     if options.staff_report_meetings <= 0:
         return "skipped", {"reason": "--staff-report-meetings 0"}
@@ -541,8 +585,9 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         if run.fatal:
             return _summary(run, started_at, payload, published)
         run.step("seed-fixtures", lambda: seed_fixtures(conn, root, run))
-        run.step("one-offs", lambda: one_offs(conn, root, run))
         run.step("comment-periods", lambda: comment_periods(conn, root, run, fetch))
+        run.step("notices", lambda: extract_notices(conn, options, today))
+        run.step("one-offs", lambda: one_offs(conn, root, run))
         run.step("verified-sources", lambda: verified_sources(conn, root, run, options, fetch))
         if options.skip_discovery:
             run.steps.append({"name": "discover", "status": "skipped", "detail": {"reason": "--skip-discovery"}})
@@ -559,6 +604,8 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         run.step("classify-topics", lambda: classify(conn, options))
         run.step("participation", lambda: extract_participation(conn, options))
         run.step("staff-reports", lambda: map_staff_reports(conn, options, read_pdf, today))
+        run.step("planning-calendars", lambda: read_planning_calendars(conn, options, run, read_pdf, today))
+        run.step("classify-subjects", lambda: classify_subjects(conn, options))
         run.step("summarize-items", lambda: summarize_items(conn, options, today))
 
         def export():
@@ -599,7 +646,8 @@ def _reclassify(conn):
 def _summary(run: Run, started_at: datetime, payload, published: dict) -> dict:
     degraded = any(s["status"] in ("degraded", "failed") for s in run.steps)
     status = "failed" if run.fatal else "degraded" if degraded else "ok"
-    ai_steps = [s.get("detail", {}) for s in run.steps if s["name"] in ("classify-topics", "participation", "summarize-items")]
+    ai_steps = [s.get("detail", {}) for s in run.steps if s["name"] in ("classify-topics", "participation", "summarize-items",
+                                                                        "notices", "classify-subjects")]
     counts = {}
     if payload is not None:
         meetings = payload["meetings"]

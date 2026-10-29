@@ -1,6 +1,6 @@
 # IDEA-018: Meetings and agenda previews from notices and planning calendars
 
-Status: proposed; maintainer decisions recorded 2026-10-29, open questions resolved the same day
+Status: accepted; implemented locally 2026-10-29 ([decision 0028](../decisions/0028-previews-from-notices-and-planning-calendars.md))
 Stage: MVP polish
 
 ## Problem and audience
@@ -229,3 +229,4 @@ Everything else below is a proposed default unless it restates one of these deci
 - Related decisions: [0009](../decisions/0009-configurable-coverage-and-one-off-meetings.md) (one-off notices), [0012](../decisions/0012-forecast-meetings-from-schedule-patterns.md) (forecasts), [0014](../decisions/0014-reviewed-sources-and-public-comment-periods.md) (comment periods), [0015](../decisions/0015-deterministic-agenda-layouts.md) (deterministic layouts), [0020](../decisions/0020-database-operation-budget.md) (operation budget), [0021](../decisions/0021-participation-details-from-agendas.md) (participation from agendas), [0022](../decisions/0022-timeline-default-view.md) (default view), [0027](../decisions/0027-agency-definitions-in-configuration.md) (registry). Related ideas: [IDEA-003](IDEA-003-calendar.md), [IDEA-012](IDEA-012-coverage-admin.md).
 - 2026-10-29: proposed after the maintainer noticed that the meetings named in the West Shore Trail notice were missing from the timeline. The maintainer decided default visibility, flexible hosts with an Other filter, automatic publication, notice scope, and the use of planning calendars (decisions 1–5).
 - 2026-10-29: the maintainer resolved four open questions: a deterministic parser per calendar format, Other meetings only under the Other filter, one-off meetings shown by default, and calendar downloads for planned meetings with a stated time (decisions 6–9). The maintainer also asked for concise subject-to-change notes (decision 10). A calendar redesign stops that agency's previews until its layout is updated.
+- 2026-10-29: implemented locally (decision 0028): the Other agency and per-record hosts, the notice reader (`notices` step, `extract-notices`), deterministic calendar parsers for the South Lake Tahoe attachment and the TTD packet pages (`planning-calendars` step, `read-planning-calendars`), preview storage with replacement and planned meetings, the export fields, the website display, and the export checks.

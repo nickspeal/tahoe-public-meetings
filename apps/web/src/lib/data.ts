@@ -1,4 +1,4 @@
-import type { AgendaItem, Meeting, PublicCommentPeriod, PublicData } from '../../../../packages/domain/public';
+import type { AgendaItem, Meeting, MeetingPreview, PublicCommentPeriod, PublicData } from '../../../../packages/domain/public';
 import topicCatalog from '../../../../packages/domain/topics.json';
 import { isRoutineItem } from './routine-items';
 
@@ -186,8 +186,9 @@ export function residentWarning(value: string) {
 
 export type AgendaAvailability = {
   /** items: listed here; posted: official agenda captured but items not listed; not-posted: no agenda yet;
-   *  elsewhere: past meeting whose agenda lives only on the agency site; canceled. */
-  kind: 'items' | 'posted' | 'not-posted' | 'elsewhere' | 'canceled';
+   *  elsewhere: past meeting whose agenda lives only on the agency site; canceled;
+   *  notice: a one-off meeting (open house, workshop) whose notice is all it will ever publish. */
+  kind: 'items' | 'posted' | 'not-posted' | 'elsewhere' | 'canceled' | 'notice';
   /** Short meeting-card text; empty when the missing item count (or the card's status pill) already says enough. */
   label: string;
   heading: string;
@@ -206,6 +207,13 @@ export function agendaAvailability(meeting: Meeting): AgendaAvailability {
     return { kind: 'canceled', label: 'Meeting canceled', heading: 'This meeting was canceled',
       body: 'No agenda items are listed for a canceled meeting. The official meeting page lists any replacement meeting.',
       href: meeting.officialUrl, linkText: 'Official meeting page' };
+  }
+  // One-off meetings (configured or read from a notice) never get an agenda: their official URL is the notice
+  // itself, so the notice counts as the posted document (IDEA-018 R3). Every one-off ID starts with "one-off-",
+  // which one_offs.py enforces; testing the ID rather than a warning's wording keeps this stable if the note changes.
+  if (isOneOff(meeting) && !meeting.documents.length) {
+    return { kind: 'notice', label: 'Meeting notice posted', heading: 'Meeting notice',
+      body: 'The notice has the details for this meeting.', href: meeting.officialUrl, linkText: 'Open the notice' };
   }
   const agenda = meeting.documents.find((document) => /agenda|packet/i.test(document.title) && !/supplement/i.test(document.title));
   if (agenda) {
@@ -239,9 +247,41 @@ export function agendaAvailability(meeting: Meeting): AgendaAvailability {
     href: meeting.officialUrl, linkText: 'Official meeting page' };
 }
 
-/** Expected meetings and upcoming ones whose agency has not posted an agenda yet. */
-export function awaitingAgenda(meeting: Meeting) {
+/** A meeting the timeline lists apart from the regular bodies' meetings: an open house, workshop, or similar event. */
+export function isOneOff(meeting: Meeting) {
+  return meeting.sourceId.startsWith('one-off-');
+}
+
+/** Subjects an official notice or planning calendar says are planned for this meeting; the export sends them only before the agenda is posted. */
+export function meetingPreviews(meeting: Meeting): MeetingPreview[] {
+  return meeting.previews ?? [];
+}
+
+export function hasPreviews(meeting: Meeting) {
+  return meetingPreviews(meeting).length > 0;
+}
+
+/** Expected meetings and upcoming ones whose agency has not posted an agenda yet: they carry the "Expected · no agenda yet" pill. */
+export function agendaNotPosted(meeting: Meeting) {
   return isForecast(meeting) || agendaAvailability(meeting).kind === 'not-posted';
+}
+
+/**
+ * Meetings the timeline keeps behind the "upcoming meetings without a posted agenda" reveal (decision 0022).
+ * A meeting with previews is shown by default and keeps its pill (IDEA-018 decision 1), so it is not awaiting here.
+ */
+export function awaitingAgenda(meeting: Meeting) {
+  return agendaNotPosted(meeting) && !hasPreviews(meeting);
+}
+
+/** Previews whose topics include the selected topic, or all of them with no topic. */
+export function previewsForTopic(meeting: Meeting, topicId = '') {
+  return meetingPreviews(meeting).filter((preview) => !topicId || preview.topics.includes(topicId));
+}
+
+/** "From the agenda planning calendar updated September 30, 2026" or "From the West Shore Trail Notice of Preparation". */
+export function previewSourceLabel(source: MeetingPreview['source']) {
+  return source.kind === 'planning-calendar' ? `From the agenda planning calendar updated ${noticeDayLabel(source.publishedOn)}` : `From the ${source.title}`;
 }
 
 export function meetingAgendaLabel(meeting: Meeting) {
@@ -262,7 +302,7 @@ export const awaitingAgendaLabel = 'Expected · no agenda yet';
 export function meetingStateLabel(meeting: Meeting) {
   if (meeting.status === 'canceled') return 'Canceled';
   if (meeting.status === 'rescheduled') return 'Rescheduled';
-  if (awaitingAgenda(meeting)) return awaitingAgendaLabel;
+  if (agendaNotPosted(meeting)) return awaitingAgendaLabel;
   return null;
 }
 
@@ -333,7 +373,7 @@ export function agencySourceLabel(agency: PublicData['agencies'][number]) {
 }
 
 
-/** Meeting notice tags also apply before an agenda has been posted. */
+/** Meeting notice tags and preview topics also apply before an agenda has been posted. */
 export function meetingTopicIds(meeting: Meeting): string[] {
-  return [...new Set([...(meeting.topics ?? []), ...allItems(meeting).flatMap((item) => item.topics)])];
+  return [...new Set([...(meeting.topics ?? []), ...allItems(meeting).flatMap((item) => item.topics), ...meetingPreviews(meeting).flatMap((preview) => preview.topics)])];
 }

@@ -228,6 +228,68 @@ def check_kinds(data):
     return errors, len(forecasts)
 
 
+PREVIEW_KINDS = ("notice", "planning-calendar")
+AGENDA_DOCUMENT = re.compile(r"agenda|packet", re.I)  # Matches tahoe_ingest.core.agenda_posted.
+SUPPLEMENT = re.compile(r"supplement", re.I)
+
+
+def check_previews(data):
+    """Previews (IDEA-018 R8): only on future meetings whose agenda is not posted, each from a dated official source."""
+    errors = []
+    def require(condition, message):
+        if not condition:
+            errors.append(message)
+
+    topics = {t["id"] for t in data.get("topics", [])}
+    try:
+        export_day = datetime.fromisoformat(data["generatedAt"].replace("Z", "+00:00")).astimezone(PACIFIC).date()
+    except (KeyError, AttributeError, ValueError):
+        export_day = None
+    for meeting in data.get("meetings", []):
+        mid = meeting.get("id")
+        found = meeting.get("previews")
+        try:
+            day = date.fromisoformat(meeting["date"]) if meeting.get("date") else None
+        except (TypeError, ValueError):
+            day = None  # Reported by check().
+        if meeting.get("planned") is not None:
+            require(meeting["planned"] is True, f"{mid}: planned is only ever true")
+            require(meeting.get("kind") == "confirmed", f"{mid}: planned meetings keep kind confirmed")
+            require(bool(found) or bool(meeting.get("documents")), f"{mid}: planned meeting needs a preview or a document")
+        if "previewNotOnAgenda" in meeting:
+            names = meeting["previewNotOnAgenda"]
+            require(isinstance(names, list) and bool(names) and all(isinstance(n, str) and n.strip() for n in names),
+                    f"{mid}: previewNotOnAgenda must list project names")
+            require(bool(meeting.get("items")), f"{mid}: previewNotOnAgenda only on meetings with agenda items")
+        if found is None:
+            continue
+        require(isinstance(found, list), f"{mid}: previews must be a list")
+        if not found:
+            continue
+        require(meeting.get("kind") == "confirmed", f"{mid}: previews only on stored meetings")
+        require(day is not None and (export_day is None or day > export_day), f"{mid}: previews only on meetings after the export day")
+        require(not meeting.get("items"), f"{mid}: previews only while no agenda items are listed")
+        require(not any(AGENDA_DOCUMENT.search(d.get("title") or "") and not SUPPLEMENT.search(d.get("title") or "")
+                        for d in meeting.get("documents", [])), f"{mid}: previews only while no agenda is posted")
+        for index, preview in enumerate(found if isinstance(found, list) else []):
+            label = f"{mid}.previews[{index}]"
+            source = preview.get("source") or {}
+            require(bool((preview.get("subject") or "").strip()), f"{label}: subject required")
+            require(set(preview.get("topics", [])) <= topics, f"{label}: unknown topic")
+            require(set(preview.get("topics", [])) <= set(meeting.get("topics", [])), f"{label}: preview topics must be meeting topics")
+            require(source.get("kind") in PREVIEW_KINDS, f"{label}: source kind must be notice or planning-calendar")
+            require(bool((source.get("title") or "").strip()), f"{label}: source title required")
+            require(bool((source.get("quote") or "").strip()), f"{label}: source quote required")
+            parsed = urlparse(source.get("url") or "")
+            require(parsed.scheme in ("http", "https") and bool(parsed.netloc), f"{label}: source url must be a public URL")
+            try:
+                published = date.fromisoformat(source["publishedOn"])
+                require(day is None or day > published, f"{label}: dated on or before its source's publication date")
+            except (KeyError, TypeError, ValueError):
+                errors.append(f"{label}: source publishedOn must be a date")
+    return errors
+
+
 def validate_export(data: dict) -> tuple[list[str], dict]:
     """All export errors plus counts; an empty error list means the export may be published."""
     errors, _ = check(data)
@@ -236,4 +298,4 @@ def validate_export(data: dict) -> tuple[list[str], dict]:
     stats = {"meetings": sum(1 for m in meetings if m.get("kind") != "forecast"), "expectedMeetings": expected,
              "items": sum(len(m.get("items", [])) for m in meetings),
              "agencies": len(data.get("agencies", [])), "commentPeriods": len(data.get("commentPeriods", []))}
-    return errors + kind_errors, stats
+    return errors + kind_errors + check_previews(data), stats

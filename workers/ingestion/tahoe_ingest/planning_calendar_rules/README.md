@@ -46,6 +46,8 @@ loads, and two modules that register the same name raise an error. Modules whose
   (`[{"title", "attachments": [{"url", "name", "label"}]}]`). It returns `[{"url", "name"}]`, the stable Granicus
   download URLs, which the caller downloads once per new URL. `ttd-packet-pages` takes the stored packet pages
   (`[{"page_number", "text"}]`) and returns the calendar's pages.
+- The caller (`tahoe_ingest/planning_calendars.py`, the `planning-calendars` step) tells the two sources apart by
+  `locate`'s first parameter name, which must be `items` or `pages`.
 - `parse(pages, *, config, carried_by) -> dict` reads the whole calendar and returns
   `{"title", "published_on", "year", "blocks", "entries"}`.
   - `config` is the agency's entry. `carried_by` is the date of the meeting whose agenda carries the calendar, and it

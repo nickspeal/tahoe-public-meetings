@@ -657,12 +657,23 @@ def test_export_and_reclassify_queries_do_not_grow_with_the_archive(db, monkeypa
         reclassify_topics(db)
     bundle = fixture_bundle()
     assert ingest_bundle(db, bundle)["failed"] == 0
+    # Previews and the planned meetings they create are read in the same bulk queries (IDEA-018 R8).
+    from datetime import date
+    from tahoe_ingest import previews as pv
+    calendar = pv.PreviewSource(kind="planning-calendar", key="slt:planning-calendar", sha256="c" * 64,
+                                url="https://slt.granicus.com/services/legistar/download/pdf/1/APC_09_30_2026.pdf",
+                                title="2026 Agenda Planning Calendar (Updated 09 30 2026)", published_on=date(2026, 9, 30))
+    rows = [pv.Preview(agency_id="slt", local_date=date(2026, 11, day), month=None, subject=f"Subject {n}", quote=f"Subject {n}")
+            for n, day in enumerate((3, 3, 17, 17, 17))]
+    assert len(pv.replace_source(db, calendar, rows, today=date(2026, 10, 1))["planned"]) == 2
     with statement_count(monkeypatch) as large_export:
-        payload = export_public(db, forecast_days=90)
+        payload = export_public(db, forecast_days=90, today=date(2026, 10, 1))
     with statement_count(monkeypatch) as large_reclassify:
         reclassify_topics(db)
     assert len(payload["meetings"]) > 1 and sum(len(m["items"]) for m in payload["meetings"]) > 10
-    assert large_export["n"] == small_export["n"] <= 13  # 13: staff reports and their summaries (IDEA-013, IDEA-016)
+    assert sum(len(m.get("previews", [])) for m in payload["meetings"]) == 5
+    # 13: staff reports and their summaries (IDEA-013, IDEA-016); 14: current previews, one query (IDEA-018).
+    assert large_export["n"] == small_export["n"] <= 14
     assert large_reclassify["n"] == small_reclassify["n"] <= 3
 
 

@@ -3,7 +3,7 @@ import type { Meeting } from '../../../../packages/domain/public';
 import FilterCombobox from './FilterCombobox.astro';
 import TimelineRow from './TimelineRow.astro';
 import { agencySearchTerms, filterAgencies, topicSearchTerms } from '../lib/filter-terms';
-import { allItems, awaitingAgenda, meetingTopicIds, data, forecastMeetings, formatDate, isForecast, meetings, topics } from '../lib/data';
+import { allItems, awaitingAgenda, meetingTopicIds, data, forecastMeetings, formatDate, isForecast, meetings, previewsForTopic, topics } from '../lib/data';
 const { initialTopic = '' } = Astro.props as { initialTopic?: string };
 // Not a filter: choosing it opens the feedback dialog (timeline-filters.ts).
 const SUGGEST_TOPIC = '__suggest';
@@ -39,6 +39,7 @@ function dateHeading(key: string) {
 const topicMatches = (meeting: Meeting, topicId: string) => meetingTopicIds(meeting).includes(topicId);
 const filtered = (meeting: Meeting) => !initialTopic || topicMatches(meeting, initialTopic);
 // Mirrors the default view in timeline-filters.ts: earlier meetings and upcoming ones without an agenda start hidden.
+// Upcoming meetings with previews and one-off meetings with a notice are not awaiting an agenda, so they show (IDEA-018).
 const rowHidden = (meeting: Meeting, bucket: string) => !filtered(meeting) || bucket === 'earlier' || awaitingAgenda(meeting);
 const groupHidden = (rows: Meeting[], bucket: string) => rows.length > 0 && rows.every((meeting) => rowHidden(meeting, bucket));
 const upcoming = [...todayMeetings, ...future, ...undated].filter(filtered);
@@ -47,7 +48,8 @@ const initialCount = initialShown.length;
 const initialAwaiting = upcoming.length - initialShown.length;
 const initialExpected = upcoming.filter(isForecast).length;
 const initialEarlierCount = earlier.filter(filtered).length;
-const initialAgendaCount = initialTopic ? initialShown.reduce((total, meeting) => total + allItems(meeting).filter((item) => item.topics.includes(initialTopic)).length, 0) : 0;
+// Planned subjects count with agenda items; the card labels them "Planned:".
+const initialAgendaCount = initialTopic ? initialShown.reduce((total, meeting) => total + allItems(meeting).filter((item) => item.topics.includes(initialTopic)).length + previewsForTopic(meeting, initialTopic).length, 0) : 0;
 const initialUpcomingCount = initialShown.filter((meeting) => meeting.status !== 'canceled' && meeting.change !== 'canceled').length;
 const earlierGroups = groupByDate(earlier);
 const step = 10;

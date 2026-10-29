@@ -18,9 +18,11 @@ const unavailableMessage = meeting.date
       One-time calendar file. It will not update automatically.
       {meeting.duration && meeting.duration.source === 'estimated'
         ? ` The end time is an estimate (about ${Math.round(meeting.duration.minutes / 6) / 10} hours, biased long); agencies do not publish an end time.`
-        : meeting.duration
-          ? ` Length: about ${Math.round(meeting.duration.minutes / 6) / 10} hours (${meeting.duration.source}).`
-          : ''}
+        : meeting.duration?.source === 'published'
+          ? ' The end time is as published.'
+          : meeting.duration
+            ? ` Length: about ${Math.round(meeting.duration.minutes / 6) / 10} hours (${meeting.duration.source}).`
+            : ''}
     </small>
   </div>
 ) : (

@@ -143,6 +143,11 @@ button, a, select, summary { touch-action: manipulation; }
 .meeting-card-canceled .meeting-card-copy p, .meeting-card-canceled .subtle, .meeting-card-canceled .meeting-card-arrow { color: var(--muted); }
 .meeting-card-canceled .meeting-card-copy h3 { font-weight: 600; text-decoration: line-through; text-decoration-thickness: 1px; }
 /* Expected meetings (forecasts without an agenda): dashed outline and a quieter title, provisional but less muted than canceled cards. */
+/* Planned subjects from a notice or planning calendar: quiet, under the card details. Dots join the visible ones. */
+.meeting-card-copy .meeting-previews { color: var(--subtle); font-size: 13px; }
+.meeting-previews-label { font-weight: 700; }
+.meeting-preview:not([hidden]) ~ .meeting-preview:not([hidden])::before { content: ' · '; }
+.meeting-preview-more::before { content: ' '; }
 .meeting-card-forecast { border: 1px dashed #8fa79b; background: #fbfcf9; }
 .meeting-card-forecast .meeting-card-main:hover { background: #f4f7f2; }
 .meeting-card-forecast .meeting-date { border: 1px dashed #9db3a7; background: transparent; }
@@ -159,6 +164,7 @@ button, a, select, summary { touch-action: manipulation; }
 .meeting-title-line { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
 .meeting-title-line > .status-pill { flex: 0 0 auto; margin-top: 4px; }
 .meeting-time { margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+.meeting-time-note { margin: 3px 0 0; color: var(--subtle); font-size: 14px; }
 .meeting-hero-meta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; color: var(--muted); font-size: 15px; }
 .warning-note { margin-top: 14px; padding: 10px 13px; border-left: 3px solid #b18433; background: #f7f0e2; color: #5e4b29; }
 .warning-note p { margin: 0; }
@@ -241,6 +247,19 @@ button, a, select, summary { touch-action: manipulation; }
 .summary-label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 700; }
 .summary-block > p { margin: 7px 0 0; color: #304843; font-size: 16px; line-height: 1.65; }
 .muted-panel { margin-top: 12px; padding: 13px 15px; border: 1px dashed #bdcbc1; color: var(--muted); }
+/* Planned for this agenda: previews above the empty-agenda panel. */
+.meeting-previews-section { margin-bottom: 18px; padding: 16px 18px; border-left: 3px solid #b4c9bd; background: #f4f7f3; }
+.meeting-previews-section h2 { margin: 0 0 8px; color: var(--forest-dark); font-size: 19px; font-weight: 700; }
+.preview-list { margin: 0; padding: 0; list-style: none; }
+.preview-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; padding: 8px 0; border-top: 1px solid #e0e7e1; }
+.preview-item:first-child { border-top: 0; }
+.preview-item strong { color: var(--forest-dark); font-size: 16px; font-weight: 650; overflow-wrap: anywhere; }
+.preview-section { color: var(--subtle); font-size: 13px; }
+.preview-topics { display: flex; flex-wrap: wrap; gap: 6px; }
+.preview-topics .tag { font-size: 12px; }
+.preview-source { margin: 4px 0 0; font-size: 14px; }
+.preview-group + .preview-group { margin-top: 12px; }
+.preview-not-on-agenda { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
 .empty-panel { display: flex; gap: 14px; padding: 18px; border: 1px dashed #bdcbc1; color: var(--muted); }
 .empty-panel h2 { margin: 0 0 6px; color: var(--forest-dark); font-size: 21px; font-weight: 700; }
 .empty-panel p { margin: 0 0 6px; }

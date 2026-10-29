@@ -592,16 +592,24 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         overrides.setdefault(r["item_id"], []).append(r)
     from .item_summaries import Supporting
     from .requested_actions import for_meeting as requested_actions
+    from . import previews as preview_store
     supporting = Supporting(conn)  # each item's staff report, its summary, and its attachments (IDEA-013, IDEA-016)
+    current_previews = preview_store.current_previews(conn)  # one query (IDEA-018 R8)
+    local_today = today or stamp.astimezone(ZoneInfo(PACIFIC)).date()
     page_text = {(version, p["number"]): p["text"] for version, pages in pages_by_version.items() for p in pages}
     meetings = []
     record_dates = {}
     for m in conn.execute("SELECT * FROM meetings WHERE quarantine_reason IS NULL ORDER BY local_date NULLS LAST, starts_at NULLS LAST, id"):
+        docs = docs_by_meeting.get(m["id"], [])
+        # A planned meeting that no current preview supports and nothing was captured for is left out (R6), and it
+        # no longer stands in for a forecast.
+        if preview_store.withdrawn(m, has_previews=(m["agency_id"], m["local_date"]) in current_previews,
+                                   has_documents=bool(docs), has_items=bool(items_by_meeting.get(m["id"]))):
+            continue
         if m["local_date"]:
             record_dates.setdefault(m["agency_id"], []).append(m["local_date"])
         if m["agency_id"] not in AGENCIES:
             continue
-        docs = docs_by_meeting.get(m["id"], [])
         items = []
         actions = requested_actions([{"id": i["id"], "citations": _json(i["citations"])} for i in items_by_meeting.get(m["id"], [])],
                                     page_text)
@@ -652,8 +660,10 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": warnings, "documents": docs, "items": items,
             "history": history_by_meeting.get(m["id"], []),
             "duration": meeting_duration(m, [{"title": i["title"], "section": i["section"]} for i in items])})
+        if preview_store.is_planned(m):
+            meetings[-1]["planned"] = True
+    attach_previews(meetings, current_previews, comment_periods, local_today)
     # Expected meetings follow the stored records; the website sorts by date.
-    local_today = today or stamp.astimezone(ZoneInfo(PACIFIC)).date()
     for agency in agencies:
         if AGENCIES[agency["id"]].get("participationTypes") == ["public-comment-period"]:
             continue
@@ -669,6 +679,78 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     return {"schemaVersion": 2, "generatedAt": generated_at, "mode": mode,
             "coverageNote": "Meetings and agenda items shown are limited to the official source documents processed so far. Check each agency's source and meeting warnings for gaps.",
             "agencies": agencies, "topics": TOPICS, "meetings": meetings, "commentPeriods": comment_periods}
+
+
+AGENDA_DOCUMENT = re.compile(r"agenda|packet", re.I)
+SUPPLEMENT = re.compile(r"supplement", re.I)
+
+
+def agenda_posted(meeting: dict) -> bool:
+    """Items are listed, or a current document is the agenda or its packet (a supplement alone is not)."""
+    return bool(meeting["items"]) or any(AGENDA_DOCUMENT.search(d["title"] or "") and not SUPPLEMENT.search(d["title"] or "")
+                                         for d in meeting["documents"])
+
+
+def _collapsed(text: str | None) -> str:
+    return " ".join((text or "").split()).casefold()
+
+
+def _public_preview(row: dict) -> dict:
+    return {"subject": row["subject"], "section": row["section"], "topics": sorted(expand_topics(set(row["topics"]))),
+            "source": {"kind": row["source_kind"], "title": row["source_title"], "url": row["source_url"],
+                       "publishedOn": row["published_on"].isoformat(), "quote": row["quote"], "page": row["page"]}}
+
+
+def attach_previews(meetings: list[dict], current: dict, comment_periods: list[dict], today: date) -> None:
+    """Show each body's current previews on its stored meeting that date (IDEA-018 R7), and link comment periods.
+
+    Previews keyed (agency, date) go to the one meeting ``records.match_meeting`` picks among that body's meetings
+    that day (qualifiers from the calendar's "Special"), else to none; a captured meeting is preferred to a planned
+    one. They are shown only on a future meeting whose agenda is not posted, and their topics join the meeting's
+    while shown. Once the agenda is posted, a notice preview whose project no item title contains is listed in
+    ``previewNotOnAgenda``. A planned meeting left with no preview shown and no document (past, or beside a
+    captured meeting that day) is dropped. Each comment period lists the meetings that came from it: one-offs its
+    notice announced and meetings its notice previews.
+    """
+    from .records import match_meeting
+    by_day: dict[tuple, list[dict]] = {}
+    for meeting in meetings:
+        if meeting["date"]:
+            by_day.setdefault((meeting["agencyId"], date.fromisoformat(meeting["date"])), []).append(meeting)
+    projects = {p["id"]: p["projectTitle"] for p in comment_periods}
+    from_period: dict[str, set[str]] = {}
+    for (agency_id, day), rows in current.items():
+        same_day = by_day.get((agency_id, day), [])
+        captured = [m for m in same_day if not m.get("planned")]
+        same_day = captured or same_day
+        quals = {"special"} if any(r["special"] for r in rows) else set()
+        chosen = match_meeting([{"local_date": day, "title": m["title"], "status": m["status"], "meeting": m}
+                                for m in same_day], day, quals)
+        if not chosen:
+            continue
+        meeting = chosen["meeting"]
+        for row in rows:
+            if row["source_kind"] == "notice":
+                from_period.setdefault(row["source_key"], set()).add(meeting["id"])
+        if not agenda_posted(meeting):
+            if day > today:
+                meeting["previews"] = [_public_preview(r) for r in rows]
+                meeting["topics"] = sorted(expand_topics(set(meeting["topics"]).union(
+                    *(p["topics"] for p in meeting["previews"]))))
+            continue
+        titles = [_collapsed(i["title"]) for i in meeting["items"]]
+        missing = []
+        for row in rows:
+            project = projects.get(row["source_key"]) if row["source_kind"] == "notice" else None
+            if titles and project and project not in missing and not any(_collapsed(project) in t for t in titles):
+                missing.append(project)
+        if missing:
+            meeting["previewNotOnAgenda"] = missing
+    meetings[:] = [m for m in meetings if not m.get("planned") or m.get("previews") or m["documents"]]
+    for period in comment_periods:
+        prefix = f"one-off-{period['id'].split(':', 1)[1]}-"
+        linked = from_period.get(period["id"], set())
+        period["meetingIds"] = [m["id"] for m in meetings if m["id"] in linked or m["sourceId"].startswith(prefix)]
 
 
 def edit_item(conn, item_id: str, *, correction=None, suppressed=None, topic=None):

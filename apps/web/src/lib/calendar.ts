@@ -104,6 +104,8 @@ export function buildCalendarEvent(meeting: Meeting): string {
   if (meeting.location) lines.push(`LOCATION:${escapeText(meeting.location)}`);
 
   const details: string[] = [];
+  // A planned meeting comes from a notice or planning calendar, not an agenda (IDEA-018 R6, decision 9).
+  if (meeting.planned) details.push('Subject to change.');
   if (meeting.host) details.push(`Hosted by: ${meeting.host}`);
   if (officialUrl) details.push(`Official meeting page: ${officialUrl}`);
   if (meeting.participation.instructions) details.push(`Public comment: ${meeting.participation.instructions}`);

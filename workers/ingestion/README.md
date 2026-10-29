@@ -86,6 +86,22 @@ and trims from the report, published only when every sentence is the cited
 passage with words deleted (`item_summaries.validate`). Use `--dry-run` for
 pending items and cost; `--meeting ID` to try one meeting. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
 
+Previews (IDEA-018) are subjects an official source says are planned for a
+future meeting before its agenda is posted. `extract-notices [--dry-run]
+[--force]` has Claude (Haiku, then Sonnet) read each tracked comment period
+notice that changed; it keeps only events whose quote, dates, times, places, and
+hosts appear in the notice, and turns them into one-off meetings and previews
+(`notices.py`). `read-planning-calendars [--agency ID] [--dry-run]
+[--max-calendars N]` parses each new agenda planning calendar with its
+format's deterministic rules (`tahoe_ingest/planning_calendar_rules/`, chosen
+by the agency's `planningCalendar` entry; see the [configuration
+guide](../../config/README.md#planning-calendars)), stores it with
+`previews.replace_source`, creates planned meetings for dates with no stored
+meeting, and then tags new subjects (`classify-subjects [--dry-run]`). Both
+accept `--max-cost` and `--monthly-budget`. Unchanged notices and calendars
+cost no download, model call, or write; the export reads current previews in
+one query.
+
 `evaluate-topics` compares the title rules with Claude Haiku 5.5 on stored
 agenda items, given either the title alone or the title plus the item's own
 agenda-page excerpt. It only reads the database. Without `ANTHROPIC_API_KEY`
@@ -146,22 +162,22 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 
 1. `init-db` (idempotent; includes `public_exports`).
 2. `seed-fixtures`: `tests/fixtures/meetings.json`, only meetings not yet stored, so a later live capture is never overwritten.
-3. `one-offs` and 4. `comment-periods` from `config/` (comment notices are fetched and verified).
-5. `verified-sources`: `config/verified-agency-meetings-*.json` candidates not yet stored; missing documents are retried at most once a day. Candidates in `config/quarantined-meeting-candidates.json` are skipped.
-6. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
+3. `comment-periods` from `config/` (comment notices are fetched and verified). 4. `notices`: Claude reads each tracked notice whose text or prompt changed (`extract-notices`; only with Claude credentials, within `--max-cost`/`--monthly-budget`). 5. `one-offs` from `config/`, after `notices`, so a configured entry with the same ID overrides extracted fields.
+6. `verified-sources`: `config/verified-agency-meetings-*.json` candidates not yet stored; missing documents are retried at most once a day. Candidates in `config/quarantined-meeting-candidates.json` are skipped.
+7. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
    - Each index is read up to discovery's maximum (`--discovery-limit 20`; undated WordPress posts, which each cost a page fetch, stay at 6). The window is applied after reading, so far-future postings never crowd out recent past meetings.
    - Window: 60 days back (`--past-days`) to 120 days ahead (`--future-days`). The look-back lets minutes and revised packets linked after a monthly or bimonthly body's next meeting still be picked up. Dated meetings before the coverage floor, 2026-01-01, are never captured; undated WordPress posts are exempt.
    - Upcoming meetings and meetings from the last 7 days are re-downloaded every run, which catches revised agendas and cancellations. An older meeting is settled, and skipped, once every document a capture would fetch (the first 2) is already stored at the same URL. A newly linked document makes it captured again. Its failed downloads are retried at most once a day.
    - At most 10 meetings per agency are captured per run, nearest to today first; the rest wait for the next run. At most 2 documents per meeting, 1 second between downloads.
    - Stored meetings outside the window are never deleted or hidden.
    - Minutes and video links on each listing row are kept with the candidate. For meetings not captured this run (settled, deferred, or outside the window) they update the stored meeting directly, without a download (decision 0025).
-7. `quarantine`, 8. `reparse`, 9. `reclassify`.
-10. `meeting-records`: YouTube feeds and the Truckee Laserfiche minutes folder from `config/meeting-records.json`, matched to stored meetings (skipped with `--skip-discovery`). 11. `draft-minutes`: draft minutes found through "Approval of minutes" items in later agendas. See [decision 0025](../../docs/decisions/0025-minutes-and-recording-links.md).
-12. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 13. `participation` (same guards).
-14. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and attachment links (`map-staff-reports`; one rule per agency, decision 0026). 15. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
-16. `export` (mode `live`), 17. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 18. `store` in `public_exports` (latest 30 kept), 19. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
+8. `quarantine`, 9. `reparse`, 10. `reclassify`.
+11. `meeting-records`: YouTube feeds and the Truckee Laserfiche minutes folder from `config/meeting-records.json`, matched to stored meetings (skipped with `--skip-discovery`). 12. `draft-minutes`: draft minutes found through "Approval of minutes" items in later agendas. See [decision 0025](../../docs/decisions/0025-minutes-and-recording-links.md).
+13. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 14. `participation` (same guards).
+15. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and attachment links (`map-staff-reports`; one rule per agency, decision 0026). 16. `planning-calendars`: new agenda planning calendars become previews and planned meetings (`read-planning-calendars`; IDEA-018); at most `--max-calendars` (4) downloads, and only calendars newer than the stored one. A calendar that fails validation is named in `failures`. 17. `classify-subjects`: Claude tags for new preview subjects (same guards as `classify-topics`). 18. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
+19. `export` (mode `live`), 20. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 21. `store` in `public_exports` (latest 30 kept), 22. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
 
-A failure in steps 2–15 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
+A failure in steps 2–18 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
 
 ### History backfill
 

@@ -16,7 +16,8 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import ai_topics, alerts, backfill, coverage, evaluate_topics, item_summaries, participation, scheduled, staff_reports
+from . import (ai_topics, alerts, backfill, coverage, evaluate_topics, item_summaries, notices, participation,
+               planning_calendars, previews, scheduled, staff_reports)
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -122,6 +123,29 @@ def _parser() -> argparse.ArgumentParser:
     reports.add_argument("--force", action="store_true", help="Rescan meetings whose items and documents have not changed")
     reports.add_argument("--dry-run", action="store_true", help="List pending meetings; no downloads or writes")
     reports.add_argument("--delay", type=float, default=1.0, help="Seconds between downloads")
+    extract = sub.add_parser("extract-notices", help="Read tracked comment period notices with Claude (Haiku, then Sonnet): "
+                             "one-off meetings and agenda previews they announce (IDEA-018)")
+    extract.add_argument("--force", action="store_true", help="Read notices again even when the notice and prompt are unchanged")
+    extract.add_argument("--dry-run", action="store_true", help="Report pending notices and estimated cost; no API calls")
+    extract.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
+    extract.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                         help="USD; refuse to run once month-to-date AI spend reaches it")
+    calendars = sub.add_parser("read-planning-calendars", help="Turn new agenda planning calendars (registry planningCalendar "
+                               "blocks) into previews, then tag new subjects with Claude; downloads calendar PDFs temporarily")
+    calendars.add_argument("--agency", help="Only this agency ID (any agency with a planningCalendar)")
+    calendars.add_argument("--dry-run", action="store_true", help="List calendars that would be read; no downloads, writes, or API calls")
+    calendars.add_argument("--max-calendars", type=int, help="Download at most this many calendars")
+    calendars.add_argument("--delay", type=float, default=1.0, help="Seconds between downloads")
+    calendars.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for subject tags this run")
+    calendars.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                           help="USD; refuse to run once month-to-date AI spend reaches it")
+    subjects = sub.add_parser("classify-subjects", help="Tag preview subjects not yet classified with Claude (Haiku, then Sonnet); "
+                              "rule tags remain the fallback")
+    subjects.add_argument("--force", action="store_true", help="Classify every current subject again")
+    subjects.add_argument("--dry-run", action="store_true", help="Report pending subjects and estimated cost; no API calls")
+    subjects.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
+    subjects.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                          help="USD; refuse to run once month-to-date AI spend reaches it")
     summaries = sub.add_parser("summarize-items", help="Summarize items from their staff reports with Claude (Haiku, then Sonnet); the agenda excerpt remains the fallback")
     summaries.add_argument("--agency", help="Only this agency ID")
     summaries.add_argument("--meeting", help="Only this meeting ID")
@@ -148,6 +172,8 @@ def _parser() -> argparse.ArgumentParser:
                                help="USD limit for staff report summaries this run")
     scheduled_run.add_argument("--staff-report-meetings", type=int, default=staff_reports.DEFAULT_MAX_MEETINGS,
                                help="Meetings scanned for staff reports this run (0 disables)")
+    scheduled_run.add_argument("--max-calendars", type=int, default=planning_calendars.DEFAULT_MAX_CALENDARS,
+                               help="Planning calendar PDFs downloaded this run (0 disables the step)")
     scheduled_run.add_argument("--out", help="Also write the export JSON to this path")
     scheduled_run.add_argument("--skip-discovery", action="store_true", help="Use tracked config only; no live index checks")
     scheduled_run.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
@@ -235,6 +261,27 @@ def main(argv=None) -> int:
             print(json.dumps(staff_reports.map_staff_reports(
                 conn, agency=args.agency, meeting=args.meeting, max_meetings=args.max_meetings, force=args.force,
                 dry_run=args.dry_run, delay=args.delay), indent=2))
+            return 0
+        if args.command == "extract-notices":
+            init_db(conn)
+            print(json.dumps(notices.extract_notices(
+                conn, dry_run=args.dry_run, force=args.force, max_cost=args.max_cost,
+                monthly_budget=args.monthly_budget), indent=2, default=str))
+            return 0
+        if args.command == "read-planning-calendars":
+            init_db(conn)
+            report = {"calendars": planning_calendars.read_planning_calendars(
+                conn, agency=args.agency, dry_run=args.dry_run, delay=args.delay, max_calendars=args.max_calendars,
+                today=datetime.now(scheduled.PACIFIC).date())}
+            report["subjects"] = previews.classify_subjects(conn, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
+                                                            dry_run=args.dry_run)
+            print(json.dumps(report, indent=2, default=str))
+            return 0
+        if args.command == "classify-subjects":
+            init_db(conn)
+            print(json.dumps(previews.classify_subjects(
+                conn, max_cost=args.max_cost, monthly_budget=args.monthly_budget, dry_run=args.dry_run,
+                force=args.force), indent=2, default=str))
             return 0
         if args.command == "summarize-items":
             init_db(conn)
@@ -365,7 +412,7 @@ def _run_scheduled(conn, args) -> int:
         max_documents=args.max_documents, delay=args.delay, forecast_days=args.forecast_days,
         min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
         summary_max_cost=args.summary_max_cost, staff_report_meetings=args.staff_report_meetings,
-        out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
+        max_calendars=args.max_calendars, out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
     summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))
     summary["alerts"] = alerts.alert_on_summary(summary)
     print(json.dumps(summary, default=str), flush=True)

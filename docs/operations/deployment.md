@@ -249,6 +249,16 @@ The image built from the commit that adds [decision 0024](../decisions/0024-verb
 
 After deploying, check one run's summary line: `staff-reports.detail.itemsMapped`, `summarize-items.detail.published`, `validationFailed`, and `costUsd`. A stopped summary step sends the same ntfy alert as classification.
 
+## Previews from notices and planning calendars
+
+The image built from the commit that wires IDEA-018 runs three more steps; no new secret or environment variable is needed:
+
+- `notices`, after `comment-periods`, reads each tracked comment period notice whose text changed with Claude (Haiku, then Sonnet), under the same credentials and budget guards as `classify-topics`. An unchanged notice costs one query. `one-offs` now runs after it, so a configured one-off with the same ID overrides extracted fields.
+- `planning-calendars`, after `staff-reports`, reads new agenda planning calendars: South Lake Tahoe's from the attachment list the staff report step stores (one temporary PDF download per new calendar, at most `--max-calendars` (4) per run; 0 disables the step), TTD's from packet pages already stored. Unchanged calendars cost three queries and no download. A calendar that fails validation publishes nothing, keeps the previous calendar's previews, and appears in the run summary's `failures`; a calendar redesign stops that agency's previews until its format is updated.
+- `classify-subjects` tags new preview subjects with Claude, under the same guards.
+
+After deploying, check one run's summary line: `planning-calendars.detail.calendarsRead`, `rejected`, and `notices.detail.eventsRejected`.
+
 ## Claude credentials: workload identity federation
 
 The job calls the Anthropic API without an API key. Its Google service account (`tahoe-ingest-job@<project>.iam.gserviceaccount.com`) fetches a Google ID token from the Cloud Run metadata server (audience `https://api.anthropic.com`, `format=full`) and the Anthropic SDK exchanges it for a short-lived token on every refresh.

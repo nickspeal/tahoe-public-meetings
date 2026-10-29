@@ -178,7 +178,7 @@ def test_records_for_the_west_shore_trail_notice():
     [preview] = records.previews
     assert preview["meeting_title"] == "TRPA Advisory Planning Commission Meeting"
     assert records.source == {"kind": "notice", "key": PERIOD_ID, "sha256": NOTICE["sha256"], "url": NOTICE["official_url"],
-                              "title": period_row()["title"], "published_on": date(2026, 10, 20), "pages": None}
+                              "title": "West Shore Trail – Meeks Bay to D.L. Bliss State Park notice", "published_on": date(2026, 10, 20), "pages": None}
     assert notices.published_on(period_row(opens_on=None)) == date(2026, 10, 27)
 
 

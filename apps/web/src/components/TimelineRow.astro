@@ -2,12 +2,13 @@
 import type { Meeting } from '../../../../packages/domain/public';
 import MeetingCard from './MeetingCard.astro';
 import TopicAgendaLinks from './TopicAgendaLinks.astro';
-import { awaitingAgenda, isForecast, meetingTopicIds } from '../lib/data';
+import { awaitingAgenda, hasPreviews, isForecast, meetingTopicIds } from '../lib/data';
 interface Props { meeting: Meeting; dateKey?: string; bucket: 'earlier' | 'today' | 'upcoming' | 'undated'; initialTopic?: string; hidden: boolean }
 const { meeting, dateKey, bucket, initialTopic = '', hidden } = Astro.props;
 const canceled = meeting.status === 'canceled' || meeting.change === 'canceled';
 const forecast = isForecast(meeting);
-// Upcoming meetings without an agenda (including expected ones) stay hidden until the reader asks for them.
+// Upcoming meetings without an agenda (including expected ones) stay hidden until the reader asks for them,
+// unless an official source already says what is planned for them (IDEA-018 decision 1).
 const awaiting = bucket !== 'earlier' && awaitingAgenda(meeting);
 ---
-<div class="timeline-row" data-meeting-row data-meeting-id={meeting.id} data-agency={meeting.agencyId} data-topics={JSON.stringify(meetingTopicIds(meeting))} data-date={dateKey} data-bucket={bucket} data-canceled={String(canceled)} data-forecast={String(forecast)} data-awaiting-agenda={String(awaiting)} hidden={hidden}><MeetingCard meeting={meeting} />{!forecast && <TopicAgendaLinks meeting={meeting} initialTopic={initialTopic} />}</div>
+<div class="timeline-row" data-meeting-row data-meeting-id={meeting.id} data-agency={meeting.agencyId} data-topics={JSON.stringify(meetingTopicIds(meeting))} data-date={dateKey} data-bucket={bucket} data-canceled={String(canceled)} data-forecast={String(forecast)} data-awaiting-agenda={String(awaiting)} data-previews={String(hasPreviews(meeting))} hidden={hidden}><MeetingCard meeting={meeting} initialTopic={initialTopic} />{!forecast && <TopicAgendaLinks meeting={meeting} initialTopic={initialTopic} />}</div>

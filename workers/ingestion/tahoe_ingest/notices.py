@@ -404,9 +404,15 @@ def events_to_records(period_row: dict, accepted: list[dict], *, previous: list[
                          "meeting_title": meeting_title(event["bodyName"]), "special": False, "topics": list(topics)})
         stored.append({**event, "titleKey": title_key(event["title"])})
     source = {"kind": "notice", "key": period_id, "sha256": period_row["source_sha256"],
-              "url": period_row["official_url"], "title": period_row["title"], "published_on": published_on(period_row),
+              "url": period_row["official_url"], "title": source_title(period_row), "published_on": published_on(period_row),
               "pages": None}
     return Records(rows, previews, source, withdrawn, stored)
+
+
+def source_title(period_row: dict) -> str:
+    """The source line's name for the notice: the verified project title plus "notice", else the period's title."""
+    project = " ".join((period_row.get("project_title") or "").split())
+    return f"{project} notice" if project else period_row["title"]
 
 
 def _replace_previews(conn, source: dict, previews: list[dict], *, today: date) -> dict:

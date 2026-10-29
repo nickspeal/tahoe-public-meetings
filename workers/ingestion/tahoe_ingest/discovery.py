@@ -158,31 +158,37 @@ def wordpress_meetings_range(agency: str, config: dict, *, since, until, fetch=f
 # official URL and its clip_id the source ID. It redirects to the compact agenda
 # PDF, which is the first document (`{agency}-agenda`, the ID stored meetings
 # already hold their agenda under, so a capture is a new version of it, not a
-# second agenda), ahead of the row's PDFs (the packet). Rows with no clip_id
-# (upcoming meetings listed only by event) are skipped. (The `granicus` type reads
-# rows by their text instead, and also captures the HTML agenda.)
+# second agenda), ahead of the row's PDFs (the packet). An upcoming meeting's row
+# has no ID cell and no clip yet: its name cell holds "11 03 2026 City Council" and
+# its agenda link names an event, so the source ID is `event-<id>` until the clip
+# row appears, when `capture.source_identity` bridges it by date and title. A row
+# with no agenda link at all is skipped. (The `granicus` type reads rows by their
+# text instead, and also captures the HTML agenda.)
 
 GRANICUS_ROW_ID = re.compile(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', re.I)
+GRANICUS_UPCOMING_ROW = re.compile(r'<td\b(?![^>]*\bid=)[^>]*\bheaders="Name"[^>]*>\s*(?P<key>\d{2} \d{2} \d{4} [^<]*?)\s*</td>', re.I)
 
 
 def _granicus_id_rows(agency: str, config: dict, markup: str):
-    """(date, candidate) for each matching row; the candidate is None when the row links no agenda clip."""
+    """(date, candidate) for each matching row; the candidate is None when the row links no agenda."""
     index = config["indexUrl"]
     body = re.compile(config.get("bodyPattern", "."), re.I)
-    for match in GRANICUS_ROW_ID.finditer(markup):
-        title = match.group("key").replace("-", " ")
+    matches = [(m, m.group("key").replace("-", " ")) for m in GRANICUS_ROW_ID.finditer(markup)]
+    matches += [(m, html.unescape(m.group("key"))) for m in GRANICUS_UPCOMING_ROW.finditer(markup)]
+    for match, title in sorted(matches, key=lambda pair: pair[0].start()):
         if not body.search(title):
             continue
-        day = datetime.strptime(match.group("key")[:10], "%m-%d-%Y").date().isoformat()
+        day = datetime.strptime(title[:10].replace(" ", "-"), "%m-%d-%Y").date().isoformat()
         row_end = markup.find("</tr>", match.start())
         row = markup[match.start():row_end] if row_end >= 0 else ""
         links = anchors(row, index)
         agenda = next((url for url, _ in links if "AgendaViewer.php" in url), None)
-        clip = re.search(r"[?&]clip_id=(\d+)", agenda) if agenda else None
-        if not clip:
+        ident = re.search(r"[?&](clip_id|event_id)=(\d+)", agenda) if agenda else None
+        if not ident:
             yield day, None
             continue
-        yield day, {"agency": agency, "source_id": clip.group(1), "title": title, "official_url": agenda, "date": day,
+        source_id = ident.group(2) if ident.group(1) == "clip_id" else f"event-{ident.group(2)}"
+        yield day, {"agency": agency, "source_id": source_id, "title": title, "official_url": agenda, "date": day,
                     "documents": [{"id": f"{agency}-agenda", "title": "Agenda", "url": agenda},
                                   *(d for d in _pdf_links(row, index, agency)
                                     if d["url"] != agenda and not re.fullmatch(rf"{re.escape(agency)}-agenda(-[0-9a-f]{{12}})?", d["id"]))],

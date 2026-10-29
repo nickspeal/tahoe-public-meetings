@@ -203,6 +203,21 @@ def test_slt_publisher_row_links():
     assert found["recording_url"] == "https://slt.granicus.com/MediaPlayer.php?view_id=6&clip_id=2330"
 
 
+def test_slt_upcoming_row_is_found_by_event_until_its_clip_exists():
+    row = """<table><tr class="listingRow"><td class="listItem" headers="Name" scope="row">11 03 2026 City Council</td>
+    <td class="listItem" headers="Date">November&nbsp; 3,&nbsp;2026 - 9:00&nbsp;AM</td>
+    <td class="listItem" headers="AgendaLink"><a href="//slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1518">Agenda</a></td>
+    <td class="listItem" headers="AgendaPacketLink"><a href="https://d3n.example/slt/packet.pdf">Agenda Packet</a></td></tr>
+    <tr class="listingRow"><td class="listItem" headers="Name" scope="row">11 03 2026 Concejo Municipal</td>
+    <td class="listItem" headers="AgendaLink"><a href="//slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1539">Agenda</a></td></tr>
+    <tr class="listingRow"><td class="listItem" headers="Name" scope="row">11 17 2026 City Council</td></tr></table>"""
+    config = {"type": "granicus-row-ids", "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6", "bodyPattern": "City Council"}
+    [found] = granicus_row_ids("slt", config, limit=5, fetch=lambda url: row)
+    assert (found["source_id"], found["date"], found["title"]) == ("event-1518", "2026-11-03", "11 03 2026 City Council")
+    assert found["official_url"] == "https://slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1518"
+    assert [d["id"] for d in found["documents"]] == ["slt-agenda", "slt-agenda-packet"]
+
+
 LEGISTAR = """<table><tr class="rgRow"><td>10/22/2026</td><td>
 <a href="MeetingDetail.aspx?ID=1452289&amp;GUID=9404">Meeting&nbsp;details</a></td>
 <td><a href="View.ashx?M=A&amp;ID=1452289&amp;GUID=9404">Agenda</a></td>

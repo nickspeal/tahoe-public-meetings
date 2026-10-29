@@ -1,6 +1,6 @@
 # 0027: Agency definitions live in the registry
 
-Status: accepted (maintainer request, 2026-10-28); implemented locally, not yet deployed
+Status: accepted (maintainer request, 2026-10-28); implemented; deployed in the worker image of 2026-10-29 (tag `a7140adc4582`), first production run on 2026-11-01
 Date: 2026-10-28
 Related decisions: [0009 configurable coverage](0009-configurable-coverage-and-one-off-meetings.md), [0013 estimated meeting durations](0013-estimated-meeting-durations.md), [0014 reviewed sources](0014-reviewed-sources-and-public-comment-periods.md), [0015 deterministic agenda layouts](0015-deterministic-agenda-layouts.md), [0020 database operation budget](0020-database-operation-budget.md), [0026 staff reports for every agency](0026-staff-reports-for-every-agency.md)
 

@@ -1,6 +1,6 @@
 # 0028: Previews from notices and agenda planning calendars
 
-Status: accepted (maintainer decisions of 2026-10-29); implemented locally, not yet deployed
+Status: accepted (maintainer decisions of 2026-10-29); implemented, and the worker image (tag `a7140adc4582`) deployed to both Cloud Run jobs on 2026-10-29; first production run waits for the scheduler to resume on 2026-11-01
 Date: 2026-10-29
 Related decisions: [0009 configurable coverage and one-off meetings](0009-configurable-coverage-and-one-off-meetings.md), [0012 forecast meetings](0012-forecast-meetings-from-schedule-patterns.md), [0014 reviewed sources and comment periods](0014-reviewed-sources-and-public-comment-periods.md), [0015 deterministic agenda layouts](0015-deterministic-agenda-layouts.md), [0020 database operation budget](0020-database-operation-budget.md), [0021 participation details from agendas](0021-participation-details-from-agendas.md), [0022 timeline default view](0022-timeline-default-view.md), [0027 agency definitions in the registry](0027-agency-definitions-in-configuration.md). Idea: [IDEA-018](../ideas/IDEA-018-previews-from-notices-and-planning-calendars.md).
 

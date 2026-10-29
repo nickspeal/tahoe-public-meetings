@@ -52,7 +52,9 @@ def sections(root: Path) -> dict[str, str]:
     agencies = agency_catalog()
     parents = {e["id"]: e["extends"] for e in json.loads(agency_catalog_path().read_text()) if "extends" in e}
     skipped = _skipped(root)
-    followed = [a for a in agencies if a["follow"]]
+    # An entry with a per-record host is not a body (it holds one-off meetings), so it is counted apart.
+    hosted = [a for a in agencies if a["follow"] and a.get("meetingHost") == "per-record"]
+    followed = [a for a in agencies if a["follow"] and a not in hosted]
     blocked = {a["id"] for a in followed for entry in skipped if _blocked_by(a, entry)}
     live = [a for a in followed if a.get("discovery") and a["id"] not in blocked]
     manual = [a for a in followed if not a.get("discovery") and a["id"] not in blocked]
@@ -69,6 +71,9 @@ def sections(root: Path) -> dict[str, str]:
         f"**{len(manual)}** have no live discovery. "
         + (f"{_sentence(len(parents), 'entry extends', 'entries extend')} a sibling body's entry: "
            + ", ".join(f"{_code(c)} ({_code(p)})" for c, p in parents.items()) + "." if parents else "")
+        + (f" {_sentence(len(hosted), 'entry', 'entries')} ({_ids(a['id'] for a in hosted)}) "
+           f"{'is' if len(hosted) == 1 else 'are'} not {'a body' if len(hosted) == 1 else 'bodies'}: "
+           f"{'it holds' if len(hosted) == 1 else 'they hold'} one-off meetings whose host is named per record." if hosted else "")
         + "\n")}
 
     rows = ["| Registry ID | Type | Index | Body filter | Agenda layouts |", "| --- | --- | --- | --- | --- |"]

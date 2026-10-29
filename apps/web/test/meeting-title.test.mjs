@@ -51,3 +51,9 @@ test('a canceled meeting drops the cancellation words its badge already shows', 
   assert.equal(meetingCardTitle('Lahontan Regional Water Quality Control Board Meeting — canceled (June 10–11, 2026)', agency('Lahontan', 'Lahontan — Board')),
     'Lahontan Regional Water Quality Control Board Meeting — canceled');
 });
+
+test('a named host takes the agency\'s place in front of a title', () => {
+  const host = 'TRPA and El Dorado County';
+  assert.equal(meetingCardTitle('Scoping Open House', agency(host)), 'TRPA and El Dorado County Scoping Open House');
+  assert.equal(meetingCardTitle('TRPA and El Dorado County Scoping Open House', agency(host)), 'TRPA and El Dorado County Scoping Open House');
+});

@@ -7,7 +7,8 @@ const { meeting } = Astro.props as { meeting: Meeting };
 const agency = agencyFor(meeting);
 const forecast = isForecast(meeting);
 const canceled = meeting.status === 'canceled' || meeting.change === 'canceled';
-const title = meetingCardTitle(meeting.title, agency, { canceled });
+// A named host takes the agency's place in the title prefix.
+const title = meetingCardTitle(meeting.title, meeting.host ? { name: meeting.host, shortName: meeting.host } : agency, { canceled });
 // Only what is known: an unpublished location or uncounted agenda leaves no placeholder text.
 const details = [meeting.location, meetingAgendaLabel(meeting)].filter(Boolean);
 const label = forecast ? awaitingAgendaLabel : canceled ? 'Canceled' : meeting.status === 'rescheduled' || meeting.change === 'rescheduled' ? 'Rescheduled' : meeting.change === 'revised' ? 'Revised' : awaitingAgenda(meeting) ? awaitingAgendaLabel : '';

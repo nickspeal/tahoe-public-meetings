@@ -4,7 +4,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 import json
 
-from .catalog import followed_agencies, topic_ids
+from .catalog import followed_agencies, per_record_host_agencies, topic_ids
 from .core import starts_at
 
 
@@ -23,6 +23,11 @@ def load_one_offs(path: str | Path) -> dict:
             raise ValueError(f"unknown or unfollowed agency: {row['agency']}")
         if not row["id"].startswith("one-off-") or not row["title"].strip():
             raise ValueError("one-off requires a stable one-off- ID and title")
+        host = row.get("host")
+        if host is not None and (not isinstance(host, str) or not host.strip()):
+            raise ValueError("one-off host must be a non-empty string")
+        if row["agency"] in per_record_host_agencies() and not host:
+            raise ValueError(f"one-off meetings under {row['agency']} need a host")
         url = urlparse(row["source_meeting_url"])
         if url.scheme not in ("https", "http") or not url.netloc:
             raise ValueError("one-off requires an official public meeting URL")

@@ -104,3 +104,8 @@ test('Astro static output includes a timed event and omits a date-only listing',
   assert.match(event, /DTSTART:20261007T220000Z\r\nDTEND:\d{8}T\d{6}Z\r\n/);
   await assert.rejects(readFile(resolve(root, 'dist/calendar/ttd/7172.ics'), 'utf8'), { code: 'ENOENT' });
 });
+
+test('a meeting with a named host says so in the description', () => {
+  assert.match(unfold(calendar.buildCalendarEvent(meeting({ host: 'TRPA and El Dorado County' }))), /DESCRIPTION:[^\r]*Hosted by: TRPA and El Dorado County/);
+  assert.doesNotMatch(calendar.buildCalendarEvent(meeting()), /Hosted by/);
+});

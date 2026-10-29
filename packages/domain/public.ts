@@ -93,10 +93,51 @@ export interface MeetingForecast {
   /** `configured` by an operator, or `learned` from stored meeting records. */
   source: 'configured' | 'learned';
 }
+/**
+ * A subject an official source says is planned for a future meeting, before its agenda is posted (IDEA-018).
+ * Sources are a tracked public notice or one agency's agenda planning calendar. Always subject to change.
+ */
+export interface MeetingPreview {
+  subject: string;
+  /** Agenda section the source names, e.g. "New business", "Public hearing", "Consent". */
+  section: string | null;
+  topics: string[];
+  source: {
+    kind: 'notice' | 'planning-calendar';
+    /** Document title as the source gives it, e.g. "Agenda Planning Calendar" or the notice title. */
+    title: string;
+    url: string;
+    /** Local date the source was published or updated (YYYY-MM-DD). */
+    publishedOn: string;
+    /** The source line the subject was read from, verbatim. */
+    quote: string;
+    /** Page of the source document, when it is a PDF. */
+    page: number | null;
+  };
+}
 export interface Meeting {
   id: string;
   agencyId: string;
   sourceId: string;
+  /**
+   * Who holds the meeting when it is not the followed body itself, e.g. "TRPA and El Dorado County" for a
+   * co-hosted open house. Required for meetings under an agency with "meetingHost": "per-record" (Other), where it
+   * replaces the agency name wherever that is shown. Absent from exports written before 2026-10-29.
+   */
+  host?: string | null;
+  /**
+   * True for a planned meeting: a stored record created because a preview named a date with no stored meeting
+   * for that body. It keeps kind 'confirmed' because an official document states it; it is dropped from the export
+   * once no current preview supports it and nothing has been captured for it.
+   */
+  planned?: boolean;
+  /** Current previews for this meeting, shown only while its agenda is not posted; empty or absent otherwise. */
+  previews?: MeetingPreview[];
+  /**
+   * Set only when a notice preview named a project and the posted agenda's item titles do not contain that
+   * project name: the meeting page says "Not on the posted agenda." Absent otherwise.
+   */
+  previewNotOnAgenda?: string[];
   /**
    * `confirmed`: a stored agency record (its agenda may not be posted yet).
    * `forecast`: an expected date derived at export time from the agency's usual
@@ -153,8 +194,12 @@ export interface PublicCommentPeriod {
   projectTitle?: string | null;
   projectProponent?: string | null;
   summary?: string | null;
+  /** Who runs the period when it is not the followed body itself (see Meeting.host). */
+  host?: string | null;
   /** Meetings about this comment period (IDEA-018), linked from its page; stored and forecast meeting IDs. */
   meetingIds?: string[];
+  /** Earlier IDs of this period (e.g. before it moved to another agency); the website redirects their pages. */
+  previousIds?: string[];
   topics: string[];
   sourceQuote: string;
   sourceSha256: string;

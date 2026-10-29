@@ -104,6 +104,7 @@ export function buildCalendarEvent(meeting: Meeting): string {
   if (meeting.location) lines.push(`LOCATION:${escapeText(meeting.location)}`);
 
   const details: string[] = [];
+  if (meeting.host) details.push(`Hosted by: ${meeting.host}`);
   if (officialUrl) details.push(`Official meeting page: ${officialUrl}`);
   if (meeting.participation.instructions) details.push(`Public comment: ${meeting.participation.instructions}`);
   const participationUrl = safeHttpUrl(meeting.participation.url);

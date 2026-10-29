@@ -15,7 +15,7 @@ import psycopg
 from psycopg import sql
 from psycopg.rows import dict_row
 
-from .catalog import public_topics, topic_ids, agency_catalog, followed_agencies, expand_topics
+from .catalog import public_topics, topic_ids, agency_catalog, followed_agencies, per_record_host_agencies, expand_topics
 from .topics import CLASSIFIER_VERSION, classify
 from .durations import meeting_duration
 from .time_certain import time_certain
@@ -252,29 +252,36 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
     if partial and old and not row.get("participation") and not any(participation.values()):
         participation = old["participation"]
     location = row.get("location") if row.get("location") is not None else old["location"] if partial and old else None
+    host = row.get("host") if row.get("host") is not None else old["host"] if partial and old else None
+    if host is not None and (not isinstance(host, str) or not host.strip()):
+        raise ValueError("meeting host must be a non-empty string")
+    if aid in per_record_host_agencies() and not host:
+        raise ValueError(f"meetings under {aid} need a host")
     # A capture without a link never removes one; see tahoe_ingest.records for precedence.
     links = merged_links(dict(old) if old else {}, links_of(row))
     meeting_warnings = list(row.get("warnings", []))
     if row.get("source_warning"):
         meeting_warnings.append(row["source_warning"])
-    conn.execute("""INSERT INTO meetings(id,agency_id,source_id,title,starts_at,local_date,timezone,status,location,official_url,participation,minutes_url,minutes_status,minutes_note,recording_url,last_checked_at,change,warnings)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    conn.execute("""INSERT INTO meetings(id,agency_id,source_id,title,starts_at,local_date,timezone,status,location,official_url,participation,minutes_url,minutes_status,minutes_note,recording_url,last_checked_at,change,warnings,host)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT(id) DO UPDATE SET title=excluded.title, starts_at=excluded.starts_at, local_date=excluded.local_date, timezone=excluded.timezone,
         status=excluded.status, location=excluded.location, official_url=excluded.official_url,
         participation=excluded.participation, minutes_url=excluded.minutes_url, minutes_status=excluded.minutes_status,
         minutes_note=excluded.minutes_note, recording_url=excluded.recording_url,
         last_checked_at=GREATEST(excluded.last_checked_at,meetings.last_checked_at), change=excluded.change, warnings=excluded.warnings,
+        host=excluded.host,
         updated_at=CASE WHEN meetings.title IS DISTINCT FROM excluded.title OR meetings.starts_at IS DISTINCT FROM excluded.starts_at
           OR meetings.local_date IS DISTINCT FROM excluded.local_date
           OR meetings.status IS DISTINCT FROM excluded.status OR meetings.participation IS DISTINCT FROM excluded.participation
-          OR meetings.location IS DISTINCT FROM excluded.location OR meetings.official_url IS DISTINCT FROM excluded.official_url
+          OR meetings.location IS DISTINCT FROM excluded.location OR meetings.host IS DISTINCT FROM excluded.host
+          OR meetings.official_url IS DISTINCT FROM excluded.official_url
           OR meetings.minutes_url IS DISTINCT FROM excluded.minutes_url OR meetings.minutes_status IS DISTINCT FROM excluded.minutes_status
           OR meetings.minutes_note IS DISTINCT FROM excluded.minutes_note OR meetings.recording_url IS DISTINCT FROM excluded.recording_url
           THEN now() ELSE meetings.updated_at END""",
         (meeting_id, aid, source_id, row["title"], start, local_date, zone_name, status,
          location, row.get("source_meeting_url") or row.get("official_url") or (old["official_url"] if old else None), json.dumps(participation),
          links["minutes_url"], links["minutes_status"], links["minutes_note"], links["recording_url"],
-         checked_at, change, json.dumps(meeting_warnings)))
+         checked_at, change, json.dumps(meeting_warnings), host))
 
     if "topics" in row:
         supplied_topics = row["topics"]
@@ -637,7 +644,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         meetings.append({"id": m["id"], "agencyId": m["agency_id"], "sourceId": m["source_id"], "kind": "confirmed", "title": m["title"],
             "topics": sorted(expand_topics(set(_json(m["declared_topics"])))),
             "startsAt": iso(start), "date": m["local_date"].isoformat() if m["local_date"] else None,
-            "timezone": m["timezone"], "status": m["status"], "location": location,
+            "timezone": m["timezone"], "status": m["status"], "location": location, "host": m["host"],
             "officialUrl": m["official_url"], "participation": participation,
             "minutesUrl": m["minutes_url"], "minutesStatus": (m["minutes_status"] or "approved") if m["minutes_url"] else None,
             "minutesNote": m["minutes_note"] if m["minutes_url"] else None,
@@ -656,6 +663,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
     for meeting in meetings:
         if meeting.get("kind") == "forecast":
             meeting["duration"] = meeting_duration({"agency_id": meeting["agencyId"]}, [])
+            meeting["host"] = None
             meeting["location"], meeting["participation"] = merged_participation(
                 meeting["location"], meeting["participation"], None, AGENCIES[meeting["agencyId"]].get("participation"))
     return {"schemaVersion": 2, "generatedAt": generated_at, "mode": mode,

@@ -44,7 +44,7 @@ python3 scripts/project.py refresh
 python3 scripts/project.py worker agencies
 ```
 
-`worker agencies` prints followed entries as the worker reads them, with `extends` applied. Keep the file in canonical form: two-space JSON whose entry keys follow `AGENCY_KEYS` in `tahoe_ingest/catalog.py` (`id`, `name`, `shortName`, `aliases`, `extends`, `follow`, `officialUrl`, `sourceUrl`, `participation`, `participationTypes`, `discovery`, `agenda`, `staffReports`, `topicHints`, `schedule`, `duration`, `legacy`). A test checks it, and `learn-schedules --write` writes it that way.
+`worker agencies` prints followed entries as the worker reads them, with `extends` applied. Keep the file in canonical form: two-space JSON whose entry keys follow `AGENCY_KEYS` in `tahoe_ingest/catalog.py` (`id`, `name`, `shortName`, `aliases`, `extends`, `follow`, `meetingHost`, `officialUrl`, `sourceUrl`, `participation`, `participationTypes`, `discovery`, `agenda`, `staffReports`, `planningCalendar`, `topicHints`, `schedule`, `duration`, `legacy`). A test checks it, and `learn-schedules --write` writes it that way.
 
 An entry has live discovery when it carries a `discovery` block: its `type` names one of the source formats [below](#reviewed-source-configuration-and-repeatable-acquisition), and the rest of the block says where and how to read it. Adding a body whose source uses a supported format needs only that block, a fixture test, and a source-review record; code never branches on an agency ID to discover meetings. Setting `follow` alone does not implement discovery: entries without a `discovery` block remain manual sources. Body-specific filters keep unrelated commissions out. Operational URLs were verified during the source review where possible; `legacy` cells remain unverified and are never fetched automatically.
 
@@ -77,6 +77,10 @@ Bodies that publish through the same website in the same formats, such as a boar
 - The parent must be another entry; a chain resolves parent first, and a cycle stops the registry from loading. The resolved entry is validated like any other, so a parameter the inherited rule does not take is an error.
 
 The worker resolves `extends` when it loads the registry, so every consumer sees complete entries. The website reads only `id` and `aliases` from the file, and `aliases` is never inherited. Use `extends` where it removes real duplication: today the TTD committee, the TRPA Advisory Planning Commission, and the Douglas County Planning Commission extend their boards. Bodies whose blocks differ in shape (El Dorado and Washoe planning commissions lack their boards' discovery `title`; the TCPUD parks committee has no agenda layouts) keep full entries.
+
+### Other and per-record hosts
+
+An entry with `"meetingHost": "per-record"` is not a body. `other` (named "Other") is the only one today: it holds one-off meetings and comment periods that no single followed body holds, such as an open house co-hosted by TRPA and El Dorado County. Every meeting and comment period under such an entry must name its `host`, which the website shows instead of the agency name. The loader rejects `meetingHost` with any other value, or on an entry with `discovery`, `agenda`, or `schedule`; `meetingHost` is never inherited through `extends`. The entry is the whole definition of Other: code asks `per_record_host_agencies()` for the entries that carry the property and never tests for the ID, and source coverage leaves these entries out of its counts.
 
 ### Adding an agency
 
@@ -184,6 +188,7 @@ Edit [`one-off-meetings.json`](one-off-meetings.json). The initial file is empty
       "timezone": "America/Los_Angeles",
       "status": "scheduled",
       "location": null,
+      "host": "Only under an agency with meetingHost per-record (Other): who holds the meeting",
       "topics": ["housing", "short-term-rentals"],
       "participation": {"instructions": null, "url": null, "remoteUrl": null, "deadline": null},
       "items_complete": false,
@@ -193,7 +198,7 @@ Edit [`one-off-meetings.json`](one-off-meetings.json). The initial file is empty
 }
 ```
 
-The owning agency must be followed. Add a new agency entry first if needed. `topics` tags the meeting notice so it matches timeline filters before an agenda is posted; it does not create agenda items or summaries. Area-plan workshops can be tagged according to their actual subject, such as Housing or Environment. Only use Hot Topics when it belongs on the watchlist.
+The owning agency must be followed. Add a new agency entry first if needed. Put a meeting under `other` when it is not a regular meeting of one followed body (a co-hosted open house, for example); there `host` is required, written only from organization names in the notice. `host` is optional under any other agency. `topics` tags the meeting notice so it matches timeline filters before an agenda is posted; it does not create agenda items or summaries. Area-plan workshops can be tagged according to their actual subject, such as Housing or Environment. Only use Hot Topics when it belongs on the watchlist.
 
 Omit `start_time` until confirmed. When verified, add e.g. `"start_time": "18:00"`; this enables the existing calendar download. A date alone never invents a time. An offset-aware `starts_at` is also supported; ambiguous daylight-saving local times require an explicit offset or `fold`.
 
@@ -297,6 +302,8 @@ Edit [`public-comment-periods.json`](public-comment-periods.json) when an offici
     "project_title": "Project title as the notice states it (optional)",
     "project_proponent": "Project proponent as the notice states it (optional)",
     "summary": "Passage from the notice describing the project (optional)",
+    "host": "Who runs the period (required under other, optional elsewhere)",
+    "previous_ids": ["agency:earlier-id (only when the period moved)"],
     "opens_on": "YYYY-MM-DD",
     "closes_on": "YYYY-MM-DD",
     "official_url": "https://OFFICIAL-AGENCY-SITE/NOTICE",
@@ -309,6 +316,8 @@ Edit [`public-comment-periods.json`](public-comment-periods.json) when an offici
 ```
 
 Run `python3 scripts/project.py worker ingest-comment-periods` and then `refresh`. The importer fetches the source, checks the exact quote, stores its text/hash/provenance, and upserts a stable agency/notice ID. Dates and instructions must come from that notice. `opens_on` may be omitted if unknown. `closes_on` is required; optionally include an offset-aware `closes_at` when the exact deadline/timezone is verified. Never infer a closing hour. `project_title`, `project_proponent`, and `summary` are optional and must also be copied from the notice; the importer checks each against the fetched text, ignoring only line breaks and spacing. They lead the period's page. The `/comment-periods/` page lists open and upcoming windows, then past ones, and each window has its own page at `/comment-periods/<agency>/<id>/` that stays up after it closes, so its `id` should not change once published; they are not board meetings or calendar events with fabricated durations. No comment is submitted by the app.
+
+`host` names who runs the period when that is not the followed body itself; it replaces the agency name on the period's card and page, and it is required under `other` (see [Other and per-record hosts](#other-and-per-record-hosts)). To move a period to another agency, change `agency` and list the old full IDs (`agency:id`) in `previous_ids`: the importer deletes those rows after the upsert, and the website redirects each old page to the new one. Keep the entry in `previous_ids` for as long as old links may exist.
 
 ## Minutes and recording sources
 

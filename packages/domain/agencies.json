@@ -19,6 +19,21 @@
     "staffReports": {
       "rule": "ttd-packet"
     },
+    "planningCalendar": {
+      "format": "ttd-packet-pages",
+      "heading": "Tentative Agenda Calendar",
+      "title": "TTD/C Board/Committees Tentative Agenda Calendar",
+      "bodies": {
+        "TTD": {
+          "id": "ttd",
+          "meetingTitle": "TTD Board of Directors Meeting"
+        },
+        "RTCPC": {
+          "id": "ttd-rtcpc",
+          "meetingTitle": "TTD Regional Transit and Capital Programs Committee Meeting"
+        }
+      }
+    },
     "topicHints": {
       "transit": [
         {
@@ -108,6 +123,18 @@
     },
     "staffReports": {
       "rule": "slt-executive-summary"
+    },
+    "planningCalendar": {
+      "format": "slt-apc-attachment",
+      "itemTitle": "Agenda Planning Calendar",
+      "attachmentPattern": "^APC \\d{2} \\d{2} \\d{4}\\.pdf$",
+      "title": "Agenda Planning Calendar",
+      "bodies": {
+        "*": {
+          "id": "slt",
+          "meetingTitle": "City Council Meeting"
+        }
+      }
     },
     "duration": {
       "mode": "estimated",
@@ -1720,6 +1747,18 @@
     },
     "staffReports": {
       "rule": "tcpud-memo"
+    }
+  },
+  {
+    "id": "other",
+    "name": "Other",
+    "shortName": "Other",
+    "aliases": [],
+    "follow": true,
+    "meetingHost": "per-record",
+    "staffReports": {
+      "published": false,
+      "note": "Not a body: one-off meetings and notices hosted by any organization or combination (IDEA-018). Each record names its host."
     }
   }
 ]

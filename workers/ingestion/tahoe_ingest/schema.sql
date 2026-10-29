@@ -183,3 +183,53 @@ CREATE TABLE IF NOT EXISTS item_attachments (
   item_id text PRIMARY KEY REFERENCES agenda_items(id), source_fingerprint text NOT NULL, method text NOT NULL,
   files jsonb NOT NULL, evidence jsonb NOT NULL, mapped_at timestamptz NOT NULL DEFAULT now()
 );
+-- IDEA-018: who holds a meeting or runs a comment period when it is not one followed body (registry entries with
+-- "meetingHost": "per-record", such as Other). Shown in place of the agency name; required under such an agency.
+ALTER TABLE meetings ADD COLUMN IF NOT EXISTS host text;
+ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS host text;
+-- Preview sources (IDEA-018, tahoe_ingest.previews): each captured version of a tracked notice or of one agency's
+-- agenda planning calendar. For each (kind, key) the version with the latest published_on is current; only the
+-- current and one previous version are kept. Calendar page text is stored here (decision 0004); a notice's text
+-- is already in comment_periods.
+CREATE TABLE IF NOT EXISTS preview_sources (
+  source_kind text NOT NULL CHECK (source_kind IN ('notice','planning-calendar')),
+  source_key text NOT NULL,
+  sha256 text NOT NULL,
+  url text NOT NULL, title text NOT NULL, published_on date NOT NULL,
+  pages jsonb,
+  status text NOT NULL CHECK (status IN ('valid','rejected')), error text,
+  captured_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (source_kind, source_key, sha256)
+);
+-- One planned subject for one body on one date (or month, or pending), from one source version. Rows are keyed on
+-- body and date, not meeting ID, so they reattach when a planned meeting is adopted by the captured agenda.
+-- Rejected rows (rejection not null) are kept with the reason and never shown.
+CREATE TABLE IF NOT EXISTS meeting_previews (
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  source_kind text NOT NULL, source_key text NOT NULL, source_sha256 text NOT NULL,
+  agency_id text NOT NULL REFERENCES agencies(id),
+  local_date date, month date, pending boolean NOT NULL DEFAULT false,
+  start_time text, location text, remote_quote text,
+  subject text NOT NULL, section text, topics jsonb NOT NULL DEFAULT '[]'::jsonb,
+  quote text NOT NULL, page integer,
+  meeting_title text, special boolean NOT NULL DEFAULT false,
+  rejection text,
+  FOREIGN KEY (source_kind, source_key, source_sha256) REFERENCES preview_sources(source_kind, source_key, sha256) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_meeting_previews_meeting ON meeting_previews(agency_id, local_date);
+-- Claude topic tags for preview subjects, reused across calendar versions: a subject already classified for the
+-- same agency and normalized text (subject_key) is not sent again.
+CREATE TABLE IF NOT EXISTS ai_subject_topics (
+  agency_id text NOT NULL REFERENCES agencies(id), subject_key text NOT NULL, prompt_sha256 text NOT NULL,
+  model text NOT NULL, topics jsonb NOT NULL, reason text NOT NULL, classified_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (agency_id, subject_key)
+);
+-- Notice readings (IDEA-018, tahoe_ingest.notices): which notice version and prompt produced which events for a
+-- tracked comment period. An unchanged notice under the same prompt costs no model call.
+CREATE TABLE IF NOT EXISTS notice_extractions (
+  comment_period_id text PRIMARY KEY, source_sha256 text NOT NULL, prompt_sha256 text NOT NULL,
+  model text NOT NULL, events jsonb NOT NULL, rejected jsonb NOT NULL DEFAULT '[]'::jsonb,
+  extracted_at timestamptz NOT NULL DEFAULT now()
+);
+-- Earlier IDs of a comment period that moved (IDEA-018); the website redirects their pages.
+ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS previous_ids jsonb NOT NULL DEFAULT '[]'::jsonb;

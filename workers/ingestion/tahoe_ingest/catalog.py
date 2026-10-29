@@ -56,12 +56,13 @@ def agency_catalog_path() -> Path:
 
 
 # Every key an agency entry may have, in the order the registry file keeps them (`registry_text`).
-AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "officialUrl", "sourceUrl", "participation",
-               "participationTypes", "discovery", "agenda", "staffReports", "topicHints", "schedule", "duration", "legacy")
+AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "meetingHost", "officialUrl", "sourceUrl", "participation",
+               "participationTypes", "discovery", "agenda", "staffReports", "planningCalendar", "topicHints", "schedule", "duration", "legacy")
 # What an entry says about its own body, never inherited through `extends`: its identity, the decision to follow it,
 # how readers take part, when and how long it meets, and its research record. The rest describes the publisher's
 # website and document formats, which sibling bodies share.
-OWN_KEYS = frozenset({"id", "name", "aliases", "extends", "follow", "participation", "schedule", "duration", "legacy"})
+# A planning calendar belongs to the body whose agenda carries it; its `bodies` map covers sibling bodies.
+OWN_KEYS = frozenset({"id", "name", "aliases", "extends", "follow", "meetingHost", "participation", "planningCalendar", "schedule", "duration", "legacy"})
 
 
 def registry_text(entries: list[dict]) -> str:
@@ -128,12 +129,18 @@ def agency_catalog() -> tuple[dict, ...]:
         if not isinstance(aliases, list) or not all(isinstance(a, str) and a.strip() for a in aliases):
             raise ValueError(f"invalid aliases: {agency['id']}")
         validate_discovery(agency)
+        if "meetingHost" in agency:
+            # Such an entry is not a body: its records name their own host, so nothing is discovered or forecast for it.
+            if agency["meetingHost"] != "per-record" or {"discovery", "agenda", "schedule"} & set(agency):
+                raise ValueError(f"{agency['id']}: meetingHost must be \"per-record\" and the entry must have no discovery, agenda, or schedule")
         if "schedule" in agency:
             validate_schedule(agency["id"], agency["schedule"])
         if "duration" in agency:
             validate_duration(agency["duration"], f"duration of {agency['id']}")
         from .staff_report_rules import check_config  # imported here: rule modules load only with the registry
         check_config(agency)
+        from . import planning_calendar_rules  # likewise: format modules load only with the registry
+        planning_calendar_rules.check_config(agency)
         from urllib.parse import urlparse
         for key in ("officialUrl", "sourceUrl"):
             if agency.get(key) is not None:
@@ -155,3 +162,8 @@ def agency_catalog() -> tuple[dict, ...]:
 
 def followed_agencies() -> dict[str, dict]:
     return {a["id"]: a for a in agency_catalog() if a["follow"]}
+
+
+def per_record_host_agencies() -> set[str]:
+    """Followed entries whose meetings and comment periods each name their own host (such as Other)."""
+    return {aid for aid, a in followed_agencies().items() if a.get("meetingHost") == "per-record"}

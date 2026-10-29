@@ -11,7 +11,7 @@ import re
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
-from .catalog import followed_agencies, public_topics
+from .catalog import followed_agencies, per_record_host_agencies, public_topics
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
 SUPPRESSION_DAYS = 3  # Matches tahoe_ingest.schedules: a nearby real record replaces a forecast.
@@ -49,6 +49,7 @@ def check(data):
     agencies = {a["id"] for a in data.get("agencies", [])}
     topics = {t["id"] for t in data.get("topics", [])}
     followed = set(followed_agencies())
+    hosted = per_record_host_agencies()
     require(agencies <= followed, "exported agencies must be followed")
     require(data.get("topics") == public_topics(), "topics must match the ordered canonical catalog")
     for agency in data.get("agencies", []):
@@ -63,6 +64,8 @@ def check(data):
         require(mid not in seen_meetings, f"duplicate meeting {mid}")
         seen_meetings.add(mid)
         require(meeting.get("agencyId") in agencies, f"{mid}: unknown agency")
+        require(meeting.get("agencyId") not in hosted or bool((meeting.get("host") or "").strip()), f"{mid}: host required under this agency")
+        require(meeting.get("host") is None or isinstance(meeting["host"], str), f"{mid}: host must be text")
         require(meeting.get("timezone") == "America/Los_Angeles", f"{mid}: Pacific timezone required")
         require(meeting.get("status") in ("scheduled", "rescheduled", "canceled", "unknown"), f"{mid}: unknown status")
         timestamp(meeting.get("startsAt"), f"{mid}.startsAt", nullable=True)
@@ -148,6 +151,7 @@ def check(data):
         require(pid not in seen_periods, f"duplicate comment period {pid}")
         seen_periods.add(pid)
         require(period.get("agencyId") in agencies, f"{pid}: unknown agency")
+        require(period.get("agencyId") not in hosted or bool((period.get("host") or "").strip()), f"{pid}: host required under this agency")
         url(period.get("officialUrl"), f"{pid}.officialUrl")
         url(period.get("participationUrl"), f"{pid}.participationUrl", nullable=True)
         require(bool(period.get("sourceQuote")), f"{pid}: missing source quote")

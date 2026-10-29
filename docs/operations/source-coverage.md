@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **45 entries**. **39 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **29** have live discovery, **3** are blocked by a skipped endpoint, and **7** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`).
+The registry has **46 entries**. **39 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **29** have live discovery, **3** are blocked by a skipped endpoint, and **7** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive

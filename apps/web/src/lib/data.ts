@@ -33,6 +33,16 @@ export function agencyFor(meeting: Meeting) {
   return agencies.find((agency) => agency.id === meeting.agencyId);
 }
 
+/** Who holds a meeting, as shown to readers: its host when the record names one (Other, co-hosted meetings), else the agency. */
+export function meetingAgencyLabel(meeting: Meeting) {
+  return meeting.host || agencyFor(meeting)?.name;
+}
+
+/** Who runs a comment period, as shown to readers: its host when the record names one, else the agency. */
+export function periodAgencyLabel(period: PublicCommentPeriod) {
+  return period.host || agencies.find((agency) => agency.id === period.agencyId)?.name;
+}
+
 /** Agenda items shown to readers, in agenda order: not suppressed, and not routine meeting mechanics. */
 export function allItems(meeting: Meeting): AgendaItem[] {
   return meeting.items.filter((item) => !item.suppressed && !isRoutineItem(item)).sort((a, b) => a.order - b.order);

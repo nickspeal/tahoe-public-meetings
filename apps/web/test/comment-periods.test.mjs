@@ -54,3 +54,28 @@ test('each comment period page shows its instructions, notice quote, and closed 
     assert.match(document.querySelector('.status-pill').textContent, closed(period) ? /Closed/ : /Open for comment|Not yet open/);
   }
 });
+
+const pathOf = (id, agencyId) => `/comment-periods/${agencyId}/${id.slice(agencyId.length + 1)}/`;
+
+test('a period with a host shows it in place of the agency name on its card and page', async () => {
+  const index = await page('/comment-periods/');
+  for (const period of periods.filter((candidate) => candidate.host)) {
+    assert.equal(index.querySelector(`[data-comment-period="${period.id}"] .eyebrow`).textContent, period.host);
+    const document = await page(pathOf(period.id, period.agencyId));
+    assert.equal(document.querySelector('.meeting-detail-hero .eyebrow').textContent, period.host);
+    assert.ok([...document.querySelectorAll('.detail-aside dt')].some((dt) => dt.textContent === 'Host' && dt.nextElementSibling.textContent === period.host));
+  }
+});
+
+test('the old page of a moved period redirects to its new page', async () => {
+  for (const period of periods) {
+    for (const old of period.previousIds ?? []) {
+      const [oldAgency] = old.split(':');
+      assert.notEqual(oldAgency, period.agencyId);
+      const html = await readFile(resolve(root, 'dist', ...pathOf(old, oldAgency).split('/').filter(Boolean), 'index.html'), 'utf8');
+      const target = pathOf(period.id, period.agencyId);
+      assert.match(html, new RegExp(`http-equiv="refresh" content="0;\\s*url=${target}"`));
+      assert.ok(html.includes(`href="${target}"`) || html.includes(`href=${target}`));
+    }
+  }
+});

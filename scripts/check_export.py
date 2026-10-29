@@ -43,7 +43,10 @@ def check(data):
     agencies = {a["id"] for a in data.get("agencies", [])}
     topics = {t["id"] for t in data.get("topics", [])}
     # The raw registry is enough here: `follow` is never inherited through `extends`.
-    followed = {a["id"] for a in json.loads((ROOT / "packages/domain/agencies.json").read_text()) if a["follow"]}
+    registry = json.loads((ROOT / "packages/domain/agencies.json").read_text())
+    followed = {a["id"] for a in registry if a["follow"]}
+    # `meetingHost` is never inherited either, so the raw entries say which agencies need a host per record.
+    hosted = {a["id"] for a in registry if a["follow"] and a.get("meetingHost") == "per-record"}
     require(agencies <= followed, "exported agencies must be followed")
     require(data.get("topics") == PUBLIC_TOPICS, "topics must match the ordered canonical catalog")
     for agency in data.get("agencies", []):
@@ -58,6 +61,8 @@ def check(data):
         require(mid not in seen_meetings, f"duplicate meeting {mid}")
         seen_meetings.add(mid)
         require(meeting.get("agencyId") in agencies, f"{mid}: unknown agency")
+        require(meeting.get("agencyId") not in hosted or bool((meeting.get("host") or "").strip()), f"{mid}: host required under this agency")
+        require(meeting.get("host") is None or isinstance(meeting["host"], str), f"{mid}: host must be text")
         require(meeting.get("timezone") == "America/Los_Angeles", f"{mid}: Pacific timezone required")
         require(meeting.get("status") in ("scheduled", "rescheduled", "canceled", "unknown"), f"{mid}: unknown status")
         timestamp(meeting.get("startsAt"), f"{mid}.startsAt", nullable=True)
@@ -138,6 +143,7 @@ def check(data):
         require(pid not in seen_periods, f"duplicate comment period {pid}")
         seen_periods.add(pid)
         require(period.get("agencyId") in agencies, f"{pid}: unknown agency")
+        require(period.get("agencyId") not in hosted or bool((period.get("host") or "").strip()), f"{pid}: host required under this agency")
         url(period.get("officialUrl"), f"{pid}.officialUrl")
         url(period.get("participationUrl"), f"{pid}.participationUrl", nullable=True)
         require(bool(period.get("sourceQuote")), f"{pid}: missing source quote")

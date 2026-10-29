@@ -3,7 +3,7 @@ from datetime import date, datetime
 import json
 from zoneinfo import ZoneInfo
 
-from .catalog import followed_agencies, topic_ids, expand_topics
+from .catalog import followed_agencies, per_record_host_agencies, topic_ids, expand_topics
 from .http import public_url
 from .source import download_extract
 
@@ -28,6 +28,15 @@ def ingest_comment_periods(conn, bundle: dict, *, fetch=download_extract) -> dic
             deadline = datetime.fromisoformat(row['closes_at'].replace('Z', '+00:00')) if row.get('closes_at') else None
             if deadline and (deadline.tzinfo is None or deadline.astimezone(ZoneInfo('America/Los_Angeles')).date() != closes):
                 raise ValueError('exact deadline requires an offset and must match closes_on in Pacific time')
+            host = row.get('host')
+            if host is not None and (not isinstance(host, str) or not host.strip()):
+                raise ValueError('comment period host must be a non-empty string')
+            if agency in per_record_host_agencies() and not host:
+                raise ValueError(f'comment periods under {agency} need a host')
+            previous = row.get('previous_ids', [])
+            if not isinstance(previous, list) or not all(isinstance(p, str) and p.strip() for p in previous) \
+                    or f'{agency}:{row["id"]}' in previous:
+                raise ValueError('previous_ids must be a list of earlier full comment period IDs')
             tags = row.get('topics', [])
             if not isinstance(tags, list) or not set(tags) <= topic_ids():
                 raise ValueError('unknown comment period topic')
@@ -52,27 +61,34 @@ def ingest_comment_periods(conn, bundle: dict, *, fetch=download_extract) -> dic
                 conn.execute('''INSERT INTO comment_periods
                     (id,agency_id,source_id,title,opens_on,closes_on,closes_at,official_url,participation_url,
                      instructions,topics,source_quote,source_text,source_sha256,checked_at,
-                     project_title,project_proponent,summary)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                     project_title,project_proponent,summary,host,previous_ids)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT(id) DO UPDATE SET title=excluded.title,opens_on=excluded.opens_on,
                     closes_on=excluded.closes_on,closes_at=excluded.closes_at,official_url=excluded.official_url,
                     participation_url=excluded.participation_url,instructions=excluded.instructions,
                     topics=excluded.topics,source_quote=excluded.source_quote,source_text=excluded.source_text,
                     source_sha256=excluded.source_sha256,checked_at=excluded.checked_at,
                     project_title=excluded.project_title,project_proponent=excluded.project_proponent,
-                    summary=excluded.summary,
+                    summary=excluded.summary,host=excluded.host,previous_ids=excluded.previous_ids,
                     updated_at=CASE WHEN (comment_periods.title,comment_periods.opens_on,comment_periods.closes_on,
                       comment_periods.closes_at,comment_periods.source_sha256,comment_periods.topics,
                       comment_periods.instructions,comment_periods.participation_url,comment_periods.official_url,
-                      comment_periods.project_title,comment_periods.project_proponent,comment_periods.summary)
+                      comment_periods.project_title,comment_periods.project_proponent,comment_periods.summary,
+                      comment_periods.host,comment_periods.previous_ids)
                       IS DISTINCT FROM (excluded.title,excluded.opens_on,excluded.closes_on,excluded.closes_at,
                       excluded.source_sha256,excluded.topics,excluded.instructions,excluded.participation_url,excluded.official_url,
-                      excluded.project_title,excluded.project_proponent,excluded.summary)
+                      excluded.project_title,excluded.project_proponent,excluded.summary,
+                      excluded.host,excluded.previous_ids)
                       THEN now() ELSE comment_periods.updated_at END''',
                     (f'{agency}:{row["id"]}', agency, row['id'], row['title'], opens, closes, deadline,
                      url, row.get('participation_url'), row.get('instructions'), json.dumps(sorted(expand_topics(set(tags)))),
                      quote, text, captured['sha256'], stamp,
-                     details['project_title'], details['project_proponent'], details['summary']))
+                     details['project_title'], details['project_proponent'], details['summary'], host, json.dumps(previous)))
+                # A period that moved (for example to another agency) leaves its old row behind; the website
+                # redirects the old page. notice_extractions has no foreign key, so its rows go first.
+                if previous:
+                    conn.execute('DELETE FROM notice_extractions WHERE comment_period_id = ANY(%s)', (previous,))
+                    conn.execute('DELETE FROM comment_periods WHERE id = ANY(%s)', (previous,))
             result['processed'] += 1
         except (ValueError, KeyError, OSError, RuntimeError) as exc:
             result['failed'] += 1
@@ -87,7 +103,7 @@ def export_comment_periods(conn) -> list[dict]:
              'closesOn': row['closes_on'].isoformat(), 'closesAt': iso(row['closes_at']),
              'officialUrl': row['official_url'], 'participationUrl': row['participation_url'],
              'instructions': row['instructions'], 'projectTitle': row['project_title'],
-             'projectProponent': row['project_proponent'], 'summary': row['summary'], 'topics': sorted(expand_topics(set(_json(row['topics'])))),
+             'projectProponent': row['project_proponent'], 'summary': row['summary'], 'host': row['host'], 'previousIds': _json(row['previous_ids']), 'topics': sorted(expand_topics(set(_json(row['topics'])))),
              'sourceQuote': row['source_quote'], 'sourceSha256': row['source_sha256'],
              'lastCheckedAt': iso(row['checked_at']), 'updatedAt': iso(row['updated_at'])}
             for row in conn.execute('SELECT * FROM comment_periods ORDER BY closes_on,id')

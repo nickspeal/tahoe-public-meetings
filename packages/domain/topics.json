@@ -2,9 +2,10 @@
   {
     "id": "biking",
     "name": "Biking",
-    "description": "Bicycling, pedestrian access and safety, and road repair",
+    "description": "Bicycling, scooters, pedestrian access and safety, and road repair",
     "examples": [
       "bike routes",
+      "e-bikes and scooters",
       "sidewalks",
       "multi-use trails",
       "pedestrian crossings",
@@ -14,7 +15,7 @@
     "titlePatterns": [
       {
         "id": "bike-or-active-transport",
-        "pattern": "\\b(?:bicycl(?:e|es|ing|ist|ists)|bik(?:e|es|ing|eway|eways)|cycling|cyclists?|cycle track|active transportation|complete streets|pedestrians?|sidewalks?|crosswalks?|traffic calming|street safety|road safety|intersection safety|shared[- ]use (?:path|trail)|multi[- ]use (?:path|trail))\\b"
+        "pattern": "\\b(?:bicycl(?:e|es|ing|ist|ists)|bik(?:e|es|ing|eway|eways)|cycling|cyclists?|cycle track|(?:e-?)?scooters?|micro-?mobility|walk your wheels|active transportation|complete streets|pedestrians?|sidewalks?|crosswalks?|traffic calming|street safety|road safety|intersection safety|shared[- ]use (?:path|trail)|multi[- ]use (?:path|trail))\\b"
       },
       {
         "id": "road-repair",

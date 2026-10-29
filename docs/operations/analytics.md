@@ -104,7 +104,7 @@ GOATCOUNTER_SITE_URL=https://<code>.goatcounter.com npm --prefix apps/web run an
 npm --prefix apps/web run analytics -- --days 30 --json      # machine-readable, for a coding agent
 ```
 
-It needs a separate API key with permission to **read statistics** (the count key cannot read), created from the account menu's API page. Keep it out of the repository: export it in the shell or put it in an ignored `.env` file and load it with `node --env-file`. `GOATCOUNTER_SITE_URL` can be omitted when `PUBLIC_GOATCOUNTER_URL` is set, since the script derives the site from it. The API allows four requests a second; the script paces itself. Without `GOATCOUNTER_BASELINE_URL` it reports the main site alone.
+It needs an API key with permission to **read statistics**, created from the account menu's API page (keys belong to the account and cover every site unless restricted; the count-only key in Vercel cannot read). The script accepts it as `GOATCOUNTER_API_TOKEN` or `GOATCOUNTER_API_KEY`. Keep it out of the repository: export it in the shell or put it in an ignored `.env` file and load it with `node --env-file`. `GOATCOUNTER_SITE_URL` can be omitted when `PUBLIC_GOATCOUNTER_URL` is set, since the script derives the site from it. The API allows four requests a second; the script paces itself. Without `GOATCOUNTER_BASELINE_URL` it reports the main site alone.
 
 GoatCounter's API counts **visits**, not pageviews: on the main site a visit is one browser within an eight-hour window, and the baseline mirrors that grouping. The report's "tracked" column is main visits divided by baseline visits; expect it a little high for the reasons above (crawlers, rate limiting) and because the baseline's eight-hour windows are aligned to UTC rather than to a visit's first hit.
 

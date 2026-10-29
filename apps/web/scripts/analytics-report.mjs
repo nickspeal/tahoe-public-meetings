@@ -6,7 +6,7 @@
  *   npm run analytics -- --days 30
  *   npm run analytics -- --json
  *
- * Reads GOATCOUNTER_API_TOKEN (an API key with permission to read statistics), GOATCOUNTER_SITE_URL
+ * Reads GOATCOUNTER_API_TOKEN or GOATCOUNTER_API_KEY (an API key with permission to read statistics), GOATCOUNTER_SITE_URL
  * (the main site, e.g. https://code.goatcounter.com; derived from PUBLIC_GOATCOUNTER_URL when unset),
  * and GOATCOUNTER_BASELINE_URL (optional; without it only the main site is reported).
  * GoatCounter's API reports visits, not pageviews; see docs/operations/analytics.md.
@@ -20,7 +20,7 @@ const PAGE_LIMIT = 100;
 const MAX_PAGES = 5;
 
 export function siteUrls(env) {
-  const token = env.GOATCOUNTER_API_TOKEN?.trim();
+  const token = (env.GOATCOUNTER_API_TOKEN ?? env.GOATCOUNTER_API_KEY)?.trim();
   let main = env.GOATCOUNTER_SITE_URL?.trim();
   if (!main && env.PUBLIC_GOATCOUNTER_URL?.trim()) {
     try { main = new URL(env.PUBLIC_GOATCOUNTER_URL.trim()).origin; } catch { main = undefined; }

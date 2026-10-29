@@ -35,6 +35,7 @@ function fakeApi() {
 test('site URLs come from the token, the public count URL, and the baseline variable', () => {
   assert.deepEqual(siteUrls(env), { token: 'read-token', main: 'https://example.goatcounter.com', baseline: 'https://example-baseline.goatcounter.com' });
   assert.equal(siteUrls({ ...env, GOATCOUNTER_SITE_URL: 'https://other.goatcounter.com/' }).main, 'https://other.goatcounter.com');
+  assert.equal(siteUrls({ GOATCOUNTER_API_KEY: 'alias' }).token, 'alias');
   assert.deepEqual(siteUrls({}), { token: null, main: null, baseline: null });
 });
 

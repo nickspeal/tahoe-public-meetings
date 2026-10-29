@@ -80,7 +80,7 @@ if (topicSelect && agencySelect) {
         topicItems.hidden = !showTopic;
         if (showTopic) matchingAgendaItems += topicItems.querySelectorAll('a').length;
       }
-      matchingAgendaItems += showPreviews(row, topic);
+      showPreviews(row, topic);
     }
     for (const group of groups) {
       const groupRows = [...group.querySelectorAll<HTMLElement>('[data-meeting-row]')];
@@ -164,21 +164,21 @@ if (topicSelect && agencySelect) {
   applyFilters();
 }
 
-// A card's "Planned:" line lists the subjects matching the selected topic, else the first few and how many more.
-// Returns how many subjects match the topic, which count with the related agenda items.
+// A card's "Planned:" line lists the first few subjects and how many more while no topic is selected. With a
+// topic selected it is hidden: the topic's agenda list under the card carries the matching planned subjects,
+// which are counted there with the related agenda items.
 function showPreviews(row: HTMLElement, topic: string) {
   const line = row.querySelector<HTMLElement>('[data-meeting-previews]');
-  if (!line) return 0;
+  if (!line) return;
+  line.hidden = Boolean(topic);
   const subjects = [...line.querySelectorAll<HTMLElement>('[data-preview-topics]')];
-  const matching = topic ? subjects.filter((subject) => (JSON.parse(subject.dataset.previewTopics ?? '[]') as string[]).includes(topic)) : [];
-  const shown = new Set(matching.length ? matching : subjects.slice(0, Number(line.dataset.previewLimit) || 3));
+  const shown = new Set(subjects.slice(0, Number(line.dataset.previewLimit) || 3));
   for (const subject of subjects) subject.hidden = !shown.has(subject);
   const more = line.querySelector<HTMLElement>('[data-preview-more]');
   if (more) {
     more.hidden = subjects.length === shown.size;
     more.textContent = `and ${subjects.length - shown.size} more`;
   }
-  return matching.length;
 }
 
 // The page is a static snapshot, so its Today is the build's date. When the reader's Lake Tahoe date is

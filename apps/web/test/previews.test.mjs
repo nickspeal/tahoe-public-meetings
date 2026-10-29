@@ -96,6 +96,8 @@ function syntheticTimeline(route) {
     <section data-timeline-group="future-x">
       <div data-meeting-row data-agency="slt" data-topics='["biking","housing"]' data-bucket="upcoming" data-canceled="false" data-forecast="false" data-awaiting-agenda="false" data-previews="true">
         <p data-meeting-previews data-preview-limit="3">Planned: ${subject('A', ['housing'])}${subject('B', [])}${subject('C', [])}${subject('Bikes one', ['biking'])}${subject('Bikes two', ['biking'])}<span data-preview-more>and 2 more</span></p>
+        <div data-topic-items="biking" hidden><a data-topic-planned href="#"><strong>Bikes one</strong></a><a data-topic-planned href="#"><strong>Bikes two</strong></a></div>
+        <div data-topic-items="housing" hidden><a data-topic-planned href="#"><strong>A</strong></a></div>
       </div>
       <div data-meeting-row data-agency="ttd" data-topics='["biking"]' data-bucket="upcoming" data-canceled="false" data-forecast="false" data-awaiting-agenda="true" data-previews="false" hidden></div>
     </section>
@@ -107,7 +109,7 @@ function syntheticTimeline(route) {
 }
 const shownSubjects = (document) => [...document.querySelectorAll('[data-preview-topics]')].filter((span) => !span.hidden).map((span) => span.textContent);
 
-test('the timeline shows planned subjects: matching the topic, else the first three and how many more', () => {
+test('the timeline shows the first three planned subjects, and lists the matching ones under the card with a topic', () => {
   const dom = syntheticTimeline('/');
   const { document } = dom.window;
   const [planned, awaiting] = document.querySelectorAll('[data-meeting-row]');
@@ -119,8 +121,9 @@ test('the timeline shows planned subjects: matching the topic, else the first th
   dom.window.close();
 
   const biking = syntheticTimeline('/?topic=biking');
-  assert.deepEqual(shownSubjects(biking.window.document), ['Bikes one', 'Bikes two']);
-  assert.equal(biking.window.document.querySelector('[data-preview-more]').textContent, 'and 3 more');
+  assert.equal(biking.window.document.querySelector('[data-meeting-previews]').hidden, true);
+  assert.equal(biking.window.document.querySelector('[data-topic-items="biking"]').hidden, false);
+  assert.equal(biking.window.document.querySelector('[data-topic-items="housing"]').hidden, true);
   assert.equal(biking.window.document.querySelector('#agenda-count').textContent, '2 related agenda items');
   biking.window.close();
 });
@@ -172,7 +175,7 @@ test('upcoming meetings with previews show by default with the pill and are not 
   dom.window.close();
 });
 
-test('a topic filter matches through preview topics and lists the matching subjects', { skip: skip(withPreviews.filter((record) => record.previews.some((entry) => entry.topics.length)), 'tagged preview') }, async () => {
+test('a topic filter matches through preview topics and lists the matching subjects under the card', { skip: skip(withPreviews.filter((record) => record.previews.some((entry) => entry.topics.length)), 'tagged preview') }, async () => {
   const record = withPreviews.find((candidate) => candidate.previews.some((entry) => entry.topics.includes('biking'))) ?? withPreviews.find((candidate) => candidate.previews.some((entry) => entry.topics.length));
   const topic = record.previews.some((entry) => entry.topics.includes('biking')) ? 'biking' : record.previews.find((entry) => entry.topics.length).topics[0];
   const expected = record.previews.filter((entry) => entry.topics.includes(topic)).map((entry) => entry.subject);
@@ -181,7 +184,11 @@ test('a topic filter matches through preview topics and lists the matching subje
     const { document } = dom.window;
     const row = rowFor(document, record.id);
     assert.equal(row.hidden, false, `${record.id} matches ${route}`);
-    assert.deepEqual([...row.querySelectorAll('[data-preview-topics]')].filter((span) => !span.hidden).map((span) => span.textContent), expected);
+    assert.equal(row.querySelector('[data-meeting-previews]').hidden, true, 'the Planned line yields to the topic list');
+    const list = row.querySelector(`[data-topic-items="${topic}"]`);
+    assert.equal(list.hidden, false);
+    assert.deepEqual([...list.querySelectorAll('[data-topic-planned] strong')].map((node) => node.textContent), expected);
+    for (const link of list.querySelectorAll('[data-topic-planned]')) assert.match(link.getAttribute('href'), /#planned-heading$/);
     const count = Number(document.querySelector('#agenda-count').textContent.match(/^(\d+)/)?.[1]);
     assert.ok(count >= expected.length, 'planned subjects count with related agenda items');
     dom.window.close();
@@ -204,8 +211,11 @@ test('meeting pages list previews above the empty agenda with their source line'
     assert.deepEqual([...section.querySelectorAll('.preview-item strong')].map((node) => node.textContent), record.previews.map((entry) => entry.subject));
     const sources = [...section.querySelectorAll('.preview-source a')];
     for (const entry of record.previews) {
-      const link = sources.find((anchor) => anchor.getAttribute('href') === entry.source.url);
-      assert.ok(link, `${record.id} links ${entry.source.url}`);
+      // One link per source document, opened at the first page its subjects were read from (#page=N); a notice links as is.
+      const firstPage = record.previews.filter((other) => other.source.url === entry.source.url).find((other) => other.source.page)?.source.page;
+      const expectedHref = firstPage ? `${entry.source.url}#page=${firstPage}` : entry.source.url;
+      const link = sources.find((anchor) => anchor.getAttribute('href') === expectedHref);
+      assert.ok(link, `${record.id} links ${expectedHref}`);
       assert.match(link.textContent, entry.source.kind === 'planning-calendar' ? /^From the agenda planning calendar updated [A-Z][a-z]+ \d{1,2}, \d{4}/ : new RegExp(`^From the ${entry.source.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
     }
     const empty = document.querySelector('.empty-panel');

@@ -660,8 +660,8 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": warnings, "documents": docs, "items": items,
             "history": history_by_meeting.get(m["id"], []),
             "duration": meeting_duration(m, [{"title": i["title"], "section": i["section"]} for i in items])})
-        if preview_store.is_planned(m):
-            meetings[-1]["planned"] = True
+        if preview_store.is_planned(m) and not agenda_posted(meetings[-1]):
+            meetings[-1]["planned"] = True  # until the captured agenda adopts the record (R6)
     attach_previews(meetings, current_previews, comment_periods, local_today)
     # Expected meetings follow the stored records; the website sorts by date.
     for agency in agencies:

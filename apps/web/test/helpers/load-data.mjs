@@ -13,5 +13,5 @@ const source = (await readFile(resolve(root, 'src/lib/data.ts'), 'utf8'))
   .replace(/import topicCatalog from .*;\n/, `const topicCatalog = ${catalog};\n`)
   .replace(/import\.meta\.glob\([^)]*\)/, '({})')
   .replace("'./routine-items'", `'${await moduleUrl('src/lib/routine-items.ts')}'`)
-  .replace("'./source-links'", `'${await moduleUrl('src/lib/source-links.ts')}'`);
+  .replaceAll("'./source-links'", `'${await moduleUrl('src/lib/source-links.ts')}'`);
 export const dataLib = await import(`data:text/javascript;base64,${Buffer.from(transpile(source)).toString('base64')}`);

@@ -102,7 +102,7 @@ def test_attachment_calendar_is_read_once_and_becomes_previews_and_planned_meeti
     _, meetings = export(db)
     nov3, dec1 = meetings["slt:planned-2026-11-03"], meetings["slt:planned-2026-12-01"]
     assert nov3["planned"] is True and nov3["kind"] == "confirmed" and nov3["title"] == "City Council Meeting"
-    assert nov3["startsAt"].startswith("2026-11-03T") and nov3["officialUrl"] == source["url"]
+    assert nov3["startsAt"].startswith("2026-11-03T") and nov3["officialUrl"] == "https://www.cityofslt.gov/"
     assert meetings["slt:planned-2026-10-13"]["title"] == "Special City Council Meeting"
     bikes = [p for p in dec1["previews"] if "Bike" in p["subject"] or "Bicycle" in p["subject"]]
     assert len(bikes) == 2 and all("biking" in p["topics"] for p in bikes) and "biking" in dec1["topics"]

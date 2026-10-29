@@ -317,7 +317,9 @@ def _create_planned(conn, source: PreviewSource, rows: list, *, today: date) -> 
         preview = Preview(agency_id=agency_id, local_date=day, month=None, subject="", quote="",
                           meeting_title=_first(block, "meeting_title"), special=special)
         row = {"agency": agency_id, "id": planned_source_id(day), "title": planned_title(preview, agencies[agency_id]["name"]),
-               "date": day.isoformat(), "location": _first(block, "location"), "source_meeting_url": source.url,
+               "date": day.isoformat(), "location": _first(block, "location"),
+               # The agency's own site, where the agenda will be posted; the source line on the page links the document.
+               "source_meeting_url": agencies[agency_id].get("officialUrl") or agencies[agency_id].get("sourceUrl") or source.url,
                "status": "scheduled", "participation": {"instructions": _first(block, "remote_quote"), "url": None,
                                                         "remoteUrl": None, "deadline": None},
                "warnings": [PLANNED_WARNING], "items_complete": False, "documents_complete": False}

@@ -1,6 +1,7 @@
 import type { AgendaItem, Meeting, MeetingPreview, PublicCommentPeriod, PublicData } from '../../../../packages/domain/public';
 import topicCatalog from '../../../../packages/domain/topics.json';
 import { isRoutineItem } from './routine-items';
+import { citationHref } from './source-links';
 
 const publicDataModules = import.meta.glob('../data/public.json', { eager: true, import: 'default' }) as Record<string, PublicData>;
 const loadedData = publicDataModules['../data/public.json'];
@@ -282,6 +283,11 @@ export function previewsForTopic(meeting: Meeting, topicId = '') {
 /** "From the agenda planning calendar updated September 30, 2026" or "From the West Shore Trail Notice of Preparation". */
 export function previewSourceLabel(source: MeetingPreview['source']) {
   return source.kind === 'planning-calendar' ? `From the agenda planning calendar updated ${noticeDayLabel(source.publishedOn)}` : `From the ${source.title}`;
+}
+
+/** The source document opened at the page the subjects were read from, when it is a PDF page. */
+export function previewSourceHref(source: MeetingPreview['source']) {
+  return source.page ? citationHref(source.url, source.page) : source.url;
 }
 
 export function meetingAgendaLabel(meeting: Meeting) {

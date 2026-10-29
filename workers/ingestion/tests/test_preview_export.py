@@ -33,7 +33,7 @@ def test_notice_meetings_and_previews_are_exported_and_linked(db, monkeypatch):
     assert one_off["host"] == "TRPA and El Dorado County" and set(one_off["topics"]) >= {"biking", "environment"}
     assert "planned" not in one_off and "previews" not in one_off
     assert planned["planned"] is True and planned["kind"] == "confirmed" and planned["startsAt"].startswith("2026-11-12T")
-    assert "128 Market Street" in planned["location"] and planned["officialUrl"] == NOTICE["official_url"]
+    assert "128 Market Street" in planned["location"] and planned["officialUrl"] == "https://www.trpa.gov/"
     [preview] = planned["previews"]
     assert preview["subject"] == APC["subject"] and preview["source"]["kind"] == "notice"
     assert preview["source"]["url"] == NOTICE["official_url"] and preview["source"]["publishedOn"] == NOTICE["opens_on"]

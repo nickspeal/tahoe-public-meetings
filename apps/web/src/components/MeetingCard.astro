@@ -1,6 +1,6 @@
 ---
 import type { Meeting } from '../../../../packages/domain/public';
-import { agencyFor, agendaNotPosted, awaitingAgendaLabel, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, meetingPreviews, meetingTopicIds, previewsForTopic, residentWarning, topics } from '../lib/data';
+import { agencyFor, agendaNotPosted, awaitingAgendaLabel, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, meetingPreviews, meetingTopicIds, residentWarning, topics } from '../lib/data';
 import { meetingCardTitle } from '../lib/meeting-title';
 import StatusPill from './StatusPill.astro';
 const { meeting, initialTopic = '' } = Astro.props as { meeting: Meeting; initialTopic?: string };
@@ -16,11 +16,11 @@ const tone = label === awaitingAgendaLabel ? 'outline' : label === 'Canceled' ? 
 const dateValue = meetingDateValue(meeting);
 const warning = forecast ? null : meeting.warnings.map(residentWarning).find(Boolean);
 // An expected meeting has no page or calendar file; its card points to the agency for the real notice.
-// Every planned subject is rendered; timeline-filters.ts shows those matching the selected topic, else the first few.
+// Every planned subject is rendered; timeline-filters.ts shows the first few while no topic is selected.
+// With a topic selected the line is hidden: the topic's agenda list (TopicAgendaLinks) carries the matching subjects.
 const previews = meetingPreviews(meeting);
 const PREVIEW_LIMIT = 3;
-const matching = initialTopic ? previewsForTopic(meeting, initialTopic) : [];
-const shownPreviews = new Set(matching.length ? matching : previews.slice(0, PREVIEW_LIMIT));
+const shownPreviews = new Set(previews.slice(0, PREVIEW_LIMIT));
 const morePreviews = previews.length - shownPreviews.size;
 // Topics from the agenda, notice, and planned subjects, in catalog order; timeline-filters.ts marks the selected one.
 const topicIds = meetingTopicIds(meeting);
@@ -34,7 +34,7 @@ const link = forecast ? { href: meeting.officialUrl, target: '_blank', rel: 'noo
       <div class="eyebrow">{meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : dateValue ? meetingDateLabel(meeting, { weekday: 'long' }) : 'Date not announced'}</div>
       <h3>{canceled && <span class="sr-only">Canceled: </span>}{forecast && <span class="sr-only">Expected, no agenda yet: </span>}{title}</h3>
       {forecast ? <p>{meeting.forecast?.basis}<span class="sr-only"> (opens in a new tab)</span></p> : details.length > 0 && <p>{details.map((detail, index) => <>{index > 0 && <> <span class="dot">·</span> </>}{detail}</>)}</p>}
-      {previews.length > 0 && <p class="meeting-previews" data-meeting-previews data-preview-limit={PREVIEW_LIMIT}><span class="meeting-previews-label">Planned:</span> {previews.map((preview) => <span class="meeting-preview" data-preview-topics={JSON.stringify(preview.topics)} hidden={!shownPreviews.has(preview)}>{preview.subject}</span>)}<span class="meeting-preview-more" data-preview-more hidden={morePreviews === 0}>and {morePreviews} more</span></p>}
+      {previews.length > 0 && <p class="meeting-previews" data-meeting-previews data-preview-limit={PREVIEW_LIMIT} hidden={Boolean(initialTopic)}><span class="meeting-previews-label">Planned:</span> {previews.map((preview) => <span class="meeting-preview" data-preview-topics={JSON.stringify(preview.topics)} hidden={!shownPreviews.has(preview)}>{preview.subject}</span>)}<span class="meeting-preview-more" data-preview-more hidden={morePreviews === 0}>and {morePreviews} more</span></p>}
       {warning && <span class="subtle">{warning}</span>}
       {cardTopics.length > 0 && <span class="meeting-topics"><span class="sr-only">Topics: </span>{cardTopics.map((topic, index) => <span class:list={['tag', 'meeting-topic', { 'meeting-topic-selected': topic.id === initialTopic }]} data-card-topic={topic.id}>{index > 0 && <span class="sr-only">, </span>}{topic.name}</span>)}</span>}
     </div>

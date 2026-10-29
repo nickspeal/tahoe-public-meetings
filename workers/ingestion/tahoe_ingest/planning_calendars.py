@@ -167,11 +167,13 @@ class _Reading:
 
 
 def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = False, reader=read_pdf,
-                            delay: float = 0.0, today: date | None = None, max_calendars: int | None = None) -> dict:
+                            delay: float = 0.0, today: date | None = None, max_calendars: int | None = None,
+                            deadline: float | None = None) -> dict:
     """Read every configured agency's new planning calendars and store their previews (see the module docstring).
 
     ``reader(url)`` downloads a PDF temporarily (``staff_reports.read_pdf``); ``max_calendars`` bounds downloads
-    per run (the rest wait for the next run); ``dry_run`` lists what would be read, with no downloads or writes.
+    per run (the rest wait for the next run), and so does ``deadline`` (a ``time.monotonic()`` value): once it
+    passes, no further calendar is downloaded. ``dry_run`` lists what would be read, with no downloads or writes.
     """
     today = today or date.today()
     rules = agency_rules()
@@ -213,6 +215,11 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
                         continue
                     if max_calendars is not None and downloads >= max_calendars:
                         report["deferred"] = report.get("deferred", 0) + 1
+                        continue
+                    if deadline is not None and time.monotonic() >= deadline:
+                        report["deferred"] = report.get("deferred", 0) + 1
+                        report["stoppedEarly"] = "time budget reached; remaining calendars are read on the next run"
+                        report["timeBudgetReached"] = True
                         continue
                     if downloads and delay:
                         time.sleep(delay)

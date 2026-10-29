@@ -19,6 +19,7 @@ This is the scope and architecture brief. Read it before earlier comparison docu
 - Done: `classify-topics` runs in the scheduled Cloud Run job after ingestion and before `export`; the image installs the worker's `ai` extra.
 - Done, differently: the job authenticates with Anthropic workload identity federation from its Google service account, so no `ANTHROPIC_API_KEY` is stored anywhere.
 - Done: a $5/month Claude workspace spend limit backs the job's `--max-cost` and `--monthly-budget` guards. Failed executions email the operator; failed meetings and cost stops appear in the run's JSON summary and the `ai_usage` table and also send an ntfy alert.
+- Done: a time budget, `run-scheduled --claude-time-budget` (default 2,700 s from the run's start; 0 disables), stops the Claude steps, staff reports, and planning calendars before their next unit of work so export and publish always run inside the 3,600 s task timeout; the rest waits for the next run, and the summary (`timeBudgetSteps`) and an ntfy alert name the steps that stopped (deployment runbook, "Time budget").
 - Done: a GitHub Actions freshness check alerts through ntfy when the published `/status.json` is more than 14 hours old, which covers a paused or non-firing scheduler (deployment runbook, "Silent-failure alerts"). Operator steps remain: store the `tahoe-ntfy-url` job secret and the repository `NTFY_URL` secret.
 - Consider the Message Batches API (50% cheaper) once volume justifies the delay; an incremental run costs about $0.02; the first full classification of 1,738 items cost $0.11.
 

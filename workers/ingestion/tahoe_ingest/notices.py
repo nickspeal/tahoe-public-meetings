@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import NamedTuple
 from zoneinfo import ZoneInfo
 
-from .ai_topics import DEFAULT_MAX_RUN_COST, DEFAULT_MONTHLY_BUDGET, month_to_date_spend
+from .ai_topics import DEFAULT_MAX_RUN_COST, DEFAULT_MONTHLY_BUDGET, month_to_date_spend, out_of_time, time_budget_stop
 from .catalog import followed_agencies
 from .evaluate_topics import (
     AnthropicTopicModel, ModelError, USAGE_FIELDS, cost_usd, estimate_tokens, has_credentials,
@@ -479,7 +479,8 @@ def render_user_message(period: dict) -> str:
 
 def extract_notices(conn, *, dry_run: bool = False, force: bool = False, max_cost: float = DEFAULT_MAX_RUN_COST,
                     monthly_budget: float = DEFAULT_MONTHLY_BUDGET, clients: dict | None = None,
-                    today: date | None = None) -> dict:
+                    today: date | None = None, deadline: float | None = None) -> dict:
+    """Read each changed notice; ``deadline`` (``time.monotonic()``) stops before the next notice once it passes."""
     system = PROMPT.read_text().strip()
     schema = response_schema()
     prompt_hash = prompt_sha256(system)
@@ -507,9 +508,12 @@ def extract_notices(conn, *, dry_run: bool = False, force: bool = False, max_cos
     if estimate > max_cost:
         raise SystemExit(f"Estimated ${estimate:.4f} exceeds --max-cost ${max_cost:.2f}")
     clients = clients or {}
-    for period in pending:
+    for done, period in enumerate(pending):
         if report["costUsd"] >= max_cost or spent_this_month + report["costUsd"] >= monthly_budget:
             report["stoppedEarly"] = "cost limit reached; remaining notices are read on the next run"
+            break
+        if out_of_time(deadline):
+            time_budget_stop(report, "notices are read", periodsDeferred=len(pending) - done)
             break
         parsed, model_used = None, None
         for model, effort in CHAIN:

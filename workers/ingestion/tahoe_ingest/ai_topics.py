@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 
 from .catalog import topic_catalog
 from .evaluate_topics import (
@@ -29,6 +30,22 @@ ATTEMPTS_PER_MODEL = 2
 DEFAULT_MAX_RUN_COST = 1.00  # USD for one run, including fallbacks
 DEFAULT_MONTHLY_BUDGET = 5.00  # USD; the AI share of the under-$20/month total (decision 0011)
 PURPOSE = "topic-classification"
+
+
+def out_of_time(deadline: float | None) -> bool:
+    """True once a scheduled run's time budget (a ``time.monotonic()`` deadline) has passed; None means no budget.
+
+    Claude-backed steps check it before each new unit of work (a meeting, item, or batch), never mid-request,
+    and stop the way a cost limit stops them: what is done stays committed and the rest waits for the next run.
+    """
+    return deadline is not None and time.monotonic() >= deadline
+
+
+def time_budget_stop(report: dict, remaining: str, **deferred) -> None:
+    """Record a time-budget stop in a step report: ``stoppedEarly`` plus what was left for the next run."""
+    report["stoppedEarly"] = f"time budget reached; remaining {remaining} on the next run"
+    report["timeBudgetReached"] = True
+    report.update(deferred)
 
 
 def prompt_sha256(system: str, schema: dict) -> str:
@@ -59,8 +76,12 @@ def _stale_meetings(conn, items, prompt_hash: str, force: bool) -> dict:
 
 def classify_topics(conn, *, agency: str | None = None, max_meetings: int | None = None, force: bool = False,
                     dry_run: bool = False, max_cost: float = DEFAULT_MAX_RUN_COST,
-                    monthly_budget: float = DEFAULT_MONTHLY_BUDGET, clients: dict | None = None) -> dict:
-    """Classify meetings whose items are new or changed since their last classification."""
+                    monthly_budget: float = DEFAULT_MONTHLY_BUDGET, clients: dict | None = None,
+                    deadline: float | None = None) -> dict:
+    """Classify meetings whose items are new or changed since their last classification.
+
+    ``deadline`` (a ``time.monotonic()`` value) stops the run before the next meeting once it passes.
+    """
     catalog = list(topic_catalog())
     topic_ids = [t["id"] for t in catalog]
     system, schema = render_system_prompt(catalog=catalog), response_schema(catalog)
@@ -88,9 +109,12 @@ def classify_topics(conn, *, agency: str | None = None, max_meetings: int | None
     if estimate > max_cost:
         raise SystemExit(f"Estimated ${estimate:.4f} exceeds --max-cost ${max_cost:.2f}; use --max-meetings or raise it")
     clients = clients or {}
-    for request in requests:
+    for done, request in enumerate(requests):
         if report["costUsd"] >= max_cost or spent_this_month + report["costUsd"] >= monthly_budget:
             report["stoppedEarly"] = "cost limit reached; remaining meetings keep rule tags until the next run"
+            break
+        if out_of_time(deadline):
+            time_budget_stop(report, "meetings keep rule tags and are classified", meetingsDeferred=len(requests) - done)
             break
         rows = {i.id: i for i in pending[request.meeting_id]}
         stored = False

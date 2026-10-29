@@ -3,6 +3,7 @@ import contextlib
 import copy
 import json
 import re
+import time
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -282,3 +283,9 @@ def test_preview_checks_reject_what_the_export_must_not_show():
 def test_unknown_agency_is_refused(db):
     with pytest.raises(SystemExit):
         planning_calendars.read_planning_calendars(db, agency="truckee", today=TODAY)
+
+
+def test_a_passed_deadline_defers_downloads(db, slt):
+    report = planning_calendars.read_planning_calendars(db, reader=slt, today=TODAY, deadline=time.monotonic() - 1)
+    assert slt.calls == [] and report["deferred"] == 1 and report["timeBudgetReached"]
+    assert planning_calendars.read_planning_calendars(db, reader=slt, today=TODAY)["calendarsRead"] == 1

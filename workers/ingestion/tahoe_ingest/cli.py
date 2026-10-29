@@ -174,6 +174,9 @@ def _parser() -> argparse.ArgumentParser:
                                help="Meetings scanned for staff reports this run (0 disables)")
     scheduled_run.add_argument("--max-calendars", type=int, default=planning_calendars.DEFAULT_MAX_CALENDARS,
                                help="Planning calendar PDFs downloaded this run (0 disables the step)")
+    scheduled_run.add_argument("--claude-time-budget", type=float, default=scheduled.DEFAULT_CLAUDE_TIME_BUDGET, metavar="SECONDS",
+                               help="Seconds from the run's start after which Claude steps, staff reports, and planning calendars "
+                                    "start no new work, so export and publish finish inside the job timeout (0 disables)")
     scheduled_run.add_argument("--out", help="Also write the export JSON to this path")
     scheduled_run.add_argument("--skip-discovery", action="store_true", help="Use tracked config only; no live index checks")
     scheduled_run.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
@@ -190,6 +193,8 @@ def _parser() -> argparse.ArgumentParser:
     history.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET, help="USD month-to-date AI budget")
     history.add_argument("--lock-wait-minutes", type=float, default=backfill.DEFAULT_LOCK_WAIT_SECONDS / 60,
                          help="Wait this long for a running scheduled run to release the lock, then exit")
+    history.add_argument("--claude-time-budget", type=float, default=0, metavar="SECONDS",
+                         help="Seconds from the backfill's start after which classify-topics starts no new meeting (default 0: none)")
     history.add_argument("--out", help="Also write the export JSON to this path")
     history.add_argument("--dry-run", action="store_true", help="Discover and report only; no downloads, export, or publish")
     history.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
@@ -407,12 +412,15 @@ _source_identity = source_identity  # Kept for callers of the former CLI helper.
 def _run_scheduled(conn, args) -> int:
     if not 1 <= args.discovery_limit <= 20 or not 1 <= args.max_documents <= 10 or not 0 <= args.forecast_days <= 366:
         raise SystemExit("run-scheduled limits: --discovery-limit 1..20, --max-documents 1..10, --forecast-days 0..366")
+    if args.claude_time_budget < 0:
+        raise SystemExit("run-scheduled limits: --claude-time-budget >= 0 (0 disables it)")
     options = scheduled.Options(
         root=args.root, discovery_limit=args.discovery_limit, past_days=args.past_days, future_days=args.future_days,
         max_documents=args.max_documents, delay=args.delay, forecast_days=args.forecast_days,
         min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
         summary_max_cost=args.summary_max_cost, staff_report_meetings=args.staff_report_meetings,
-        max_calendars=args.max_calendars, out=args.out, skip_discovery=args.skip_discovery, publish=not args.no_publish)
+        max_calendars=args.max_calendars, claude_time_budget=args.claude_time_budget, out=args.out,
+        skip_discovery=args.skip_discovery, publish=not args.no_publish)
     summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))
     summary["alerts"] = alerts.alert_on_summary(summary)
     print(json.dumps(summary, default=str), flush=True)
@@ -434,7 +442,7 @@ def _backfill(conn, args) -> int:
             since=args.since, until=args.until, agencies=args.agency, root=args.root, max_documents=args.max_documents,
             delay=args.delay, forecast_days=args.forecast_days, min_meetings=args.min_meetings, max_cost=args.max_cost,
             monthly_budget=args.monthly_budget, out=args.out, publish=not args.no_publish, dry_run=args.dry_run,
-            lock_wait_seconds=args.lock_wait_minutes * 60)
+            lock_wait_seconds=args.lock_wait_minutes * 60, claude_time_budget=args.claude_time_budget)
         summary = backfill.backfill(conn, options, fetch=lambda url: download_extract(url))
     except ValueError as exc:
         raise SystemExit(str(exc))

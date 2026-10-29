@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import re
+import time
 import uuid
 from datetime import date
 from pathlib import Path
@@ -237,3 +238,23 @@ def test_run_cost_limit_defers_items(conn):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     result = item_summaries.summarize_items(conn, max_cost=0.0001, dry_run=True, today=TODAY)
     assert result["itemsPending"] == 6 and result["itemsSelected"] < 6 and result["deferred"] >= 1
+
+
+def test_time_budget_stops_before_the_next_item_and_keeps_finished_ones(conn, monkeypatch):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    haiku = StubModel("claude-haiku-5-5")
+    clients = {"claude-haiku-5-5": haiku}
+    stored = lambda: conn.execute("SELECT count(*) AS n FROM ai_item_summaries").fetchone()["n"]
+
+    expired = item_summaries.summarize_items(conn, clients=clients, today=TODAY, deadline=time.monotonic() - 1)
+    assert haiku.calls == 0 and stored() == 0 and expired["costUsd"] == 0
+    assert expired["timeBudgetReached"] and expired["itemsDeferred"] == expired["itemsSelected"] == 6
+    assert expired["stoppedEarly"] == "time budget reached; remaining items are summarized on the next run"
+
+    # The budget runs out after two items: both are stored, the other four wait for the next run.
+    monkeypatch.setattr(item_summaries, "out_of_time", lambda deadline: deadline is not None and haiku.calls >= 2)
+    partial = item_summaries.summarize_items(conn, clients=clients, today=TODAY, deadline=0.0)
+    assert haiku.calls == 2 and stored() == 2 and partial["itemsDeferred"] == 4 and partial["timeBudgetReached"]
+
+    rest = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
+    assert rest["itemsPending"] == 4 and haiku.calls == 6 and stored() == 6 and "stoppedEarly" not in rest

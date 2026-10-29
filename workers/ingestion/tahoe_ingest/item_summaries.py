@@ -29,7 +29,7 @@ from datetime import date
 from difflib import SequenceMatcher
 from pathlib import Path
 
-from .ai_topics import DEFAULT_MONTHLY_BUDGET, month_to_date_spend
+from .ai_topics import DEFAULT_MONTHLY_BUDGET, month_to_date_spend, out_of_time, time_budget_stop
 from .evaluate_topics import AnthropicTopicModel, ModelError, USAGE_FIELDS, cost_usd, estimate_tokens, has_credentials
 from .requested_actions import for_meeting as requested_actions
 from .staff_reports import clean_text, procedural, Item, report_document_id
@@ -284,7 +284,11 @@ def render_user_message(row: dict) -> str:
 def summarize_items(conn, *, agency: str | None = None, meeting: str | None = None, max_items: int | None = None,
                     force: bool = False, dry_run: bool = False, max_cost: float = DEFAULT_MAX_RUN_COST,
                     monthly_budget: float = DEFAULT_MONTHLY_BUDGET, clients: dict | None = None,
-                    today: date | None = None) -> dict:
+                    today: date | None = None, deadline: float | None = None) -> dict:
+    """Summarize pending items within the cost limit; ``deadline`` (``time.monotonic()``) stops before the next item.
+
+    Each item is one request; a meeting's finished items are stored together, including when a limit stops the run.
+    """
     system = PROMPT.read_text().strip()
     schema = response_schema()
     prompt_hash = prompt_sha256(system)
@@ -319,12 +323,17 @@ def summarize_items(conn, *, agency: str | None = None, meeting: str | None = No
     by_meeting: dict[str, list] = {}
     for row in selected:
         by_meeting.setdefault(row["meeting_id"], []).append(row)
+    attempted = 0
     for meeting_id, rows in by_meeting.items():
         results, usage = [], []
         for row in rows:
             if report["costUsd"] >= max_cost or spent_this_month + report["costUsd"] >= monthly_budget:
                 report["stoppedEarly"] = "cost limit reached; remaining items are summarized on the next run"
                 break
+            if out_of_time(deadline):
+                time_budget_stop(report, "items are summarized", itemsDeferred=len(selected) - attempted)
+                break
+            attempted += 1
             result = _summarize(row, system, schema, clients, usage, report)
             if result:
                 results.append(result)

@@ -23,6 +23,21 @@ def test_failed_meetings_and_cost_limits_are_reported():
     assert alerts.run_problems(summary(stopped="Month-to-date AI spend reached budget"))[0].startswith("Claude classification stopped")
 
 
+def test_a_time_budget_stop_is_reported_once_with_its_steps_and_duration():
+    run = summary(stoppedEarly="time budget reached; remaining meetings keep rule tags and are classified on the next run",
+                  timeBudgetReached=True, meetingsDeferred=3, costUsd=0.1)
+    run.update(timeBudgetSeconds=2700, timeBudgetReached=True, timeBudgetSteps=["classify-topics", "summarize-items"],
+               durationSeconds=2950.4)
+    problems = alerts.run_problems(run)
+    assert problems == ["The run reached its time budget (45 min) and finished after 49 min: "
+                        "classify-topics, summarize-items stopped early and left the rest for the next run"]
+    sent = []
+    assert alerts.alert_on_summary(run, send=lambda *a, **k: sent.append(a)) == problems
+    assert sent == [("Tahoe ingestion needs attention", problems[0])]
+    # A run inside its budget raises nothing for it.
+    assert alerts.run_problems({"steps": [], "timeBudgetSeconds": 2700, "timeBudgetReached": False, "timeBudgetSteps": []}) == []
+
+
 def test_send_requires_https_and_skips_when_unset():
     assert alerts.send_ntfy("t", "m", env={}) is False
     with pytest.raises(ValueError):

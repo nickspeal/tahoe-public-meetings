@@ -24,7 +24,7 @@ from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
-from .ai_topics import DEFAULT_MAX_RUN_COST, DEFAULT_MONTHLY_BUDGET, month_to_date_spend
+from .ai_topics import DEFAULT_MAX_RUN_COST, DEFAULT_MONTHLY_BUDGET, month_to_date_spend, out_of_time, time_budget_stop
 from .evaluate_topics import (
     AnthropicTopicModel, ModelError, USAGE_FIELDS, cost_usd, estimate_tokens, has_credentials,
 )
@@ -259,7 +259,8 @@ def render_user_message(docs: list, pages: dict) -> tuple[str, str]:
 def extract_participation(conn, *, agency: str | None = None, meeting: str | None = None, max_meetings: int | None = None,
                           force: bool = False, dry_run: bool = False, max_cost: float = DEFAULT_MAX_RUN_COST,
                           monthly_budget: float = DEFAULT_MONTHLY_BUDGET, clients: dict | None = None,
-                          today: date | None = None) -> dict:
+                          today: date | None = None, deadline: float | None = None) -> dict:
+    """Read participation details from each pending meeting's agenda; ``deadline`` (``time.monotonic()``) stops before the next meeting."""
     system = PROMPT.read_text().strip()
     schema = response_schema()
     prompt_hash = prompt_sha256(system)
@@ -285,7 +286,7 @@ def extract_participation(conn, *, agency: str | None = None, meeting: str | Non
     if estimate > max_cost:
         raise SystemExit(f"Estimated ${estimate:.4f} exceeds --max-cost ${max_cost:.2f}; use --max-meetings or raise it")
     clients = clients or {}
-    for meeting_id, (user, source) in requests.items():
+    for done, (meeting_id, (user, source)) in enumerate(requests.items()):
         version_ids = [d["id"] for d in pending[meeting_id]]
         if not source:
             # Nothing to read (a scanned or empty document); remember it so the next run does not retry.
@@ -295,6 +296,9 @@ def extract_participation(conn, *, agency: str | None = None, meeting: str | Non
             continue
         if report["costUsd"] >= max_cost or spent_this_month + report["costUsd"] >= monthly_budget:
             report["stoppedEarly"] = "cost limit reached; remaining meetings are extracted on the next run"
+            break
+        if out_of_time(deadline):
+            time_budget_stop(report, "meetings are extracted", meetingsDeferred=len(requests) - done)
             break
         stored = False
         for model, effort in CHAIN:

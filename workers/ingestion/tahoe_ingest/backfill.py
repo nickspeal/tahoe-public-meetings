@@ -51,7 +51,7 @@ class Options:
     def __init__(self, *, since: date, until: date | None = None, agencies=None, root=".", max_documents=2, delay=1.0,
                  forecast_days=None, min_meetings=1, max_cost=ai_topics.DEFAULT_MAX_RUN_COST,
                  monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET, out=None, publish=True, dry_run=False,
-                 lock_wait_seconds=DEFAULT_LOCK_WAIT_SECONDS, today: date | None = None):
+                 lock_wait_seconds=DEFAULT_LOCK_WAIT_SECONDS, claude_time_budget=0, today: date | None = None):
         today = today or datetime.now(scheduled.PACIFIC).date()
         self.since = since
         self.until = until or today + timedelta(days=DEFAULT_FUTURE_DAYS)
@@ -70,6 +70,9 @@ class Options:
         self.publish = publish
         self.dry_run = dry_run
         self.lock_wait_seconds = lock_wait_seconds
+        # Seconds from the backfill's start after which classify-topics starts no new meeting; 0 (the default)
+        # means none, because captures take most of the 6-hour job and classification resumes on any later run.
+        self.claude_time_budget = claude_time_budget
 
 
 def discover_agency_range(agency_id: str, config: dict, *, since: date, until: date) -> dict:
@@ -237,6 +240,7 @@ def backfill(conn, options: Options, *, discover=discover_agency_range, fetch=do
     started_at = datetime.now(timezone.utc)
     agencies = _selected_agencies(options)
     run = scheduled.Run(conn)
+    run.set_time_budget(options)
     window = {"since": options.since.isoformat(), "until": options.until.isoformat(), "agencies": list(agencies),
               "dryRun": options.dry_run}
     if not acquire_lock(conn, options.lock_wait_seconds, sleep=sleep):
@@ -274,7 +278,7 @@ def backfill(conn, options: Options, *, discover=discover_agency_range, fetch=do
         run.step("reclassify", lambda: scheduled._reclassify(conn))
         run.step("meeting-records", lambda: meeting_records(conn, run, options))
         run.step("draft-minutes", lambda: link_draft_minutes(conn, since=scheduled.COVERAGE_START))
-        run.step("classify-topics", lambda: scheduled.classify(conn, options))
+        run.step("classify-topics", lambda: scheduled.classify(conn, options, run.deadline))
 
         def export():
             nonlocal payload
@@ -310,7 +314,7 @@ def backfill(conn, options: Options, *, discover=discover_agency_range, fetch=do
 
 def _summary(run, started_at, payload, published, plan, downloads, measured, window) -> dict:
     summary = scheduled._summary(run, started_at, payload, published)
-    summary["message"] = f"backfill {summary['status']}"
+    summary["message"] = summary["message"].replace("run-scheduled", "backfill", 1)
     by_agency = {aid: report for aid, (report, _) in plan.items()}
     summary.update(
         window=window,

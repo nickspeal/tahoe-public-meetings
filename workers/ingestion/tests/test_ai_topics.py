@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import time
 import uuid
 from pathlib import Path
 
@@ -122,3 +123,17 @@ def test_storing_a_meetings_classifications_costs_one_statement_whatever_its_siz
     stored = conn.execute("""SELECT count(*) AS n FROM ai_topic_classifications a
         JOIN agenda_items i ON i.id=a.item_id AND i.source_fingerprint=a.source_fingerprint""").fetchone()["n"]
     assert stored == 16 and exported_topics(conn)["ttd:7110:IV.D"] == {"transit"}
+
+
+def test_a_passed_deadline_stops_before_the_first_meeting_and_none_means_no_budget(conn):
+    rules = exported_topics(conn)
+    clients = {m: StubModel(m) for m in ("claude-haiku-5-5", "claude-sonnet-5-5")}
+    report = ai_topics.classify_topics(conn, clients=clients, deadline=time.monotonic() - 1)
+    assert sum(c.calls for c in clients.values()) == 0 and report["classified"] == {}
+    assert report["timeBudgetReached"] and report["meetingsDeferred"] == 1
+    assert report["stoppedEarly"] == "time budget reached; remaining meetings keep rule tags and are classified on the next run"
+    assert exported_topics(conn) == rules and not conn.execute("SELECT 1 FROM ai_usage").fetchone()
+    # A deadline still ahead, or none at all, classifies as before.
+    ahead = ai_topics.classify_topics(conn, clients=clients, deadline=time.monotonic() + 3600)
+    assert ahead["classified"] == {"claude-haiku-5-5": 16} and "stoppedEarly" not in ahead
+    assert not ai_topics.out_of_time(None) and ai_topics.out_of_time(time.monotonic() - 1)

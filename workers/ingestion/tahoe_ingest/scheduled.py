@@ -27,6 +27,12 @@ stops the run, but an invalid export is never published:
 22. deploy-hook        POST to VERCEL_DEPLOY_HOOK_URL when set
 
 Only 19-22 failing makes the run fail.
+
+A time budget (`--claude-time-budget`, 45 minutes from the run's start by default)
+keeps 19-22 inside the Cloud Run task timeout: steps 4, 13-18 check it before each
+new meeting, item, batch, or download, stop cleanly once it has passed (work done
+so far stays committed), and report `stoppedEarly` and `timeBudgetReached`. The
+run summary then lists those steps under `timeBudgetSteps`, and the run is degraded.
 """
 from __future__ import annotations
 
@@ -79,6 +85,9 @@ PAST_DAYS = 60                     # Look-back for newly linked documents on pas
 FUTURE_DAYS = 120                  # Horizon for posted notices; covers the 90-day forecast.
 RECAPTURE_PAST_DAYS = 7            # Past meetings this recent are re-downloaded every run (same-URL corrections, cancellations).
 MAX_CAPTURES_PER_AGENCY = 10       # Meetings captured per agency per run, nearest to today first.
+# Seconds from the run's start after which Claude steps, staff reports, and planning calendars start no new
+# work, so export and publish always run inside the job's 3,600 s task timeout. 0 disables it.
+DEFAULT_CLAUDE_TIME_BUDGET = 45 * 60
 
 
 class Options:
@@ -89,6 +98,7 @@ class Options:
                  summary_max_cost=item_summaries.DEFAULT_MAX_RUN_COST,
                  staff_report_meetings=staff_reports.DEFAULT_MAX_MEETINGS,
                  max_calendars=planning_calendars.DEFAULT_MAX_CALENDARS,
+                 claude_time_budget=DEFAULT_CLAUDE_TIME_BUDGET, deadline=None,
                  out=None, skip_discovery=False, publish=True):
         self.root = Path(root)
         self.discovery_limit = discovery_limit
@@ -107,6 +117,8 @@ class Options:
         self.summary_max_cost = summary_max_cost
         self.staff_report_meetings = staff_report_meetings
         self.max_calendars = max_calendars
+        self.claude_time_budget = claude_time_budget
+        self.deadline = deadline  # An explicit time.monotonic() deadline; otherwise the run sets one from the budget.
         self.out = out
         self.skip_discovery = skip_discovery
         self.publish = publish
@@ -129,6 +141,15 @@ class Run:
         self.failures = []
         self.fatal = False
         self.started = time.monotonic()
+        self.time_budget = None  # seconds, when the run has a time budget
+        self.deadline = None     # time.monotonic() value after which budgeted steps start no new work
+
+    def set_time_budget(self, options) -> None:
+        """Take the deadline from the options: an explicit one, or `claude_time_budget` seconds after the run started."""
+        budget = getattr(options, "claude_time_budget", 0) or 0
+        self.time_budget = budget if budget > 0 else None
+        explicit = getattr(options, "deadline", None)
+        self.deadline = explicit if explicit is not None else self.started + budget if budget > 0 else None
 
     def fail(self, source: str, error) -> None:
         self.failures.append(f"{source}: {_short(error)}")
@@ -390,11 +411,12 @@ def apply_quarantine(conn, root: Path):
     return {"records": len(_quarantined(root)), "applied": applied}
 
 
-def extract_participation(conn, options: Options):
+def extract_participation(conn, options: Options, deadline: float | None = None):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation)"}
     try:
-        report = participation.extract_participation(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget)
+        report = participation.extract_participation(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget,
+                                                     deadline=deadline)
     except SystemExit as exc:  # Budget and fatal-API guards stop extraction, not publication.
         conn.rollback()
         return "degraded", {"stopped": _short(exc)}
@@ -402,11 +424,12 @@ def extract_participation(conn, options: Options):
     return status, report
 
 
-def extract_notices(conn, options: Options, today: date):
+def extract_notices(conn, options: Options, today: date, deadline: float | None = None):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation)"}
     try:
-        report = notices.extract_notices(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget, today=today)
+        report = notices.extract_notices(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget, today=today,
+                                         deadline=deadline)
     except SystemExit as exc:  # Budget and fatal-API guards stop extraction, not publication.
         conn.rollback()
         return "degraded", {"stopped": _short(exc)}
@@ -414,25 +437,26 @@ def extract_notices(conn, options: Options, today: date):
     return ("degraded" if report.get("failedPeriods") or report.get("stoppedEarly") else "ok"), report
 
 
-def read_planning_calendars(conn, options: Options, run: Run, reader, today: date):
+def read_planning_calendars(conn, options: Options, run: Run, reader, today: date, deadline: float | None = None):
     if options.max_calendars <= 0:
         return "skipped", {"reason": "--max-calendars 0"}
     report = planning_calendars.read_planning_calendars(conn, reader=reader, delay=options.delay, today=today,
-                                                        max_calendars=options.max_calendars)
+                                                        max_calendars=options.max_calendars, deadline=deadline)
     report.pop("dryRun", None)
     # A calendar that fails validation publishes nothing; the summary names it so its layout can be updated.
     for rejected in report["rejected"]:
         run.fail("planning-calendars", f"{rejected['agency']} calendar {rejected['url']} rejected: {rejected['reason']}")
     for failed in report["failed"]:
         run.fail("planning-calendars", f"{failed['agency']} calendar {failed['url']}: {failed['reason']}")
-    return ("degraded" if report["rejected"] or report["failed"] else "ok"), report
+    return ("degraded" if report["rejected"] or report["failed"] or report.get("timeBudgetReached") else "ok"), report
 
 
-def classify_subjects(conn, options: Options):
+def classify_subjects(conn, options: Options, deadline: float | None = None):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); rule tags stay in place"}
     try:
-        report = previews.classify_subjects(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget)
+        report = previews.classify_subjects(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget,
+                                            deadline=deadline)
     except SystemExit as exc:  # Budget and fatal-API guards stop classification, not publication.
         conn.rollback()
         return "degraded", {"stopped": _short(exc)}
@@ -441,21 +465,27 @@ def classify_subjects(conn, options: Options):
     return ("degraded" if report.get("failed") or report.get("stoppedEarly") else "ok"), report
 
 
-def map_staff_reports(conn, options: Options, reader, today: date):
+def map_staff_reports(conn, options: Options, reader, today: date, deadline: float | None = None):
     if options.staff_report_meetings <= 0:
         return "skipped", {"reason": "--staff-report-meetings 0"}
+    if ai_topics.out_of_time(deadline):
+        # Checked once before the step: a run scans at most --staff-report-meetings meetings, and a
+        # per-meeting check would belong in staff_reports.map_staff_reports itself.
+        report = {}
+        ai_topics.time_budget_stop(report, "staff reports are scanned")
+        return "degraded", report
     report = staff_reports.map_staff_reports(conn, max_meetings=options.staff_report_meetings, reader=reader,
                                              delay=options.delay, today=today)
     report.pop("dryRun", None)
     return ("degraded" if report["retryLater"] else "ok"), report
 
 
-def summarize_items(conn, options: Options, today: date):
+def summarize_items(conn, options: Options, today: date, deadline: float | None = None):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); agenda excerpts stay in place"}
     try:
         report = item_summaries.summarize_items(conn, max_cost=options.summary_max_cost,
-                                                monthly_budget=options.monthly_budget, today=today)
+                                                monthly_budget=options.monthly_budget, today=today, deadline=deadline)
     except SystemExit as exc:  # Budget and fatal-API guards stop summaries, not publication.
         conn.rollback()
         return "degraded", {"stopped": _short(exc)}
@@ -463,11 +493,12 @@ def summarize_items(conn, options: Options, today: date):
     return ("degraded" if report.get("stoppedEarly") else "ok"), report
 
 
-def classify(conn, options: Options):
+def classify(conn, options: Options, deadline: float | None = None):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); rule tags stay in place"}
     try:
-        report = ai_topics.classify_topics(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget)
+        report = ai_topics.classify_topics(conn, max_cost=options.max_cost, monthly_budget=options.monthly_budget,
+                                           deadline=deadline)
     except SystemExit as exc:  # Budget and fatal-API guards stop classification, not publication.
         conn.rollback()
         return "degraded", {"stopped": _short(exc)}
@@ -569,6 +600,8 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
                   read_pdf=staff_reports.read_pdf) -> dict:
     started_at = datetime.now(timezone.utc)
     run = Run(conn)
+    run.set_time_budget(options)  # measured from here, the run's start
+    deadline = run.deadline
     today = today or started_at.astimezone(PACIFIC).date()
     root = options.root
     if not conn.execute("SELECT pg_try_advisory_lock(%s) AS ok", (RUN_LOCK,)).fetchone()["ok"]:
@@ -586,7 +619,7 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
             return _summary(run, started_at, payload, published)
         run.step("seed-fixtures", lambda: seed_fixtures(conn, root, run))
         run.step("comment-periods", lambda: comment_periods(conn, root, run, fetch))
-        run.step("notices", lambda: extract_notices(conn, options, today))
+        run.step("notices", lambda: extract_notices(conn, options, today, deadline))
         run.step("one-offs", lambda: one_offs(conn, root, run))
         run.step("verified-sources", lambda: verified_sources(conn, root, run, options, fetch))
         if options.skip_discovery:
@@ -601,12 +634,13 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         else:
             run.step("meeting-records", lambda: meeting_records(conn, root, run, today, fetch_text=feed_fetch, fetch_json=json_fetch))
         run.step("draft-minutes", lambda: link_draft_minutes(conn, since=options.coverage_start))
-        run.step("classify-topics", lambda: classify(conn, options))
-        run.step("participation", lambda: extract_participation(conn, options))
-        run.step("staff-reports", lambda: map_staff_reports(conn, options, read_pdf, today))
-        run.step("planning-calendars", lambda: read_planning_calendars(conn, options, run, read_pdf, today))
-        run.step("classify-subjects", lambda: classify_subjects(conn, options))
-        run.step("summarize-items", lambda: summarize_items(conn, options, today))
+        run.step("classify-topics", lambda: classify(conn, options, deadline))
+        run.step("participation", lambda: extract_participation(conn, options, deadline))
+        run.step("staff-reports", lambda: map_staff_reports(conn, options, read_pdf, today, deadline))
+        run.step("planning-calendars", lambda: read_planning_calendars(conn, options, run, read_pdf, today, deadline))
+        run.step("classify-subjects", lambda: classify_subjects(conn, options, deadline))
+        run.step("summarize-items", lambda: summarize_items(conn, options, today, deadline))
+        # Export, validate, store, and the deploy hook run whatever the time budget: they are never budgeted.
 
         def export():
             nonlocal payload
@@ -643,9 +677,16 @@ def _reclassify(conn):
     return {"itemsScanned": result["itemsScanned"], "itemsChanged": result["itemsChanged"]}
 
 
+def time_budget_steps(steps: list[dict]) -> list[str]:
+    """Names of the steps that stopped because the run's time budget was reached."""
+    return [s["name"] for s in steps if isinstance(s.get("detail"), dict) and s["detail"].get("timeBudgetReached")]
+
+
 def _summary(run: Run, started_at: datetime, payload, published: dict) -> dict:
     degraded = any(s["status"] in ("degraded", "failed") for s in run.steps)
     status = "failed" if run.fatal else "degraded" if degraded else "ok"
+    stopped = time_budget_steps(run.steps)
+    message = f"run-scheduled {status}" + (f"; time budget reached in {', '.join(stopped)}" if stopped else "")
     ai_steps = [s.get("detail", {}) for s in run.steps if s["name"] in ("classify-topics", "participation", "summarize-items",
                                                                         "notices", "classify-subjects")]
     counts = {}
@@ -658,8 +699,9 @@ def _summary(run: Run, started_at: datetime, payload, published: dict) -> dict:
                   "agenciesWithMeetings": len({m["agencyId"] for m in meetings if m.get("kind") != "forecast"}),
                   "commentPeriods": len(payload.get("commentPeriods", []))}
     return {"severity": "ERROR" if status == "failed" else "WARNING" if status == "degraded" else "INFO",
-            "message": f"run-scheduled {status}", "status": status,
+            "message": message, "status": status,
             "startedAt": started_at.isoformat(), "durationSeconds": round(time.monotonic() - run.started, 1),
+            "timeBudgetSeconds": run.time_budget, "timeBudgetReached": bool(stopped), "timeBudgetSteps": stopped,
             "steps": run.steps, "counts": counts, "exportId": published.get("exportId"),
             "aiCostUsd": round(sum(d.get("costUsd", 0.0) for d in ai_steps if isinstance(d, dict)), 6),
             "failureCount": len(run.failures), "failures": run.failures[:MAX_LISTED_FAILURES],

@@ -415,11 +415,12 @@ def _reconcile(conn, rows: list[dict], cache: dict) -> int:
 
 def classify_subjects(conn, *, max_cost: float = ai_topics.DEFAULT_MAX_RUN_COST,
                       monthly_budget: float = ai_topics.DEFAULT_MONTHLY_BUDGET, dry_run: bool = False,
-                      clients: dict | None = None, force: bool = False) -> dict:
+                      clients: dict | None = None, force: bool = False, deadline: float | None = None) -> dict:
     """Claude tags for current preview subjects not yet classified under the current prompt, then rows updated in bulk.
 
     Same prompt, schema, model chain, retries, and budget guards as ``ai_topics.classify_topics``; each batch is
     one agency's subjects presented as one meeting's items. An unchanged run sends two queries and no model call.
+    ``deadline`` (a ``time.monotonic()`` value) stops it before the next batch once it passes.
     """
     catalog = list(topic_catalog())
     system, schema = render_system_prompt(catalog=catalog), response_schema(catalog)
@@ -477,9 +478,13 @@ def classify_subjects(conn, *, max_cost: float = ai_topics.DEFAULT_MAX_RUN_COST,
             raise SystemExit(f"Estimated ${estimate:.4f} exceeds --max-cost ${max_cost:.2f}; raise it to classify subjects")
     clients = {} if clients is None else clients
     allowed = topic_ids()
-    for request in requests:
+    for done, request in enumerate(requests):
         if report["costUsd"] >= max_cost or spent_this_month + report["costUsd"] >= monthly_budget:
             report["stoppedEarly"] = "cost limit reached; remaining subjects keep rule tags until the next run"
+            break
+        if ai_topics.out_of_time(deadline):
+            ai_topics.time_budget_stop(report, "subjects keep rule tags and are classified",
+                                       batchesDeferred=len(requests) - done)
             break
         stored = False
         for model, effort in CHAIN:

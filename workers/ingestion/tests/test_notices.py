@@ -3,6 +3,7 @@ import contextlib
 import copy
 import json
 import os
+import time
 import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -279,3 +280,12 @@ def test_haiku_failure_falls_back_to_sonnet(db, replaced):
 
 def notices_client(events, model="claude-haiku-5-5"):
     return StubModel(model, {"events": copy.deepcopy(events)})
+
+
+def test_a_passed_deadline_stops_before_the_first_notice(db, replaced):
+    store_period(db, period_row())
+    haiku = notices_client([OPEN_HOUSE])
+    report = notices.extract_notices(db, clients={"claude-haiku-5-5": haiku}, today=TODAY, deadline=time.monotonic() - 1)
+    assert haiku.calls == 0 and report["timeBudgetReached"] and report["periodsDeferred"] == 1
+    assert report["stoppedEarly"] == "time budget reached; remaining notices are read on the next run"
+    assert notices.extract_notices(db, clients={"claude-haiku-5-5": haiku}, today=TODAY)["periodsPending"] == 1

@@ -1,6 +1,7 @@
 """Participation details read from agendas: source validation, storage, export precedence, and staleness (no network)."""
 import json
 import os
+import time
 import uuid
 from datetime import date
 from pathlib import Path
@@ -153,3 +154,13 @@ def test_malformed_replies_fall_back_to_sonnet(conn):
 def test_past_meetings_are_not_pending(conn):
     report = participation.extract_participation(conn, dry_run=True, today=date(2027, 1, 1))
     assert report["meetingsPending"] == 0
+
+
+def test_a_passed_deadline_stops_before_the_first_meeting(conn):
+    haiku = StubModel("claude-haiku-5-5", reply())
+    report = participation.extract_participation(conn, clients={"claude-haiku-5-5": haiku}, today=date(2026, 10, 1),
+                                                 deadline=time.monotonic() - 1)
+    assert haiku.calls == 0 and report["timeBudgetReached"] and report["meetingsDeferred"] == 1
+    assert report["stoppedEarly"] == "time budget reached; remaining meetings are extracted on the next run"
+    again = participation.extract_participation(conn, clients={"claude-haiku-5-5": haiku}, today=date(2026, 10, 1))
+    assert haiku.calls == 1 and again["extracted"] == {"claude-haiku-5-5": 1}

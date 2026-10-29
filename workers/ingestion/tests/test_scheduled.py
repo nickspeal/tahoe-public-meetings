@@ -3,6 +3,7 @@ import contextlib
 import hashlib
 import json
 import os
+import time
 import urllib.error
 import uuid
 from datetime import date, timedelta
@@ -11,7 +12,8 @@ from pathlib import Path
 import psycopg
 import pytest
 
-from tahoe_ingest import capture, cli, scheduled, source, staff_reports
+from tahoe_ingest import (ai_topics, alerts, capture, cli, item_summaries, notices, participation, previews, scheduled, source,
+                          staff_reports)
 from tahoe_ingest.core import init_db
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -128,6 +130,66 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     assert db.execute("SELECT count(*) AS n FROM meetings").fetchone()["n"] == meetings
     assert db.execute("SELECT count(*) AS n FROM public_exports").fetchone()["n"] == 2
     assert len(hook.calls) == 2
+
+
+class NoCalls:
+    """Stands in for the Claude client in every Claude step; a time-budget stop must send it nothing."""
+    sent = []
+
+    def __init__(self, model, effort):
+        self.model = model
+
+    def complete(self, **request):
+        NoCalls.sent.append(request)
+        raise AssertionError("no Claude request is expected after the time budget")
+
+
+@pytest.fixture
+def stub_claude(monkeypatch):
+    NoCalls.sent = []
+    for module in (ai_topics, item_summaries, notices, participation, previews):
+        monkeypatch.setattr(module, "AnthropicTopicModel", NoCalls)
+        monkeypatch.setattr(module, "has_credentials", lambda: True)
+    return NoCalls.sent
+
+
+def test_a_spent_time_budget_stops_claude_steps_and_still_publishes(db, monkeypatch, stub_claude):
+    monkeypatch.setenv("VERCEL_DEPLOY_HOOK_URL", "https://hooks.example/secret-token")
+    hook = Hook()
+    summary = scheduled.run_scheduled(db, options(deadline=time.monotonic() - 1, staff_report_meetings=50), discover=fake_discover,
+                                      fetch=fake_fetch, post=hook, read_pdf=no_staff_reports)
+    steps = {s["name"]: s for s in summary["steps"]}
+    assert stub_claude == []  # nothing was sent to Claude
+    for name in ("classify-topics", "participation", "staff-reports"):
+        assert steps[name]["status"] == "degraded" and steps[name]["detail"]["timeBudgetReached"], name
+        assert steps[name]["detail"]["stoppedEarly"].startswith("time budget reached; remaining "), name
+    assert steps["classify-topics"]["detail"]["meetingsDeferred"] == steps["classify-topics"]["detail"]["meetingsPending"] > 0
+    assert not db.execute("SELECT 1 FROM ai_topic_classifications").fetchone()
+    assert not db.execute("SELECT 1 FROM staff_report_scans").fetchone()
+    # Export, validation, storage, and the deploy hook run regardless.
+    assert [steps[n]["status"] for n in ("export", "validate", "store", "deploy-hook")] == ["ok"] * 4
+    assert summary["exportId"] and hook.calls and summary["status"] == "degraded"
+    assert summary["timeBudgetReached"] and summary["timeBudgetSteps"] == ["classify-topics", "participation", "staff-reports"]
+    assert summary["timeBudgetSeconds"] == scheduled.DEFAULT_CLAUDE_TIME_BUDGET
+    assert "time budget reached in classify-topics, participation, staff-reports" in summary["message"]
+    # The ntfy alert names the stopped steps once, and not as a cost limit.
+    problems = alerts.run_problems(summary)
+    assert [p for p in problems if "time budget" in p] == [problems[0]] and "cost limit" not in " ".join(problems)
+    assert "classify-topics, participation, staff-reports stopped early" in problems[0]
+
+
+def test_time_budget_is_measured_from_the_run_start_and_zero_disables_it(db):
+    run = scheduled.Run(db)
+    run.set_time_budget(options())
+    assert run.time_budget == 2700 and run.deadline == pytest.approx(run.started + 2700)
+    run.set_time_budget(options(claude_time_budget=0))
+    assert run.time_budget is None and run.deadline is None
+    summary = scheduled.run_scheduled(db, options(claude_time_budget=0, publish=False), discover=fake_discover, fetch=fake_fetch)
+    assert summary["timeBudgetSeconds"] is None and summary["timeBudgetReached"] is False and summary["timeBudgetSteps"] == []
+    assert "time budget" not in summary["message"]
+    parse = cli._parser().parse_args
+    assert parse(["run-scheduled"]).claude_time_budget == 2700 and parse(["run-scheduled", "--claude-time-budget", "0"]).claude_time_budget == 0
+    assert parse(["backfill", "--since", "2026-01-01"]).claude_time_budget == 0
 
 
 TODAY = date(2026, 3, 10)

@@ -14,7 +14,8 @@
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
     "test": "npm run build && node --test",
-    "feedback": "node scripts/feedback.mjs"
+    "feedback": "node scripts/feedback.mjs",
+    "analytics": "node scripts/analytics-report.mjs"
   },
   "dependencies": {
     "pg": "^8.23.1"

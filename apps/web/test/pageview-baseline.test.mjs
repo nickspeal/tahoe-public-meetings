@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { baselineTarget, createBaselineHandler, parsePath, sameOrigin } from '../server/pageview-baseline.mjs';
+import { baselineTarget, createBaselineHandler, parsePath, sameOrigin, visitKey } from '../server/pageview-baseline.mjs';
 
 const env = { GOATCOUNTER_BASELINE_URL: 'https://example-baseline.goatcounter.com', GOATCOUNTER_BASELINE_TOKEN: 'secret-token' };
 const silent = { error() {} };
@@ -49,8 +49,29 @@ test('a page view is forwarded to the baseline site without sessions or addresse
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, 'https://example-baseline.goatcounter.com/api/v0/count');
   assert.equal(calls[0].init.headers.Authorization, 'Bearer secret-token');
-  assert.deepEqual(calls[0].body, { no_sessions: true, hits: [{ path: '/meetings/trpa:2026-11-05/', user_agent: 'Mozilla/5.0 (test)' }] });
+  const [hit] = calls[0].body.hits;
+  assert.equal(calls[0].body.no_sessions, true);
+  assert.equal(hit.path, '/meetings/trpa:2026-11-05/');
+  assert.equal(hit.user_agent, 'Mozilla/5.0 (test)');
+  assert.match(hit.session, /^[0-9a-f]{32}$/, 'the visit key is an opaque hash');
   assert.ok(!JSON.stringify(calls[0].body).includes('203.0.113.9'), 'the client address is never forwarded');
+  assert.equal(hit.session, visitKey({ address: '203.0.113.9', userAgent: 'Mozilla/5.0 (test)' }), 'the key matches the documented hash');
+
+  const { calls: anonymous, fetchImpl: anonymousFetch } = fakeGoatCounter();
+  await createBaselineHandler({ env, fetchImpl: anonymousFetch, log: silent })(beacon('/'));
+  assert.equal('session' in anonymous[0].body.hits[0], false, 'no address means no visit key, and no_sessions keeps the hit');
+});
+
+test('the visit key rotates every eight hours and differs by address, User-Agent, and salt', () => {
+  const base = { address: '203.0.113.9', userAgent: 'Mozilla/5.0 (test)', now: new Date('2026-10-29T09:00:00Z') };
+  const key = visitKey(base);
+  assert.equal(visitKey({ ...base, now: new Date('2026-10-29T15:59:00Z') }), key, 'same eight-hour window');
+  assert.notEqual(visitKey({ ...base, now: new Date('2026-10-29T16:00:00Z') }), key, 'next window');
+  assert.notEqual(visitKey({ ...base, address: '203.0.113.10' }), key);
+  assert.notEqual(visitKey({ ...base, userAgent: 'Mozilla/5.0 (other)' }), key);
+  assert.notEqual(visitKey({ ...base, salt: 'pepper' }), key);
+  assert.equal(visitKey({ ...base, address: null }), null);
+  assert.equal(visitKey({ ...base, userAgent: '' }), null);
 });
 
 test('cross-origin, malformed, oversized, and non-POST requests are refused without reaching GoatCounter', async () => {

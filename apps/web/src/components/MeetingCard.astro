@@ -14,7 +14,8 @@ const details = [meeting.location, meetingAgendaLabel(meeting)].filter(Boolean);
 const label = forecast ? awaitingAgendaLabel : canceled ? 'Canceled' : meeting.status === 'rescheduled' || meeting.change === 'rescheduled' ? 'Rescheduled' : meeting.change === 'revised' ? 'Revised' : agendaNotPosted(meeting) ? awaitingAgendaLabel : '';
 const tone = label === awaitingAgendaLabel ? 'outline' : label === 'Canceled' ? 'red' : label === 'Revised' || label === 'Rescheduled' ? 'amber' : 'muted';
 const dateValue = meetingDateValue(meeting);
-const warning = forecast ? null : meeting.warnings.map(residentWarning).find(Boolean);
+// A planned meeting's "Planned:" line already says its subjects may change, so the export warning is not repeated.
+const warning = forecast ? null : meeting.warnings.map(residentWarning).filter((text) => !(meeting.planned && text === 'Subject to change.')).find(Boolean);
 // An expected meeting has no page or calendar file; its card points to the agency for the real notice.
 // Every planned subject is rendered; timeline-filters.ts shows the first few while no topic is selected.
 // With a topic selected the line is hidden: the topic's agenda list (TopicAgendaLinks) carries the matching subjects.

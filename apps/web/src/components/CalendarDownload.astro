@@ -2,11 +2,13 @@
 import type { Meeting } from '../../../../packages/domain/public';
 import { calendarHref, canExportMeeting, googleCalendarHref, isCanceled, outlookCalendarHref } from '../lib/calendar';
 import { clickEvent } from '../lib/analytics';
+import { meetingShortTitle } from '../lib/data';
 
 interface Props { meeting: Meeting }
 const { meeting } = Astro.props;
 const canceled = isCanceled(meeting);
 const page = Astro.url.pathname;
+const title = meetingShortTitle(meeting);
 const available = canExportMeeting(meeting);
 const filename = `${meeting.agencyId}-${meeting.sourceId}.ics`.replace(/[^A-Za-z0-9._-]/g, '-');
 const estimated = meeting.duration?.source !== 'published';
@@ -21,8 +23,8 @@ const unavailableMessage = meeting.date
       <summary class="calendar-download">Add to calendar</summary>
       <ul class="calendar-options">
         <li><a href={calendarHref(meeting)} download={filename} {...clickEvent('calendar-ics', page, meeting.agencyId)}>Download (.ics)<small>Apple Calendar, Outlook desktop, others</small></a></li>
-        <li><a href={googleCalendarHref(meeting)} target="_blank" rel="noopener noreferrer" {...clickEvent('calendar-google', page, meeting.agencyId)}>Google Calendar ↗</a></li>
-        <li><a href={outlookCalendarHref(meeting)} target="_blank" rel="noopener noreferrer" {...clickEvent('calendar-outlook', page, meeting.agencyId)}>Outlook.com ↗</a></li>
+        <li><a href={googleCalendarHref(meeting, title)} target="_blank" rel="noopener noreferrer" {...clickEvent('calendar-google', page, meeting.agencyId)}>Google Calendar ↗</a></li>
+        <li><a href={outlookCalendarHref(meeting, title)} target="_blank" rel="noopener noreferrer" {...clickEvent('calendar-outlook', page, meeting.agencyId)}>Outlook.com ↗</a></li>
       </ul>
     </details>
     <small>{estimated && 'Event duration is estimated. '}This fixed calendar event will not change if the meeting is rescheduled.</small>

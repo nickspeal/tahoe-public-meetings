@@ -57,3 +57,10 @@ test('a named host takes the agency\'s place in front of a title', () => {
   assert.equal(meetingCardTitle('Scoping Open House', agency(host)), 'TRPA and El Dorado County Scoping Open House');
   assert.equal(meetingCardTitle('TRPA and El Dorado County Scoping Open House', agency(host)), 'TRPA and El Dorado County Scoping Open House');
 });
+
+test('space- and dot-separated numeric dates are dropped', () => {
+  assert.equal(meetingCardTitle('09 22 2026 City Council', agency('South Lake Tahoe', 'South Lake Tahoe — City Council')), 'South Lake Tahoe City Council');
+  assert.equal(meetingCardTitle('10 29 2026 South Tahoe Transit Joint Powers Authority', agency('Tahoe Transportation District')),
+    'Tahoe Transportation District South Tahoe Transit Joint Powers Authority');
+  assert.equal(meetingCardTitle('Board Meeting 09.28.2026', agency('TCPUD')), 'TCPUD Board Meeting');
+});

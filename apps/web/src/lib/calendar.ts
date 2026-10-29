@@ -94,7 +94,8 @@ interface EventFields {
   description: string;
 }
 
-function eventFields(meeting: Meeting): EventFields {
+/** `title` is the event name; callers pass the meeting's title without its date, which the calendar already shows. */
+function eventFields(meeting: Meeting, title: string): EventFields {
   if (!canExportMeeting(meeting)) throw new Error('A confirmed start time and source update timestamp are required.');
   const start = instant(meeting.startsAt)!;
   const officialUrl = safeHttpUrl(meeting.officialUrl);
@@ -119,15 +120,15 @@ function eventFields(meeting: Meeting): EventFields {
   return {
     start,
     end: endFor(meeting, start),
-    title: meeting.title,
+    title,
     location: meeting.location || null,
     officialUrl,
     description: details.join('\n'),
   };
 }
 
-export function buildCalendarEvent(meeting: Meeting): string {
-  const event = eventFields(meeting);
+export function buildCalendarEvent(meeting: Meeting, title = meeting.title): string {
+  const event = eventFields(meeting, title);
   const modified = utcTimestamp(meeting.updatedAt);
   const lines = [
     'BEGIN:VCALENDAR',
@@ -160,8 +161,8 @@ function linkDescription(event: EventFields): string {
 }
 
 /** Google Calendar's prefilled "new event" link; the person still saves it themselves. */
-export function googleCalendarHref(meeting: Meeting): string {
-  const event = eventFields(meeting);
+export function googleCalendarHref(meeting: Meeting, title = meeting.title): string {
+  const event = eventFields(meeting, title);
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: event.title,
@@ -173,8 +174,8 @@ export function googleCalendarHref(meeting: Meeting): string {
 }
 
 /** Outlook.com's prefilled compose link for personal Microsoft accounts. */
-export function outlookCalendarHref(meeting: Meeting): string {
-  const event = eventFields(meeting);
+export function outlookCalendarHref(meeting: Meeting, title = meeting.title): string {
+  const event = eventFields(meeting, title);
   const params = new URLSearchParams({
     path: '/calendar/action/compose',
     rru: 'addevent',

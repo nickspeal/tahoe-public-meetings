@@ -53,6 +53,13 @@ test('labels estimated lengths in the description but not observed ones', () => 
   assert.match(unfold(bare), /DESCRIPTION:Estimated length/);
 });
 
+test('names the event with the title it is given, so the date is left to the calendar', () => {
+  const dated = meeting({ title: 'TTD Board of Directors Meeting – November 4, 2026', location: null });
+  assert.match(calendar.buildCalendarEvent(dated, 'TTD Board of Directors Meeting'), /SUMMARY:TTD Board of Directors Meeting\r\n/);
+  assert.equal(new URL(calendar.googleCalendarHref(dated, 'TTD Board of Directors Meeting')).searchParams.get('text'), 'TTD Board of Directors Meeting');
+  assert.equal(new URL(calendar.outlookCalendarHref(dated, 'TTD Board of Directors Meeting')).searchParams.get('subject'), 'TTD Board of Directors Meeting');
+});
+
 test('uses a stable agency-native UID and source update time for LAST-MODIFIED', () => {
   const first = calendar.buildCalendarEvent(meeting());
   const updated = calendar.buildCalendarEvent(meeting({ title: 'Revised Council Meeting', updatedAt: '2026-09-21T04:00:00Z' }));

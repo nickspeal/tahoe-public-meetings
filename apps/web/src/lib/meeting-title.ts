@@ -12,7 +12,7 @@ interface TitleAgency {
 const MONTH = String.raw`(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?`;
 const WEEKDAY = String.raw`(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,?\s+)`;
 const DAY = String.raw`\d{1,2}(?:st|nd|rd|th)?(?:\s*[–-]\s*\d{1,2}(?:st|nd|rd|th)?)?`;
-const DATE = String.raw`(?:\b${WEEKDAY}?${MONTH}\s+${DAY}(?:,?\s+\d{4})?|\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{2,4})`;
+const DATE = String.raw`(?:\b${WEEKDAY}?${MONTH}\s+${DAY}(?:,?\s+\d{4})?|\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{2,4}|\b\d{1,2}(?: \d{1,2} |\.\d{1,2}\.)\d{4}\b)`;
 // A date with the dash, "of", or "on" that attached it to the title.
 const DATED = new RegExp(String.raw`\s*[–—-]?\s*(?:\b(?:of|on|for)\s+)?${DATE}\s*[–—-]?\s*`, 'gi');
 // "Governing Board Documents October 28, 2026" and "City Council Meeting Agenda": the document, not the meeting.

@@ -1,5 +1,6 @@
 import type { AgendaItem, Meeting, MeetingPreview, PublicCommentPeriod, PublicData } from '../../../../packages/domain/public';
 import topicCatalog from '../../../../packages/domain/topics.json';
+import { meetingCardTitle } from './meeting-title';
 import { isRoutineItem } from './routine-items';
 import { citationHref } from './source-links';
 
@@ -32,6 +33,13 @@ export function isForecast(meeting: Meeting) {
 
 export function agencyFor(meeting: Meeting) {
   return agencies.find((agency) => agency.id === meeting.agencyId);
+}
+
+/** A meeting's title without its date, led by whose meeting it is: for cards and calendar events, which show the date themselves. */
+export function meetingShortTitle(meeting: Meeting) {
+  const canceled = meeting.status === 'canceled' || meeting.change === 'canceled';
+  // A named host takes the agency's place in the title prefix.
+  return meetingCardTitle(meeting.title, meeting.host ? { name: meeting.host, shortName: meeting.host } : agencyFor(meeting), { canceled });
 }
 
 /** Who holds a meeting, as shown to readers: its host when the record names one (Other, co-hosted meetings), else the agency. */

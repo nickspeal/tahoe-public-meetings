@@ -1,15 +1,12 @@
 ---
 import type { Meeting } from '../../../../packages/domain/public';
-import { agencyFor, agendaNotPosted, awaitingAgendaLabel, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, meetingPreviews, meetingTopicIds, residentWarning, topics } from '../lib/data';
-import { meetingCardTitle } from '../lib/meeting-title';
+import { agendaNotPosted, awaitingAgendaLabel, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, meetingPreviews, meetingShortTitle, meetingTopicIds, residentWarning, topics } from '../lib/data';
 import StatusPill from './StatusPill.astro';
 import { clickEvent } from '../lib/analytics';
 const { meeting, initialTopic = '' } = Astro.props as { meeting: Meeting; initialTopic?: string };
-const agency = agencyFor(meeting);
 const forecast = isForecast(meeting);
 const canceled = meeting.status === 'canceled' || meeting.change === 'canceled';
-// A named host takes the agency's place in the title prefix.
-const title = meetingCardTitle(meeting.title, meeting.host ? { name: meeting.host, shortName: meeting.host } : agency, { canceled });
+const title = meetingShortTitle(meeting);
 // Only what is known: an unpublished location or uncounted agenda leaves no placeholder text.
 const details = [meeting.location, meetingAgendaLabel(meeting)].filter(Boolean);
 const label = forecast ? awaitingAgendaLabel : canceled ? 'Canceled' : meeting.status === 'rescheduled' || meeting.change === 'rescheduled' ? 'Rescheduled' : meeting.change === 'revised' ? 'Revised' : agendaNotPosted(meeting) ? awaitingAgendaLabel : '';

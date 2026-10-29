@@ -114,6 +114,10 @@ def map_fish_game(ctx: Context) -> list[Mapping]:
     fetched = ctx.read(index_url, links=True)
     first = fetched["pages"][0]["text"] if fetched["pages"] else ""
     if not re.search(r"Meeting Documents Index", first, re.I):
+        # Before the materials are posted, the link opens a placeholder ("will be posted here in advance of the
+        # meeting"); it is checked again, like a missing link, until a week after the meeting.
+        if meeting_day and meeting_day + POSTING_WINDOW >= date.today():
+            raise FetchFailed("the meeting documents index is not posted yet")
         raise Uncertain("the meeting documents link is not a documents index")
     printed = _INDEX_DATE.search(first[first.lower().index("meeting documents index"):])
     if not printed or _printed_date(printed) != meeting_day:

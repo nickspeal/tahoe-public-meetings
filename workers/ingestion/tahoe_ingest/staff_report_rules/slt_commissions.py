@@ -41,9 +41,15 @@ _GAV_ROW = re.compile(r'<td[^>]*vAlign=top width=35>\s*(?P<number>\d+)\)\s*</td>
 
 
 def _agenda(ctx: Context):
-    """The captured agenda PDF (discovery may hold the same file under two document IDs)."""
-    pdfs = {(d.url, d.sha256): d for d in ctx.meeting.documents if d.media_type == "application/pdf"
-            and not re.search(r"packet|minutes|supplement|addendum", d.source_document_id + " " + d.title, re.I)}
+    """The captured agenda PDF. One file may be stored more than once: under two document IDs, or under the event's
+    URL before the meeting and the recording clip's afterwards. Copies are the same file, so they count once, and the
+    clip's copy is kept, since its clip leads to the HTML agenda."""
+    pdfs: dict[str, object] = {}
+    for d in ctx.meeting.documents:
+        if d.media_type != "application/pdf" or re.search(r"packet|minutes|supplement|addendum", d.source_document_id + " " + d.title, re.I):
+            continue
+        if d.sha256 not in pdfs or (_granicus.query(d.url, "clip_id") and not _granicus.query(pdfs[d.sha256].url, "clip_id")):
+            pdfs[d.sha256] = d
     if len(pdfs) != 1:
         raise Uncertain("no single agenda PDF")
     return next(iter(pdfs.values()))

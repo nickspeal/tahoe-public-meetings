@@ -155,6 +155,22 @@ def test_slt_transit_jpa_report_needs_its_own_board_report_heading():
     assert found["2"] is not None and found["3"] is not None
 
 
+def test_slt_commission_agenda_stored_under_event_and_clip_urls_counts_once():
+    data = load("slt-parks-recreation-commission")
+    alone, _, _ = run_rule(data)
+    copy_ = dict(data["documents"][0], version_id=data["documents"][0]["version_id"] + "-event",
+                 source_document_id="slt-parks-recreation-commission-agenda-event",
+                 url="https://slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1396")
+    data["documents"].append(copy_)
+    found, ctx, _ = run_rule(data)
+    assert {n: m and m.url for n, m in found.items()} == {n: m and m.url for n, m in alone.items()}
+    assert sum(m is not None for m in found.values()) == 3
+    other = dict(copy_, sha256="0" * 64)
+    data["documents"][-1] = other
+    with pytest.raises(staff_reports.Uncertain, match="no single agenda PDF"):
+        run_rule(data)
+
+
 def test_slt_commission_html_agenda_with_another_title_for_the_number_is_not_used():
     data = load("slt-planning")
     url = next(iter(data["html"]))

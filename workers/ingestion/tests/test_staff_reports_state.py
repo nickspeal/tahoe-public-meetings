@@ -59,6 +59,19 @@ def test_fish_game_missing_index_is_retried_only_near_the_meeting():
         run_rule(data)
 
 
+def test_fish_game_placeholder_index_is_retried_only_near_the_meeting():
+    data = load("california-fish-game")
+    index = next(u for u, v in data["downloads"].items()
+                 if v["pages"] and "Meeting Documents Index" in v["pages"][0]["text"])
+    data["downloads"][index]["pages"] = [{"page_number": 1, "text": "Marine Resources Committee\nMeeting materials will be "
+                                          "posted here in advance of the meeting."}]
+    with pytest.raises(staff_reports.Uncertain, match="not a documents index"):
+        run_rule(data)
+    data["meeting"]["local_date"] = date.today().isoformat()
+    with pytest.raises(staff_reports.FetchFailed, match="not posted yet"):
+        run_rule(data)
+
+
 def _box(page, top, left, text, url=None):
     return {"page": page, "top": top, "left": left, "text": text, "url": url}
 

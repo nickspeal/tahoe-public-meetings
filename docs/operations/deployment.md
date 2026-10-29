@@ -12,7 +12,7 @@ Nothing in this repository names the operator's accounts. The Google project, bi
 | --- | --- |
 | Project `tahoe-public-meetings` (`PROJECT_ID`), linked to `BILLING_ACCOUNT` | Project IDs are global; override the ID if it is taken |
 | Artifact Registry repository `tahoe` in `us-west1` | Images. A cleanup policy keeps the newest 3 versions of each image and deletes older ones after a day |
-| Cloud Run job `tahoe-ingest` | `tahoe-ingest run-scheduled`; 1 vCPU, 2 GiB (the `/tmp` filesystem is in memory, sized for the 505-page SLT packet), 60-minute task timeout, 1 retry |
+| Cloud Run job `tahoe-ingest` | `tahoe-ingest run-scheduled`; 1 vCPU, 2 GiB (the `/tmp` filesystem is in memory; a PDF read costs about its size plus 100 MiB, so the 300 MiB Douglas packet cap leaves over 1 GiB of headroom), 60-minute task timeout, 1 retry |
 | Service accounts `tahoe-ingest-job`, `tahoe-ingest-scheduler`, `tahoe-budget-guard` | No basic roles. The job account can read only its secrets. The scheduler account holds `run.invoker` on the job alone. The guard account holds a custom role with exactly `cloudscheduler.jobs.get` and `cloudscheduler.jobs.pause` |
 | Secrets `tahoe-database-url`, `tahoe-vercel-deploy-hook-url`, `tahoe-ntfy-url` | Exposed to the job as `DATABASE_URL`, `VERCEL_DEPLOY_HOOK_URL`, and `NTFY_URL` at `:latest`. Only the database URL is required. Claude needs no secret: the job authenticates with workload identity federation (below) |
 | Cloud Scheduler job `tahoe-ingest-every-6h` | `1 */6 * * *` in `America/Los_Angeles`: 00:01, 06:01, 12:01, and 18:01 Pacific, following PST and PDT. The 00:01 run rebuilds the site just after midnight so its Today marker is current. It calls the Cloud Run Admin API `jobs:run` endpoint with an OAuth token |

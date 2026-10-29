@@ -23,10 +23,8 @@ def map_slt(ctx: Context) -> list[Mapping]:
     links: dict[str, set] = {}
     link_pages: dict[str, set] = {}
     for link in fetched["links"]:
-        label = re.fullmatch(r"Item\s*(\d+)\s*-\s*Executive Summary\.pdf", link["text"], re.I)
-        named = re.search(r"/Item_(\d+)-_Executive_Summary\.pdf$", link["url"], re.I)
-        if label and named and label.group(1) == named.group(1):
-            links.setdefault(label.group(1), set()).add(link["url"])
+        if number := executive_summary_number(link):
+            links.setdefault(number, set()).add(link["url"])
             link_pages.setdefault(link["url"], set()).add(link["page"])
 
     def next_to_item(item, url):
@@ -53,6 +51,17 @@ def map_slt(ctx: Context) -> list[Mapping]:
                 "reportHeading": f"Agenda Item #:{item.number}"}
     return linked_reports(ctx, ctx.numbered(), links, verify=verify, precheck=precheck, kind="executive-summary",
                           title="Item {number} executive summary", missing="{count} executive summary links for item {number}")
+
+
+def executive_summary_number(link: dict) -> str | None:
+    """The item number when both the printed name and the file name are item N's executive summary.
+
+    The clerk writes either "Item 5- Executive Summary.pdf" (file Item_5-_Executive_Summary.pdf)
+    or "Item 5 - Executive Summary.pdf" (file Item_5_-_Executive_Summary.pdf).
+    """
+    label = re.fullmatch(r"Item\s*(\d+)\s*-\s*Executive Summary\.pdf", link["text"], re.I)
+    named = re.search(r"/Item_(\d+)_?-_Executive_Summary\.pdf$", link["url"], re.I)
+    return label.group(1) if label and named and label.group(1) == named.group(1) else None
 
 
 _KINDS = re.compile(r"^(staff\s*report|SR\b|resolution|ordinance|presentation|proclamation|(?:attachment|exhibit|att)\s*[A-Z0-9]+\b)"

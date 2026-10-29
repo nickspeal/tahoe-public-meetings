@@ -94,6 +94,15 @@ def test_slt_link_to_another_items_summary_is_not_stored():
     assert found["5"] is not None
 
 
+def test_slt_executive_summary_links_with_either_dash_spacing():
+    def link(text, name):
+        return {"text": text, "url": f"https://slt.granicus.com/services/legistar/download/pdf/4460422/{name}"}
+    assert slt.executive_summary_number(link("Item 1- Executive Summary.pdf", "Item_1-_Executive_Summary.pdf")) == "1"
+    assert slt.executive_summary_number(link("Item 3 - Executive Summary.pdf", "Item_3_-_Executive_Summary.pdf")) == "3"
+    assert slt.executive_summary_number(link("Item 3 - Executive Summary.pdf", "Item_4_-_Executive_Summary.pdf")) is None
+    assert slt.executive_summary_number(link("01-Staff Report-Dissolution of ICOC.docx", "01-Staff_Report-Dissolution_of_ICOC.pdf")) is None
+
+
 def test_slt_revised_agenda_maps_nothing():
     data = load("slt")
     agenda = data["documents"][0]

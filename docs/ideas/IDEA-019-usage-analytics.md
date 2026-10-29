@@ -1,6 +1,6 @@
 # IDEA-019: Usage analytics
 
-Status: proposed
+Status: accepted; implementing (decision 0029)
 Stage: Retention
 
 ## Problem and audience
@@ -50,9 +50,12 @@ Start with hosted GoatCounter, loaded from a first-party custom domain (for exam
 - Zero recurring cost; Prisma operation counts unchanged (decision 0020 tests still pass).
 
 ## Open questions
-- Is return frequency worth a first-party pseudonymous identifier, or is daily-unique trend data enough for now? Proposed: start without one; decide after a quarter.
-- Public dashboard: yes or no?
-- Should the beacon be skipped for the maintainer's own browsers (GoatCounter honours a `#toggle-goatcounter` opt-out stored locally)?
+Answered by the maintainer on 2026-10-29 (decision 0029):
+- Return frequency: start without a persistent browser identifier and decide after a quarter of daily-unique trend data.
+- Public dashboard: no.
+- The maintainer's own browsers are excluded with count.js's `#toggle-goatcounter` opt-out, repeated once in each browser.
+- GoatCounter's "individual pageviews" setting stays off for now. The About page's privacy statement is written so it stays true if it is turned on later.
 
 ## Links and updates
 - 2026-10-29: options surveyed; GoatCounter proposed as default. Related: decisions 0016, 0017, 0020; IDEA-009 (promotion, which needs referrer data to evaluate).
+- 2026-10-29: accepted as [decision 0029](../decisions/0029-usage-analytics.md): hosted GoatCounter, cookieless, configured only in the Vercel Production environment, no public dashboard. Operations guide: [analytics](../operations/analytics.md).

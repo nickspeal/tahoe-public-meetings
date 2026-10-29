@@ -24,4 +24,4 @@ Copy [TEMPLATE.md](TEMPLATE.md) for new ideas. Keep stable IDs and append dated 
 | IDEA-016 | [Item summaries from staff reports](IDEA-016-item-summaries-from-staff-reports.md) | building: verbatim requested-action and staff report summaries implemented locally for 25 agencies (decisions 0024, 0026) | MVP polish |
 | IDEA-017 | [Minutes and recording links](IDEA-017-minutes-and-recordings.md) | accepted; implemented (decision 0025) | MVP polish |
 | IDEA-018 | [Meetings and agenda previews from notices and planning calendars](IDEA-018-previews-from-notices-and-planning-calendars.md) | accepted; implemented locally (decision 0028) | MVP polish |
-| IDEA-019 | [Usage analytics](IDEA-019-usage-analytics.md) | proposed; GoatCounter suggested as default | Retention |
+| IDEA-019 | [Usage analytics](IDEA-019-usage-analytics.md) | accepted; implementing (decision 0029) | Retention |

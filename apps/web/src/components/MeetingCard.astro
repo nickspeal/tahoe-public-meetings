@@ -3,6 +3,7 @@ import type { Meeting } from '../../../../packages/domain/public';
 import { agencyFor, agendaNotPosted, awaitingAgendaLabel, formatDate, isForecast, meetingAgendaLabel, meetingDateLabel, meetingDateValue, meetingHref, meetingPreviews, meetingTopicIds, residentWarning, topics } from '../lib/data';
 import { meetingCardTitle } from '../lib/meeting-title';
 import StatusPill from './StatusPill.astro';
+import { clickEvent } from '../lib/analytics';
 const { meeting, initialTopic = '' } = Astro.props as { meeting: Meeting; initialTopic?: string };
 const agency = agencyFor(meeting);
 const forecast = isForecast(meeting);
@@ -26,7 +27,7 @@ const morePreviews = previews.length - shownPreviews.size;
 // Topics from the agenda, notice, and planned subjects, in catalog order; timeline-filters.ts marks the selected one.
 const topicIds = meetingTopicIds(meeting);
 const cardTopics = topics.filter((topic) => topicIds.includes(topic.id));
-const link = forecast ? { href: meeting.officialUrl, target: '_blank', rel: 'noopener noreferrer' } : { href: meetingHref(meeting) };
+const link = forecast ? { href: meeting.officialUrl, target: '_blank', rel: 'noopener noreferrer', ...clickEvent('outbound-agency', Astro.url.pathname, meeting.agencyId) } : { href: meetingHref(meeting) };
 ---
 <article class:list={['meeting-card', { 'meeting-card-canceled': canceled, 'meeting-card-forecast': forecast }]}>
   <a class="meeting-card-main" {...link}>

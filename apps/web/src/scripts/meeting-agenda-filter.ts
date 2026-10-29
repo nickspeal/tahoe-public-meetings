@@ -15,6 +15,10 @@ for (const button of document.querySelectorAll<HTMLButtonElement>('[data-section
 if (filter && items.length) {
   const checkboxes = [...filter.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name="topic"]')];
   const validTopics = new Set(checkboxes.map((checkbox) => checkbox.value));
+  // GoatCounter event (lib/analytics.ts); a no-op when the count script is absent, blocked, or still loading.
+  const countEvent = (path: string) => {
+    try { window.goatcounter?.count?.({ path, event: true, referrer: location.pathname }); } catch { /* Analytics never breaks the page. */ }
+  };
   const params = new URLSearchParams(window.location.search);
   for (const checkbox of checkboxes) checkbox.checked = params.getAll('topic').includes(checkbox.value);
 
@@ -57,7 +61,10 @@ if (filter && items.length) {
     window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
   }
 
-  for (const checkbox of checkboxes) checkbox.addEventListener('change', applyFilter);
+  for (const checkbox of checkboxes) checkbox.addEventListener('change', () => {
+    if (checkbox.checked) countEvent(`agenda-filter-topic-${checkbox.value}`);
+    applyFilter();
+  });
   reset?.addEventListener('click', () => {
     for (const checkbox of checkboxes) checkbox.checked = false;
     applyFilter();

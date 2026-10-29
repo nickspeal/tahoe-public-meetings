@@ -14,6 +14,10 @@ if (dialog && form) {
   const generalHelp = help.textContent;
   let opener: HTMLElement | null = null;
   let sent = false;
+  // GoatCounter event (lib/analytics.ts); a no-op when the count script is absent, blocked, or still loading.
+  const countEvent = (path: string) => {
+    try { window.goatcounter?.count?.({ path, event: true, referrer: location.pathname }); } catch { /* Analytics never breaks the page. */ }
+  };
 
   function open({ kind: requestedKind = 'general', prompt = '' }: FeedbackOptions = {}) {
     opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -30,6 +34,7 @@ if (dialog && form) {
     dialog!.showModal();
     message.focus();
     message.setSelectionRange(message.value.length, message.value.length);
+    countEvent('feedback-open');
   }
 
   function close() {
@@ -68,6 +73,7 @@ if (dialog && form) {
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || 'Feedback could not be sent. Please try again later.');
       sent = true;
+      countEvent('feedback-sent');
       status.textContent = 'Thank you. Your feedback was sent.';
       message.value = '';
       window.setTimeout(() => { if (sent && dialog!.open) close(); }, 2500);

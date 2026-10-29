@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import FeedbackDialog from '../components/FeedbackDialog.astro';
 import { data, formatDate } from '../lib/data';
+import { analyticsConfig, GOATCOUNTER_SCRIPT } from '../lib/analytics';
 const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false } = Astro.props;
 // Absolute canonical URL on the production origin (astro.config.mjs `site`), so www and preview hosts point at the apex.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
@@ -9,6 +10,9 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : nu
 const ogImage = new URL('/og-image.png', Astro.site ?? Astro.url).href;
 // The home page's own title is "Meetings", which reads poorly as a shared link's headline.
 const ogTitle = Astro.url.pathname === '/' ? 'Tahoe Public Meetings' : `${title} · Tahoe Public Meetings`;
+// GoatCounter loads only in Production builds (PUBLIC_GOATCOUNTER_URL). Filter state is counted as events, so a
+// pageview records the path alone: no query string, and not the canonical URL count.js would otherwise use.
+const analytics = analyticsConfig(import.meta.env);
 ---
 <!doctype html>
 <html lang="en">
@@ -29,6 +33,8 @@ const ogTitle = Astro.url.pathname === '/' ? 'Tahoe Public Meetings' : `${title}
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Tahoe Public Meetings: what's on the agenda around Lake Tahoe" />
     <meta name="twitter:card" content="summary_large_image" />
+    {analytics && <script is:inline>window.goatcounter = { path: function () { return location.pathname; } };</script>}
+    {analytics && <script is:inline async data-goatcounter={analytics.endpoint} src={GOATCOUNTER_SCRIPT.src} integrity={GOATCOUNTER_SCRIPT.integrity} crossorigin="anonymous"></script>}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

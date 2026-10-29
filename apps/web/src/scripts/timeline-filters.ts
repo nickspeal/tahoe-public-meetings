@@ -26,6 +26,10 @@ const EARLIER_STEP = Number(earlier?.dataset.step) || 10;
 const plural = (total: number, word: string) => `${total} ${word}${total === 1 ? '' : 's'}`;
 
 if (topicSelect && agencySelect) {
+  // GoatCounter event (lib/analytics.ts); a no-op when the count script is absent, blocked, or still loading.
+  const countEvent = (path: string) => {
+    try { window.goatcounter?.count?.({ path, event: true, referrer: location.pathname }); } catch { /* Analytics never breaks the page. */ }
+  };
   const params = new URLSearchParams(window.location.search);
   const isTopicRoute = window.location.pathname.startsWith('/topics/');
   const queryTopic = isTopicRoute ? null : params.get('topic');
@@ -37,6 +41,10 @@ if (topicSelect && agencySelect) {
   let showAwaiting = params.get('upcoming') === 'all' || params.get('expected') === '1';
   // The type-to-filter boxes (filter-combobox.ts) show the values just read from the URL.
   for (const select of [topicSelect, agencySelect]) select.dispatchEvent(new Event('filter:sync'));
+  // A filter carried in the URL (a shared or bookmarked link) counts like one chosen here. A topic page's
+  // topic is already in its pageview path, so only the query parameters are counted.
+  if (topicSelect.value && topicSelect.value === queryTopic) countEvent(`filter-topic-${topicSelect.value}`);
+  if (agencySelect.value && agencySelect.value === agency) countEvent(`filter-agency-${agencySelect.value}`);
   let earlierLimit = 0;
 
   function applyFilters() {
@@ -141,6 +149,7 @@ if (topicSelect && agencySelect) {
       return;
     }
     currentTopic = topic;
+    if (topic) countEvent(`filter-topic-${topic}`);
     if (window.location.pathname.startsWith('/topics/')) {
       const url = new URL(window.location.href);
       url.pathname = topic ? `/topics/${encodeURIComponent(topic)}/` : '/';
@@ -148,17 +157,22 @@ if (topicSelect && agencySelect) {
       window.location.assign(`${url.pathname}${url.search}`);
     } else changeFilters();
   });
-  agencySelect.addEventListener('change', changeFilters);
+  agencySelect.addEventListener('change', () => {
+    if (agencySelect!.value) countEvent(`filter-agency-${agencySelect!.value}`);
+    changeFilters();
+  });
   // Earlier meetings open above the reader's place: the Today marker and everything after it stay put on screen.
   earlierMore?.addEventListener('click', () => {
     const anchor = earlier?.nextElementSibling;
     const before = anchor?.getBoundingClientRect().top;
+    countEvent('timeline-earlier');
     earlierLimit += EARLIER_STEP;
     applyFilters();
     if (anchor && before !== undefined) window.scrollBy({ top: anchor.getBoundingClientRect().top - before, behavior: 'instant' });
   });
   upcomingToggle?.addEventListener('click', () => {
     showAwaiting = !showAwaiting;
+    if (showAwaiting) countEvent('timeline-upcoming');
     applyFilters();
   });
   applyFilters();

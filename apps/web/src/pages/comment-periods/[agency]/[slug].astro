@@ -3,6 +3,7 @@ import SiteLayout from '../../../layouts/SiteLayout.astro';
 import StatusPill from '../../../components/StatusPill.astro';
 import MeetingCard from '../../../components/MeetingCard.astro';
 import { agencies, commentPeriodMeetings, commentDeadlineLabel, commentPeriodHref, commentPeriodStatus, commentPeriods, formatDate, noticeDayLabel, periodAgencyLabel, topicHref, topicName } from '../../../lib/data';
+import { clickEvent } from '../../../lib/analytics';
 export function getStaticPaths() {
   // Params come from the same href the index links to, so the two cannot drift apart.
   return commentPeriods.map((period) => {
@@ -18,6 +19,8 @@ const statusTone = status === 'closed' ? 'muted' : status === 'upcoming' ? 'ambe
 const longDate = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' } as const;
 const deadline = commentDeadlineLabel(period, longDate);
 const relatedMeetings = commentPeriodMeetings(period);
+// Links to the notice, its comment instructions, and web addresses quoted in its text are all comment-period sources.
+const periodEvent = clickEvent('outbound-comment-period', Astro.url.pathname, period.agencyId);
 const hasDetails = Boolean(period.projectTitle || period.projectProponent || period.summary);
 /** Split notice text so web addresses it quotes become links; trailing punctuation stays text. */
 const linked = (text: string) => text.split(/(https:\/\/[^\s]*[^\s.,;:)])/).filter(Boolean).map((part) => part.startsWith('https://') ? { text: part, href: part } : { text: part, href: null });
@@ -27,7 +30,7 @@ const linked = (text: string) => text.split(/(https:\/\/[^\s]*[^\s.,;:)])/).filt
     <a class="back-link" href="/comment-periods/">← All comment periods</a>
     <div class="meeting-title-line"><div><p class="eyebrow">{periodAgencyLabel(period) ?? period.agencyId}</p><h1>{period.title}</h1>{period.topics.length > 0 && <div class="tag-row" aria-label="Topics">{period.topics.map((topic) => <a class="tag" href={topicHref(topic)}>{topicName(topic)}</a>)}</div>}</div><StatusPill label={statusLabel} tone={statusTone} /></div>
     <p class="meeting-time">{status === 'closed' ? `Closed ${deadline}` : `Comments due ${deadline}`}</p>
-    <div class="meeting-hero-meta"><a href={period.officialUrl} target="_blank" rel="noopener noreferrer">Official notice ↗</a></div>
+    <div class="meeting-hero-meta"><a href={period.officialUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}>Official notice ↗</a></div>
     {status === 'closed' && <div class="warning-note"><p>This comment period has closed. The notice and its instructions are kept here as a record.</p></div>}
   </div></section>
   <section class="section-wrap detail-layout">
@@ -35,7 +38,7 @@ const linked = (text: string) => text.split(/(https:\/\/[^\s]*[^\s.,;:)])/).filt
       <section class="comment-period-section" aria-labelledby="summary">
         <div class="content-heading"><p class="eyebrow">ABOUT THE PROJECT</p><h2 id="summary">Summary</h2></div>
         {(period.projectTitle || period.projectProponent) && <dl class="comment-period-project">{period.projectTitle && <div><dt>Project title</dt><dd>{period.projectTitle}</dd></div>}{period.projectProponent && <div><dt>Project proponent</dt><dd>{period.projectProponent}</dd></div>}</dl>}
-        {period.summary && <p class="comment-period-summary">{linked(period.summary).map((part) => part.href ? <a href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a> : part.text)}</p>}
+        {period.summary && <p class="comment-period-summary">{linked(period.summary).map((part) => part.href ? <a href={part.href} target="_blank" rel="noopener noreferrer" {...periodEvent}>{part.text}</a> : part.text)}</p>}
         {hasDetails ? <p class="history-note">Quoted from the official notice.</p> : <p class="muted-panel">A description of the project is not recorded here yet. Open the official notice for details.</p>}
       </section>
       <section class="source-list-block" aria-labelledby="related-meetings">
@@ -45,7 +48,7 @@ const linked = (text: string) => text.split(/(https:\/\/[^\s]*[^\s.,;:)])/).filt
       <section class="source-list-block" aria-labelledby="official-notice">
         <div class="content-heading"><p class="eyebrow">OFFICIAL SOURCE</p><h2 id="official-notice">Official notice</h2><p>The comment dates come from this passage.</p></div>
         <blockquote class="comment-period-quote">{period.sourceQuote}</blockquote>
-        <a class="source-document" href={period.officialUrl} target="_blank" rel="noopener noreferrer"><span class="document-icon" aria-hidden="true">↗</span><span><strong>Official notice</strong><small>{periodAgencyLabel(period) ?? period.agencyId}</small></span><span class="source-open">Open official notice ↗</span></a>
+        <a class="source-document" href={period.officialUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}><span class="document-icon" aria-hidden="true">↗</span><span><strong>Official notice</strong><small>{periodAgencyLabel(period) ?? period.agencyId}</small></span><span class="source-open">Open official notice ↗</span></a>
       </section>
     </div>
     <aside class="detail-aside">
@@ -53,12 +56,12 @@ const linked = (text: string) => text.split(/(https:\/\/[^\s]*[^\s.,;:)])/).filt
         <dl class="logistics-list">
           <div><dt>Opens</dt><dd>{period.opensOn ? noticeDayLabel(period.opensOn, longDate) : 'Not stated in the notice'}</dd></div>
           <div><dt>{status === 'closed' ? 'Closed' : 'Comments due'}</dt><dd>{deadline}{!period.closesAt && <><br /><small class="comment-period-note">Exact closing time not stated</small></>}</dd></div>
-          <div><dt>{period.host ? 'Host' : 'Agency'}</dt><dd>{period.host ?? (agency ? <a href={agency.officialUrl} target="_blank" rel="noopener noreferrer">{agency.name} ↗</a> : period.agencyId)}</dd></div>
+          <div><dt>{period.host ? 'Host' : 'Agency'}</dt><dd>{period.host ?? (agency ? <a href={agency.officialUrl} target="_blank" rel="noopener noreferrer" {...clickEvent('outbound-agency', Astro.url.pathname, agency.id)}>{agency.name} ↗</a> : period.agencyId)}</dd></div>
         </dl>
       </section>
       <section class="aside-card comment-period-how" aria-labelledby="how-to-comment"><p class="eyebrow">{status === 'closed' ? 'AS PUBLISHED' : 'SUBMIT A COMMENT'}</p><h2 id="how-to-comment">How to comment</h2>
         <p class="comment-period-instructions">{period.instructions ?? 'The notice does not state submission methods here. Check the official notice for how to comment.'}</p>
-        {status !== 'closed' && (period.participationUrl ? <a class="button button-dark button-full" href={period.participationUrl} target="_blank" rel="noopener noreferrer">Comment instructions ↗</a> : <a class="button button-outline button-full" href={period.officialUrl} target="_blank" rel="noopener noreferrer">Check the official notice ↗</a>)}
+        {status !== 'closed' && (period.participationUrl ? <a class="button button-dark button-full" href={period.participationUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}>Comment instructions ↗</a> : <a class="button button-outline button-full" href={period.officialUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}>Check the official notice ↗</a>)}
         <p class="aside-footnote">Dates and instructions are copied from the official notice.{status !== 'closed' && ' Confirm them with the agency before submitting.'}</p>
       </section>
       <section class="aside-card"><p class="eyebrow">SOURCE STATUS</p><h2>Record updated {formatDate(period.updatedAt)}</h2><p class="history-note">Official notice last checked {formatDate(period.lastCheckedAt)}.</p></section>

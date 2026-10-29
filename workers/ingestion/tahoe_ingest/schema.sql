@@ -177,6 +177,8 @@ CREATE TABLE IF NOT EXISTS ai_item_summaries (
   text text NOT NULL DEFAULT '', citations jsonb NOT NULL DEFAULT '[]'::jsonb, error text,
   summarized_at timestamptz NOT NULL DEFAULT now()
 );
+-- The validator that judged the result (item_summaries.VALIDATOR_VERSION); a validation failure under an older one is retried.
+ALTER TABLE ai_item_summaries ADD COLUMN IF NOT EXISTS validator_version integer NOT NULL DEFAULT 1;
 -- Every file an agenda links under an item, in agenda order (IDEA-013): URL, printed name,
 -- readable label, and file type; never the files themselves (decision 0004).
 CREATE TABLE IF NOT EXISTS item_attachments (

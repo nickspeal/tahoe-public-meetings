@@ -247,7 +247,7 @@ The image built from the commit that adds [decision 0024](../decisions/0024-verb
 - `staff-reports` scans at most 6 meetings per run (`--staff-report-meetings`; 0 disables it), nearest to today first, so the first runs after deployment work through the archive over a few days. It downloads South Lake Tahoe executive summaries, Lahontan item reports, and Municode packets temporarily (in the run's scratch directory) and writes one statement per meeting. Packets already stored (TTD) are read from the database.
 - `summarize-items` needs the same Claude credentials as `classify-topics` and is limited by `--summary-max-cost` ($0.50 per run) and the shared `--monthly-budget`. A backfill of a few hundred items costs well under $1; afterwards a run costs cents.
 
-After deploying, check one run's summary line: `staff-reports.detail.itemsMapped`, `summarize-items.detail.published`, `validationFailed`, and `costUsd`. A stopped summary step sends the same ntfy alert as classification.
+After deploying, check one run's summary line: `staff-reports.detail.itemsMapped`, `summarize-items.detail.published`, `validationFailed`, `costUsd`, and `itemsPendingByReason` (why items were pending: `new`, `prompt`, `report`, `agenda`, `other`, `validator`, or `forced`; decision 0024). A stopped summary step sends the same ntfy alert as classification.
 
 ## Previews from notices and planning calendars
 

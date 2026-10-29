@@ -36,6 +36,9 @@ from .staff_reports import clean_text, procedural, Item, report_document_id
 
 PROMPT = Path(__file__).with_name("prompts") / "staff_report_summary.md"
 METHOD = "claude-staff-report-v1"
+# Raise when ``validate`` accepts more than it did: items that failed validation are tried again once, and only they
+# (a prompt change would send every item again). Stored on each result; results from before it existed count as 1.
+VALIDATOR_VERSION = 1
 CHAIN = (("claude-haiku-5-5", "low"), ("claude-sonnet-5-5", "medium"))
 # Haiku gets a second try with the validator's objection; Sonnet costs about 20 times more, so one try.
 ATTEMPTS = {"claude-haiku-5-5": 2, "claude-sonnet-5-5": 1}
@@ -196,7 +199,8 @@ def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, prom
     rows, candidates = [], []
     for r in conn.execute("""SELECT s.item_id,s.sha256 AS report_sha256,s.title AS report_title,s.pages,s.source_fingerprint,
             i.meeting_id,i.number,i.title,i.section,i.citations,m.title AS meeting_title,m.local_date,m.agency_id,
-            a.name AS agency_name,x.input_sha256 AS done
+            a.name AS agency_name,x.input_sha256 AS done,x.status AS done_status,x.prompt_sha256 AS done_prompt,
+            x.report_sha256 AS done_report,x.source_fingerprint AS done_fingerprint,x.validator_version AS done_validator
             FROM item_staff_reports s
             JOIN agenda_items i ON i.id=s.item_id AND i.source_fingerprint=s.source_fingerprint AND i.active
             JOIN meetings m ON m.id=i.meeting_id JOIN agencies a ON a.id=m.agency_id
@@ -213,9 +217,33 @@ def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, prom
         r["user"] = render_user_message(r)
         r["input_sha256"] = hashlib.sha256(json.dumps({"prompt": prompt_hash, "report": r["report_sha256"],
                                                        "user": r["user"]}).encode()).hexdigest()
-        if force or r["done"] != r["input_sha256"]:
+        r["reason"] = _reason(r, prompt_hash)
+        if r["reason"] or force:
+            r["reason"] = r["reason"] or "forced"
             rows.append(r)
     return sorted(rows, key=lambda r: (abs((r["local_date"] - today).days) if r["local_date"] else 10_000, r["meeting_id"]))
+
+
+def _reason(row: dict, prompt_hash: str) -> str | None:
+    """Why an item needs a summary, or None when its stored result still stands.
+
+    ``new``: never summarized. ``prompt``, ``report``, ``agenda``: the prompt, the staff report, or the agenda
+    item changed. ``other``: something else in the message changed (the item or report title, the requested
+    action, the agency or meeting name). ``validator``: it failed validation, and the validator has changed since.
+    """
+    if row["done"] is None:
+        return "new"
+    if row["done"] != row["input_sha256"]:
+        if row["done_prompt"] != prompt_hash:
+            return "prompt"
+        if row["done_report"] != row["report_sha256"]:
+            return "report"
+        if row["done_fingerprint"] != row["source_fingerprint"]:
+            return "agenda"
+        return "other"
+    if row["done_status"] == "validation_failed" and row["done_validator"] != VALIDATOR_VERSION:
+        return "validator"
+    return None
 
 
 def _requested_actions(conn, meeting_ids: set) -> dict:
@@ -271,7 +299,10 @@ def summarize_items(conn, *, agency: str | None = None, meeting: str | None = No
         selected.append(row)
         running += estimate
     spent_this_month = month_to_date_spend(conn)
-    report = {"itemsPending": len(pending), "itemsSelected": len(selected), "estimatedCostUsd": round(running, 4),
+    reasons: dict[str, int] = {}
+    for row in pending:
+        reasons[row["reason"]] = reasons.get(row["reason"], 0) + 1
+    report = {"itemsPending": len(pending), "itemsPendingByReason": reasons, "itemsSelected": len(selected), "estimatedCostUsd": round(running, 4),
               "monthToDateUsd": round(spent_this_month, 4), "monthlyBudgetUsd": monthly_budget, "dryRun": dry_run,
               "published": {}, "itemsSkipped": 0, "validationFailed": 0, "failures": {}, "apiErrors": 0, "costUsd": 0.0}
     if len(selected) < len(pending):
@@ -398,11 +429,13 @@ def _store(conn, meeting_id: str, results: list[dict], usage: list[dict], prompt
             SELECT * FROM jsonb_to_recordset(%(rows)s::jsonb) AS r(item_id text,input_sha256 text,source_fingerprint text,
               report_sha256 text,model text,status text,text text,citations jsonb,error text)),
         stored AS (
-            INSERT INTO ai_item_summaries(item_id,input_sha256,source_fingerprint,report_sha256,prompt_sha256,model,status,text,citations,error)
-            SELECT item_id,input_sha256,source_fingerprint,report_sha256,%(prompt)s,model,status,text,citations,error FROM incoming
+            INSERT INTO ai_item_summaries(item_id,input_sha256,source_fingerprint,report_sha256,prompt_sha256,model,status,text,citations,error,
+              validator_version)
+            SELECT item_id,input_sha256,source_fingerprint,report_sha256,%(prompt)s,model,status,text,citations,error,%(validator)s FROM incoming
             ON CONFLICT(item_id) DO UPDATE SET input_sha256=excluded.input_sha256,source_fingerprint=excluded.source_fingerprint,
               report_sha256=excluded.report_sha256,prompt_sha256=excluded.prompt_sha256,model=excluded.model,status=excluded.status,
-              text=excluded.text,citations=excluded.citations,error=excluded.error,summarized_at=now()),
+              text=excluded.text,citations=excluded.citations,error=excluded.error,validator_version=excluded.validator_version,
+              summarized_at=now()),
         audit AS (
             INSERT INTO summary_versions(item_id,text,status,method,source_fingerprint,citations,error)
             SELECT item_id,text,status,%(method)s,source_fingerprint,citations,error FROM incoming WHERE status='published')
@@ -411,7 +444,7 @@ def _store(conn, meeting_id: str, results: list[dict], usage: list[dict], prompt
         SELECT %(purpose)s,model,meeting_id,ok,input_tokens,output_tokens,cache_creation_input_tokens,cache_read_input_tokens,
             cost_usd,error FROM jsonb_to_recordset(%(usage)s::jsonb) AS u(model text,meeting_id text,ok boolean,input_tokens int,
             output_tokens int,cache_creation_input_tokens int,cache_read_input_tokens int,cost_usd numeric,error text)""",
-                 {"rows": json.dumps(results), "prompt": prompt_hash, "method": METHOD, "purpose": PURPOSE,
+                 {"rows": json.dumps(results), "prompt": prompt_hash, "validator": VALIDATOR_VERSION, "method": METHOD, "purpose": PURPOSE,
                   "usage": json.dumps(usage)})
 
 

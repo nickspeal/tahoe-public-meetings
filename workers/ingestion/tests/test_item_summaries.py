@@ -206,6 +206,33 @@ def test_paraphrases_never_publish_and_are_not_retried_every_run(conn):
     assert item_summaries.summarize_items(conn, clients=clients, today=TODAY)["itemsPending"] == 0
 
 
+def test_a_new_validator_retries_only_the_items_that_failed_validation(conn, monkeypatch):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    clients = {"claude-haiku-5-5": StubModel("claude-haiku-5-5", paraphrase=True),
+               "claude-sonnet-5-5": StubModel("claude-sonnet-5-5", paraphrase=True)}
+    item_summaries.summarize_items(conn, clients=clients, today=TODAY)
+    failed = {r["item_id"] for r in conn.execute("SELECT item_id FROM ai_item_summaries WHERE status='validation_failed'")}
+    assert failed and {r["validator_version"] for r in conn.execute("SELECT validator_version FROM ai_item_summaries")} == {1}
+    monkeypatch.setattr(item_summaries, "VALIDATOR_VERSION", 2)
+    pending = item_summaries.summarize_items(conn, dry_run=True, today=TODAY)
+    assert pending["itemsPending"] == len(failed) and pending["itemsPendingByReason"] == {"validator": len(failed)}
+    item_summaries.summarize_items(conn, clients=clients, today=TODAY)
+    assert item_summaries.summarize_items(conn, dry_run=True, today=TODAY)["itemsPending"] == 0  # tried once, not every run
+
+
+def test_pending_items_say_why(conn):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    assert item_summaries.summarize_items(conn, dry_run=True, today=TODAY)["itemsPendingByReason"] == {"new": 6}
+    item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": StubModel("claude-haiku-5-5")}, today=TODAY)
+    conn.execute("UPDATE item_staff_reports SET sha256=%s WHERE item_id='slt:2339:9'", ("f" * 64,))
+    conn.execute("UPDATE item_staff_reports SET title='Renamed report' WHERE item_id='slt:2339:5'")
+    conn.execute("UPDATE ai_item_summaries SET prompt_sha256='old',input_sha256='old' WHERE item_id='slt:2339:11'")
+    reasons = item_summaries.summarize_items(conn, dry_run=True, today=TODAY)["itemsPendingByReason"]
+    assert reasons == {"report": 1, "other": 1, "prompt": 1}
+    forced = item_summaries.summarize_items(conn, dry_run=True, force=True, today=TODAY)["itemsPendingByReason"]
+    assert forced == {"report": 1, "other": 1, "prompt": 1, "forced": 3}
+
+
 def test_run_cost_limit_defers_items(conn):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     result = item_summaries.summarize_items(conn, max_cost=0.0001, dry_run=True, today=TODAY)

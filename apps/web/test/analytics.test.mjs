@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
@@ -93,7 +94,7 @@ test('an unconfigured build loads no analytics script on any page', async () => 
   for (const file of files) {
     const html = await readFile(file, 'utf8');
     // The page scripts' guarded `window.goatcounter?.count?.(…)` calls are bundled everywhere; nothing defines it.
-    assert.ok(!html.includes('gc.zgo.at') && !html.includes('goatcounter.com/count') && !/window\.goatcounter\s*=/.test(html), `${file} loads analytics`);
+    assert.ok(!html.includes('gc.zgo.at') && !html.includes('/goatcounter.js') && !html.includes('goatcounter.com/count') && !/window\.goatcounter\s*=/.test(html), `${file} loads analytics`);
   }
 });
 
@@ -199,4 +200,13 @@ test('a meeting page counts agenda topic filter choices', async () => {
   assert.deepEqual(calls.map((call) => call.path), [`agenda-filter-topic-${checkbox.value}`]);
   assert.equal(calls[0].referrer, new URL(route, 'https://x').pathname);
   dom.window.close();
+});
+
+test('the served count.js is a verbatim copy of the pinned upstream release', async () => {
+  const { src, upstream, integrity } = analytics.GOATCOUNTER_SCRIPT;
+  assert.ok(src.startsWith('/') && !src.startsWith('//'), 'count.js is served from this site');
+  assert.match(upstream, /^https:\/\/gc\.zgo\.at\/count\.v\d+\.js$/);
+  const copy = await readFile(resolve(root, 'public', src.slice(1)));
+  assert.equal(`sha384-${createHash('sha384').update(copy).digest('base64')}`, integrity, 'public/goatcounter.js differs from the pinned upstream hash; update the file and GOATCOUNTER_SCRIPT together');
+  assert.match(copy.toString('utf8').split('\n')[1], /ISC license/);
 });

@@ -2,9 +2,15 @@
 // PUBLIC_GOATCOUNTER_URL is set, which is the Vercel Production environment alone; local, preview, and test
 // builds count nothing. The click attributes below are always emitted and stay inert without the script.
 
-/** Pinned count.js release and its SRI hash, from https://www.goatcounter.com/help/countjs-versions. */
+/**
+ * count.js is served from this site (`public/goatcounter.js`, ISC licensed) rather than from gc.zgo.at, which
+ * list-based blockers stop. It is a verbatim copy of the pinned upstream release; `integrity` is upstream's SRI
+ * hash from https://www.goatcounter.com/help/countjs-versions, and a test checks the copy still matches it, so
+ * an update means replacing the file and this hash together.
+ */
 export const GOATCOUNTER_SCRIPT = {
-  src: 'https://gc.zgo.at/count.v5.js',
+  src: '/goatcounter.js',
+  upstream: 'https://gc.zgo.at/count.v5.js',
   integrity: 'sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ',
 } as const;
 

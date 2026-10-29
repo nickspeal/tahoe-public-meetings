@@ -22,11 +22,11 @@ Confirmed by the maintainer on 2026-10-29:
 IDEA-019 compares the options in a table. Vercel Web Analytics and Umami Cloud have free tiers without custom events on their free plans, so they could not show how people use the site. Cloudflare Web Analytics counts visits by referrer rather than unique visitors, with short unsampled retention. PostHog can do everything asked, but its script is the heaviest and sends the most data off the site. Plausible Community Edition is free software that needs a server of about $5/month, which breaks the budget and adds an operations surface. A home-built counter would need a store that tolerates a write per event, such as Upstash Redis, to respect decision 0020, which means two new moving parts for a question GoatCounter already answers.
 
 Costs accepted:
-- Ad blockers drop some visits, so counts are a floor, not a total.
+- Ad blockers drop some visits, so counts are a floor, not a total. count.js is served from the site, but uBlock Origin's lists also block the goatcounter.com endpoint, and a vanity domain is uncloaked, so those readers stay uncounted.
 - Visits are eight-hour windows, not people: the same reader on Monday and Thursday counts twice, and return frequency cannot be measured.
 - The site relies on a third party. The exit is self-hosting GoatCounter, which is the same open-source program.
 
 ## Revisit when
-- Blocker loss or reliance on the hosted service starts to matter: use a custom domain for the endpoint, self-host count.js, or self-host GoatCounter.
+- Blocker loss or reliance on the hosted service starts to matter: self-host GoatCounter, or accept the floor.
 - Return frequency becomes the question: reconsider a persistent browser identifier, with a matching update to the privacy statement.
 - GoatCounter's terms change, including its free "reasonable public usage" allowance.

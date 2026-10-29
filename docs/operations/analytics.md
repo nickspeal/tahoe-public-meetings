@@ -7,12 +7,15 @@ The site counts page views and a small set of named events with hosted [GoatCoun
 | Piece | Location |
 | --- | --- |
 | Configuration helper (`analyticsConfig` accepts only an `https://` URL and otherwise returns `null`) | `apps/web/src/lib/analytics.ts` |
-| Script tag: a pinned, integrity-checked count.js plus an inline setting that records only the path | `apps/web/src/layouts/SiteLayout.astro`, emitted only when configured |
+| Script tag: count.js served from this site plus an inline setting that records only the path | `apps/web/src/layouts/SiteLayout.astro`, emitted only when configured |
+| count.js itself: a verbatim copy of upstream's pinned `count.v5.js` (ISC licensed) | `apps/web/public/goatcounter.js`, served at `/goatcounter.js` |
 | Event attributes (`data-goatcounter-click`) on outbound links and the calendar menu | Components such as `CalendarDownload.astro` and the agenda, meeting, and planned-meeting cards |
 | Event calls (`window.goatcounter?.count(...)`, a no-op when the script is absent) | `apps/web/src/scripts/feedback-dialog.ts`, `timeline-filters.ts`, and `meeting-agenda-filter.ts` |
 | Test | `apps/web/test/analytics.test.mjs` |
 
 The build reads `PUBLIC_GOATCOUNTER_URL`. When it is unset or empty, no analytics script is emitted, so local development, tests, and preview deployments send nothing. Event attributes are always present in the HTML but do nothing without the script. localhost and private network addresses are skipped by count.js itself.
+
+count.js is served from the site rather than from gc.zgo.at because list-based blockers stop that host. The copy is pinned: `GOATCOUNTER_SCRIPT.integrity` in `apps/web/src/lib/analytics.ts` holds upstream's SRI hash for the version copied, and the analytics test fails if the file no longer matches it. To update, download the new versioned file from https://www.goatcounter.com/help/countjs-versions, check its hash against that page, replace `public/goatcounter.js`, and update `upstream` and `integrity` together. The `/count` endpoint is guaranteed to stay compatible with older count.js, so updates are optional.
 
 Each page view is recorded as the path only, with no query string or hash. Outbound-link events carry the page they were clicked from as the referrer and, where known, the agency id as the title.
 
@@ -73,13 +76,12 @@ Visit `https://tahoepublicmeetings.org/#toggle-goatcounter` once in each browser
 
 ## Limitations
 
-- Ad blockers and some privacy browsers block count.js or the count request, so every figure is a floor.
+- uBlock Origin's default lists (EasyPrivacy) block the request to goatcounter.com, so readers with it are never counted and every figure is a floor. Serving count.js from the site only removes the script-load error and keeps the opt-out working for those browsers. A custom domain for the endpoint does not help either: blockers uncloak the CNAME, and EasyPrivacy lists known GoatCounter custom domains.
 - Visits are eight-hour windows, not people. A reader who returns on Monday and Thursday counts twice, and return frequency cannot be measured.
 - Query strings are not recorded in paths. Filter use shows up only as the events above.
 - Preview deployments and local builds are not counted.
 
 ## Later options
 
-- Reduce blocker loss by serving the endpoint from a custom domain on the site's domain, or by hosting count.js on the site.
 - Turn on **individual pageviews** in GoatCounter to see which pages a visit viewed together and to export pageviews as CSV. GoatCounter then stores each view with the visit's random code, which it otherwise keeps only in memory for eight hours. The Privacy page statement already describes this.
 - Self-host GoatCounter (the same open-source program) to remove reliance on the hosted service. This adds a server to run and pay for, so weigh it against the monthly budget and record it as a new decision.

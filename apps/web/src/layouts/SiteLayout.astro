@@ -34,7 +34,7 @@ const analytics = analyticsConfig(import.meta.env);
     <meta property="og:image:alt" content="Tahoe Public Meetings: what's on the agenda around Lake Tahoe" />
     <meta name="twitter:card" content="summary_large_image" />
     {analytics && <script is:inline>window.goatcounter = { path: function () { return location.pathname; } };</script>}
-    {analytics && <script is:inline async data-goatcounter={analytics.endpoint} src={GOATCOUNTER_SCRIPT.src} integrity={GOATCOUNTER_SCRIPT.integrity} crossorigin="anonymous"></script>}
+    {analytics && <script is:inline async data-goatcounter={analytics.endpoint} src={GOATCOUNTER_SCRIPT.src}></script>}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

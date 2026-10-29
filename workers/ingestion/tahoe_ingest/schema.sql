@@ -106,6 +106,9 @@ CREATE TABLE IF NOT EXISTS comment_periods (
   updated_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (agency_id, source_id)
 );
+ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS project_title text;
+ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS project_proponent text;
+ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS summary text;
 ALTER TABLE meetings ADD COLUMN IF NOT EXISTS quarantine_reason text;
 CREATE TABLE IF NOT EXISTS meeting_source_aliases (
   agency_id text NOT NULL REFERENCES agencies(id),

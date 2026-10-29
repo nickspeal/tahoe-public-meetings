@@ -109,6 +109,13 @@ export function pastCommentPeriods(now = new Date()) {
   return commentPeriods.filter((period) => commentPeriodStatus(period, now) === 'closed').sort((a, b) => commentPeriodDeadline(b) - commentPeriodDeadline(a) || a.id.localeCompare(b.id));
 }
 
+/** Meetings linked to a comment period, in date order; undated ones last. IDs not in the export are skipped. */
+export function commentPeriodMeetings(period: PublicCommentPeriod) {
+  const ids = new Set(period.meetingIds ?? []);
+  const when = (meeting: Meeting) => { const value = meetingDateValue(meeting); return value ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00-08:00` : value).valueOf() : Number.MAX_SAFE_INTEGER; };
+  return data.meetings.filter((meeting) => ids.has(meeting.id)).sort((a, b) => when(a) - when(b) || a.id.localeCompare(b.id));
+}
+
 /** A calendar date from a notice (YYYY-MM-DD), read as a Pacific day. */
 export function noticeDayLabel(value: string, options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', year: 'numeric' }) {
   return formatDate(`${value}T12:00:00-08:00`, options);

@@ -601,6 +601,20 @@ def test_comment_window_is_separate_and_requires_fetched_deadline_evidence(db):
     assert export_public(db)['commentPeriods'][0]['sourceQuote']==row['source_quote']
 
 
+def test_comment_period_project_details_must_appear_in_the_notice(db):
+    from tahoe_ingest.comment_periods import ingest_comment_periods
+    notice='Project Title:   Lakeside Path\n\nProject Proponent:   Example Agency\n\nThe agency is preparing\nan EIR for a path.\n\nComments are accepted through November 15, 2026.'
+    row={'agency':'ltbmu','id':'path','title':'Path comment period','closes_on':'2026-11-15',
+         'official_url':'https://example.gov/path','source_quote':'Comments are accepted through November 15, 2026.',
+         'project_title':'Lakeside Path','project_proponent':'Example Agency','summary':'The agency is preparing an EIR for a path.'}
+    fetch=lambda _: {'pages':[{'text':notice}],'sha256':'a'*64}
+    assert ingest_comment_periods(db,{'comment_periods':[row]},fetch=fetch)['processed']==1
+    period=export_public(db)['commentPeriods'][0]
+    assert (period['projectTitle'],period['projectProponent'],period['summary'])==('Lakeside Path','Example Agency','The agency is preparing an EIR for a path.')
+    assert ingest_comment_periods(db,{'comment_periods':[{**row,'summary':'An invented description.'}]},fetch=fetch)['failed']==1
+    assert export_public(db)['commentPeriods'][0]['summary']==row['summary']
+
+
 def test_quarantined_source_record_never_publishes_or_suppresses_real_evidence(db):
     assert ingest_bundle(db,one_meeting())['failed']==0
     mid=export_public(db)['meetings'][0]['id']

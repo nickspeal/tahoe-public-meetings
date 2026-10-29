@@ -149,6 +149,12 @@ export interface PublicCommentPeriod {
   officialUrl: string;
   participationUrl: string | null;
   instructions: string | null;
+  /** Project details and summary copied from the official notice; absent in exports before 2026-10-29. */
+  projectTitle?: string | null;
+  projectProponent?: string | null;
+  summary?: string | null;
+  /** Meetings about this comment period (IDEA-018), linked from its page; stored and forecast meeting IDs. */
+  meetingIds?: string[];
   topics: string[];
   sourceQuote: string;
   sourceSha256: string;

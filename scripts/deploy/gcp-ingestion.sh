@@ -11,6 +11,7 @@
 #   scripts/deploy/gcp-ingestion.sh [deploy] [--yes] [--run-now] [--cloud-build] [--skip-build]
 #   scripts/deploy/gcp-ingestion.sh set-secret database-url|vercel-deploy-hook-url|ntfy-url
 #   scripts/deploy/gcp-ingestion.sh run-now [--yes]
+#   scripts/deploy/gcp-ingestion.sh monitoring [--yes]   # run-duration metrics and dashboard only
 #
 # Secret values are never accepted as arguments or printed. They are read from
 # a hidden terminal prompt, or from stdin for `set-secret`, and piped straight
@@ -94,7 +95,7 @@ usage() { sed -n '2,15p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
 parse_args() {
   while (($#)); do
     case "$1" in
-      deploy|run-now) COMMAND="$1" ;;
+      deploy|run-now|monitoring) COMMAND="$1" ;;
       set-secret) COMMAND="set-secret"; SECRET_ARG="${2:-}"; shift || true ;;
       --yes|-y) ASSUME_YES=1 ;;
       --run-now) RUN_NOW=1 ;;
@@ -668,12 +669,87 @@ cmd_run_now() {
 }
 
 # ---------------------------------------------------------------- main
+# ---------------------------------------------------------------- run durations
+# Two log-based metrics read the job's own log lines: the run summary ("run-scheduled ok", with durationSeconds)
+# and each step's line ("step discover: ok", with step.seconds). A dashboard charts both against the task timeout.
+# Free at this volume; no alert policy (a run that hits the time budget alerts through ntfy instead).
+RUN_METRIC="tahoe_ingest_run_seconds"
+STEP_METRIC="tahoe_ingest_step_seconds"
+DASHBOARD_NAME="Tahoe ingestion run durations"
+
+ensure_log_metric() {
+  # $1 name, $2 config file
+  if g logging metrics describe "$1" >/dev/null 2>&1; then
+    g logging metrics update "$1" --config-from-file="$2" >/dev/null
+    info "log metric $1 updated"
+  else
+    g logging metrics create "$1" --config-from-file="$2" >/dev/null
+    info "log metric $1 created"
+  fi
+}
+
+ensure_run_metrics() {
+  log "Run-duration metrics and dashboard"
+  command -v python3 >/dev/null || die "python3 is required to build metric JSON"
+  local run_config="$TMP_DIR/run-metric.json" step_config="$TMP_DIR/step-metric.json" dashboard="$TMP_DIR/dashboard.json"
+  # shellcheck disable=SC2016  # Python source; values arrive via the environment
+  JOB_NAME="$JOB_NAME" RUN_CONFIG="$run_config" STEP_CONFIG="$step_config" DASHBOARD="$dashboard" \
+  RUN_METRIC="$RUN_METRIC" STEP_METRIC="$STEP_METRIC" DASHBOARD_NAME="$DASHBOARD_NAME" \
+  TIMEOUT="${TASK_TIMEOUT%s}" python3 -c '
+import json, os
+env = os.environ
+job = "resource.type=\"cloud_run_job\" AND resource.labels.job_name=\"%s\"" % env["JOB_NAME"]
+buckets = {"exponentialBuckets": {"numFiniteBuckets": 32, "growthFactor": 1.4, "scale": 1}}
+json.dump({"description": "Length of each scheduled ingestion run (run summary durationSeconds)",
+           "filter": job + " AND jsonPayload.message=~\"^run-scheduled \" AND jsonPayload.durationSeconds>0",
+           "valueExtractor": "EXTRACT(jsonPayload.durationSeconds)",
+           "labelExtractors": {"status": "EXTRACT(jsonPayload.status)"},
+           "bucketOptions": buckets,
+           "metricDescriptor": {"metricKind": "DELTA", "valueType": "DISTRIBUTION", "unit": "s",
+                                "labels": [{"key": "status"}]}}, open(env["RUN_CONFIG"], "w"))
+json.dump({"description": "Length of each step of a scheduled ingestion run (step.seconds)",
+           "filter": job + " AND jsonPayload.message=~\"^step \" AND jsonPayload.step.seconds>=0",
+           "valueExtractor": "EXTRACT(jsonPayload.step.seconds)",
+           "labelExtractors": {"step": "EXTRACT(jsonPayload.step.name)"},
+           "bucketOptions": buckets,
+           "metricDescriptor": {"metricKind": "DELTA", "valueType": "DISTRIBUTION", "unit": "s",
+                                "labels": [{"key": "step"}]}}, open(env["STEP_CONFIG"], "w"))
+def series(metric, group=None):
+    agg = {"alignmentPeriod": "21600s", "perSeriesAligner": "ALIGN_PERCENTILE_99"}
+    if group:
+        agg.update(crossSeriesReducer="REDUCE_MAX", groupByFields=[group])
+    return {"timeSeriesQuery": {"timeSeriesFilter": {
+        "filter": "metric.type=\"logging.googleapis.com/user/%s\"" % metric, "aggregation": agg}}}
+timeout = int(env["TIMEOUT"])
+json.dump({"displayName": env["DASHBOARD_NAME"], "mosaicLayout": {"columns": 12, "tiles": [
+    {"width": 12, "height": 5, "widget": {"title": "Run length (seconds; the line is the task timeout)", "xyChart": {
+        "dataSets": [dict(series(env["RUN_METRIC"], "metric.label.status"), plotType="LINE", minAlignmentPeriod="21600s")],
+        "thresholds": [{"value": timeout, "label": "task timeout"}],
+        "yAxis": {"label": "seconds", "scale": "LINEAR"}}}},
+    {"yPos": 5, "width": 12, "height": 6, "widget": {"title": "Time per step (seconds)", "xyChart": {
+        "dataSets": [dict(series(env["STEP_METRIC"], "metric.label.step"), plotType="STACKED_BAR", minAlignmentPeriod="21600s")],
+        "yAxis": {"label": "seconds", "scale": "LINEAR"}}}}]}}, open(env["DASHBOARD"], "w"))
+'
+  ensure_log_metric "$RUN_METRIC" "$run_config"
+  ensure_log_metric "$STEP_METRIC" "$step_config"
+  local existing
+  # The dashboards API has no displayName filter; replace any dashboard with this name.
+  for existing in $(g monitoring dashboards list --format=json | DASHBOARD_NAME="$DASHBOARD_NAME" python3 -c '
+import json, os, sys
+print(" ".join(d["name"] for d in json.load(sys.stdin) if d.get("displayName") == os.environ["DASHBOARD_NAME"]))'); do
+    g monitoring dashboards delete "$existing" >/dev/null
+  done
+  g monitoring dashboards create --config-from-file="$dashboard" >/dev/null
+  info "dashboard '$DASHBOARD_NAME': https://console.cloud.google.com/monitoring/dashboards?project=$PROJECT_ID"
+}
+
 main() {
   parse_args "$@"
   TMP_DIR="$(mktemp -d)"
   case "$COMMAND" in
     set-secret) check_identity; cmd_set_secret ;;
     run-now) check_identity; cmd_run_now ;;
+    monitoring) check_identity; ensure_run_metrics ;;
     deploy)
       check_identity
       ensure_project
@@ -687,6 +763,7 @@ main() {
       deploy_job
       ensure_scheduler
       ensure_alerting
+      ensure_run_metrics
       ensure_budget_guard
       ensure_budget
       if ((RUN_NOW)); then cmd_run_now; fi

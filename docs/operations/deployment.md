@@ -140,6 +140,10 @@ gcloud logging read 'resource.type="cloud_run_job" AND resource.labels.job_name=
 
 The job prints a JSON summary on stdout as its last output. The console's Cloud Run page lists the job, its executions, and per-execution logs, and `run-now` prints a direct link. A failed execution emails `ALERT_EMAIL`. Three further checks cover failures that email cannot see, all through ntfy; see [Silent-failure alerts](#silent-failure-alerts).
 
+### Run durations
+
+`deploy` (or `scripts/deploy/gcp-ingestion.sh monitoring` on its own) creates two log-based metrics from the job's log lines: `tahoe_ingest_run_seconds`, from each run summary's `durationSeconds` and labeled by status, and `tahoe_ingest_step_seconds`, from each step line's `step.seconds` and labeled by step. It also creates the Cloud Monitoring dashboard **Tahoe ingestion run durations**, under Monitoring, then Dashboards. The dashboard charts run length against the task timeout and stacks time per step, so a step that keeps growing (summaries, classification, downloads) shows before a run reaches the limit. Log-based metrics count only runs logged after they were created; for earlier runs, read the summaries with `gcloud logging read 'resource.labels.job_name="tahoe-ingest" AND jsonPayload.message=~"^run-scheduled "' --format='table(timestamp,jsonPayload.durationSeconds)'`. There is no Cloud Monitoring alert policy, since alerting is billed: a run whose Claude steps stop at the time budget alerts through ntfy instead (below). Rerunning replaces the dashboard and updates the metrics.
+
 ## Silent-failure alerts
 
 The Cloud Monitoring email fires only when an execution fails. Two quiet failure modes are covered separately, both delivered to the operator's ntfy topic:

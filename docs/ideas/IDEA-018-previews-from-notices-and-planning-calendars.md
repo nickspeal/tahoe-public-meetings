@@ -72,7 +72,7 @@ Everything else below is a proposed default unless it restates one of these deci
   - official URL: the notice;
   - participation instructions from the quote.
 - A stated end time sets the calendar download's end, replacing the estimated duration ([decision 0013](../decisions/0013-estimated-meeting-durations.md)).
-- Each record carries the note "Check the notice for changes." The source line already names and links the notice.
+- Records carry no blanket caveat (amended 2026-10-29); the source line names and links the notice, and a revised notice updates the record.
 - A one-off never gets an agenda, so the notice counts as its posted document. A new agenda-availability kind, `notice` ("Meeting notice posted"), shows it in the default timeline without the "Expected · no agenda yet" badge (decision 8).
 - An entry in `config/one-off-meetings.json` with the same ID overrides the extracted fields.
 

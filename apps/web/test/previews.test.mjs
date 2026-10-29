@@ -52,7 +52,7 @@ test('an upcoming meeting with previews shows by default but keeps the no-agenda
 
 test('a one-off meeting with only its notice is a posted notice, shown by default without the pill', () => {
   const oneOff = meeting({ id: 'other:one-off-wst-2026-11-02', agencyId: 'other', sourceId: 'one-off-wst-2026-11-02', host: 'TRPA and El Dorado County',
-    officialUrl: 'https://agency.example/notice.pdf', warnings: ['Check the notice for changes.'] });
+    officialUrl: 'https://agency.example/notice.pdf', warnings: [] });
   const availability = dataLib.agendaAvailability(oneOff);
   assert.deepEqual(availability, { kind: 'notice', label: 'Meeting notice posted', heading: 'Meeting notice',
     body: 'The notice has the details for this meeting.', href: 'https://agency.example/notice.pdf', linkText: 'Open the notice' });
@@ -74,7 +74,7 @@ test('source lines name the calendar update date or the notice; planned notes pa
   assert.equal(dataLib.previewSourceLabel(bikes.source), 'From the agenda planning calendar updated September 30, 2026');
   assert.equal(dataLib.previewSourceLabel({ ...bikes.source, kind: 'notice', title: 'West Shore Trail Notice of Preparation' }), 'From the West Shore Trail Notice of Preparation');
   assert.equal(dataLib.residentWarning('Subject to change.'), 'Subject to change.');
-  assert.equal(dataLib.residentWarning('Check the notice for changes.'), 'Check the notice for changes.');
+  assert.equal(dataLib.residentWarning('Check the notice for changes.'), '', 'the old blanket notice caveat is hidden');
 });
 
 test('a planned meeting calendar event starts its description with "Subject to change."', () => {

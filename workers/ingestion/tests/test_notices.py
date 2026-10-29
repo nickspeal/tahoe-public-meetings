@@ -212,7 +212,7 @@ def test_notice_yields_one_off_and_preview_and_reruns_cost_nothing(db, replaced,
     assert meeting["starts_at"].astimezone(notices.PACIFIC).strftime("%H:%M") == "17:30"
     assert meeting["observed_duration_minutes"] == 90 and meeting["duration_source"] == "published"
     assert sorted(meeting["declared_topics"]) == ["biking", "environment"]
-    assert meeting["warnings"] == ["Check the notice for changes."] and meeting["official_url"] == NOTICE["official_url"]
+    assert meeting["warnings"] == [] and meeting["official_url"] == NOTICE["official_url"]
     assert meeting["status"] == "scheduled" and "Tahoe City Public Utility District" in meeting["location"]
 
     [call] = replaced
@@ -253,7 +253,7 @@ def test_revised_notice_keeps_ids_and_marks_moved_and_missing_events(db, replace
     assert meeting["local_date"] == date(2026, 11, 3) and meeting["status"] == "rescheduled"
     assert meeting["change"] == "rescheduled"
     dropped = db.execute("SELECT * FROM meetings WHERE id=%s", (second_id,)).fetchone()
-    assert dropped["warnings"] == ["Check the notice for changes.", "Not in the latest notice."]
+    assert dropped["warnings"] == ["Not in the latest notice."]
     assert db.execute("SELECT count(*) AS n FROM meetings WHERE agency_id='other'").fetchone()["n"] == 2  # nothing deleted
     assert replaced[-1]["source"]["sha256"] == "b" * 64
 

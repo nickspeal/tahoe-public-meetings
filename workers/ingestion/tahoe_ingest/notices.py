@@ -42,7 +42,6 @@ MAX_INPUT_CHARS = 48_000  # about 12K tokens; meeting details sit near a notice'
 PACIFIC = ZoneInfo("America/Los_Angeles")
 EVENT_FIELDS = ("kind", "title", "format", "date", "startTime", "endTime", "locationLines", "remoteQuote",
                 "hosts", "bodyName", "subject", "quote")
-NOTICE_WARNING = "Check the notice for changes."
 WITHDRAWN_WARNING = "Not in the latest notice."
 MAX_INSTRUCTIONS = 400
 
@@ -380,7 +379,7 @@ def events_to_records(period_row: dict, accepted: list[dict], *, previous: list[
                "host": host, "source_meeting_url": period_row["official_url"], "status": status, "topics": topics,
                "participation": {"instructions": instructions_from(event["quote"]), "url": None, "remoteUrl": None,
                                  "deadline": None},
-               "warnings": [NOTICE_WARNING], "items_complete": False, "documents_complete": False,
+               "warnings": [], "items_complete": False, "documents_complete": False,
                "end_time": event["endTime"], "format": event["format"]}
         if event["startTime"]:
             row["start_time"] = event["startTime"]

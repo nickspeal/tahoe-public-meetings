@@ -173,6 +173,8 @@ export function residentWarning(value: string) {
   if (/No agenda document is linked|did not link an agenda/i.test(value)) return '';
   // Shown briefly in the agenda history card instead (see agendaSourceNote).
   if (AGENDA_SOURCE_NOTES.some(([pattern]) => pattern.test(value))) return '';
+  // A blanket caveat that early notice extractions stored; it names no known issue, and the worker rereads revised notices.
+  if (value === 'Check the notice for changes.') return '';
   if (/A source PDF changed/i.test(value)) return 'Source documents changed; some agenda details still need to be refreshed.';
 
   const retainedPages = value.match(/Text retained for (\d+) of (\d+) source pages/i);

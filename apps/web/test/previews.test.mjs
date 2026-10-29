@@ -228,8 +228,8 @@ test('planned meetings say "Subject to change" once, and timed ones get a calend
     const document = await pageFor(record);
     assert.equal(document.querySelector('.meeting-time-note')?.textContent, 'Subject to change');
     assert.ok(![...document.querySelectorAll('.warning-note p')].some((node) => node.textContent === 'Subject to change.'));
-    if (!record.startsAt) continue;
-    assert.ok(document.querySelector('a.calendar-download'), `${record.id} has a calendar download`);
+    if (!record.startsAt || record.status === 'canceled' || record.change === 'canceled') continue;
+    assert.ok(document.querySelector('.calendar-menu a[download]'), `${record.id} has a calendar download`);
     const ics = unfold(await readFile(resolve(root, 'dist', 'calendar', record.agencyId, `${record.sourceId}.ics`), 'utf8'));
     assert.match(ics, /\r\nDESCRIPTION:Subject to change\.(\\n|\r\n)/);
   }
@@ -247,7 +247,7 @@ test('one-off meetings with only their notice show by default as a posted notice
     const panel = document.querySelector('[data-agenda-availability="notice"]');
     assert.ok(panel, record.id);
     assert.equal(panel.querySelector('a').getAttribute('href'), record.officialUrl);
-    if (record.duration?.source === 'published') assert.doesNotMatch(document.querySelector('.calendar-download-group small')?.textContent ?? '', /estimate/);
+    if (record.duration?.source === 'published') assert.doesNotMatch(document.querySelector('.calendar-download-group > small')?.textContent ?? '', /estimate/);
   }
   dom.window.close();
 });

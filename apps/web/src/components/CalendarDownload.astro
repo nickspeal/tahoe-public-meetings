@@ -1,29 +1,29 @@
 ---
 import type { Meeting } from '../../../../packages/domain/public';
-import { calendarHref, canExportMeeting } from '../lib/calendar';
+import { calendarHref, canExportMeeting, googleCalendarHref, isCanceled, outlookCalendarHref } from '../lib/calendar';
 
 interface Props { meeting: Meeting }
 const { meeting } = Astro.props;
+const canceled = isCanceled(meeting);
 const available = canExportMeeting(meeting);
 const filename = `${meeting.agencyId}-${meeting.sourceId}.ics`.replace(/[^A-Za-z0-9._-]/g, '-');
+const estimated = meeting.duration?.source !== 'published';
 const unavailableMessage = meeting.date
   ? 'The agency has published a date but not a confirmed start time, so a calendar event is unavailable.'
   : 'A confirmed meeting start time is not published, so a calendar event is unavailable.';
 ---
 
-{available ? (
+{canceled ? null : available ? (
   <div class="calendar-download-group">
-    <a class="calendar-download" href={calendarHref(meeting)} download={filename}>Download calendar event</a>
-    <small>
-      One-time calendar file. It will not update automatically.
-      {meeting.duration && meeting.duration.source === 'estimated'
-        ? ` The end time is an estimate (about ${Math.round(meeting.duration.minutes / 6) / 10} hours, biased long); agencies do not publish an end time.`
-        : meeting.duration?.source === 'published'
-          ? ' The end time is as published.'
-          : meeting.duration
-            ? ` Length: about ${Math.round(meeting.duration.minutes / 6) / 10} hours (${meeting.duration.source}).`
-            : ''}
-    </small>
+    <details class="calendar-menu">
+      <summary class="calendar-download">Add to calendar</summary>
+      <ul class="calendar-options">
+        <li><a href={calendarHref(meeting)} download={filename}>Download (.ics)<small>Apple Calendar, Outlook desktop, others</small></a></li>
+        <li><a href={googleCalendarHref(meeting)} target="_blank" rel="noopener noreferrer">Google Calendar ↗</a></li>
+        <li><a href={outlookCalendarHref(meeting)} target="_blank" rel="noopener noreferrer">Outlook.com ↗</a></li>
+      </ul>
+    </details>
+    <small>{estimated && 'Event duration is estimated. '}This fixed calendar event will not change if the meeting is rescheduled.</small>
   </div>
 ) : (
   <p class="calendar-unavailable">{unavailableMessage}</p>

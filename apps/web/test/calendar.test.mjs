@@ -64,17 +64,16 @@ test('uses a stable agency-native UID and source update time for LAST-MODIFIED',
   assert.doesNotMatch(first, /^METHOD:/m);
 });
 
-test('escapes text controls and marks cancellations without injecting new properties', () => {
+test('escapes text controls without injecting new properties', () => {
   const event = calendar.buildCalendarEvent(meeting({
     title: 'Budget, trails; \u00e9\nBEGIN:VEVENT\nSTATUS:CONFIRMED',
     location: 'Room 1, Town Hall; East',
     participation: { instructions: 'Line one\r\nLine two, safely; yes \\ end', url: null, remoteUrl: null, deadline: null },
-    status: 'canceled',
   }));
   assert.match(unfold(event), /SUMMARY:Budget\\, trails\\; \u00e9\\nBEGIN:VEVENT\\nSTATUS:CONFIRMED\r\n/);
   assert.match(event, /LOCATION:Room 1\\, Town Hall\\; East\r\n/);
   assert.match(unfold(event), /DESCRIPTION:Official meeting page: https:\/\/town\.example\/meeting\\nPublic comment: Line one\\nLine two\\, safely\\; yes \\\\ end\\nEstimated length\\; agencies do not publish an end time\.\r\n/);
-  assert.match(event, /STATUS:CANCELLED\r\n/);
+  assert.match(event, /STATUS:CONFIRMED\r\n/);
   assert.equal((event.match(/^BEGIN:VEVENT$/gm) ?? []).length, 1);
   assert.equal((event.match(/^STATUS:/gm) ?? []).length, 1);
 });
@@ -108,4 +107,39 @@ test('Astro static output includes a timed event and omits a date-only listing',
 test('a meeting with a named host says so in the description', () => {
   assert.match(unfold(calendar.buildCalendarEvent(meeting({ host: 'TRPA and El Dorado County' }))), /DESCRIPTION:[^\r]*Hosted by: TRPA and El Dorado County/);
   assert.doesNotMatch(calendar.buildCalendarEvent(meeting()), /Hosted by/);
+});
+
+test('canceled meetings have no calendar event', () => {
+  assert.equal(calendar.canExportMeeting(meeting({ status: 'canceled' })), false);
+  assert.equal(calendar.canExportMeeting(meeting({ change: 'canceled' })), false);
+  assert.throws(() => calendar.buildCalendarEvent(meeting({ status: 'canceled' })), /confirmed start time/);
+  assert.throws(() => calendar.googleCalendarHref(meeting({ status: 'canceled' })), /confirmed start time/);
+});
+
+test('Google Calendar link prefills the same event as the calendar file', () => {
+  const url = new URL(calendar.googleCalendarHref(meeting({ planned: true })));
+  assert.equal(url.origin + url.pathname, 'https://calendar.google.com/calendar/render');
+  assert.equal(url.searchParams.get('action'), 'TEMPLATE');
+  assert.equal(url.searchParams.get('text'), 'Town Council Meeting');
+  assert.equal(url.searchParams.get('dates'), '20260923T000000Z/20260923T023000Z');
+  assert.equal(url.searchParams.get('location'), 'Town Hall');
+  assert.match(url.searchParams.get('details'), /^Subject to change\.\nOfficial meeting page: https:\/\/town\.example\/meeting\nPublic comment: Comments by email\n/);
+});
+
+test('Outlook.com link prefills the event with ISO UTC times', () => {
+  const url = new URL(calendar.outlookCalendarHref(meeting({ title: 'Budget & trails #2', location: null })));
+  assert.equal(url.origin + url.pathname, 'https://outlook.live.com/calendar/0/action/compose');
+  assert.equal(url.searchParams.get('rru'), 'addevent');
+  assert.equal(url.searchParams.get('subject'), 'Budget & trails #2');
+  assert.equal(url.searchParams.get('startdt'), '2026-09-23T00:00:00Z');
+  assert.equal(url.searchParams.get('enddt'), '2026-09-23T02:30:00Z');
+  assert.equal(url.searchParams.has('location'), false);
+});
+
+test('web calendar links cut a long description and point to the official page', () => {
+  const instructions = 'x'.repeat(5000);
+  const url = new URL(calendar.googleCalendarHref(meeting({ participation: { instructions, url: null, remoteUrl: null, deadline: null } })));
+  const details = url.searchParams.get('details');
+  assert.ok(details.length < 1600, `${details.length} characters`);
+  assert.match(details, /…\nFull details: https:\/\/town\.example\/meeting$/);
 });

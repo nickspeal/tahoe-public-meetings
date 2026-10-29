@@ -19,22 +19,39 @@ async function meetingDocument(meeting) {
   return new JSDOM(html).window.document;
 }
 
-test('timed listings offer a calendar download while date-only listings explain why one is unavailable', async () => {
-  const timed = data.meetings.find((meeting) => meeting.startsAt && meeting.updatedAt);
-  const dateOnly = data.meetings.find((meeting) => !meeting.startsAt && meeting.date);
+test('timed listings offer an add-to-calendar menu while date-only listings explain why one is unavailable', async () => {
+  const timed = data.meetings.find((meeting) => meeting.startsAt && meeting.updatedAt && meeting.status !== 'canceled' && meeting.change !== 'canceled');
+  const dateOnly = data.meetings.find((meeting) => !meeting.startsAt && meeting.date && meeting.status !== 'canceled' && meeting.change !== 'canceled');
   assert.ok(timed, 'export should include a meeting with a verified start time');
   assert.ok(dateOnly, 'export should include a date-only meeting');
 
   const timedDocument = await meetingDocument(timed);
-  const download = timedDocument.querySelector('.calendar-download-group a.calendar-download');
-  assert.ok(download);
-  assert.equal(download.getAttribute('href'), `/calendar/${timed.agencyId}/${timed.sourceId}.ics`);
-  assert.match(download.textContent, /Download calendar event/);
-  assert.match(timedDocument.querySelector('.calendar-download-group small')?.textContent ?? '', /will not update automatically/);
+  const menu = timedDocument.querySelector('.calendar-download-group details.calendar-menu');
+  assert.ok(menu);
+  assert.match(menu.querySelector('summary').textContent, /Add to calendar/);
+  const links = [...menu.querySelectorAll('.calendar-options a')];
+  assert.equal(links[0].getAttribute('href'), `/calendar/${timed.agencyId}/${timed.sourceId}.ics`);
+  assert.ok(links[0].hasAttribute('download'));
+  assert.match(links[1].getAttribute('href'), /^https:\/\/calendar\.google\.com\/calendar\/render\?action=TEMPLATE&/);
+  assert.match(links[2].getAttribute('href'), /^https:\/\/outlook\.live\.com\/calendar\/0\/action\/compose\?/);
+  assert.match(timedDocument.querySelector('.calendar-download-group > small')?.textContent ?? '', /will not change if the meeting is rescheduled/);
 
   const dateOnlyDocument = await meetingDocument(dateOnly);
-  assert.equal(dateOnlyDocument.querySelector('.calendar-download-group a.calendar-download'), null);
+  assert.equal(dateOnlyDocument.querySelector('.calendar-menu'), null);
   assert.match(dateOnlyDocument.querySelector('.calendar-unavailable')?.textContent ?? '', /date but not a confirmed start time/);
+});
+
+test('canceled meetings offer no calendar event and no calendar file', async () => {
+  const canceled = data.meetings.filter((meeting) => meeting.startsAt && (meeting.status === 'canceled' || meeting.change === 'canceled'));
+  assert.ok(canceled.length > 0, 'export should include a timed canceled meeting');
+  for (const meeting of canceled) {
+    const document = await meetingDocument(meeting).catch(() => null);
+    if (document) {
+      assert.equal(document.querySelector('.calendar-menu'), null);
+      assert.equal(document.querySelector('.calendar-unavailable'), null);
+    }
+    await assert.rejects(readFile(resolve(root, 'dist', 'calendar', meeting.agencyId, `${meeting.sourceId}.ics`), 'utf8'), { code: 'ENOENT' });
+  }
 });
 
 test('agenda item topic tags follow the shared catalog order', async () => {

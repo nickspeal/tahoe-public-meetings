@@ -20,6 +20,6 @@ This supersedes the fixed four-topic limit in decisions 0002 and 0007. It does n
 
 ## Next local improvement
 
-The maintainer also authorized advancing useful ideas from the repository. The next bounded addition is a single-meeting calendar download from IDEA-003. Use verified meeting start times, stable event identifiers, official links, and explicit cancellation status. Do not guess a duration or turn an unknown start time into an all-day event. Downloads are snapshots; they do not subscribe a resident to updates. No calendar account access, cloud deployment, or background scheduling is needed.
+The maintainer also authorized advancing useful ideas from the repository. The next bounded addition is a single-meeting calendar download from IDEA-003. Use verified meeting start times, stable event identifiers, official links, and explicit cancellation status. Do not guess a duration or turn an unknown start time into an all-day event. Downloads are snapshots; they do not subscribe a resident to updates. *Updated 2026-10-29: the download became an **Add to calendar** menu that also offers prefilled Google Calendar and Outlook.com links, and canceled meetings now get no calendar event at all instead of one marked canceled.* No calendar account access, cloud deployment, or background scheduling is needed.
 
 Archive keyword search and broader source capture remain useful follow-ups. Subscription alerts, accounts, polling, and advocacy workflows remain deferred.

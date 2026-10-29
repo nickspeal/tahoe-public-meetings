@@ -282,8 +282,17 @@ button, a, select, summary { touch-action: manipulation; }
 .button-outline { color: var(--forest-dark); }
 .button-full { display: flex; width: 100%; }
 .calendar-download-group { display: grid; gap: 6px; margin: 0 0 14px; }
-.calendar-download { display: flex; justify-content: center; align-items: center; min-height: 42px; padding: 9px 13px; border: 1px solid var(--forest); border-radius: 4px; background: #edf2ed; color: var(--forest-dark); text-align: center; font-size: 14px; font-weight: 650; }
+.calendar-download { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 42px; padding: 9px 13px; border: 1px solid var(--forest); border-radius: 4px; background: #edf2ed; color: var(--forest-dark); text-align: center; font-size: 14px; font-weight: 650; cursor: pointer; list-style: none; }
+.calendar-download::-webkit-details-marker { display: none; }
+.calendar-download::after { content: "▾"; font-size: 12px; transition: transform 0.15s; }
+.calendar-menu[open] .calendar-download::after { transform: rotate(180deg); }
 .calendar-download:hover { background: #e2ebe3; text-decoration: none; }
+.calendar-menu[open] .calendar-download { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.calendar-options { margin: 0; padding: 0; border: 1px solid var(--forest); border-top: 0; border-radius: 0 0 4px 4px; list-style: none; }
+.calendar-options li + li { border-top: 1px solid #e2e8e2; }
+.calendar-options a { display: flex; flex-direction: column; padding: 10px 13px; color: var(--forest-dark); font-size: 14px; font-weight: 650; text-decoration: none; }
+.calendar-options a:hover { background: #f1f4f1; text-decoration: underline; }
+.calendar-options a small { color: var(--muted); font-size: 13px; font-weight: 400; }
 .calendar-download-group small { color: var(--muted); font-size: 14px; line-height: 1.45; }
 .calendar-unavailable { margin: 0 0 14px; padding: 10px 11px; border-left: 3px solid #a7b6aa; background: #f1f4f1; color: var(--muted); font-size: 14px; line-height: 1.5; }
 .aside-footnote { margin: 10px 0 0; color: var(--muted); font-size: 14px; }

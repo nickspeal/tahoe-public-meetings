@@ -1,4 +1,4 @@
-import type { AgendaItem, Meeting, PublicData } from '../../../../packages/domain/public';
+import type { AgendaItem, Meeting, PublicCommentPeriod, PublicData } from '../../../../packages/domain/public';
 import topicCatalog from '../../../../packages/domain/topics.json';
 import { isRoutineItem } from './routine-items';
 
@@ -76,6 +76,46 @@ export function meetingHref(meeting: Meeting) {
   // creates a path that the dev/preview server does not resolve consistently.
   const encodedId = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
   return `/meetings/${encodedId}/`;
+}
+
+export function commentPeriodHref(period: PublicCommentPeriod) {
+  // Stored IDs are `${agencyId}:${notice slug}`; the page path splits them like calendar files do.
+  const prefix = `${period.agencyId}:`;
+  const slug = period.id.startsWith(prefix) ? period.id.slice(prefix.length) : period.id;
+  return `/comment-periods/${encodeURIComponent(period.agencyId)}/${encodeURIComponent(slug)}/`;
+}
+
+export type CommentPeriodStatus = 'upcoming' | 'open' | 'closed';
+
+const pacificDay = (date: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+
+/** Evaluated at build time: the static site changes a period's status on the next rebuild after its deadline. */
+export function commentPeriodStatus(period: PublicCommentPeriod, now = new Date()): CommentPeriodStatus {
+  const today = pacificDay(now);
+  const closed = period.closesAt ? new Date(period.closesAt).valueOf() < now.valueOf() : period.closesOn < today;
+  if (closed) return 'closed';
+  return period.opensOn && period.opensOn > today ? 'upcoming' : 'open';
+}
+
+const commentPeriodDeadline = (period: PublicCommentPeriod) => period.closesAt ? new Date(period.closesAt).valueOf() : new Date(`${period.closesOn}T23:59:59-08:00`).valueOf();
+
+/** Open and upcoming periods, soonest deadline first. */
+export function currentCommentPeriods(now = new Date()) {
+  return commentPeriods.filter((period) => commentPeriodStatus(period, now) !== 'closed').sort((a, b) => commentPeriodDeadline(a) - commentPeriodDeadline(b) || a.id.localeCompare(b.id));
+}
+
+/** Closed periods, most recently closed first. */
+export function pastCommentPeriods(now = new Date()) {
+  return commentPeriods.filter((period) => commentPeriodStatus(period, now) === 'closed').sort((a, b) => commentPeriodDeadline(b) - commentPeriodDeadline(a) || a.id.localeCompare(b.id));
+}
+
+/** A calendar date from a notice (YYYY-MM-DD), read as a Pacific day. */
+export function noticeDayLabel(value: string, options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', year: 'numeric' }) {
+  return formatDate(`${value}T12:00:00-08:00`, options);
+}
+
+export function commentDeadlineLabel(period: PublicCommentPeriod, options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', year: 'numeric' }) {
+  return period.closesAt ? formatDate(period.closesAt, { ...options, hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : noticeDayLabel(period.closesOn, options);
 }
 
 export function topicHref(topicId: string) {

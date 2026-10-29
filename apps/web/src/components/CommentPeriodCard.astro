@@ -1,0 +1,17 @@
+---
+import type { PublicCommentPeriod } from '../../../../packages/domain/public';
+import { agencies, commentDeadlineLabel, commentPeriodHref, commentPeriodStatus, noticeDayLabel, topicHref, topicName } from '../lib/data';
+interface Props { period: PublicCommentPeriod }
+const { period } = Astro.props;
+const status = commentPeriodStatus(period);
+const agency = agencies.find((row) => row.id === period.agencyId);
+---
+<article class="aside-card comment-period-card" data-comment-period={period.id} data-status={status}>
+  <p class="eyebrow">{agency?.name ?? period.agencyId}</p>
+  <h3><a href={commentPeriodHref(period)}>{period.title}</a></h3>
+  <p class="comment-period-deadline">
+    {status === 'closed' ? <span>Closed {commentDeadlineLabel(period)}</span> : <strong>Comments due {commentDeadlineLabel(period)}</strong>}
+    {status === 'upcoming' && period.opensOn && <span> · Opens {noticeDayLabel(period.opensOn)}</span>}
+  </p>
+  {period.topics.length > 0 && <div class="tag-row">{period.topics.map((topic) => <a class="tag" href={topicHref(topic)}>{topicName(topic)}</a>)}</div>}
+</article>

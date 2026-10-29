@@ -305,7 +305,7 @@ Edit [`public-comment-periods.json`](public-comment-periods.json) when an offici
 }
 ```
 
-Run `python3 scripts/project.py worker ingest-comment-periods` and then `refresh`. The importer fetches the source, checks the exact quote, stores its text/hash/provenance, and upserts a stable agency/notice ID. Dates and instructions must come from that notice. `opens_on` may be omitted if unknown. `closes_on` is required; optionally include an offset-aware `closes_at` when the exact deadline/timezone is verified. Never infer a closing hour. The separate `/comment-periods/` page lists current and past windows; they are not board meetings or calendar events with fabricated durations. No comment is submitted by the app.
+Run `python3 scripts/project.py worker ingest-comment-periods` and then `refresh`. The importer fetches the source, checks the exact quote, stores its text/hash/provenance, and upserts a stable agency/notice ID. Dates and instructions must come from that notice. `opens_on` may be omitted if unknown. `closes_on` is required; optionally include an offset-aware `closes_at` when the exact deadline/timezone is verified. Never infer a closing hour. The `/comment-periods/` page lists open and upcoming windows, then past ones, and each window has its own page at `/comment-periods/<agency>/<id>/` that stays up after it closes, so its `id` should not change once published; they are not board meetings or calendar events with fabricated durations. No comment is submitted by the app.
 
 ## Minutes and recording sources
 

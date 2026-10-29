@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import CommentPeriodCard from '../../components/CommentPeriodCard.astro';
+import { currentCommentPeriods, pastCommentPeriods } from '../../lib/data';
+const current = currentCommentPeriods();
+const past = pastCommentPeriods();
+---
+<SiteLayout title="Public comment periods" description="Published opportunities to comment on Tahoe-area projects and proposals.">
+  <section class="page-hero compact"><div class="section-wrap"><p class="eyebrow">PUBLIC PARTICIPATION</p><h1>Public comment periods</h1><p class="page-intro">Published comment windows and deadlines for Tahoe-area projects and proposals. These are separate from scheduled meetings. Open one for its submission instructions and the official notice.</p></div></section>
+  <section class="section-wrap content-section comment-periods" aria-labelledby="current-comment-periods">
+    <div class="content-heading"><h2 id="current-comment-periods">Open and upcoming</h2><p>Soonest deadline first.</p></div>
+    {current.length ? <div class="comment-period-list">{current.map((period) => <CommentPeriodCard period={period} />)}</div> : <p class="muted-panel">No verified open or upcoming public comment periods are listed right now.</p>}
+  </section>
+  {past.length > 0 && <section class="section-wrap content-section comment-periods" aria-labelledby="past-comment-periods">
+    <div class="content-heading"><h2 id="past-comment-periods">Past comment periods</h2><p>Most recently closed first. Each stays listed as a record of the notice.</p></div>
+    <div class="comment-period-list">{past.map((period) => <CommentPeriodCard period={period} />)}</div>
+  </section>}
+</SiteLayout>

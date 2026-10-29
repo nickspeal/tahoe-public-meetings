@@ -289,6 +289,16 @@ button, a, select, summary { touch-action: manipulation; }
 .source-document small { margin-top: 3px; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
 .source-document .source-warning { color: #654f27; }
 .source-open { white-space: nowrap; font-size: 14px; font-weight: 650; }
+/* Public comment periods */
+.comment-periods + .comment-periods { padding-top: 0; }
+.comment-period-list { display: grid; gap: 12px; }
+.comment-period-card h3 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
+.comment-period-deadline { margin: 8px 0 10px; color: #354b45; font-size: 15px; }
+.comment-period-card[data-status="closed"] h3 a, .comment-period-card[data-status="closed"] .comment-period-deadline { color: var(--muted); }
+.comment-period-card .tag-row { margin: 0; }
+.comment-period-instructions { max-width: 700px; margin: 0; color: var(--ink); font-size: 17px; line-height: 1.65; }
+.comment-period-quote { margin: 0 0 14px; padding: 14px 15px; border-left: 3px solid #76978a; background: #eff3ee; color: #304843; font-size: 16px; line-height: 1.65; }
+.comment-period-note { color: var(--subtle); font-size: 13px; }
 /* About */
 .about-prose { max-width: 700px; }
 .about-prose p { color: var(--ink); font-size: 17px; line-height: 1.65; }

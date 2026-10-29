@@ -1,16 +1,15 @@
 """Shared core for mapping agenda items to their own staff reports (IDEA-013); the rules, one per publishing format, and their guide are in ``staff_report_rules/`` (README.md), and each agency picks one in its registry entry."""
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import html
 import json
 import re
 import subprocess
-import tempfile
 import time
 from dataclasses import dataclass, field
 from datetime import date
-from pathlib import Path
 from typing import NewType
 
 from . import http
@@ -164,35 +163,36 @@ def read_pdf(url: str, *, last_page: int | None = None, links: bool = False, max
     Pages are ``[{"page_number", "text"}]`` from ``pdftotext -layout`` (all pages, or
     pages 1..``last_page``); links are ``[{"page", "url", "text"}]`` from ``pdftohtml -xml``.
     ``max_bytes`` and ``max_pages`` bound the download; a rule may raise them for one
-    agency's known packet sizes. Nothing is kept after the call returns.
+    format's known packet sizes. The file streams to disk (``http.download``), so it is never
+    held in memory whole, and nothing is kept after the call returns or raises.
     """
-    try:
-        raw, _ = http.fetch_bytes(url, max_bytes=max_bytes, accept="application/pdf")
-    except EndpointSkipped:
-        raise
-    except http.SourceTooLarge as exc:
-        raise TooLarge(f"{url}: {exc}") from exc
-    except Exception as exc:  # Network, HTTP, TLS, and size failures are all retried later.
-        raise FetchFailed(f"{url}: {exc}") from exc
-    if not raw.startswith(b"%PDF-"):
-        raise Uncertain(f"{url} is not a PDF")
-    with tempfile.TemporaryDirectory(prefix="tahoe-report-") as scratch:
-        path = Path(scratch) / "source.pdf"
-        path.write_bytes(raw)
-        info = subprocess.run(["pdfinfo", str(path)], capture_output=True, text=True, timeout=30, check=True).stdout
+    with contextlib.ExitStack() as stack:
+        try:
+            fetched = stack.enter_context(http.download(url, max_bytes=max_bytes, accept="application/pdf"))
+        except EndpointSkipped:
+            raise
+        except http.SourceTooLarge as exc:
+            raise TooLarge(f"{url}: {exc}") from exc
+        except Exception as exc:  # Network, HTTP, and TLS failures are all retried later.
+            raise FetchFailed(f"{url}: {exc}") from exc
+        if not fetched.head(5).startswith(b"%PDF-"):
+            raise Uncertain(f"{url} is not a PDF")
+        path = str(fetched.path)
+        info = subprocess.run(["pdfinfo", path], capture_output=True, text=True, timeout=30, check=True).stdout
         count = int(next(line for line in info.splitlines() if line.startswith("Pages:")).split(":", 1)[1])
         if not 1 <= count <= max_pages:
             raise Uncertain(f"{url} has {count} pages")
-        args = ["pdftotext", "-layout", "-enc", "UTF-8"] + (["-l", str(last_page)] if last_page else []) + [str(path), "-"]
+        args = ["pdftotext", "-layout", "-enc", "UTF-8"] + (["-l", str(last_page)] if last_page else []) + [path, "-"]
         texts = subprocess.run(args, capture_output=True, timeout=180, check=True).stdout.decode("utf-8", "replace").split("\f")
         found, boxes = [], []
         if links:
-            xml = subprocess.run(["pdftohtml", "-xml", "-i", "-q", "-stdout", str(path)], capture_output=True,
+            xml = subprocess.run(["pdftohtml", "-xml", "-i", "-q", "-stdout", path], capture_output=True,
                                  timeout=180, check=True).stdout.decode("utf-8", "replace")
             boxes = pdf_boxes(xml)
             found = [b for b in boxes if b["url"]]
+        sha256 = fetched.sha256
     pages = [{"page_number": n, "text": t} for n, t in enumerate(texts[:last_page or count], 1)]
-    return {"sha256": hashlib.sha256(raw).hexdigest(), "page_count": count, "pages": pages, "links": found,
+    return {"sha256": sha256, "page_count": count, "pages": pages, "links": found,
             "boxes": [b for b in boxes if not b["url"]]}
 
 

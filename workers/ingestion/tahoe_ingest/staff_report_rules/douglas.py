@@ -13,8 +13,9 @@ item's attachments. Each cover page prints::
 
 The packet is the captured one when discovery stored it; otherwise it is the "Agenda
 Packet" link in the ViewPublisher row of the meeting's agenda clip, downloaded once
-(packets reach about 100 MB and 1,400 pages, so this rule raises the download limits)
-and used only when its opening pages print the captured agenda.
+and used only when its opening pages print the captured agenda. Packets are far larger
+than other agencies' documents, so this rule raises the download limits (``MAX_MEGABYTES``
+and ``MAX_PAGES``; an agency entry may set ``maxMegabytes`` and ``maxPages`` instead).
 
 Two signals must agree: the packet's cover page carries the item's number (a lettered
 consent item "9.A" matches cover "A." only when the cover's ``AGENDA:`` section is the
@@ -29,8 +30,12 @@ import re
 from ..staff_reports import Context, Mapping, TooLarge, Uncertain, leading, long_date, norm_number, title_overlap, words
 from . import _granicus
 
-MAX_BYTES = 100 * 1024 * 1024  # Douglas packets reach 98 MB …
-MAX_PAGES = 1400  # … and 1,316 pages, beyond the core's defaults
+# Packet download limits. In 2026 the commissioners' packets reached 229 MiB and 1,539 pages (September 17) and the
+# planning commission's 1,316 pages (October 13, 57 MiB). A packet streams to a temporary file, and reading one costs
+# the job about its size in memory (/tmp is RAM on Cloud Run) plus about 65 MiB: under 400 MiB at these limits, well
+# inside the 2 GiB job (workers/ingestion/README.md, "Memory"). A packet over a limit gets no staff reports.
+MAX_MEGABYTES = 300  # MiB
+MAX_PAGES = 2000
 SAME_TITLE = 0.9  # covers print the agenda text verbatim
 OPENS_WITH_AGENDA = 0.9  # share of each captured agenda page's words the packet's page must print
 
@@ -81,15 +86,15 @@ def _agendas(ctx: Context) -> list:
             and "AgendaViewer.php" in d.url and not re.search(r"packet|supplement", d.source_document_id, re.I)]
 
 
-def _read_packet(read):
+def _read_packet(read, max_megabytes: int):
     """Run a packet download, turning "too large" into Uncertain: retrying the same oversized file would never succeed."""
     try:
         return read()
     except TooLarge as exc:
-        raise Uncertain(f"the agenda packet is larger than {MAX_BYTES // (1024 * 1024)} MB") from exc
+        raise Uncertain(f"the agenda packet is larger than {max_megabytes} MB") from exc
 
 
-def _listed_packet(ctx: Context, agendas: list) -> tuple[str, dict, int, str]:
+def _listed_packet(ctx: Context, agendas: list, limits: dict) -> tuple[str, dict, int, str]:
     """Download the "Agenda Packet" the ViewPublisher listing gives in the row of the meeting's agenda clip."""
     clips = {c for d in agendas if (c := _granicus.query(d.url, "clip_id"))}
     if not clips:
@@ -112,11 +117,12 @@ def _listed_packet(ctx: Context, agendas: list) -> tuple[str, dict, int, str]:
     if len(packets) != 1:
         raise Uncertain(f"{len(packets)} agenda packets listed for this meeting")
     url = next(iter(packets))
-    fetched = _read_packet(lambda: ctx.read(url, max_bytes=MAX_BYTES, max_pages=MAX_PAGES))
+    fetched = _read_packet(lambda: ctx.read(url, **limits), limits["max_bytes"] // 2**20)
     return url, {p["page_number"]: p["text"] for p in fetched["pages"]}, fetched["page_count"], fetched["sha256"]
 
 
-def map_douglas(ctx: Context) -> list[Mapping]:
+def map_douglas(ctx: Context, *, max_megabytes: int = MAX_MEGABYTES, max_pages: int = MAX_PAGES) -> list[Mapping]:
+    limits = {"max_bytes": max_megabytes * 2**20, "max_pages": max_pages}
     agendas = _agendas(ctx)
     if not agendas:
         raise Uncertain("no captured agenda")
@@ -126,10 +132,10 @@ def map_douglas(ctx: Context) -> list[Mapping]:
         raise Uncertain("more than one agenda packet")
     if stored:
         packet = next(iter(stored.values()))
-        pages = _read_packet(lambda: ctx.pages(packet, needed=bool, max_bytes=MAX_BYTES, max_pages=MAX_PAGES))
+        pages = _read_packet(lambda: ctx.pages(packet, needed=bool, **limits), max_megabytes)
         url, page_count, sha256 = packet.url, packet.page_count, packet.sha256
     else:
-        url, pages, page_count, sha256 = _listed_packet(ctx, agendas)
+        url, pages, page_count, sha256 = _listed_packet(ctx, agendas, limits)
     if not any(_opens_with(ctx.stored_pages(d.version_id), pages) for d in agendas):
         raise Uncertain("the agenda packet does not open with the captured agenda")
     found = covers(pages)

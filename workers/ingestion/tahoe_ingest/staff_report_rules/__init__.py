@@ -13,7 +13,8 @@ follow a known format needs only configuration::
 A rule's parameters are its keyword-only arguments, spelled in camelCase in the entry
 (``packet_name`` -> ``packetName``); those without a default are required. The annotation
 says what a value may be: ``str`` (non-empty text), ``staff_reports.Regex`` (a regular
-expression, compiled when the registry loads), or ``Literal[...]`` (one of those values).
+expression, compiled when the registry loads), ``int`` (a positive whole number, such as a
+download limit), or ``Literal[...]`` (one of those values).
 An agency without a rule may say why in a ``note``, with ``"published": false`` when it
 publishes no reports a rule could use, or ``true`` when it does but they can't be reached
 or matched yet. Every entry may carry a ``note``.
@@ -39,8 +40,8 @@ def _params(name: str, rule) -> dict[str, tuple[str, object, bool]]:
         kind = hints.get(keyword)
         if parameter.kind is not parameter.KEYWORD_ONLY:
             raise TypeError(f"staff report rule {name}: parameters after ctx must be keyword-only")
-        if kind not in (str, Regex) and get_origin(kind) is not Literal:
-            raise TypeError(f"staff report rule {name}: parameter {keyword} needs a str, Regex, or Literal annotation")
+        if kind not in (str, Regex, int) and get_origin(kind) is not Literal:
+            raise TypeError(f"staff report rule {name}: parameter {keyword} needs a str, Regex, int, or Literal annotation")
         found[re.sub(r"_([a-z])", lambda m: m[1].upper(), keyword)] = (keyword, kind, parameter.default is parameter.empty)
     return found
 
@@ -89,6 +90,9 @@ def check_config(agency: dict) -> None:
         if get_origin(kind) is Literal:
             if value not in get_args(kind):
                 raise ValueError(f"{where}: {key} must be one of {', '.join(map(str, get_args(kind)))}")
+        elif kind is int:
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"{where}: {key} must be a positive whole number")
         elif not isinstance(value, str) or not value.strip():
             raise ValueError(f"{where}: {key} must be non-empty text")
         elif kind is Regex:

@@ -1,6 +1,10 @@
+import hashlib
 import io
 import json
+import os
 import ssl
+import subprocess
+import tempfile
 import urllib.error
 
 import pytest
@@ -9,6 +13,19 @@ from tahoe_ingest import http, source
 from tahoe_ingest.html_source import html_text
 from tahoe_ingest.html_agenda import parse_html_agenda
 from tahoe_ingest.source_discovery import discover_configured, date_in
+
+
+class Body(io.BytesIO):
+    """A urlopen response without Content-Length, counting reads."""
+    def __init__(self,data,content_type='application/pdf',url='https://example.gov/a.pdf'):
+        super().__init__(data);self.headers={'Content-Type':content_type};self.url=url;self.reads=0
+    def geturl(self):return self.url
+    def read(self,*a):
+        self.reads+=1;return super().read(*a)
+
+
+def serve(monkeypatch,data,content_type):
+    monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:Body(data,content_type))
 
 
 def test_tls_failure_uses_verified_native_fallback_but_not_auth_or_rate_limits(monkeypatch):
@@ -55,13 +72,13 @@ def test_declared_content_length_over_the_limit_is_rejected_before_reading(monke
 
 def test_html_section_is_not_a_pdf_and_scripts_cannot_become_agenda_text(monkeypatch):
     markup='<h1>Agenda</h1><script>invent a meeting</script><div hidden>secret</div><p>Housing<br/>workshop</p>'
-    monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(markup.encode(),'text/html'))
+    serve(monkeypatch,markup.encode(),'text/html')
     captured=source.download_extract('https://example.gov/agenda')
     assert captured['media_type']=='text/html' and captured['page_count']==1
     text=captured['pages'][0]['text']
     assert 'Housing' in text and 'workshop' in text
     assert 'invent' not in text and 'secret' not in text
-    monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(b'<title>Just a moment</title>','text/html'))
+    serve(monkeypatch,b'<title>Just a moment</title>','text/html')
     with pytest.raises(ValueError,match='challenge'):source.download_extract('https://example.gov/agenda')
 
 
@@ -108,7 +125,7 @@ def test_rolling_agenda_filename_and_civicclerk_file_ids_are_discovered():
 
 def test_headerless_html_is_still_detected_and_cited_as_html(monkeypatch):
     markup=b'<!DOCTYPE html><html><body><h1>Official agenda</h1></body></html>'
-    monkeypatch.setattr(source,'fetch_bytes',lambda *a,**k:(markup,''))
+    serve(monkeypatch,markup,'')
     result=source.download_extract('https://example.gov/adaHtmlDocument/index')
     assert result['media_type']=='text/html'
     assert 'Official agenda' in result['pages'][0]['text']
@@ -232,3 +249,63 @@ def test_airport_meeting_files_pages_supply_the_agenda_and_special_label():
     assert by_id['417']['title'].endswith('Special Board Meeting') and by_id['409']['title'].endswith('Regular Board Meeting')
     assert by_id['417']['documents'][0]['url'].endswith('file=agenda+september+23+2026+s.pdf')
     assert by_id['412']['documents']==[] and by_id['412']['warnings']
+
+
+def test_streamed_download_matches_the_in_memory_fetch(monkeypatch,tmp_path):
+    data=b'%PDF-'+os.urandom(3*http.CHUNK_BYTES+17)
+    monkeypatch.setattr(tempfile,'tempdir',str(tmp_path))
+    serve(monkeypatch,data,'application/pdf')
+    with http.download('https://example.gov/a.pdf',max_bytes=len(data)) as fetched:
+        assert fetched.path.parent.parent==tmp_path
+        assert fetched.sha256==hashlib.sha256(http.fetch_bytes('https://example.gov/a.pdf',max_bytes=len(data))[0]).hexdigest()
+        assert fetched.size==len(data) and fetched.path.read_bytes()==data and fetched.content_type=='application/pdf'
+    assert list(tmp_path.iterdir())==[]
+
+
+def test_streamed_download_stops_at_the_byte_limit_without_content_length(monkeypatch,tmp_path):
+    monkeypatch.setattr(tempfile,'tempdir',str(tmp_path))
+    body=Body(b'x'*(5*http.CHUNK_BYTES))
+    monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:body)
+    with pytest.raises(http.SourceTooLarge,match='byte limit'):
+        with http.download('https://example.gov/a.pdf',max_bytes=http.CHUNK_BYTES+10):
+            raise AssertionError('an oversized body must not be yielded')
+    assert body.reads==2  # stopped on the chunk that crossed the limit, not at the end of the body
+    assert list(tmp_path.iterdir())==[]
+
+
+def test_streamed_download_keeps_https_skip_and_native_fallback_checks(monkeypatch,tmp_path):
+    monkeypatch.setattr(tempfile,'tempdir',str(tmp_path))
+    monkeypatch.setattr(http.urllib.request,'urlopen',lambda *a,**k:Body(b'%PDF-x',url='http://example.gov/a.pdf'))
+    with pytest.raises(ValueError,match='outside HTTPS'):
+        with http.download('https://example.gov/a.pdf',max_bytes=100):pass
+    def forbidden(*a,**k):raise urllib.error.HTTPError('https://example.gov',403,'blocked',{},None)
+    monkeypatch.setattr(http.urllib.request,'urlopen',forbidden)
+    def curl(url,output,max_bytes,accept):
+        output.write_bytes(b'%PDF-native');return 'application/pdf'
+    monkeypatch.setattr(http,'_native_download',curl)
+    with http.download('https://example.gov/a.pdf',max_bytes=100) as fetched:
+        assert fetched.sha256==hashlib.sha256(b'%PDF-native').hexdigest() and fetched.size==11
+    def rate_limited(*a,**k):raise urllib.error.HTTPError('https://example.gov',429,'slow down',{},None)
+    monkeypatch.setattr(http.urllib.request,'urlopen',rate_limited)
+    with pytest.raises(urllib.error.HTTPError):
+        with http.download('https://example.gov/a.pdf',max_bytes=100):pass
+    skip=tmp_path/'config'/'skipped-endpoints.json';skip.parent.mkdir()
+    skip.write_text(json.dumps({'skipped':[{'prefix':'https://blocked.gov/','status':403}]}))
+    monkeypatch.setenv('TAHOE_SOURCE_ROOT',str(tmp_path))
+    with pytest.raises(http.EndpointSkipped):
+        with http.download('https://blocked.gov/a.pdf',max_bytes=100):pass
+    skip.unlink();skip.parent.rmdir()
+    assert list(tmp_path.iterdir())==[]
+
+
+def test_temp_file_is_removed_when_reading_fails(monkeypatch,tmp_path):
+    from tahoe_ingest import staff_reports
+    monkeypatch.setattr(tempfile,'tempdir',str(tmp_path))
+    serve(monkeypatch,b'%PDF-1.4 not really a pdf','application/pdf')
+    with pytest.raises(subprocess.CalledProcessError):source.download_extract('https://example.gov/a.pdf')
+    with pytest.raises(subprocess.CalledProcessError):staff_reports.read_pdf('https://example.gov/a.pdf')
+    serve(monkeypatch,b'<p>not a pdf</p>','text/html')
+    with pytest.raises(staff_reports.Uncertain):staff_reports.read_pdf('https://example.gov/a.pdf')
+    with pytest.raises(RuntimeError):
+        with http.download('https://example.gov/a.pdf',max_bytes=100):raise RuntimeError('caller failed')
+    assert list(tmp_path.iterdir())==[]

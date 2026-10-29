@@ -28,7 +28,7 @@ when reports exist but can't be reached or attached yet, or just a `note` when t
 | --- | --- | --- |
 | `airport-tab-files` | Truckee Tahoe Airport District: one file per agenda TAB on the meeting's attachments page | |
 | `civicclerk-packet` | CivicClerk packet (Incline Village GID): "ITEM G.1." stamps on dated memos | |
-| `douglas-packet` | Douglas County Granicus packet: an item cover page before each item's attachments | |
+| `douglas-packet` | Douglas County Granicus packet: an item cover page before each item's attachments | `maxMegabytes` (default 300), `maxPages` (default 2000): the packet download limits |
 | `fish-game-staff-summaries` | Fish and Game Commission: "Staff Summary" files linked from the meeting documents index | |
 | `lahontan-item-files` | Water board agenda linking `itemN.pdf`, headed "ITEM N" | |
 | `legistar` | Legistar Web API: the item's file, attachments, or legislation text | `client`, `body`, `report` |
@@ -62,7 +62,8 @@ When no rule fits, write one for the format, not for the agency.
 2. A rule is `rule(ctx: Context, *, params...) -> list[Mapping]`. Whatever differs between agencies that share the
    format (a body's name, a footer label, an API client) is a keyword-only parameter, never a lookup by
    `ctx.meeting.agency_id`. Its annotation says what the registry accepts: `str` for text, `staff_reports.Regex` for
-   a regular expression (passed as text, compiled at load to check it), or `Literal["a", "b"]` for a choice. A
+   a regular expression (passed as text, compiled at load to check it), `int` for a positive whole number (a JSON
+   number, such as a download limit), or `Literal["a", "b"]` for a choice. A
    parameter with a default is optional. Agencies set it in camelCase (`packet_name` -> `packetName`).
 3. Return a `Mapping` only for items you verified. For every other item call `ctx.skip(item, reason)`. Raise
    `Uncertain` when the whole meeting can't be verified (for example, the agenda changed since it was captured).

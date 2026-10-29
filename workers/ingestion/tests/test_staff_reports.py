@@ -427,6 +427,10 @@ def test_the_registry_holds_rules_by_format_name():
     ({"rule": "slt-commission-report", "body": " "}, "non-empty text"),
     ({"rule": "trpa-meeting-materials", "packetName": ["Governing Board"]}, "non-empty text"),
     ({"rule": "douglas-packet", "note": ""}, "invalid"),
+    ({"rule": "douglas-packet", "maxMegabytes": "300"}, "positive whole number"),
+    ({"rule": "douglas-packet", "maxPages": 0}, "positive whole number"),
+    ({"rule": "douglas-packet", "maxPages": 2.5}, "positive whole number"),
+    ({"rule": "douglas-packet", "maxPages": True}, "positive whole number"),
     ({"published": False}, "invalid"),
     ({"published": "no", "note": "A notice only."}, "invalid"),
     ([], "invalid"),
@@ -437,7 +441,8 @@ def test_staff_report_entries_are_checked_when_the_registry_loads(config, proble
 
 
 def test_valid_staff_report_entries_load():
-    for config in ({"rule": "douglas-packet"}, {"rule": "ttd-packet", "footer": "RTCPC AGENDA ITEM", "note": "Committee."},
+    for config in ({"rule": "douglas-packet"}, {"rule": "douglas-packet", "maxMegabytes": 400, "maxPages": 2500},
+                   {"rule": "ttd-packet", "footer": "RTCPC AGENDA ITEM", "note": "Committee."},
                    {"published": False, "note": "One-page agenda."}, {"note": "Blocked."}):
         staff_report_rules.check_config({"id": "x", "staffReports": config})
     staff_report_rules.check_config({"id": "x"})
@@ -570,7 +575,7 @@ def test_read_report_skips_an_oversized_report_for_good():
 def test_read_pdf_raises_too_large_for_an_oversized_source(monkeypatch):
     def fetch(url, **kwargs):
         raise staff_reports.http.SourceTooLarge(f"source exceeds {kwargs['max_bytes']} byte limit")
-    monkeypatch.setattr(staff_reports.http, "fetch_bytes", fetch)
+    monkeypatch.setattr(staff_reports.http, "download", fetch)
     with pytest.raises(staff_reports.TooLarge):
         staff_reports.read_pdf("https://example.gov/big.pdf", max_bytes=5)
 

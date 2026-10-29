@@ -38,7 +38,7 @@ TRPA items prefer their own report file (verified by the footer naming the board
 - **Reports without item numbers:** the OHMVR Commission names reports by topic; a title would be the only signal.
 - **No agenda items to attach to:** the Tahoe Conservancy and the State Lands Commission publish per-item staff reports, but their HTML agendas have no parsing adapter yet, so no items exist locally (tracked as the next adapter work).
 - **Blocked source:** the three Placer County bodies (HTTP 403, no mirror).
-- **Partial within supported agencies:** PCTPA consent sub-items share one memo (paragraph-level mapping would need a quote range on the mapping); Douglas packets over 100 MB (one of four local meetings); Fish and Game items whose index entry has only sub-item documents; items whose report is for another meeting date; Washoe legacy `.doc` reports when `antiword` is absent from the worker image.
+- **Partial within supported agencies:** PCTPA consent sub-items share one memo (paragraph-level mapping would need a quote range on the mapping); Douglas packets over the rule's download limit (300 MiB and 2,000 pages since 2026-10-29, when it was raised from 100 MB so the largest 2026 packet, 229 MiB and 1,539 pages on September 17, maps); Fish and Game items whose index entry has only sub-item documents; items whose report is for another meeting date; Washoe legacy `.doc` reports when `antiword` is absent from the worker image.
 
 ## Measurements (local data, 2026-10-28)
 
@@ -52,7 +52,7 @@ TRPA items prefer their own report file (verified by the footer naming the board
 
 About 536 newly mapped items in all, on top of the 135 from decision 0024, across 25 of the 35 agencies with parsed items. Spot checks by the build agents found each kept first page describing its own item. At about $0.0015 per summary (Haiku 5.5), the local backlog costs under $1 once and the new agencies add roughly $0.50–0.75 a month, within the $5 AI budget; the per-run `--summary-max-cost` ($0.50) spreads the backlog over several runs. Database statements stay at one per scanned meeting and one per summarised meeting (decision 0020); storing TRPA packets adds three statements per new packet version, independent of page count.
 
-Downloads per scheduled run remain bounded by `--staff-report-meetings` (6 meetings) and per-rule caps (about 40 report files per meeting; packets up to 100 MB for Douglas, 80 MB elsewhere).
+Downloads per scheduled run remain bounded by `--staff-report-meetings` (6 meetings) and per-rule caps (about 40 report files per meeting; packets up to 300 MiB and 2,000 pages for Douglas, 80 MB elsewhere).
 
 ## Alternatives and consequences
 

@@ -98,7 +98,26 @@ def test_douglas_uncaptured_packet_comes_from_the_clips_listing_row_with_raised_
     found, ctx, limits = run_with_limits(listed_packet(load("douglas-commissioners")))
     assert found["9.A"].url == DOUGLAS_PACKET and (found["9.A"].page_start, found["9.A"].page_end) == (81, 119)
     assert found["16"].page_end == 652 and found["5"] is None
-    assert limits == [{"max_bytes": douglas.MAX_BYTES, "max_pages": douglas.MAX_PAGES}]
+    assert limits == [{"max_bytes": douglas.MAX_MEGABYTES * 2**20, "max_pages": douglas.MAX_PAGES}]
+
+
+def test_douglas_download_limits_can_be_set_in_the_agency_entry(tmp_path, monkeypatch):
+    import json
+    from tahoe_ingest import catalog, staff_report_rules
+    agencies = json.loads(catalog.agency_catalog_path().read_text())
+    next(a for a in agencies if a["id"] == "douglas-commissioners")["staffReports"].update(maxMegabytes=400, maxPages=2500)
+    path = tmp_path / "agencies.json"
+    path.write_text(json.dumps(agencies))
+    monkeypatch.setattr(catalog, "agency_catalog_path", lambda: path)
+    catalog.agency_catalog.cache_clear()
+    try:
+        rule = staff_report_rules.agency_rules.__wrapped__()["douglas-commissioners"]  # uncached: RULES stays as loaded
+        monkeypatch.setitem(RULES, "douglas-commissioners", rule)
+        _, _, limits = run_with_limits(listed_packet(load("douglas-commissioners")))
+        assert limits == [{"max_bytes": 400 * 2**20, "max_pages": 2500}]
+    finally:
+        monkeypatch.undo()
+        catalog.agency_catalog.cache_clear()
 
 
 def test_douglas_packet_listed_for_another_clip_is_not_used():
@@ -119,7 +138,7 @@ def test_douglas_oversized_packet_is_uncertain_not_retried():
                           [Item(i["id"], i["number"], i["title"], i["section"], i["fingerprint"], i["citations"]) for i in data["items"]],
                           [Document(**d) for d in data["documents"]], m["official_url"]),
                   too_large, fetch_html=lambda url: data["html"][url])
-    with pytest.raises(staff_reports.Uncertain, match="larger than 100 MB"):
+    with pytest.raises(staff_reports.Uncertain, match="larger than 300 MB"):
         RULES["douglas-commissioners"](ctx)
 
 

@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import FeedbackDialog from '../components/FeedbackDialog.astro';
 import { data, formatDate } from '../lib/data';
-import { analyticsConfig, GOATCOUNTER_SCRIPT } from '../lib/analytics';
+import { analyticsConfig, baselineEnabled, BASELINE_PATH, GOATCOUNTER_SCRIPT } from '../lib/analytics';
 const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false } = Astro.props;
 // Absolute canonical URL on the production origin (astro.config.mjs `site`), so www and preview hosts point at the apex.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
@@ -13,6 +13,8 @@ const ogTitle = Astro.url.pathname === '/' ? 'Tahoe Public Meetings' : `${title}
 // GoatCounter loads only in Production builds (PUBLIC_GOATCOUNTER_URL). Filter state is counted as events, so a
 // pageview records the path alone: no query string, and not the canonical URL count.js would otherwise use.
 const analytics = analyticsConfig(import.meta.env);
+// The baseline beacon honours count.js's #toggle-goatcounter flag and skips local hosts, so both counters exclude the same browsers.
+const baseline = baselineEnabled(import.meta.env);
 ---
 <!doctype html>
 <html lang="en">
@@ -35,6 +37,17 @@ const analytics = analyticsConfig(import.meta.env);
     <meta name="twitter:card" content="summary_large_image" />
     {analytics && <script is:inline>window.goatcounter = { path: function () { return location.pathname; } };</script>}
     {analytics && <script is:inline async data-goatcounter={analytics.endpoint} src={GOATCOUNTER_SCRIPT.src}></script>}
+    {baseline && <script is:inline define:vars={{ path: BASELINE_PATH }}>
+      (function () {
+        try { if (localStorage.getItem('skipgc') === 't') return; } catch (error) { /* Storage blocked: count anyway. */ }
+        if (/(^|\.)localhost$|^127\.|^10\.|^192\.168\.|^172\.(1[6-9]|2\d|3[01])\.|^0\.0\.0\.0$/.test(location.hostname) || location.protocol === 'file:') return;
+        if (document.visibilityState === 'prerender') return;
+        try {
+          if (navigator.sendBeacon) navigator.sendBeacon(path, location.pathname);
+          else fetch(path, { method: 'POST', body: location.pathname, keepalive: true }).catch(function () {});
+        } catch (error) { /* Analytics never breaks the page. */ }
+      })();
+    </script>}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

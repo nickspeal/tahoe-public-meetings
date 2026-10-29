@@ -94,7 +94,7 @@ test('an unconfigured build loads no analytics script on any page', async () => 
   for (const file of files) {
     const html = await readFile(file, 'utf8');
     // The page scripts' guarded `window.goatcounter?.count?.(…)` calls are bundled everywhere; nothing defines it.
-    assert.ok(!html.includes('gc.zgo.at') && !html.includes('/goatcounter.js') && !html.includes('goatcounter.com/count') && !/window\.goatcounter\s*=/.test(html), `${file} loads analytics`);
+    assert.ok(!html.includes('gc.zgo.at') && !html.includes('/goatcounter.js') && !html.includes('/api/seen') && !html.includes('goatcounter.com/count') && !/window\.goatcounter\s*=/.test(html), `${file} loads analytics`);
   }
 });
 

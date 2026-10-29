@@ -31,6 +31,19 @@ export function analyticsConfig(env: Record<string, unknown>): { endpoint: strin
   return url.protocol === 'https:' && url.hostname ? { endpoint: url.href } : null;
 }
 
+/**
+ * Whether pages also send a bare first-party pageview to /api/seen (server/pageview-baseline.mjs), which
+ * forwards it to a second GoatCounter site that blockers cannot see. Enabled with PUBLIC_PAGEVIEW_BASELINE=1,
+ * in Production only, alongside the function's GOATCOUNTER_BASELINE_URL and GOATCOUNTER_BASELINE_TOKEN.
+ */
+export function baselineEnabled(env: Record<string, unknown>): boolean {
+  const raw = env.PUBLIC_PAGEVIEW_BASELINE;
+  return typeof raw === 'string' && ['1', 'true', 'yes'].includes(raw.trim().toLowerCase());
+}
+
+/** The path the baseline beacon posts to. Named so list-based blockers' generic path rules do not match it. */
+export const BASELINE_PATH = '/api/seen';
+
 export type OutboundEvent =
   | 'outbound-agenda'
   | 'outbound-staff-report'

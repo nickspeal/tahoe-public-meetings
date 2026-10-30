@@ -24,7 +24,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .outline import CONNECTOR, ROMAN, ZERO_WIDTH, section_name, title_case
+from .outline import CONNECTOR, ROMAN, ZERO_WIDTH, continues_on_next_page, section_name, title_case
 
 UNVALIDATED = "Agenda structure or source quote could not be validated; items require review."
 
@@ -270,19 +270,22 @@ def _lines(pages: list[dict], *, first_pages: int = 12) -> list[Line]:
 
 
 def _quote(lines: list[Line], start: int, end: int, prefix_start: int | None = None) -> str:
-    first, last = lines[start], lines[end]
-    if first.page != last.page:
-        return first.text[(prefix_start or 0):].strip()[:300]
-    return first.source[(first.start + (prefix_start or 0)):last.end].strip()[:300]
+    """The exact source text of lines ``start``..``end``, cut at the first page break."""
+    first = lines[start]
+    while lines[end].page != first.page:
+        end -= 1
+    return first.source[(first.start + (prefix_start or 0)):lines[end].end].strip()[:300]
 
 
 def _title(lines: list[Line], first: int, last: int, offset: int = 0) -> str:
-    parts = [lines[first].text[offset:].strip()]
-    for line in lines[first + 1:last + 1]:
-        if line.page != lines[first].page:
-            break
-        parts.append(line.text.strip())
+    parts = [lines[first].text[offset:].strip()] + [line.text.strip() for line in lines[first + 1:last + 1]]
     return " ".join(" ".join(parts).split())
+
+
+def _turns_page(lines: list[Line], first: int, last: int, offset: int, following: int) -> bool:
+    """Whether a title on lines ``first``..``last`` carries over to line ``following`` on the next page."""
+    return (lines[last].page == lines[first].page and lines[following].page != lines[first].page
+            and continues_on_next_page(_title(lines, first, last, offset), lines[following].text))
 
 
 def _item_at(number: str | None, order: int, section: str | None, title: str,
@@ -331,15 +334,25 @@ def parse_slt(document_id: str, pages: list[dict]) -> tuple[list[dict], str | No
                     return _checked([], False, "South Lake Tahoe standalone item title was not recognized; review required.")
             numbered.append(num)
             start_offset = lines[title_idx].text.index(first_title)
+
+            def title_ends(j: int) -> bool:
+                text = lines[j].text.strip()
+                return bool(re.match(r"^\d{1,2}\.\s*", text) or text in headings or re.match(
+                    r"^(Requested Action|Responsible Staff|CEQA Determination|Item \d+\s*[-–]|\d{2}[-_])", text, re.I))
+
+            def details_follow(j: int) -> bool:
+                # The title's remaining lines lead straight into the item's details.
+                k = next((k for k in range(j, min(j + 4, len(lines))) if title_ends(k)), None)
+                return k is not None and k > j and lines[k].page == lines[j].page and \
+                    bool(re.match(r"^(Requested Action|Responsible Staff|CEQA Determination)", lines[k].text.strip(), re.I))
+
             end = title_idx
             for j in range(title_idx + 1, len(lines)):
-                next_line = lines[j]
-                if next_line.page != lines[title_idx].page:
+                if lines[j].page != lines[end].page and not (
+                        _turns_page(lines, title_idx, end, start_offset, j)
+                        or (lines[end].page == lines[title_idx].page and details_follow(j))):
                     break
-                next_text = next_line.text.strip()
-                if re.match(r"^\d{1,2}\.\s*", next_text) or next_text in headings:
-                    break
-                if re.match(r"^(Requested Action|Responsible Staff|CEQA Determination|Item \d+\s*[-–]|\d{2}[-_])", next_text, re.I):
+                if title_ends(j):
                     break
                 end = j
             title = _title(lines, title_idx, end, start_offset)
@@ -396,7 +409,7 @@ def parse_truckee(document_id: str, pages: list[dict]) -> tuple[list[dict], str 
                 and not first_title.lower().startswith(("adjournment", "public comment:"))):
             for j in range(idx + 1, len(lines)):
                 candidate = lines[j]
-                if candidate.page != line.page:
+                if candidate.page != lines[end].page and not _turns_page(lines, idx, end, offset, j):
                     break
                 next_text = candidate.text.strip()
                 if re.match(r"^\d+(?:\.\d+)?\.?\s{2,}", next_text) or re.match(r"^(Recommendation:|Town of Truckee:|Tahoe Forest Hospital District:)", next_text):

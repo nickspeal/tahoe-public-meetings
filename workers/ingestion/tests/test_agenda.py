@@ -131,3 +131,26 @@ def test_hand_written_parsers_name_sections_as_printed():
     ttd = sections("ttd", "6049")
     assert ttd["IV.A"] == "Tahoe Transportation District (TTD) Consent Items"
     assert ttd["V.A"] == "Tahoe Transportation District Business Items"
+
+
+def test_slt_title_continues_across_a_page_break():
+    bundle = json.loads(FIXTURE.read_text())
+    meeting = next(m for m in bundle["meetings"] if m["agency"] == "slt" and m["id"] == "2339")
+    pages = [{**page} for page in meeting["pages"]]
+    page3, page4 = (next(p for p in pages if p["page_number"] == n) for n in (3, 4))
+    # Break the page inside item 6's title, which wraps mid-phrase ("Emission / Reduction").
+    head, tail = page3["text"].split("\n     Reduction Projects CY 2026", 1)
+    title_end, details = tail.split("\n", 1)
+    original4 = page4["text"]
+    page3["text"], page4["text"] = head, "Reduction Projects CY 2026" + tail + "\n" + original4
+    parsed = parse_agenda("slt", meeting["documents"], pages)
+    assert parsed.complete, parsed.warning
+    item = next(i for i in parsed.items if i["source_number"] == "6")
+    assert item["title"] == ("Authorization to Apply to El Dorado County Air Quality Management District Motor Vehicle "
+                             "Emission Reduction Projects CY 2026 & 2027 for Emissions-Saving Vehicle Replacements")
+    ref = item["source_pages"][0]
+    assert ref["page_number"] == 3 and ref["quote"].startswith("Authorization to Apply") and ref["quote"] in page3["text"]
+    # A title that ends its page stays whole when the next page opens with the item's details.
+    page3["text"], page4["text"] = head + "\n     Reduction Projects CY 2026" + title_end, details.strip() + "\n" + original4
+    parsed = parse_agenda("slt", meeting["documents"], pages)
+    assert next(i for i in parsed.items if i["source_number"] == "6")["title"].endswith("Vehicle Replacements")

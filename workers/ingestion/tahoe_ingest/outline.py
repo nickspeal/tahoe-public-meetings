@@ -11,7 +11,8 @@ only when the whole outline validates:
   (a skipped number is accepted only when the layout allows it and the
   missing label appears nowhere in the agenda);
 * the agenda reaches its ending marker (normally "Adjournment"); and
-* every title has an exact quote from one extracted page.
+* every title has an exact quote from one extracted page (a title that
+  carries over a page break is quoted from the page where it starts).
 
 Unnumbered ALL-CAPS headings name the section of the items below them. A
 heading may carry a parenthetical note ("DEPARTMENT MATTERS (Items in this
@@ -35,6 +36,18 @@ ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 
          "XIX": 19, "XX": 20}
 ZERO_WIDTH = re.compile("[​‌‍﻿]")
 CONNECTOR = re.compile(r"(?:[,;(&/\-–—]|\b(?:and|or|of|the|for|to|in|on|at|with|by|from|a|an|as|its|their|regarding|between))\s*$", re.I)
+
+
+def continues_on_next_page(title: str, next_line: str) -> bool:
+    """Whether a title that reaches the bottom of a page carries on at the top of the next.
+
+    Page breaks usually fall between items, so the next page's first line joins
+    the title only when the title plainly reads as unfinished: it ends in a
+    connecting word or punctuation or inside parentheses, or the next line
+    begins in lowercase (and is not an "a." or "ii)" list label).
+    """
+    return bool(CONNECTOR.search(title) or title.count("(") > title.count(")")
+                or re.match(r"^[a-z](?![a-z]{0,3}[.)]\s)", next_line.strip()))
 
 
 @dataclass(frozen=True)
@@ -279,15 +292,24 @@ class Parser:
         used = [index]
         title_end = re.compile(layout.title_end) if layout.title_end else None
         previous = parts[0]
-        for j in range(index + 1, len(self.rows)):
+        j = index
+        while j + 1 < len(self.rows):
+            j += 1
             if len(used) >= layout.max_title_lines or layout.wrap == "none":
                 break
             if title_end and title_end.search(previous):
                 break
             row = self.rows[j]
+            turned = False
+            if (row.page != first.page or row.blank) and self.rows[used[-1]].page == first.page \
+                    and clip is None and not layout.column_gap:
+                # A title that ends its page may carry on at the top of the next one.
+                following = self.next_page_row(j, first.page)
+                if following is not None and continues_on_next_page(" ".join(parts), self.rows[following].clean):
+                    j, row, turned = following, self.rows[following], True
             text = (row.clean[:clip] if clip else row.clean).rstrip()
             stripped = text.strip()
-            if row.page != first.page or not stripped or self.is_marker(row):
+            if (row.page != self.rows[used[-1]].page and not turned) or not stripped or self.is_marker(row):
                 break
             if self.end.search(stripped) or (self.stop and self.stop.search(stripped)):
                 break
@@ -298,8 +320,8 @@ class Parser:
                 break
             if self.header and self.header.search(row.clean):
                 break
-            if layout.wrap == "indent" and row_indent < column - 2:
-                break
+            if layout.wrap == "indent" and row_indent < column - 2 and not turned:
+                break  # (stored page text loses the indentation of a page's first line)
             if _caps(previous) and not _caps(stripped):
                 break  # an ALL-CAPS heading followed by its description
             joined = " ".join(parts)
@@ -314,15 +336,27 @@ class Parser:
             used.append(j)
             previous = stripped
         title = _cleanup(layout, " ".join(parts), top)
-        modified = clip is not None or gapped or any(self.rows[k].trimmed for k in used)
-        if modified or len(used) == 1:
+        quoted = [k for k in used if self.rows[k].page == first.page]
+        modified = clip is not None or gapped or any(self.rows[k].trimmed for k in quoted)
+        if modified or len(quoted) == 1:
             source_line = first.raw[:clip] if clip and not first.trimmed else first.raw
             quote = parts[0] if parts[0] in source_line else ""
         else:
-            last = self.rows[used[-1]]
+            last = self.rows[quoted[-1]]
             offset = first.raw.index(parts[0]) if parts[0] in first.raw else column
             quote = first.source[first.start + offset:last.start + len(last.raw)].strip()
         return title, quote[:300], used[-1]
+
+    def next_page_row(self, index: int, page: int) -> int | None:
+        """The first text row after ``page`` when only blank rows (or skipped furniture) remain on it from ``index``."""
+        k = index
+        while k < len(self.rows) and self.rows[k].page == page:
+            if not self.rows[k].blank:
+                return None
+            k += 1
+        while k < len(self.rows) and self.rows[k].blank:
+            k += 1
+        return k if k < len(self.rows) else None
 
     # -- main walk ------------------------------------------------------------
     def parse(self) -> list[Entry]:

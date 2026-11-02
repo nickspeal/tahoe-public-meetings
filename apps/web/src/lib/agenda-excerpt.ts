@@ -3,6 +3,8 @@ import type { AgendaItem } from '../../../../packages/domain/public';
 const EXCERPT_METHOD = 'deterministic-source-excerpt-v1';
 /** Agenda text beyond the title must add at least this many words to be worth showing. */
 const MIN_EXTRA_WORDS = 4;
+/** A packet page number in a right-hand column (TTD agendas); the same rule as the worker's excerpt_text. */
+const PAGE_COLUMN_REFERENCE = /(?<=\S)[ \t]{3,}(?:Page(?:[ \t]+\d{1,3})?|\d{1,3})[ \t]*$/gm;
 
 const words = (text: string) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
 
@@ -19,6 +21,7 @@ export function itemDetail(item: Pick<AgendaItem, 'title' | 'summary'>): { label
   if (summary.method !== EXCERPT_METHOD) return { label: 'Summary', text: summary.text };
   const quote = (summary.citations[0]?.quote ?? summary.text.replace(/^Agenda excerpt:\s*/, ''))
     .replace(/^[“"]|[”"]$/g, '')
+    .replace(PAGE_COLUMN_REFERENCE, '')
     .replace(/\s+Page\s+\d+\s*$/i, '')
     .replace(/\s+/g, ' ')
     .trim();

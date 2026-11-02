@@ -22,6 +22,16 @@ test('an excerpt that only repeats the title is hidden', () => {
     summary: excerpt('Grant Application for the Pine Boulevard\n    Complete Streets Project') }), null);
 });
 
+test('a packet page column inside a wrapped TTD title is not agenda text', () => {
+  // TTD, October 7, 2026: the page number sits at the end of the title's first line.
+  const quote = 'For Possible Action: Review and Accept the District’s Financial              32\n'
+    + '            Statement of Operations for the First Month of Fiscal Year 2027 Through\n            July 31, 2026';
+  assert.equal(itemDetail({ title: 'Review and Accept the District’s Financial Statement of Operations for the First Month of Fiscal Year 2027 Through July 31, 2026',
+    summary: excerpt(quote) }), null);
+  const detail = itemDetail({ title: 'x', summary: excerpt('Adopt Resolution 2026-12 for Phase 2      Page 1') });
+  assert.equal(detail.text, 'Adopt Resolution 2026-12 for Phase 2');
+});
+
 test('an excerpt with agenda text beyond the title is shown without its label prefix', () => {
   const detail = itemDetail({ title: 'CLOSING STATEMENTS', summary: excerpt('CLOSING STATEMENTS (Statements from the Board and Staff no discussion is permitted)') });
   assert.deepEqual(detail, { label: 'From the agenda', text: 'CLOSING STATEMENTS (Statements from the Board and Staff no discussion is permitted)' });

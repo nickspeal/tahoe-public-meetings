@@ -164,3 +164,25 @@ def test_agency_agenda_blocks_name_configured_layouts():
                    {"layouts": ["ttd"], "agendaBeforePacket": "yes"}, {"layouts": ["ttd", "ttd"]}):
         with pytest.raises(ValueError, match="invalid agenda: a"):
             validate_agency_agendas([{"id": "a", "agenda": agenda}])
+
+
+def test_ttd_excerpts_leave_out_the_packet_page_column():
+    from tahoe_ingest.core import _summary_from_citations, excerpt_text
+
+    fixture, pages = _fixture("ttd--2026-10-07")
+    quotes = {i["source_number"]: i["source_pages"][0]["quote"] for i in parse_agenda("ttd", [{"id": "doc"}], pages).items}
+    # The quotes stay verbatim, so they span the column; the excerpt shown from them does not.
+    assert quotes["I.C"].endswith("Page 1")
+    assert _summary_from_citations([{"quote": quotes["I.C"]}]) == (
+        "Agenda excerpt: “For Possible Action: Approval of Minutes of September 16, 2026”")
+    assert excerpt_text(quotes["IV.B"]) == ("For Possible Action: Review and Accept the District’s Financial\n"
+                                            "            Statement of Operations for the First Month of Fiscal Year 2027 Through\n"
+                                            "            July 31, 2026")
+    assert excerpt_text(quotes["VII"]) == "FOR INFORMATION: EXECUTIVE DIRECTOR REPORT AND AGENDA\n        CALENDAR CHECK"
+    for number, quote in quotes.items():
+        assert not re.search(r"\s{3,}(?:Page\s*)?\d*\s*$", excerpt_text(quote), re.M), number
+    # A title's own number is kept: it follows a single space, or starts a wrapped line.
+    assert excerpt_text(quotes["IV.D"]).startswith("For Possible Action: Adopt Resolution 2026-009 Authorizing the\n")
+    for quote in ("Adopt Resolution 2026-12", "Approval of Minutes of May 6, 2026", "Fiscal Year\n            2026",
+                  "Phase 2", "Amendment No. 3"):
+        assert excerpt_text(quote) == quote

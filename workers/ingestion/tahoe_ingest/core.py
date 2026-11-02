@@ -162,9 +162,20 @@ def _first_quote(text: str, title: str) -> str:
     return best[1][:300] if best[0] >= 0.65 else ""
 
 
+# A packet page reference in a right-hand column: a wide gap after the line's text, then "Page 12", "Page", or "12"
+# ending the line. A number that belongs to the title ("Resolution 2026-12", "of\n   2026") has no such gap.
+PAGE_COLUMN_REFERENCE = re.compile(r"(?<=\S)[ \t]{3,}(?:Page(?:[ \t]+\d{1,3})?|\d{1,3})[ \t]*$", re.M)
+EXCERPT_METHOD = "deterministic-source-excerpt-v1"
+
+
+def excerpt_text(quote: str) -> str:
+    """A citation quote as shown in an excerpt: verbatim, less any page-number column it spans (TTD agendas)."""
+    return PAGE_COLUMN_REFERENCE.sub("", quote)
+
+
 def _summary_from_citations(citations: list[dict]) -> str:
     # This is a plainly labeled source excerpt, not an inferred account of an outcome.
-    return f"Agenda excerpt: “{citations[0]['quote']}”"
+    return f"Agenda excerpt: “{excerpt_text(citations[0]['quote'])}”"
 
 
 def _tags_stale(previous: dict, evidence: dict) -> bool:
@@ -665,6 +676,9 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             summary = None if i["summary_status"] is None else {"text": i["summary_text"], "status": i["summary_status"],
                 "method": i["method"], "generatedAt": iso(i["generated_at"]),
                 "citations": _json(i["summary_citations"])}
+            if summary and summary["method"] == EXCERPT_METHOD and summary["status"] == "published" and summary["citations"]:
+                # Rebuilt from its citation, so a change to excerpt_text reaches excerpts stored before it.
+                summary["text"] = _summary_from_citations(summary["citations"])
             # A current staff report summary, else the agenda's requested action, replaces the excerpt; a correction replaces any.
             summary = supporting.summary(i["id"], summary, iso, actions.get(i["id"]))
             correction = _json(i["correction"]) if i["correction"] else None

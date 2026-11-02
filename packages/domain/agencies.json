@@ -1233,6 +1233,19 @@
       "published": false,
       "note": "The agenda's page column refers to a packet the district does not publish."
     },
+    "schedule": {
+      "source": "configured",
+      "note": "Derived on 2026-11-02 from 2026 public-export dates: May 21, June 18, and October 15, each the third Thursday at 1:00 PM (the August 4 special meeting excluded). The export has no July-September regular meeting, so the board may not meet every month. Needs confirmation against the agency's published meeting calendar.",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "thursday",
+          "time": "13:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Tahoe Resource Conservation District Board Meeting"
+        }
+      ]
+    },
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
       "sourceRow": 30,
@@ -1743,6 +1756,19 @@
     "staffReports": {
       "rule": "slt-commission-report",
       "body": "Parks and Recreation Commission"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "Derived on 2026-11-02 from 2026 public-export dates: August 19, September 16, and October 21, each the third Wednesday at 8:00 AM. Needs confirmation against the agency's published meeting calendar.",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "wednesday",
+          "time": "08:00",
+          "timezone": "America/Los_Angeles",
+          "label": "South Lake Tahoe Parks and Recreation Commission Meeting"
+        }
+      ]
     }
   },
   {
@@ -1813,6 +1839,19 @@
     },
     "staffReports": {
       "rule": "tcpud-memo"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "Derived on 2026-11-02 from 2026 public-export dates: August 11, September 8, and October 13, each the second Tuesday at 8:30 AM. Needs confirmation against the agency's published meeting calendar.",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "tuesday",
+          "time": "08:30",
+          "timezone": "America/Los_Angeles",
+          "label": "TCPUD Parks and Recreation Committee Meeting"
+        }
+      ]
     }
   },
   {

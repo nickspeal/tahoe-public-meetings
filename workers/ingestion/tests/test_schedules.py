@@ -11,7 +11,7 @@ import pytest
 from tahoe_ingest import core
 from tahoe_ingest.catalog import agency_catalog
 from tahoe_ingest.core import export_public, ingest_bundle
-from tahoe_ingest.schedules import (PACIFIC, describe, forecast_meetings, learn_schedule, local_start, regular_title,
+from tahoe_ingest.schedules import (PACIFIC, describe, forecast_meetings, learn_schedule, local_start, matches_date, regular_title,
                                     rule_dates, validate_schedule, write_schedules)
 
 from test_pipeline import db, fixture_bundle  # noqa: F401  (shared temporary-schema fixture)
@@ -83,6 +83,26 @@ def test_registry_ttd_is_configured_and_learned_schedules_clear_the_bar():
         if schedule and schedule["source"] == "learned":
             assert schedule["learnedFrom"]["matched"] >= 3
             assert schedule["confidence"] >= 0.6
+
+
+
+@pytest.mark.parametrize("agency_id,dates,pattern", [
+    ("slt-parks-recreation-commission", ["2026-08-19", "2026-09-16", "2026-10-21"], "Usually the third Wednesday at 8:00 AM"),
+    ("tcpud-parks-recreation-committee", ["2026-08-11", "2026-09-08", "2026-10-13"], "Usually the second Tuesday at 8:30 AM"),
+    ("trcd", ["2026-05-21", "2026-06-18", "2026-10-15"], "Usually the third Thursday at 1:00 PM"),
+])
+def test_export_derived_schedules_match_the_dates_they_cite(agency_id, dates, pattern):
+    schedule = {a["id"]: a for a in agency_catalog()}[agency_id]["schedule"]
+    assert schedule["source"] == "configured" and "2026-11-02" in schedule["note"] and "confirmation" in schedule["note"]
+    assert describe(schedule["rules"]) == pattern
+    for day in dates:
+        assert any(matches_date(rule, date.fromisoformat(day)) for rule in schedule["rules"]), day
+    # The same records clear the learner's bar on their own.
+    meetings = [{"id": day, "source_id": day, "title": schedule["rules"][0]["label"], "status": "scheduled",
+                 "starts_at": local_start(date.fromisoformat(day), schedule["rules"][0]["time"]), "local_date": date.fromisoformat(day),
+                 "timezone": PACIFIC} for day in dates]
+    learned = learn_schedule(agency_id, meetings, learned_on=date(2026, 11, 2))
+    assert learned["status"] == "proposed" and learned["schedule"]["rules"] == schedule["rules"]
 
 
 def test_descriptions_read_as_plain_patterns():

@@ -74,6 +74,16 @@
       "titleCleanup": [["^SUBJECT:\\s*", ""], ["^\\((?:For|Not for) Possible Action\\)\\s*-?\\s*", ""], ["^PUBLIC HEARING\\s*-\\s*Time:.*?practicable\\.\\s*", ""], ["(?i)\\s*-?\\s*\\((?:For|Not for) possible Action\\)", ""], ["\\s*\\(Requesting Staff Member:.*$", ""], ["\\*$", ""]],
       "capsLead": true
     },
+    "lahontan-board": {
+      "label": "Lahontan Water Board agenda",
+      "cover": ["Lahontan Regional Water Quality Control Board", "MEETING AGENDA"],
+      "levels": ["NUM", {"level": "LOWER", "item": false}],
+      "skip": "^Board Meeting Agenda\\s+-\\d+-",
+      "maxTitleLines": 4,
+      "titleEnd": "\\s–(?:\\s|$)",
+      "titleCleanup": [["\\s+–(?:\\s.*)?$", ""], ["^(Closed Session)\\s*\\d$", "\\1"], ["(?<=\\b[A-Z])- (?=[A-Z])", "-"]],
+      "endItem": false
+    },
     "ndep-board": {
       "label": "Nevada Division of Environmental Protection board agenda",
       "cover": ["STATE OF NEVADA", "AGENDA"],

@@ -22,7 +22,7 @@ An entry's coverage is therefore one of: **automatic**, **snapshot only**, or **
 | --- | --- | --- | --- | --- |
 | `ivgid` | `civicclerk` | [ivgid.portal.civicclerk.com](https://ivgid.portal.civicclerk.com/) | `Trustees` | `ivgid-board` |
 | `california-fish-game` | `dated-table` | [fgc.ca.gov](https://fgc.ca.gov/Meetings/2026) | `Commission\|Committee` | `fish-game-commission` |
-| `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | — |
+| `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | `lahontan-board` |
 | `ndep` | `dated-table` | [ndep.nv.gov](https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/) | `.` | `ndep-board` |
 | `douglas-commissioners` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Board of County Commissioners` | `douglas-county-board` |
 | `douglas-planning` (extends `douglas-commissioners`) | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Planning Commission` | `douglas-county-planning` |

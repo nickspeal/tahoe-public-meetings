@@ -1085,6 +1085,11 @@
       "bodyPattern": "Board",
       "title": "Lahontan Board Meeting"
     },
+    "agenda": {
+      "layouts": [
+        "lahontan-board"
+      ]
+    },
     "staffReports": {
       "rule": "lahontan-item-files"
     },

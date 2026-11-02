@@ -212,3 +212,24 @@ def test_ntcd_titles_and_excerpts_run_across_wrapped_lines():
                              "Agreement for $145,000 with the Nevada Department of Conservation and Natural Resources")
     assert excerpts["12.C"] == ("Report: Department of Conservation and Natural Resources Conservation District Program "
                                 "report (No Action)")
+
+
+def test_lahontan_board_titles_end_at_the_description_dash():
+    # Regular and special sessions share one agenda; numbering runs on across the day headings,
+    # lettered closed session and spill notices stay inside their items, and the description
+    # after the first " – " is dropped (with a trailing dash when it wraps to the next line).
+    for name, count, last in (("lahontan-board--2026-05-06", 13, "Board Member Requests for Future Agenda Items and Other Items of Interest"),
+                              ("lahontan-board--2026-10-01", 11, "Closed Session")):
+        fixture, pages = _fixture(name)
+        result = parse_agenda("lahontan-board", [{"id": "doc"}], pages)
+        assert result.complete, result.warning
+        assert [i["source_number"] for i in result.items] == [str(n) for n in range(1, count + 1)]
+        assert result.items[-1]["title"] == last
+        assert not any("–" in i["title"] or i["title"].startswith("*") for i in result.items)
+    fixture, pages = _fixture("lahontan-board--2026-05-06")
+    titles = [i["title"] for i in parse_agenda("lahontan-board", [{"id": "doc"}], pages).items]
+    assert titles[7:9] == ["Closed Session", "Public Forum"]  # "Closed Session1" footnote marker, then Thursday's session
+    assert "Adjournment" not in titles and "Call to Order and Introductions" not in titles
+    # A missing item number blocks publication rather than renumbering.
+    tampered = [dict(p, text=p["text"].replace("\n9. Public Forum", "\n90. Public Forum")) for p in pages]
+    assert not parse_agenda("lahontan-board", [{"id": "doc"}], tampered).complete

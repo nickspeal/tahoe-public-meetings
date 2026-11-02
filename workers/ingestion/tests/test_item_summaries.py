@@ -184,6 +184,17 @@ def test_a_report_that_is_not_a_pdf_exports_its_media_type(conn, monkeypatch):
     assert check_export(export_public(conn))[0] == []
 
 
+def test_an_oversized_download_is_uncertain_not_retried(conn, monkeypatch):
+    def rule(ctx):
+        raise staff_reports.TooLarge("https://example.gov/packet.pdf: source exceeds 83886080 byte limit")
+    monkeypatch.setitem(staff_reports.RULES, "slt", rule)
+    report = staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    assert report["retryLater"] == [] and "byte limit" in report["uncertain"]["slt:2339"]
+    assert conn.execute("SELECT status FROM staff_report_scans WHERE meeting_id='slt:2339'").fetchone()["status"] == "done"
+    conn.execute("UPDATE staff_report_scans SET scanned_at=now() - interval '2 days'")
+    assert staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)["meetingsPending"] == 0
+
+
 def test_a_replaced_staff_report_falls_back_to_the_excerpt(conn):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": StubModel("claude-haiku-5-5")}, today=TODAY)

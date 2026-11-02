@@ -50,7 +50,7 @@ class FetchFailed(Exception):
 
 class TooLarge(FetchFailed):
     """A download exceeded its byte limit. Fetching it again would fail the same way, so ``Context.read_report``
-    skips the item for good instead of retrying the meeting."""
+    skips the item for good, and a rule that lets it escape leaves the meeting uncertain instead of retrying it."""
 
 
 @dataclass
@@ -758,6 +758,8 @@ def map_staff_reports(conn, *, agency: str | None = None, meeting: str | None = 
             mappings = rules[m.agency_id](ctx) if m.items or not m.out_of_scope else []
         except Uncertain as exc:
             problem = str(exc)
+        except TooLarge as exc:  # The same file would be too large again; a new document version rescans the meeting.
+            problem = str(exc)[:300]
         except (FetchFailed, EndpointSkipped) as exc:
             status, problem = "retry", str(exc)[:300]
             report["retryLater"].append(f"{m.id}: {problem}")

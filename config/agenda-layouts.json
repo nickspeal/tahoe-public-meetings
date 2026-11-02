@@ -218,6 +218,15 @@
       "maxGap": 1,
       "afterEnd": [{"heading": "^ITEMS FOR CONSENT$", "level": "LOWER", "parent": "4"}]
     },
+    "stpud-workshop": {
+      "label": "South Tahoe PUD Board workshop notice",
+      "cover": ["SOUTH TAHOE PUBLIC UTILITY DISTRICT", "NOTICE OF BOARD WORKSHOP"],
+      "coverPages": 1,
+      "levels": ["NUM_LOOSE"],
+      "firstPages": 2,
+      "start": "^AGENDA$",
+      "minItems": 2
+    },
     "tahoe-rcd-board": {
       "label": "Tahoe RCD Board agenda",
       "cover": ["TAHOE RESOURCE CONSERVATION DISTRICT", "AGENDA"],

@@ -40,7 +40,7 @@ An entry's coverage is therefore one of: **automatic**, **snapshot only**, or **
 | `ntcd` | `link-index` | [docs.google.com](https://docs.google.com/spreadsheets/d/e/2PACX-1vS4aTYmjstsH_N06j4NGelCESd-ONVcib4QUp2i4gUn_7nROGirLdlGbSI5WwMcNjHIxY0t-WCTeU7e/pubhtml/sheet?headers=false&gid=0) | `Board Meeting Library` | `ntcd-board` |
 | `placer-transportation` | `link-index` | [www.pctpa.net](https://www.pctpa.net/pctpa-board) | `PCTPA` | `pctpa-board` |
 | `south-shore-tma` | `link-index` | [ss-tma.org](https://ss-tma.org/board-meetings/) | `Board` | `south-shore-tma-board` |
-| `stpud` | `link-index` | [www.stpud.us](https://www.stpud.us/board-meetings) | `Board` | `stpud-board` |
+| `stpud` | `link-index` | [www.stpud.us](https://www.stpud.us/board-meetings) | `Board` | `stpud-board`, `stpud-workshop` |
 | `trcd` | `link-index` | [tahoercd.specialdistrict.org](https://tahoercd.specialdistrict.org/board-meetings) | `Board Meeting` | `tahoe-rcd-board` |
 | `truckee-north-shore-tma` | `link-index` | [tnttma.com](https://tnttma.com/tma-board-agenda/) | `Board Meeting\|TNT.?TMA` | `tnt-tma-board` |
 | `truckee-tahoe-airport` | `meeting-files` | [truckeetahoeairport.com](https://truckeetahoeairport.com/administration/board/meetings) | every row | `truckee-tahoe-airport-board` |

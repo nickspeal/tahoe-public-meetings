@@ -1470,7 +1470,8 @@
     },
     "agenda": {
       "layouts": [
-        "stpud-board"
+        "stpud-board",
+        "stpud-workshop"
       ]
     },
     "staffReports": {

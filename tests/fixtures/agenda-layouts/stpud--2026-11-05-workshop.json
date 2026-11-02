@@ -1,0 +1,38 @@
+{
+ "agency": "stpud",
+ "source": "https://www.stpud.us/files/3e878324e/2026.11.05+Board+Workshop+Agenda.pdf",
+ "note": "workshop notice: a different cover from the board agenda",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "SOUTH TAHOE PUBLIC UTILITY DISTRICT\n                                 NOTICE OF BOARD WORKSHOP\n\n                          Thursday, November 5, 2026\n                                    11:45 a.m.\n                              District Board Room\n               1275 Meadow Crest Drive, South Lake Tahoe, California\n\n\n                                      Ryan Lee, Acting General Manager\n\n                                                BOARD MEMBERS\n  Joel Henderson, Director                                                                Kelly Sheehan, Director\n  Nick Haven, Vice President               Shane Romsos, President                            Nick Exline, Director\n\n\n\nA meeting will be held to discuss the following topics:\n\n                                                   AGENDA\n\n1.       ASSET MANAGEMENT POLICY\n2.       LEVEL OF SERVICE TARGETS\n3.       NEXGEN - ENTERPRISE ASSET MANAGEMENT SYSTEM DEMO\n4.       STRATEGIC PLANS OVERVIEW\n5.       ADJOURNMENT\n\n\n\n\nPublic participation is encouraged. The meeting location is accessible to people with disabilities. Every reasonable\neffort will be made to accommodate participation of the disabled in all of the District’s public meetings. If particular\naccommodations for the disabled are needed (i.e., disability-related aids, or other services), please contact the\nClerk of the Board at (530) 544-6474, extension 6203, at least 24 hours in advance of the meeting.\n\n\n       South Tahoe Public Utility District ▪ 1275 Meadow Crest Drive ▪ South Lake Tahoe, CA 96150\n                        Phone 530.544.6474 ▪ Facsimile 530.541.0614 ▪ www.stpud.us"
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   null,
+   "ASSET MANAGEMENT POLICY"
+  ],
+  [
+   "2",
+   null,
+   "LEVEL OF SERVICE TARGETS"
+  ],
+  [
+   "3",
+   null,
+   "NEXGEN - ENTERPRISE ASSET MANAGEMENT SYSTEM DEMO"
+  ],
+  [
+   "4",
+   null,
+   "STRATEGIC PLANS OVERVIEW"
+  ],
+  [
+   "5",
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
+}

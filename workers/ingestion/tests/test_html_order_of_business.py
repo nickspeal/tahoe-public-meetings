@@ -36,6 +36,21 @@ def test_meeting_page_gives_every_part_and_numbered_item_with_exact_quotes():
     assert all(len(i["title"]) <= oob.MAX_TITLE + 40 for i in items)
 
 
+def test_capture_stores_the_page_text_and_its_items(monkeypatch):
+    import io
+    from tahoe_ingest import http, source
+
+    class Response(io.BytesIO):
+        headers = {"Content-Type": "text/html; charset=UTF-8"}
+
+        def geturl(self):
+            return "https://www.slc.ca.gov/meeting/10-21-26-voting-record/"
+    monkeypatch.setattr(http.urllib.request, "urlopen", lambda *a, **k: Response(PAGE.encode("utf-8")))
+    fetched = source.download_extract("https://www.slc.ca.gov/meeting/10-21-26-voting-record/")
+    assert fetched["media_type"] == "text/html" and fetched["items_complete"] and len(fetched["agenda_items"]) == 74
+    assert fetched["pages"] == [{"page_number": 1, "text": html_text(PAGE)}]
+
+
 def test_voting_record_above_the_order_of_business_is_not_read():
     rows = oob.agenda_rows(PAGE)
     assert "Voting Record" in html_text(PAGE)

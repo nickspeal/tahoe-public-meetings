@@ -38,7 +38,8 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'civicclerk':{'apiUrl','portalUrl'},
        'municode':set(),
        'granicus-row-ids':set(),
-       'wordpress-meetings':{'documentIdPrefix'}}
+       'wordpress-meetings':{'documentIdPrefix'},
+       'meeting-post-feed':{'title','scheduleUrl'}}
 # Rows of these types state no meeting date, so a scheduled run cannot window them before
 # reading, and each costs a page fetch: it bounds them by count instead.
 UNDATED_TYPES=frozenset({'wordpress-meetings'})
@@ -57,6 +58,8 @@ def validate_discovery(agency):
         raise ValueError(f'invalid source configuration: {aid}: {config["type"]} does not read {", ".join(sorted(unknown))}')
     for key in ('bodyPattern','documentPattern','datePattern','filesLabel'):
         re.compile(config.get(key,'.'),re.I)
+    if 'scheduleUrl' in config and not str(config['scheduleUrl']).startswith('https://'):
+        raise ValueError(f'invalid source configuration: {aid}: scheduleUrl must be https')
     if config['type']=='municode' and not _municode_client(config):
         raise ValueError(f'invalid source configuration: {aid}: a Municode indexUrl names its clientCode')
 
@@ -200,6 +203,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind=='wordpress-meetings':return wordpress_meetings(agency,config,limit=limit,fetch=fetch)
     if kind=='granicus-row-ids':return granicus_row_ids(agency,config,limit=limit,fetch=fetch)
     if kind=='municode':return municode(agency,config,limit)
+    if kind=='meeting-post-feed':return meeting_post_feed(agency,config,limit,fetch)
     url=config.get('indexUrlTemplate',config['indexUrl']).replace('{year}',str(datetime.now(ZoneInfo('America/Los_Angeles')).year))
     markup=fetch(url)
     body=re.compile(config.get('bodyPattern','.'),re.I)
@@ -577,6 +581,79 @@ def municode(agency, config, limit, *, fetch_json=None):
     """Meetings within 90 days either side of today (the API takes a date range)."""
     today=datetime.now(ZoneInfo('America/Los_Angeles')).date()
     return _municode_meetings(agency,config,today-timedelta(days=90),today+timedelta(days=90),fetch_json)[:limit]
+
+
+# ---------------------------------------------------------------- meeting-post-feed
+# A WordPress category feed (`indexUrl`, e.g. .../category/meeting/feed/) whose items are
+# meeting posts, "October 21, 2026 Commission Meeting", each linking a page that is itself
+# the meeting's HTML agenda (and, after the meeting, its voting record). The item title
+# gives the date and the page is the one document, so discovery reads only the feed. An
+# optional `scheduleUrl` is a page whose "2026 Meeting Schedule" heading is followed by one
+# paragraph per meeting ("Tuesday, April 7, at 2 p.m., in Sacramento"): it gives start
+# times ("All meetings will be held at 1 p.m. unless otherwise noted") and a notice for
+# each scheduled date from today on that has no post yet.
+
+_MONTH=r'(?:January|February|March|April|May|June|July|August|September|October|November|December)'
+_QUALIFIER=re.compile(r'\b(special|workshop|joint)\b',re.I)
+
+
+def schedule_dates(markup):
+    """{date: (start time or None, line)} from each "YYYY Meeting Schedule" block of a meetings page."""
+    found={}
+    tree=document(markup)
+    for parent in [tree,*tree.find()]:
+        children=[c for c in parent.children if hasattr(c,'tag')]
+        for at,heading in enumerate(children):
+            year=re.fullmatch(r'(20\d{2}) Meeting Schedule',heading.text()) if heading.tag in {'h2','h3'} else None
+            if not year:continue
+            default=None
+            for node in children[at+1:]:
+                if node.tag!='p':break
+                line=node.text()
+                if re.search(r'\ball meetings\b',line,re.I):
+                    default=time_in(line);continue
+                day=re.search(rf'\b({_MONTH})\s+(\d{{1,2}})(?:,\s*(20\d{{2}}))?\b',line)
+                if not day or (day[3] and day[3]!=year[1]):continue
+                when=date_in(f'{day[1]} {day[2]} {year[1]}')
+                if when:found[when]=(time_in(line) or default,line)
+    return found
+
+
+def meeting_post_feed(agency, config, limit, fetch):
+    """Posted meetings from the feed, newest first, and scheduled ones without a post yet."""
+    body=re.compile(config.get('bodyPattern','.'),re.I)
+    root=ET.fromstring(fetch(config['indexUrl']))
+    try:
+        schedule=schedule_dates(fetch(config['scheduleUrl'])) if config.get('scheduleUrl') else {}
+    except (OSError,RuntimeError,ValueError):  # The feed alone still gives the posted meetings.
+        schedule={}
+    rows=[]
+    for item in root.findall('.//item'):
+        title=' '.join((item.findtext('title') or '').split());target=(item.findtext('link') or '').strip()
+        if not body.search(title) or urllib.parse.urlparse(target).scheme!='https':continue
+        day=date_in(title)
+        if not day:continue
+        # A special meeting can share a date with a regular one; keep it distinct, as `rss` does.
+        qualifier=_QUALIFIER.search(title)
+        shown=config.get('title') or re.sub(rf'^{_MONTH}\s+\d{{1,2}},?\s+\d{{4}}\s*[-–:]?\s*','',title) or title
+        if qualifier and config.get('title'):shown=f'{qualifier[1].title()} {shown}'
+        row=candidate(agency,day+('-'+qualifier[1].lower() if qualifier else ''),shown,day,target,
+                      [{'id':agency+'-agenda-html','title':'Official agenda (HTML)','url':target}],title)
+        row['start_time']=schedule.get(day,(None,))[0]
+        rows.append(row)
+    posted={r['date'] for r in rows}
+    today=datetime.now(ZoneInfo('America/Los_Angeles')).date().isoformat()
+    regular=config.get('title') or next((r['title'] for r in rows if not re.search(r'\b(?:special|workshop|joint|emergency)\b',r['title'],re.I)),'Meeting')
+    for day,(start,line) in schedule.items():
+        if day in posted or day<today:continue
+        qualifier=_QUALIFIER.search(line)
+        title=regular
+        if qualifier:title=f'{qualifier[1].title()} {title}'
+        row=candidate(agency,day+('-'+qualifier[1].lower() if qualifier else ''),title,day,config['scheduleUrl'],[],line)
+        row['start_time']=start
+        row['warnings'].append('The agenda is not posted yet; the date and time come from the published meeting schedule.')
+        rows.append(row)
+    return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
 
 
 # ---------------------------------------------------------------- date-range discovery (backfill)

@@ -1362,8 +1362,22 @@
       "SLC"
     ],
     "follow": true,
-    "officialUrl": null,
-    "sourceUrl": null,
+    "officialUrl": "https://www.slc.ca.gov/meetings/",
+    "sourceUrl": "https://www.slc.ca.gov/meetings/",
+    "participation": {
+      "watchUrl": "https://www.cal-span.org/",
+      "url": "https://www.slc.ca.gov/meetings/#mtgpro",
+      "email": "cslc.commissionmeetings@slc.ca.gov",
+      "instructions": "Attend in person or watch the live webcast on CAL-SPAN. To speak in person or virtually, fill out the electronic Request to Speak form on the Commission's homepage once staff reports are published (generally three minutes per speaker). Email written comments at least three business days before the meeting, with the agenda item number in the subject line.",
+      "sourceUrl": "https://www.slc.ca.gov/meetings/",
+      "checkedOn": "2026-11-02"
+    },
+    "discovery": {
+      "type": "meeting-post-feed",
+      "indexUrl": "https://www.slc.ca.gov/category/meeting/feed/",
+      "bodyPattern": "Commission Meeting",
+      "scheduleUrl": "https://www.slc.ca.gov/meetings/"
+    },
     "staffReports": {
       "published": true,
       "note": "Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to."

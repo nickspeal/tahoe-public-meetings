@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **47 entries**. **40 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **30** have live discovery, **3** are blocked by a skipped endpoint, and **7** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **47 entries**. **40 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **31** have live discovery, **3** are blocked by a skipped endpoint, and **6** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -44,6 +44,7 @@ An entry's coverage is therefore one of: **automatic**, **snapshot only**, or **
 | `trcd` | `link-index` | [tahoercd.specialdistrict.org](https://tahoercd.specialdistrict.org/board-meetings) | `Board Meeting` | `tahoe-rcd-board` |
 | `truckee-north-shore-tma` | `link-index` | [tnttma.com](https://tnttma.com/tma-board-agenda/) | `Board Meeting\|TNT.?TMA` | `tnt-tma-board` |
 | `truckee-tahoe-airport` | `meeting-files` | [truckeetahoeairport.com](https://truckeetahoeairport.com/administration/board/meetings) | every row | `truckee-tahoe-airport-board` |
+| `state-lands` | `meeting-post-feed` | [www.slc.ca.gov](https://www.slc.ca.gov/category/meeting/feed/) | `Commission Meeting` | — |
 | `truckee` | `municode` | [meetings.municode.com](https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA) | `Town Council` | `truckee-council` |
 | `ntpud` | `rss` | [ntpud.org](https://ntpud.org/category/meetings/feed/) | `Board of Directors` | `ntpud-board` |
 | `trpa-advisory` (extends `trpa-governing`) | `trpa` | [www.trpa.gov](https://www.trpa.gov/meeting-materials/) | `Advisory Planning Commission` | `trpa-apc` |
@@ -57,6 +58,7 @@ Notes on particular sources:
 - `ttd`, `ttd-rtcpc`: one WordPress feed of meeting posts serves the board and its committee, told apart by title. Posts state no meeting date, so a scheduled run reads at most six.
 - `slt`: Granicus row IDs give the date and title, and only the row's PDFs are documents. The commissions on the same publisher are matched by their row text.
 - `truckee`: the Town's agenda page embeds its public Municode meeting index, which discovery reads directly.
+- `state-lands`: the State Lands Commission's WordPress "Meeting" category feed lists each meeting post ("October 21, 2026 Commission Meeting"), and the post's page is the HTML agenda, read for items from its "Order of Business" markup (no agenda layout; see `html_order_of_business.py`). After the meeting the same page, at a `-voting-record` address, adds the voting record above the agenda. The meetings page's "2026 Meeting Schedule" gives start times and a notice for each scheduled date before its post appears. Staff reports, public comment letters, transcripts and the archive are on `slcprdwordpressstorage.blob.core.windows.net`, which was not reachable from the sandbox where this was built, so no staff report rule is configured yet. The live webcast is on CAL-SPAN; the agency pages link only its general site and a CSLC folder, not per-meeting recordings.
 - Douglas County: one county Granicus publisher serves all three bodies. The Board and Planning Commission patterns skip the duplicate "Supplemental" rows. Rows with a video link are archive recordings, so their listed time is not used as a start time.
 - Legistar (El Dorado, Washoe): only meetings the county has made public appear (unpublished future rows are "not viewable"). Cancellations are read from the calendar.
 - Link indexes (`south-shore-tma`, `stpud`, `placer-transportation`, `truckee-north-shore-tma`, `trcd`, `ntcd`): cancelled meetings and meetings without a posted agenda are not discovered. NTCD's index is a published Google Sheet.
@@ -81,7 +83,7 @@ Behavior while blocked: the meeting notice stays published with its official lin
 
 `placer-transportation` is not part of the Placer County site. It is published by the agency itself at `pctpa.net`, which is not blocked, and it has live discovery.
 
-**Update on `ctc` and `state-lands`.** These were listed as blocked (SOURCE-002). On October 20, 2026, after the fetcher began identifying itself as `TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)` instead of `(+local research prototype)`, one request each to the Tahoe Conservancy and State Lands meeting pages returned real pages (HTTP 200), not the Cloudflare block page. A User-Agent rule is a plausible explanation, but it is a hypothesis. `www.placer.ca.gov` still returned 403 with the new identification. Both are now snapshot-only with fetchable sources; no discovery has been configured yet.
+**Update on `ctc` and `state-lands`.** These were listed as blocked (SOURCE-002). On October 20, 2026, after the fetcher began identifying itself as `TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)` instead of `(+local research prototype)`, one request each to the Tahoe Conservancy and State Lands meeting pages returned real pages (HTTP 200), not the Cloudflare block page. A User-Agent rule is a plausible explanation, but it is a hypothesis. `www.placer.ca.gov` still returned 403 with the new identification. State Lands has had live discovery since November 2, 2026 (see the notes above); `ctc` is still snapshot-only.
 
 ## Snapshot only, not blocked
 
@@ -92,7 +94,6 @@ These have no live discovery. Their meetings come only from tracked config snaps
 | --- | --- | --- | --- |
 | `ltbmu` | LTBMU — Main office | comment periods only | [www.fs.usda.gov](https://www.fs.usda.gov/r05/laketahoebasin/newsroom) |
 | `ctc` | CTC — Board | meetings | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) |
-| `state-lands` | California State Lands Commission | meetings | — |
 | `usfws` | USFWS | comment periods and meetings | [www.fws.gov](https://www.fws.gov/office/reno-fish-and-wildlife/news) |
 | `california-state-parks` | California State Parks | meetings | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) |
 | `nevada-state-parks` | Nevada State Parks | meetings | [parks.nv.gov](https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks) |
@@ -102,7 +103,6 @@ These have no live discovery. Their meetings come only from tracked config snaps
 Why there is no discovery:
 
 - `ctc`: `tahoe.ca.gov` board meeting posts. Fetchable since the User-Agent change (see above). Not yet built: needs a post index or feed and agenda layouts ([SOURCE-002](../issues/SOURCE-002-cloudflare-blocked-agendas.md)).
-- `state-lands`: `slc.ca.gov` meeting pages. Same as above.
 - `california-state-parks`: per-commission pages, `ohv.parks.ca.gov` (Off-Highway Motor Vehicle Recreation Commission) and `parks.ca.gov` (State Park and Recreation Commission). Statewide commissions. Each page is a free-form accordion or file list whose headings and file names change per meeting ("Commission Meeting: August 6 and 7", "Meeting Agenda"). No dated index exists in the registry, and no existing discovery type fits two different sites with irregular layout. Only an occasional Tahoe item. Recommendation: keep the snapshot, or move to one-off meetings. The maintainer decides.
 - `nevada-state-parks`: one public-hearing notice (`parks.nv.gov`). A single regulation hearing, not a recurring meeting index. Keep as a one-off.
 

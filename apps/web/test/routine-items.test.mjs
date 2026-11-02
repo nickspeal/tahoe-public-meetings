@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
-import { isRoutineItem, isRoutineTitle } from './helpers/shown-items.mjs';
+import { isPlaceholderItem, isRoutineItem, isRoutineTitle } from './helpers/shown-items.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
@@ -45,4 +45,19 @@ test('built meeting pages leave out routine items', async () => {
   const routine = meeting.items.filter((item) => !item.suppressed && isRoutineItem(item));
   for (const item of routine) assert.equal(page.querySelector(`[data-item-id="${item.id}"]`), null, `${item.id} is not listed`);
   assert.ok(page.querySelector('[data-agenda-item]'), 'other items are still listed');
+});
+
+test('a placeholder for a number the agenda skips is a muted line, not an agenda item', async (t) => {
+  assert.equal(isPlaceholderItem({ title: 'Not Found In Agenda', citations: [] }), true);
+  assert.equal(isPlaceholderItem({ title: 'Not Found In Agenda', citations: [{ documentId: 'd', page: 1, quote: 'Not Found In Agenda' }] }), false);
+  const meeting = data.meetings.find((candidate) => candidate.items.some(isPlaceholderItem));
+  if (!meeting) return t.skip('the export has no placeholder item');
+  const item = meeting.items.find(isPlaceholderItem);
+  const routeId = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
+  const page = new JSDOM(await readFile(resolve(root, 'dist', 'meetings', routeId, 'index.html'), 'utf8')).window.document;
+  const line = page.querySelector(`[data-item-id="${item.id}"]`);
+  assert.ok(line?.classList.contains('agenda-item-missing'), 'listed as a muted line');
+  assert.equal(line.hasAttribute('data-agenda-item'), false, 'not counted by the topic filter');
+  assert.equal(line.querySelector('a, details, summary'), null, 'no source link or disclosure');
+  assert.match(line.textContent, new RegExp(`${item.number}\\s*Not Found In Agenda`));
 });

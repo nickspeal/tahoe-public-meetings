@@ -204,6 +204,9 @@ button, a, select, summary { touch-action: manipulation; }
 .agenda-unnumbered .agenda-accordion-summary { grid-template-columns: minmax(0, 1fr) 22px; }
 .agenda-unnumbered .agenda-order { display: none; }
 .agenda-unnumbered .agenda-item-content { padding-left: 0; }
+.agenda-item-missing { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 13px; padding: 10px 0; color: var(--subtle); }
+.agenda-item-missing p { margin: 0; font-size: 15px; font-style: italic; }
+.agenda-unnumbered .agenda-item-missing { grid-template-columns: minmax(0, 1fr); }
 .agenda-heading, .agenda-item-title { min-width: 0; }
 .agenda-item-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .agenda-item-title h3, .agenda-item-title h4 { margin: 0; color: var(--forest-dark); font-size: 19px; line-height: 1.32; font-weight: 680; overflow-wrap: anywhere; }

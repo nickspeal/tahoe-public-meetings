@@ -56,3 +56,11 @@ export function isRoutineTitle(title: string) {
 export function isRoutineItem(item: Pick<AgendaItem, 'title' | 'topics' | 'timeCertain'>) {
   return item.topics.length === 0 && !item.timeCertain && isRoutineTitle(item.title);
 }
+
+/** The title the ingestion worker gives a number the agenda skips (decision 0030; outline.PLACEHOLDER_TITLE). */
+export const PLACEHOLDER_TITLE = 'Not Found In Agenda';
+
+/** A placeholder for a skipped number: listed as a muted line, with no summary or source link. */
+export function isPlaceholderItem(item: Pick<AgendaItem, 'title' | 'citations'>) {
+  return item.title === PLACEHOLDER_TITLE && item.citations.length === 0;
+}

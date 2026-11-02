@@ -1,5 +1,6 @@
-"""Exact source-backed headings from explicit Granicus/Municode agenda structures."""
+"""Exact source-backed headings from explicit Granicus, Municode, and "Order of Business" agenda structures."""
 import re
+from . import html_order_of_business
 from .html_dom import document, Node
 
 
@@ -12,6 +13,8 @@ def _quote(source, title):
 
 def parse_html_agenda(markup, text):
     tree=document(markup)
+    if html_order_of_business.recognizes(tree):
+        return html_order_of_business.parse(markup, text)
     entries=[]
     top=[]
     section='Agenda'

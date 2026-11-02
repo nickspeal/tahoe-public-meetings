@@ -297,8 +297,9 @@ def extract_participation(conn, *, agency: str | None = None, meeting: str | Non
     pages = _pages(conn, pending)
     requests = {mid: render_user_message(docs, pages) for mid, docs in pending.items()}
     shared = estimate_tokens(system) + estimate_tokens(json.dumps(schema))
-    estimate = sum(cost_usd(CHAIN[0][0], uncached_input=shared + estimate_tokens(user), output=EST_OUTPUT_TOKENS)
-                   for user, source in requests.values() if source)
+    costs = {mid: cost_usd(CHAIN[0][0], uncached_input=shared + estimate_tokens(user), output=EST_OUTPUT_TOKENS)
+             for mid, (user, source) in requests.items() if source}
+    estimate = sum(costs.values())
     spent_this_month = month_to_date_spend(conn)
     report = {"meetingsPending": len(pending), "estimatedCostUsd": round(estimate, 4), "monthToDateUsd": round(spent_this_month, 4),
               "monthlyBudgetUsd": monthly_budget, "dryRun": dry_run, "extracted": {}, "fieldsKept": {}, "fieldsRejected": 0,
@@ -311,7 +312,19 @@ def extract_participation(conn, *, agency: str | None = None, meeting: str | Non
     if spent_this_month >= monthly_budget:
         raise SystemExit(f"Month-to-date AI spend ${spent_this_month:.2f} has reached the ${monthly_budget:.2f} budget")
     if estimate > max_cost:
-        raise SystemExit(f"Estimated ${estimate:.4f} exceeds --max-cost ${max_cost:.2f}; use --max-meetings or raise it")
+        # Keep the largest prefix of the prioritized list that fits; the rest waits for the next run.
+        total, fitting = 0.0, {}
+        for mid, request in requests.items():
+            total += costs.get(mid, 0.0)
+            if total > max_cost:
+                break
+            fitting[mid] = request
+        if not any(costs.get(mid) for mid in fitting):
+            raise SystemExit(f"Estimated ${min(costs.values()):.4f} for one meeting exceeds --max-cost ${max_cost:.2f}; raise it")
+        report["meetingsDeferredForCost"] = len(requests) - len(fitting)
+        report["stoppedEarly"] = "cost limit reached; remaining meetings are extracted on the next run"
+        report["estimatedCostUsd"] = round(sum(costs.get(mid, 0.0) for mid in fitting), 4)
+        requests = fitting
     clients = clients or {}
     for done, (meeting_id, (user, source)) in enumerate(requests.items()):
         version_ids = [d["id"] for d in pending[meeting_id]]

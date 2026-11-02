@@ -1379,8 +1379,7 @@
       "scheduleUrl": "https://www.slc.ca.gov/meetings/"
     },
     "staffReports": {
-      "published": true,
-      "note": "Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to."
+      "rule": "order-of-business-item-files"
     },
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",

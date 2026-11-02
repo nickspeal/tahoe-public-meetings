@@ -58,7 +58,7 @@ Notes on particular sources:
 - `ttd`, `ttd-rtcpc`: one WordPress feed of meeting posts serves the board and its committee, told apart by title. Posts state no meeting date, so a scheduled run reads at most six.
 - `slt`: Granicus row IDs give the date and title, and only the row's PDFs are documents. The commissions on the same publisher are matched by their row text.
 - `truckee`: the Town's agenda page embeds its public Municode meeting index, which discovery reads directly.
-- `state-lands`: the State Lands Commission's WordPress "Meeting" category feed lists each meeting post ("October 21, 2026 Commission Meeting"), and the post's page is the HTML agenda, read for items from its "Order of Business" markup (no agenda layout; see `html_order_of_business.py`). After the meeting the same page, at a `-voting-record` address, adds the voting record above the agenda. The meetings page's "2026 Meeting Schedule" gives start times and a notice for each scheduled date before its post appears. Staff reports, public comment letters, transcripts and the archive are on `slcprdwordpressstorage.blob.core.windows.net`, which was not reachable from the sandbox where this was built, so no staff report rule is configured yet. The live webcast is on CAL-SPAN; the agency pages link only its general site and a CSLC folder, not per-meeting recordings.
+- `state-lands`: the State Lands Commission's WordPress "Meeting" category feed lists each meeting post ("October 21, 2026 Commission Meeting"), and the post's page is the HTML agenda, read for items from its "Order of Business" markup (no agenda layout; see `html_order_of_business.py`). After the meeting the same page, at a `-voting-record` address, adds the voting record above the agenda. The meetings page's "2026 Meeting Schedule" gives start times and a notice for each scheduled date before its post appears. Each item row links its staff report, which the `order-of-business-item-files` rule maps when the report's "Staff Report 11" heading, title, and meeting date agree. Staff reports, public comment letters, transcripts and the archive are on `slcprdwordpressstorage.blob.core.windows.net`, which was not reachable from the sandbox where this was built; the rule's fixture uses a State Lands report that TRPA attached to its own packet, so the first scheduled scan is the first real download. The live webcast is on CAL-SPAN; the agency pages link only its general site and a CSLC folder, not per-meeting recordings.
 - Douglas County: one county Granicus publisher serves all three bodies. The Board and Planning Commission patterns skip the duplicate "Supplemental" rows. Rows with a video link are archive recordings, so their listed time is not used as a start time.
 - Legistar (El Dorado, Washoe): only meetings the county has made public appear (unpublished future rows are "not viewable"). Cancellations are read from the calendar.
 - Link indexes (`south-shore-tma`, `stpud`, `placer-transportation`, `truckee-north-shore-tma`, `trcd`, `ntcd`): cancelled meetings and meetings without a posted agenda are not discovered. NTCD's index is a published Google Sheet.
@@ -131,6 +131,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `legistar` | `el-dorado-supervisors`, `el-dorado-planning`, `washoe-commissioners`, `washoe-planning` |
 | `ndep-material-packet` | `ndep` |
 | `ntpud-packet` | `ntpud` |
+| `order-of-business-item-files` | `state-lands` |
 | `pctpa-packet` | `placer-transportation` |
 | `slt-commission-report` | `slt-planning`, `slt-parks-recreation-commission`, `slt-transit-jpa` |
 | `slt-executive-summary` | `slt` |
@@ -152,7 +153,6 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `placer-supervisors` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-tahoe-design-review` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `ctc` | published, not attached yet | Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to. |
-| `state-lands` | published, not attached yet | Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

@@ -99,3 +99,32 @@ def test_capture_dates_an_undated_listing_from_its_agenda():
     assert _capture_row(candidate, 2, fetch, [], [], 0)["date"] == "2026-03-04"
     # A date stated on the listing is kept.
     assert _capture_row({**candidate, "date": "2026-03-05"}, 2, fetch, [], [], 0)["date"] == "2026-03-05"
+
+
+# South Lake Tahoe's November 3, 2026 agenda, page 1 as captured. The agenda planning calendar had listed
+# "Nov 3, 9:30 a.m.", and the planned meeting kept that start after the Granicus capture (whose row states no time).
+SLT_NOV_3 = ("City of South Lake Tahoe\n                                     City Council\n"
+             "                              Meeting Agenda\n                   Tuesday, November 3, 2026 at 9:00 am\n"
+             "   City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\n\n\n"
+             "City Council                                              Mission of the City Council\n"
+             "Cody Bass, Mayor                                          We provide responsive and effective local\n")
+
+
+def test_agenda_time_replaces_a_planned_meetings_calendar_time():
+    from datetime import datetime, timezone
+
+    from tahoe_ingest.core import exported_start
+
+    calendar_start = datetime(2026, 11, 3, 17, 30, tzinfo=timezone.utc)  # 9:30 a.m. Pacific
+    agenda_start = datetime(2026, 11, 3, 17, 0, tzinfo=timezone.utc)  # 9:00 a.m. Pacific, as the agenda says
+    meeting = {"title": "11 03 2026 City Council", "local_date": date(2026, 11, 3), "timezone": "America/Los_Angeles",
+               "starts_at": calendar_start}
+    docs = [doc("Agenda", SLT_NOV_3)]
+    assert exported_start(meeting, docs, [], planned=True)[0] == agenda_start
+    # A start stored from a listing stays; a meeting stored without one gets the agenda's.
+    assert exported_start(meeting, docs, [], planned=False)[0] == calendar_start
+    start, warnings = exported_start({**meeting, "starts_at": None}, docs,
+                                     ["Confirm the scheduled start in the agenda."], planned=False)
+    assert start == agenda_start and warnings == []
+    # With no agenda time, the planned start stands.
+    assert exported_start(meeting, [], [], planned=True)[0] == calendar_start

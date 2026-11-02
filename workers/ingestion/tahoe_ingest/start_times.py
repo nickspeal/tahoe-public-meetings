@@ -4,7 +4,9 @@ Many discovery sources list only a date, while the agenda heading states the
 time: "Wednesday, October 28, 2026 ... 9:15 a.m. TRPA Governing Board Meeting",
 "DATE: Friday, August 21, 2026 TIME: 08:30 a.m.". This reads stored page text
 at export time, like time-certain items, so no schema change or reparse is
-needed and a revised agenda updates the time.
+needed and a revised agenda updates the time. The agenda's time also replaces
+the stored start of a planned meeting, which came from a planning calendar
+(``core.exported_start``).
 
 A time counts only when it is printed close to the meeting's own date on the
 first page of an agenda document. That keeps out office hours, comment

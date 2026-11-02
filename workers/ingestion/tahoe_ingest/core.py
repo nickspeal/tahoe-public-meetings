@@ -687,13 +687,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         extracted = _json(extracted["fields"]) if extracted and set(_json(extracted["version_ids"])) <= {d["id"] for d in stored_docs} else None
         location, participation = merged_participation(m["location"], _json(m["participation"]), extracted,
                                                        AGENCIES[m["agency_id"]].get("participation"))
-        start, warnings = m["starts_at"], _json(m["warnings"])
-        if not start and (agenda_time := agenda_start_time(m["title"], m["local_date"], docs)):
-            try:
-                start = starts_at({"date": m["local_date"].isoformat(), "start_time": agenda_time, "timezone": m["timezone"]})
-                warnings = [w for w in warnings if not w.startswith("Confirm the scheduled start in the agenda")]
-            except ValueError:  # A daylight-saving gap or overlap; the agenda cannot say which.
-                pass
+        start, warnings = exported_start(m, docs, _json(m["warnings"]), planned=preview_store.is_planned(m))
         meetings.append({"id": m["id"], "agencyId": m["agency_id"], "sourceId": m["source_id"], "kind": "confirmed", "title": m["title"],
             "topics": sorted(expand_topics(set(_json(m["declared_topics"])))),
             "startsAt": iso(start), "date": m["local_date"].isoformat() if m["local_date"] else None,
@@ -728,6 +722,25 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
 
 AGENDA_DOCUMENT = re.compile(r"agenda|packet", re.I)
 SUPPLEMENT = re.compile(r"supplement", re.I)
+
+
+def exported_start(m: dict, docs: list[dict], warnings: list[str], *, planned: bool) -> tuple:
+    """The start time to publish, and the warnings left once the agenda has settled it.
+
+    A start time printed on the agenda's first page fills in a meeting stored without one. It also replaces the
+    stored start of a planned meeting: that time came from a planning calendar ("Nov 3, 9:30 a.m."), and a capture
+    whose listing states no time keeps it, so without this the forecast outlives the agenda that revised it.
+    """
+    start = m["starts_at"]
+    if start and not planned:
+        return start, warnings
+    if agenda_time := agenda_start_time(m["title"], m["local_date"], docs):
+        try:
+            start = starts_at({"date": m["local_date"].isoformat(), "start_time": agenda_time, "timezone": m["timezone"]})
+            warnings = [w for w in warnings if not w.startswith("Confirm the scheduled start in the agenda")]
+        except ValueError:  # A daylight-saving gap or overlap; the agenda cannot say which.
+            pass
+    return start, warnings
 
 
 def agenda_posted(meeting: dict) -> bool:

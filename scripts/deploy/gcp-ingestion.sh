@@ -772,7 +772,7 @@ ensure_github_deploy() {
   fi
   local condition="assertion.repository_id=='${repo_id}' && assertion.repository_owner_id=='${owner_id}' && assertion.ref=='refs/heads/${GITHUB_BRANCH}' && assertion.event_name in ['push', 'workflow_dispatch']"
   local mapping="google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.ref=assertion.ref"
-  local verb=create
+  local verb=create-oidc
   if g iam workload-identity-pools providers describe "$GITHUB_PROVIDER" --location=global \
       --workload-identity-pool="$GITHUB_POOL" >/dev/null 2>&1; then verb=update-oidc; fi
   g iam workload-identity-pools providers "$verb" "$GITHUB_PROVIDER" --location=global \

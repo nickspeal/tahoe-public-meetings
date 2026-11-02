@@ -77,7 +77,7 @@ These sources refuse automated requests. The project does not evade bot protecti
 
 The Placer County cause is not established: Python and curl with normal TLS get the same result, and DocAccess or automated-request filtering is a hypothesis only. The official `rss.aspx` index also returns 403, so no feed is configured. Before the skip, the Tahoe Basin Design Review Committee's Agenda Center archive listed notices, so its stored meetings keep their dates and times.
 
-Behavior while blocked: the meeting notice stays published with its official link, a failed document does not discard the notice, and the meeting page says the agenda is on the agency website instead of claiming it has not been posted. A skipped index is reported as `skipped` in the run summary, not as a failure.
+Behavior while blocked: the meeting notice stays published with its official link, a failed document does not discard the notice, and the meeting page says the agenda is on the agency website instead of claiming it has not been posted. A skipped index is reported as `skipped` in the run summary, not as a failure. The public export gives a blocked entry `status: "blocked"` with the skip reason, so the website's coverage page says the source is blocked instead of showing its last good check.
 
 `placer-transportation` is not part of the Placer County site. It is published by the agency itself at `pctpa.net`, which is not blocked, and it has live discovery.
 

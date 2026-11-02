@@ -378,6 +378,7 @@ export function documentStatusLabel(status: string) {
 }
 
 export function agencySourceLabel(agency: PublicData['agencies'][number]) {
+  if (agency.status === 'blocked') return 'Source blocked; listed records may be out of date';
   if (agency.status === 'error') return 'Could not verify latest source';
   if (agency.status === 'never_checked') return data.mode === 'fixture' ? 'Not checked live' : 'Not checked yet';
   if (agency.status === 'ok' && agency.lastCheckedAt) {

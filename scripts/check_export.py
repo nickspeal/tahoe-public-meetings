@@ -50,7 +50,7 @@ def check(data):
     require(agencies <= followed, "exported agencies must be followed")
     require(data.get("topics") == PUBLIC_TOPICS, "topics must match the ordered canonical catalog")
     for agency in data.get("agencies", []):
-        require(agency.get("status") in ("ok", "error", "never_checked"), f"{agency['id']}: invalid freshness status")
+        require(agency.get("status") in ("ok", "error", "never_checked", "blocked"), f"{agency['id']}: invalid freshness status")
         timestamp(agency.get("lastCheckedAt"), f"{agency['id']}.lastCheckedAt", nullable=True)
         url(agency.get("officialUrl"), f"{agency['id']}.officialUrl")
     seen_meetings = set()

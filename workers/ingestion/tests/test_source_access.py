@@ -2,6 +2,7 @@ import hashlib
 import io
 import json
 import os
+from pathlib import Path
 import ssl
 import subprocess
 import tempfile
@@ -340,3 +341,30 @@ def test_a_cancellation_notice_title_names_the_canceled_meeting():
     assert (row["title"],row["status"])==("Town Council Meeting","canceled")
     assert candidate("x","1","Notice of Cancellation of the Board Meeting","2026-10-13","https://example.test/m",[])["title"]=="Board Meeting"
     assert candidate("x","1","Special Town Council Meeting","2026-10-13","https://example.test/m",[])["status"]=="unknown"
+
+
+def test_agency_with_a_skipped_source_exports_as_blocked(monkeypatch,tmp_path):
+    from tahoe_ingest.core import agency_freshness, AGENCIES
+    skip=tmp_path/'config'/'skipped-endpoints.json';skip.parent.mkdir()
+    skip.write_text(json.dumps({'skipped':[{'prefix':'https://blocked.gov/','status':403,'since':'2026-10-20','reason':'Every request returns 403.'}]}))
+    monkeypatch.setenv('TAHOE_SOURCE_ROOT',str(tmp_path))
+    status,error=agency_freshness({'sourceUrl':'https://blocked.gov/agendas'},'ok',None)
+    assert status=='blocked' and 'HTTP 403 since 2026-10-20' in error and 'Every request returns 403.' in error
+    assert agency_freshness({'sourceUrl':'https://open.gov/','discovery':{'indexUrl':'https://blocked.gov/list'}},'ok',None)[0]=='blocked'
+    assert agency_freshness({'sourceUrl':'https://open.gov/'},'error','timeout')==('error','timeout')
+    assert agency_freshness({'sourceUrl':'https://open.gov/'},'never_checked',None)==('never_checked',None)
+    # The checked-in skip list covers every Placer County page on www.placer.ca.gov, whatever the stored status.
+    monkeypatch.setenv('TAHOE_SOURCE_ROOT',str(Path(__file__).resolve().parents[3]))
+    for aid in ('placer-supervisors','placer-planning','placer-tahoe-design-review'):
+        assert agency_freshness(AGENCIES[aid],'ok',None)[0]=='blocked'
+    assert agency_freshness(AGENCIES['placer-transportation'],'ok',None)==('ok',None)
+
+
+def test_export_check_accepts_blocked_agencies():
+    from tahoe_ingest import export_check
+    agency={'id':'placer-supervisors','name':'Placer','shortName':'Placer','officialUrl':'https://www.placer.ca.gov/bos',
+            'sourceUrl':'https://www.placer.ca.gov/10616/_2026','lastCheckedAt':None,'error':'skipped'}
+    base={'schemaVersion':2,'mode':'live','coverageNote':'x','generatedAt':'2026-11-02T00:00:00Z','meetings':[]}
+    for status,ok in (('blocked',True),('stale',False)):
+        errors,_=export_check.check({**base,'agencies':[{**agency,'status':status}]})
+        assert (not any('freshness status' in e for e in errors))==ok

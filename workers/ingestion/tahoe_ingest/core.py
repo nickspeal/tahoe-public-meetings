@@ -24,6 +24,7 @@ from .history import HISTORY_SQL, document_history
 from .participation import merged as merged_participation
 from .schedules import PACIFIC, forecast_meetings
 from .records import links_of, merged as merged_links
+from .http import skipped_endpoint
 
 
 TOPICS = public_topics()
@@ -567,6 +568,20 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
             "automaticTopicsBefore": before, "automaticTopicsAfter": after}
 
 
+def agency_freshness(agency: dict, status: str, error: str | None) -> tuple[str, str | None]:
+    """The source status the export shows for a registry entry.
+
+    An agency whose discovery index or source page is in config/skipped-endpoints.json
+    is ``blocked``, with the skip reason as its error: the worker no longer requests
+    that source, so an older "ok" would claim a freshness no check supports. The
+    stored check results are left as they are, so removing the skip restores them.
+    """
+    for url in ((agency.get("discovery") or {}).get("indexUrl"), agency.get("sourceUrl")):
+        if url and (reason := skipped_endpoint(url)):
+            return "blocked", reason
+    return status, error
+
+
 def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date | None = None) -> dict:
     """Export stored records, plus derived forecasts when ``forecast_days`` > 0.
 
@@ -589,8 +604,9 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         if a["id"] not in AGENCIES or (a["id"] not in comment_agencies and a["id"] not in first_url):
             continue
         fallback = first_url.get(a["id"]) or next(p["officialUrl"] for p in comment_periods if p["agencyId"] == a["id"])
+        status, error = agency_freshness(AGENCIES[a["id"]], a["status"], a["error"])
         agencies.append({"id": a["id"], "name": a["name"], "shortName": a["short_name"], "officialUrl": a["official_url"] or fallback,
-                         "sourceUrl": a["source_url"] or fallback, "lastCheckedAt": iso(a["last_checked_at"]), "status": a["status"], "error": a["error"]})
+                         "sourceUrl": a["source_url"] or fallback, "lastCheckedAt": iso(a["last_checked_at"]), "status": status, "error": error})
     pages_by_version = {}
     for p in conn.execute("""SELECT p.document_version_id,p.page_number,p.text FROM document_pages p
             WHERE p.document_version_id IN (SELECT version_id FROM document_current) ORDER BY p.document_version_id,p.page_number"""):

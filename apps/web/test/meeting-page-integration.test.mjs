@@ -134,7 +134,7 @@ test('the agenda history lists found and changed documents, with the source chec
   const meeting = data.meetings.find((candidate) => candidate.kind !== 'forecast' && candidate.history?.length);
   assert.ok(meeting, 'export should include a meeting with document history');
   const card = (await meetingDocument(meeting)).querySelector('.agenda-history');
-  assert.match(card.querySelector('.eyebrow').textContent, /AGENDA HISTORY/);
+  assert.match(card.querySelector('.eyebrow').textContent, /Agenda history/);
   const entries = [...card.querySelectorAll('.history-list li')];
   assert.ok(entries.length >= 1 && entries.length <= meeting.history.length);
   assert.equal(entries[0].querySelector('time').getAttribute('datetime'), meeting.history[0].at);

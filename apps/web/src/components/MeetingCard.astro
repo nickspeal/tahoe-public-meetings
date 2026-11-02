@@ -10,7 +10,7 @@ const title = meetingShortTitle(meeting);
 // Only what is known: an unpublished location or uncounted agenda leaves no placeholder text.
 const details = [meeting.location, meetingAgendaLabel(meeting)].filter(Boolean);
 const label = forecast ? awaitingAgendaLabel : canceled ? 'Canceled' : meeting.status === 'rescheduled' || meeting.change === 'rescheduled' ? 'Rescheduled' : meeting.change === 'revised' ? 'Revised' : agendaNotPosted(meeting) ? awaitingAgendaLabel : '';
-const tone = label === awaitingAgendaLabel ? 'outline' : label === 'Canceled' ? 'red' : label === 'Revised' || label === 'Rescheduled' ? 'amber' : 'muted';
+const tone = label === awaitingAgendaLabel ? 'outline' : label === 'Canceled' ? 'red' : label === 'Revised' || label === 'Rescheduled' ? 'blue' : 'muted';
 const dateValue = meetingDateValue(meeting);
 // A planned meeting's "Planned:" line already says its subjects may change, so the export warning is not repeated.
 const warning = forecast ? null : meeting.warnings.map(residentWarning).filter((text) => !(meeting.planned && text === 'Subject to change.')).find(Boolean);
@@ -28,7 +28,7 @@ const link = forecast ? { href: meeting.officialUrl, target: '_blank', rel: 'noo
 ---
 <article class:list={['meeting-card', { 'meeting-card-canceled': canceled, 'meeting-card-forecast': forecast }]}>
   <a class="meeting-card-main" {...link}>
-    <div class="meeting-date">{dateValue ? <><span class="date-day">{meetingDateLabel(meeting, { day: '2-digit' })}</span><span>{meetingDateLabel(meeting, { month: 'short' })}</span></> : <span class="date-unscheduled">Date<br />TBA</span>}</div>
+    <div class="meeting-date">{dateValue ? <><span class="date-day">{meetingDateLabel(meeting, { day: '2-digit' })}</span><span class="date-month">{meetingDateLabel(meeting, { month: 'short' })}</span><span class="date-weekday" aria-hidden="true">{meetingDateLabel(meeting, { weekday: 'short' })}</span></> : <span class="date-unscheduled">Date<br />TBA</span>}</div>
     <div class="meeting-card-copy">
       <div class="eyebrow">{meeting.startsAt ? formatDate(meeting.startsAt, { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : dateValue ? meetingDateLabel(meeting, { weekday: 'long' }) : 'Date not announced'}</div>
       <h3>{canceled && <span class="sr-only">Canceled: </span>}{forecast && <span class="sr-only">Expected, no agenda yet: </span>}{title}</h3>

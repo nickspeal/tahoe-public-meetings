@@ -269,12 +269,113 @@ def test_dropping_a_trailing_negation_fails():
 
 def test_summary_shape_limits():
     one = sentence("The City received 23 proposals.", "The City issued a Request for Proposals and received 23 proposals.")
-    with pytest.raises(ValueError, match="sentences"):
-        item_summaries.validate([one] * 4, {1: PAGE}, "doc")
-    with pytest.raises(ValueError, match="repeats"):
-        item_summaries.validate([one, one], {1: PAGE}, "doc")
+    with pytest.raises(ValueError, match="0 sentences"):
+        item_summaries.validate([], {1: PAGE}, "doc")
+    # Repeats and sentences past the limit are left out; what remains still passed every check.
+    dropped = []
+    text, citations = item_summaries.validate([one] * 4, {1: PAGE}, "doc", dropped=dropped)
+    assert text == "The City received 23 proposals." and len(citations) == 1
+    assert dropped == ["sentence 2: repeats a sentence", "sentence 3: repeats a sentence", "sentence 4: more than 3 sentences"]
     with pytest.raises(ValueError, match="words"):
         item_summaries.validate([sentence("Pass a Motion.", ACTION)], {1: PAGE}, "doc")
+
+
+def test_a_later_failing_sentence_is_left_out_but_the_first_must_pass():
+    good = sentence("The City received 23 proposals.", "The City issued a Request for Proposals and received 23 proposals.")
+    bad = sentence("The project will require additional staff.", "The project will not require additional staff.")
+    dropped = []
+    text, citations = item_summaries.validate([good, bad], {1: PAGE}, "doc", dropped=dropped)
+    assert text == "The City received 23 proposals." and len(citations) == 1
+    assert len(dropped) == 1 and dropped[0].startswith("sentence 2: drops a negation")
+    with pytest.raises(item_summaries.Rejected, match="sentence 1: drops a negation") as rejected:
+        item_summaries.validate([bad, good], {1: PAGE}, "doc")
+    assert rejected.value.kind == "negation" and rejected.value.near.startswith("The project will not")
+
+
+def test_short_and_long_sources_say_so():
+    with pytest.raises(item_summaries.Rejected, match="source has 3 words") as short:
+        item_summaries.validate([sentence("Receive and file.", "Receive and file.")], {1: "Recommendation: Receive and file."}, "doc")
+    assert short.value.kind == "short-source"
+    with pytest.raises(item_summaries.Rejected, match="source has 200 words"):
+        item_summaries.validate([sentence("The City received 23 proposals.", "word " * 200)], {1: PAGE}, "doc")
+
+
+@pytest.mark.parametrize("page,source", [
+    # A passage opening with a dollar sign, a parenthesis, or a quotation mark starts where that mark does.
+    ("FINANCIAL IMPACT:\n$900 collected towards General Fund revenue account 101.000.341.211.", "$900 collected towards General Fund revenue account 101.000.341.211."),
+    ("Background.\n(Revised) The plan is ready for the Board to review.", "(Revised) The plan is ready for the Board to review."),
+    ("Background.\n“Make the Best Better” is the motto the program follows.", "“Make the Best Better” is the motto the program follows."),
+    # Numbered motions, Word's Symbol-font bullet, and "o" sub-bullets.
+    ("contingency up to $112,083.\n3) Pass a Motion authorizing the Mayor to execute Amendment No. 3 for $9,680.",
+     "Pass a Motion authorizing the Mayor to execute Amendment No. 3 for $9,680."),
+    ("Current:\n   \uf0b7 Completed approximately 75% of water main system tie-ins.", "Completed approximately 75% of water main system tie-ins."),
+    ("Standard Reports\n      o    Tahoe Cedars Water System Reconstruction Project Update", "Tahoe Cedars Water System Reconstruction Project Update"),
+    # A form's value column: the figure sits beside the sentence on the same line.
+    ("Total Commitment      Recommendation\n$78,000.00            The Division recommends that the Board approve a loan\n"
+     "                      commitment to the Elk Point Country Club Homeowners Association.\n"
+     "Amount                Resolution\n\nSystem Infrastructure The system is supported by two wells and a\n"
+     "                      storage tank, pump station, and treatment system.",
+     "The Division recommends that the Board approve a loan commitment to the Elk Point Country Club Homeowners Association."),
+])
+def test_passages_start_after_marks_markers_bullets_and_side_columns(page, source):
+    text, citations = item_summaries.validate([sentence(source, source)], {1: page}, "doc")
+    assert text.rstrip(".") == source.rstrip(".")
+    assert " ".join(citations[0]["quote"].split()) in " ".join(page.split())  # the page's own text, as exported
+
+
+def test_a_motion_repeating_the_title_is_found_where_its_sentence_starts():
+    page = ("TITLE:\nFor possible action. Discussion to approve the On-Site Retail Liquor License for La Hacienda Del Sazon.\n\n"
+            "RECOMMENDED MOTION:\nApprove the On-Site Retail Liquor License for La Hacienda Del Sazon.")
+    motion = "Approve the On-Site Retail Liquor License for La Hacienda Del Sazon."
+    _, citations = item_summaries.validate([sentence(motion, motion)], {1: page}, "doc")
+    assert page.index(citations[0]["quote"]) == page.index("Approve the")
+
+
+def test_whole_earlier_sentences_may_be_dropped_but_not_part_of_one():
+    page = "TITLE:\nFor presentation only. Ceremonial presentation of Proclamation 2026P-054 designating National 4-H Week."
+    text, _ = item_summaries.validate([sentence(
+        "Ceremonial presentation of Proclamation 2026P-054 designating National 4-H Week.",
+        "For presentation only. Ceremonial presentation of Proclamation 2026P-054 designating National 4-H Week.")], {1: page}, "doc")
+    assert text.startswith("Ceremonial presentation")
+    # An abbreviation's period does not end a sentence.
+    page = "Pass a Motion to execute Amendment No. 3 to the Agreement with Lumos for the bridge project."
+    with pytest.raises(ValueError, match="middle of the passage"):
+        item_summaries.validate([sentence("3 to the Agreement with Lumos for the bridge project.", page)], {1: page}, "doc")
+    with pytest.raises(ValueError, match="middle of a sentence"):
+        item_summaries.validate([sentence("3 to the Agreement with Lumos for the bridge project.",
+                                          "3 to the Agreement with Lumos for the bridge project.")], {1: page}, "doc")
+
+
+@pytest.mark.parametrize("page,start,starts", [
+    ("The plan is included as Attachment C. Both amendments would be effective on adoption.", "Both", True),
+    ("Staff will move funds so the City can proceed with the work. A. The Fire Station 1 Roof Project costs $166,700.", "The Fire", True),
+    ("The reserve is named for Edward F. Ricketts and protects the reef.", "Ricketts", False),
+])
+def test_lettered_attachments_and_list_markers_end_sentences_but_initials_do_not(page, start, starts):
+    source = page[page.index(start):]
+    if starts:
+        item_summaries.validate([sentence(source, source)], {1: page}, "doc")
+    else:
+        with pytest.raises(ValueError, match="middle of a sentence"):
+            item_summaries.validate([sentence(source, source)], {1: page}, "doc")
+
+
+def test_negations_count_only_within_the_kept_sentence():
+    page = ("Staff recommends that the Board approve the release of $96,240 toward the Bijou Park Creek Restoration Project "
+            "(EIP Project No. 01.01.01.0184), subject to the conditions below. It is requested that the Board receive this "
+            "presentation regarding Transit Analysis. No action is required.")
+    first = page[:page.index(", subject")] + ", subject to the conditions below."
+    text, _ = item_summaries.validate([
+        sentence("Staff recommends that the Board approve the release of $96,240 toward the Bijou Park Creek Restoration Project.", first),
+        sentence("It is requested that the Board receive this presentation regarding Transit Analysis.",
+                 "It is requested that the Board receive this presentation regarding Transit Analysis. No action is required.")],
+        {1: page}, "doc")
+    assert text.count(".") >= 2 and "No action" not in text
+    # Within the kept sentence, a dropped negation still fails.
+    with pytest.raises(ValueError, match="negation"):
+        item_summaries.validate([sentence("Approve the agreement for a revised amount to exceed $7,500,000.",
+                                          "Approve the agreement for a revised amount not to exceed $7,500,000.")],
+                                {1: "Approve the agreement for a revised amount not to exceed $7,500,000."}, "doc")
 
 
 def test_misread_quotes_on_the_page_still_validate():

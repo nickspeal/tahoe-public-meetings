@@ -104,7 +104,9 @@ AI_USAGE = """select (recorded_at at time zone 'UTC')::date::text as day, purpos
   sum(input_tokens) as input, sum(output_tokens) as output, sum(cache_creation_input_tokens) as cache_write,
   sum(cache_read_input_tokens) as cache_read, sum(cost_usd)::float8 as cost from ai_usage group by 1, 2, 3, 4"""
 # Failed calls grouped by error, with numbers and quoted text masked so "sentence 2 ... page 3" variants group.
-AI_ERRORS = """select purpose, regexp_replace(regexp_replace(left(regexp_replace(coalesce(error, 'unknown'), '\\s+', ' ', 'g'),
+# A staff report summary's error carries the rejected reply after "\n\nreply: " (item_summaries.REPLY_MARK); only
+# the part before it is grouped.
+AI_ERRORS = """select purpose, regexp_replace(regexp_replace(left(regexp_replace(split_part(coalesce(error, 'unknown'), E'\\n\\nreply: ', 1), '\\s+', ' ', 'g'),
   300), '“[^”]*”', '“…”', 'g'), '[0-9]+', '#', 'g') as error, count(*) as calls, sum(cost_usd)::float8 as cost,
   max(recorded_at) as last_seen from ai_usage where not ok group by 1, 2"""
 # One statement (one Prisma operation) for both.

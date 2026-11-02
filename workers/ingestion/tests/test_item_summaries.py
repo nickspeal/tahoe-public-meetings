@@ -213,12 +213,63 @@ def test_a_new_validator_retries_only_the_items_that_failed_validation(conn, mon
                "claude-sonnet-5-5": StubModel("claude-sonnet-5-5", paraphrase=True)}
     item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     failed = {r["item_id"] for r in conn.execute("SELECT item_id FROM ai_item_summaries WHERE status='validation_failed'")}
-    assert failed and {r["validator_version"] for r in conn.execute("SELECT validator_version FROM ai_item_summaries")} == {1}
-    monkeypatch.setattr(item_summaries, "VALIDATOR_VERSION", 2)
+    current = item_summaries.VALIDATOR_VERSION
+    assert failed and {r["validator_version"] for r in conn.execute("SELECT validator_version FROM ai_item_summaries")} == {current}
+    monkeypatch.setattr(item_summaries, "VALIDATOR_VERSION", current + 1)
     pending = item_summaries.summarize_items(conn, dry_run=True, today=TODAY)
     assert pending["itemsPending"] == len(failed) and pending["itemsPendingByReason"] == {"validator": len(failed)}
     item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     assert item_summaries.summarize_items(conn, dry_run=True, today=TODAY)["itemsPending"] == 0  # tried once, not every run
+
+
+class ScriptedModel:
+    """Answers item 9 from a script of sentence lists, one per call, and records what it was sent; skips the rest."""
+
+    def __init__(self, model, script):
+        self.model, self.script, self.users = model, list(script), []
+
+    def complete(self, *, system, user, schema, max_tokens):
+        number = re.search(r"^Agenda item (\S+):", user, re.M).group(1)
+        if number == "9" and self.script:
+            self.users.append(user)
+            answer = {"decision": "summarize", "skipReason": None, "sentences": self.script.pop(0)}
+        else:
+            answer = {"decision": "skip", "skipReason": "nothing to summarize", "sentences": []}
+        usage = {"input_tokens": 1500, "output_tokens": 400, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+        return ModelReply(text=json.dumps(answer), stop_reason="end_turn", usage=usage, model=self.model)
+
+
+def test_a_retry_hears_what_was_wrong_and_the_rejected_reply_is_kept(conn, monkeypatch):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    short = [{"page": 1, "source": "Fiscal Impact: None.", "sentence": "None."}]
+    good = [{"page": 1, "source": BACKGROUND["9"], "sentence": BACKGROUND["9"]}]
+    haiku = ScriptedModel("claude-haiku-5-5", [short, good])
+    with statement_count(monkeypatch) as summarizing:
+        result = item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": haiku}, today=TODAY)
+    assert summarizing["n"] <= 6  # the rejected reply rides in the same per-meeting write
+    assert result["published"] == {"claude-haiku-5-5": 1} and result["failures"] == {"validation: short-source": 1}
+    retry = haiku.users[1]
+    assert "<rejected_answer>" in retry and "source has 3 words" in retry and "Its source: “Fiscal Impact: None.”" in retry
+    assert "How to fix it: That source is too short" in retry and retry.startswith(haiku.users[0])
+    failed = conn.execute("SELECT error FROM ai_usage WHERE NOT ok").fetchone()["error"]
+    message, reply = failed.split(item_summaries.REPLY_MARK)
+    assert message.startswith("validation: sentence 1: its source has 3 words") and json.loads(reply)["sentences"] == short
+    assert items(conn)["9"]["summary"]["text"].endswith(BACKGROUND["9"])
+
+
+def test_a_failing_later_sentence_is_left_out_of_the_published_summary(conn):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    answer = [{"page": 1, "source": BACKGROUND["9"], "sentence": BACKGROUND["9"]},
+              {"page": 1, "source": BACKGROUND["9"], "sentence": "The agreement is a bargain for the City."}]
+    haiku = ScriptedModel("claude-haiku-5-5", [answer])
+    result = item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": haiku}, today=TODAY)
+    assert result["published"] == {"claude-haiku-5-5": 1} and result["sentencesDropped"] == 1 and len(haiku.users) == 1
+    summary = items(conn)["9"]["summary"]
+    assert summary["text"] == exported_action(conn, "9") + " " + BACKGROUND["9"] and len(summary["citations"]) == 2
+    note = conn.execute("SELECT error FROM ai_usage WHERE ok AND error IS NOT NULL").fetchone()["error"]
+    assert note.startswith("published without sentence 2: adds words") and item_summaries.REPLY_MARK in note
+    errors, _ = check_export(export_public(conn))
+    assert errors == []
 
 
 def test_pending_items_say_why(conn):

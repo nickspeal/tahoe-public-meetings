@@ -253,6 +253,8 @@ def test_lahontan_board_titles_end_at_the_description_dash():
     titles = [i["title"] for i in parse_agenda("lahontan-board", [{"id": "doc"}], pages).items]
     assert titles[7:9] == ["Closed Session", "Public Forum"]  # "Closed Session1" footnote marker, then Thursday's session
     assert "Adjournment" not in titles and "Call to Order and Introductions" not in titles
-    # A missing item number blocks publication rather than renumbering.
+    # A missing item number is published as a placeholder with a warning rather than renumbered (decision 0030).
     tampered = [dict(p, text=p["text"].replace("\n9. Public Forum", "\n90. Public Forum")) for p in pages]
-    assert not parse_agenda("lahontan-board", [{"id": "doc"}], tampered).complete
+    result = parse_agenda("lahontan-board", [{"id": "doc"}], tampered)
+    assert result.complete and any(i["title"] == "Not Found In Agenda" and i["source_number"] == "9" for i in result.items)
+    assert any("skips item 9" in note for note in result.notes)

@@ -31,6 +31,7 @@ from pathlib import Path
 
 from .ai_topics import DEFAULT_MONTHLY_BUDGET, month_to_date_spend, out_of_time, time_budget_stop
 from .evaluate_topics import AnthropicTopicModel, ModelError, USAGE_FIELDS, cost_usd, estimate_tokens, has_credentials
+from .item_scope import in_scope
 from .requested_actions import for_meeting as requested_actions
 from .staff_reports import clean_text, procedural, Item, report_document_id
 
@@ -208,7 +209,9 @@ def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, prom
             WHERE m.quarantine_reason IS NULL AND (%s::text IS NULL OR m.agency_id=%s) AND (%s::text IS NULL OR m.id=%s)
             ORDER BY i.meeting_id,i.item_order,i.id""", (agency, agency, meeting, meeting)):
         item = Item(r["item_id"], r["number"] or "", r["title"], r["section"], r["source_fingerprint"], [])
-        if not procedural(item):
+        citations = r["citations"] if isinstance(r["citations"], list) else json.loads(r["citations"])
+        # Mapping leaves out items beyond the agency's ``itemScope``; this also keeps an older mapping from a summary.
+        if not procedural(item) and in_scope(r["agency_id"], r["title"], citations):
             candidates.append(r)
     actions = _requested_actions(conn, {r["meeting_id"] for r in candidates})
     for r in candidates:

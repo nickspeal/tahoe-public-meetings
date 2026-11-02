@@ -93,7 +93,7 @@ still check the report's own heading.
 
 | Helper | Purpose |
 | --- | --- |
-| `ctx.meeting` | `Meeting(id, agency_id, title, local_date, items, documents, official_url)`. Items have `number`, `title`, `citations` `[{documentId, page, quote}]`. Documents are the current captured versions. |
+| `ctx.meeting` | `Meeting(id, agency_id, title, local_date, items, documents, official_url)`. Items have `number`, `title`, `citations` `[{documentId, page, quote}]`. Documents are the current captured versions. For an agency with an `itemScope` block, `items` holds only the items in scope (config README); the rest never reach the rule. |
 | `ctx.numbered()` | Non-procedural items with a unique number. Procedural and repeated-number items are skipped with a reason. Unnumbered items are left out silently. |
 | `ctx.by_title(texts, items=None, *, floor=0.8)` | `{item id: key}` from `texts` (`{key: printed link text or heading}`), unique both ways. Unmatched items are skipped. |
 | `ctx.stored_pages(version_id)` | Stored page texts `{page: text}` of a captured document. No download. |

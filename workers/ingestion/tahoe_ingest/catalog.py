@@ -57,7 +57,7 @@ def agency_catalog_path() -> Path:
 
 # Every key an agency entry may have, in the order the registry file keeps them (`registry_text`).
 AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "meetingHost", "officialUrl", "sourceUrl", "participation",
-               "participationTypes", "discovery", "agenda", "staffReports", "planningCalendar", "topicHints", "schedule", "duration", "legacy")
+               "participationTypes", "discovery", "agenda", "staffReports", "itemScope", "planningCalendar", "topicHints", "schedule", "duration", "legacy")
 # What an entry says about its own body, never inherited through `extends`: its identity, the decision to follow it,
 # how readers take part, when and how long it meets, and its research record. The rest describes the publisher's
 # website and document formats, which sibling bodies share.
@@ -139,6 +139,8 @@ def agency_catalog() -> tuple[dict, ...]:
             validate_duration(agency["duration"], f"duration of {agency['id']}")
         from .staff_report_rules import check_config  # imported here: rule modules load only with the registry
         check_config(agency)
+        from . import item_scope
+        item_scope.check_config(agency)
         from . import planning_calendar_rules  # likewise: format modules load only with the registry
         planning_calendar_rules.check_config(agency)
         from urllib.parse import urlparse

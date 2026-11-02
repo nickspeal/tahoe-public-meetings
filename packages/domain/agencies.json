@@ -1381,6 +1381,25 @@
     "staffReports": {
       "rule": "order-of-business-item-files"
     },
+    "itemScope": {
+      "mode": "tahoe-only",
+      "terms": [
+        "Tahoe",
+        "Truckee",
+        "Donner Lake",
+        "Fallen Leaf Lake",
+        "Emerald Bay",
+        "Meeks Bay",
+        "Rubicon Bay",
+        "Tahoma",
+        "Homewood",
+        "Carnelian Bay",
+        "Agate Bay",
+        "Kings Beach",
+        "Brockway"
+      ],
+      "note": "Most items are leases elsewhere in California, so only Tahoe items get staff reports and summaries. Each agenda row names the water body, the nearest town, and the county; every Lake Tahoe row says \"Lake Tahoe\", which \"Tahoe\" also matches in South Lake Tahoe, Tahoe City, Tahoe Vista, Tahoe Keys, and the Lake Tahoe Basin. The other terms are Tahoe and Truckee places named without the word. El Dorado, Placer, and Nevada County alone do not qualify: those counties reach Folsom Lake, the American River, and the Sacramento Valley edge, and their Tahoe rows always name the lake too. The Commission has no Nevada jurisdiction, so Nevada shore names are not listed."
+    },
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
       "sourceRow": 33,

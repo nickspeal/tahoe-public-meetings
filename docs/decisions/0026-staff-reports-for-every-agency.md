@@ -65,3 +65,9 @@ Downloads per scheduled run remain bounded by `--staff-report-meetings` (6 meeti
 - An unsupported agency starts publishing per-item reports or a packet with item markers.
 - Agenda adapters exist for the Tahoe Conservancy or the State Lands Commission (their rules are described in the research notes and can then be added).
 - Export size or AI spend from the added agencies approaches the budgets in decisions 0020 and 0024.
+
+## Amendment (2026-11-02): Tahoe items only for statewide agencies
+
+Status: accepted (maintainer decision, 2026-11-02); implemented locally, not yet deployed
+
+The State Lands Commission now has an agenda adapter and the `order-of-business-item-files` rule, but a meeting has 55 to 110 items and nearly all are leases elsewhere in California (18 of 74 on October 21, 2026 are at Lake Tahoe). The maintainer decided that for agencies mostly unrelated to Tahoe, staff report mapping and Claude summaries run only for Tahoe items. This is a registry option, not agency code (decision 0027): an `itemScope` block with `"mode": "tahoe-only"` and a list of match terms, checked against the item's title and the agenda text it cites (`tahoe_ingest/item_scope.py`; [config README](../../config/README.md#agencies-and-bodies)). Out-of-scope items keep their deterministic agenda excerpt and are left out silently; every other agency keeps the whole-agenda behavior. A county name alone does not qualify, because El Dorado, Placer, and Nevada counties reach far from the lake and the Commission's Tahoe rows always name the lake. Topic classification still reads every item: it is the step that marks far-away items `tahoeRelevant: false`, and at under $0.0001 per item it costs under a cent a meeting. Fish and Game, State Parks, and the CTC may take the same block when their agendas warrant it; that is a proposed default, not yet decided.

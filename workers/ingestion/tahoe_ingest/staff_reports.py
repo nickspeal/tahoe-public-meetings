@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import NewType
 
-from . import http
+from . import http, item_scope
 from .http import EndpointSkipped
 from .outline import NOT_PLACEHOLDER_SQL
 
@@ -108,6 +108,7 @@ class Meeting:
     items: list
     documents: list
     official_url: str | None = None  # the meeting's official page, for rules that read its links
+    out_of_scope: int = 0  # items left out by the agency's ``itemScope`` (``item_scope``); rules never see them
 
 
 # --- Text helpers ------------------------------------------------------------
@@ -692,6 +693,10 @@ def _load(conn, *, agency: str | None, meeting: str | None) -> dict[str, Meeting
         m = meetings.setdefault(r["meeting_id"], Meeting(r["meeting_id"], r["agency_id"], r["meeting_title"], r["local_date"], [], [],
                                                                   r["official_url"]))
         citations = r["citations"] if isinstance(r["citations"], list) else json.loads(r["citations"])
+        # An agency whose agendas are mostly about other places maps only its Tahoe items (``itemScope``).
+        if not item_scope.in_scope(r["agency_id"], r["title"], citations):
+            m.out_of_scope += 1
+            continue
         m.items.append(Item(r["id"], r["number"] or "", r["title"], r["section"], r["source_fingerprint"], citations))
     if meetings:
         for r in conn.execute("""SELECT c.meeting_id,v.id,v.source_document_id,v.title,v.url,v.sha256,v.page_count,v.media_type
@@ -749,7 +754,8 @@ def map_staff_reports(conn, *, agency: str | None = None, meeting: str | None = 
         ctx = Context(stored, m, reader, delay, fetch_html)
         status, mappings, problem = "done", [], None
         try:
-            mappings = rules[m.agency_id](ctx)
+            # A meeting with no item in scope downloads nothing; storing its scan still removes stale mappings.
+            mappings = rules[m.agency_id](ctx) if m.items or not m.out_of_scope else []
         except Uncertain as exc:
             problem = str(exc)
         except (FetchFailed, EndpointSkipped) as exc:
@@ -762,6 +768,8 @@ def map_staff_reports(conn, *, agency: str | None = None, meeting: str | None = 
             report["retryLater"].append(f"{m.id}: {ctx.fetch_failures[0]}")
         report["downloads"] += ctx.downloads
         detail = {"mapped": len(mappings), "skipped": ctx.skipped}
+        if m.out_of_scope:
+            detail["outOfScope"] = m.out_of_scope
         if problem:
             detail["problem"] = problem
             report["uncertain"][m.id] = problem

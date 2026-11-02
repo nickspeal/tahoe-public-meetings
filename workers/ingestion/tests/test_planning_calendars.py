@@ -123,6 +123,16 @@ def test_ttd_calendar_follows_mapped_bodies_only():
                               "ttd-rtcpc": "TTD Regional Transit and Capital Programs Committee Meeting"}
 
 
+def test_ttd_next_year_calendar_and_staff_report_footer_are_not_items():
+    data = load("ttd-packet-2026-11-04")
+    result = REGISTRY["ttd-packet-pages"].parse(data["pages"], config=config("ttd"), carried_by=date(2026, 11, 4))
+    assert subjects(result, agency_id="ttd", local_date=date(2026, 12, 2))[-2:] == ["Financial Audit", "Financials"]
+    # "2027 ... Tentative Agenda Calendar" is a title, not an RTCPC item; "JM/lr" is the report author's initials.
+    assert not subjects(result, agency_id="ttd-rtcpc")
+    assert not [e for e in result["entries"] if e["local_date"].year == 2027]
+    assert {(b["label"], b["local_date"]) for b in result["blocks"]} >= {("TTD", date(2027, 1, 6)), ("RTCPC", date(2027, 1, 4))}
+
+
 def test_locate_slt_attachment_under_the_calendar_item():
     data = load("slt-apc-2026-09-30")
     calendar = {"url": data["url"], "name": data["attachmentName"], "label": "APC 09 30 2026"}

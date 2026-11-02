@@ -1,0 +1,106 @@
+# Rolls out the ingestion image for every push to main that changes what goes into it:
+# runs the worker tests, builds the image, and points both Cloud Run jobs at it by digest.
+# Only the image changes; secrets, environment, and the scheduler state stay as the deploy
+# script left them. One-time setup: `scripts/deploy/gcp-ingestion.sh github-deploy`
+# (deployment runbook, "Automatic image rollout").
+name: Deploy ingestion image
+on:
+  push:
+    branches: [main]
+    # Everything the Dockerfile copies (see the root .dockerignore allowlist).
+    paths:
+      - 'workers/ingestion/**'
+      - 'packages/domain/**'
+      - 'config/**'
+      - 'tests/fixtures/meetings.json'
+      - '.dockerignore'
+      - '.github/workflows/deploy-ingestion.yml'
+  workflow_dispatch:
+permissions: {}
+# Rollouts never overlap; a newer push waiting in line replaces an older one that has not started.
+concurrency:
+  group: deploy-ingestion
+  cancel-in-progress: false
+env:
+  PROJECT_ID: tahoe-public-meetings
+  REGION: us-west1
+  IMAGE: us-west1-docker.pkg.dev/tahoe-public-meetings/tahoe/ingestion
+  JOBS: tahoe-ingest tahoe-backfill
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: tahoe
+          POSTGRES_PASSWORD: tahoe-test
+          POSTGRES_DB: tahoe
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U tahoe" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install poppler (pdftotext, as in the image)
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends poppler-utils
+      - uses: astral-sh/setup-uv@v10.3.3  # publishes no major-version tag
+        with:
+          python-version: '3.13'
+          enable-cache: true
+          cache-dependency-glob: workers/ingestion/uv.lock
+      - name: Install the worker
+        run: uv sync --project workers/ingestion --extra test --frozen
+      - name: Run the worker tests
+        env:
+          TEST_DATABASE_URL: postgresql://tahoe:tahoe-test@localhost:5432/tahoe
+        run: workers/ingestion/.venv/bin/pytest -q workers/ingestion/tests
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: projects/54127327930/locations/global/workloadIdentityPools/github/providers/tahoe-main
+          service_account: tahoe-github-deploy@tahoe-public-meetings.iam.gserviceaccount.com
+          token_format: access_token
+      - uses: docker/login-action@v4
+        with:
+          registry: us-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - uses: docker/setup-buildx-action@v4
+      - name: Name the image after the commit
+        id: tag
+        run: echo "tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+      - id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: workers/ingestion/Dockerfile
+          platforms: linux/amd64
+          provenance: false
+          sbom: false
+          push: true
+          tags: ${{ env.IMAGE }}:${{ steps.tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Point the jobs at the new image
+        env:
+          REF: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}
+        run: |
+          # Running executions keep their image; the next execution uses this one.
+          for job in $JOBS; do
+            gcloud run jobs update "$job" --image="$REF" --region="$REGION" --project="$PROJECT_ID" --quiet
+          done
+          echo "Deployed \`$REF\` (tag ${{ steps.tag.outputs.tag }}) to $JOBS." >> "$GITHUB_STEP_SUMMARY"

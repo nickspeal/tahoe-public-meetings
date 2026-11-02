@@ -450,7 +450,7 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                 (item_id, meeting_id, source_key, number, int(item["order"]), item["title"], item.get("section"),
                  fingerprint, json.dumps(valid_citations), item_change))
         if is_placeholder(item):
-            # No summary, topics, or citation check for a number the agenda skips (decision 0030).
+            # No summary, topics, or citation check for a number the agenda skips (decision 0032).
             conn.execute("DELETE FROM summaries WHERE item_id=%s", (item_id,))
             conn.execute("DELETE FROM item_topics WHERE item_id=%s", (item_id,))
             conn.execute("UPDATE agenda_items SET classifier_version=%s WHERE id=%s AND classifier_version IS DISTINCT FROM %s",

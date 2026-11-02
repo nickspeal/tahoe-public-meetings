@@ -15,7 +15,7 @@ const { period } = Astro.props;
 const agency = agencies.find((row) => row.id === period.agencyId);
 const status = commentPeriodStatus(period);
 const statusLabel = status === 'closed' ? 'Closed' : status === 'upcoming' ? 'Not yet open' : 'Open for comment';
-const statusTone = status === 'closed' ? 'muted' : status === 'upcoming' ? 'amber' : 'green';
+const statusTone = status === 'closed' ? 'muted' : status === 'upcoming' ? 'outline' : 'blue';
 const longDate = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' } as const;
 const deadline = commentDeadlineLabel(period, longDate);
 const relatedMeetings = commentPeriodMeetings(period);
@@ -36,35 +36,35 @@ const linked = (text: string) => text.split(/(https:\/\/[^\s]*[^\s.,;:)])/).filt
   <section class="section-wrap detail-layout">
     <div class="detail-main">
       <section class="comment-period-section" aria-labelledby="summary">
-        <div class="content-heading"><p class="eyebrow">ABOUT THE PROJECT</p><h2 id="summary">Summary</h2></div>
+        <div class="content-heading"><p class="eyebrow">About the project</p><h2 id="summary">Summary</h2></div>
         {(period.projectTitle || period.projectProponent) && <dl class="comment-period-project">{period.projectTitle && <div><dt>Project title</dt><dd>{period.projectTitle}</dd></div>}{period.projectProponent && <div><dt>Project proponent</dt><dd>{period.projectProponent}</dd></div>}</dl>}
         {period.summary && <p class="comment-period-summary">{linked(period.summary).map((part) => part.href ? <a href={part.href} target="_blank" rel="noopener noreferrer" {...periodEvent}>{part.text}</a> : part.text)}</p>}
         {hasDetails ? <p class="history-note">Quoted from the official notice.</p> : <p class="muted-panel">A description of the project is not recorded here yet. Open the official notice for details.</p>}
       </section>
       <section class="source-list-block" aria-labelledby="related-meetings">
-        <div class="content-heading"><p class="eyebrow">IN PUBLIC MEETINGS</p><h2 id="related-meetings">Meetings</h2><p>Public meetings where this project is on the agenda.</p></div>
+        <div class="content-heading"><p class="eyebrow">In public meetings</p><h2 id="related-meetings">Meetings</h2><p>Public meetings where this project is on the agenda.</p></div>
         {relatedMeetings.length ? <div class="comment-period-meetings">{relatedMeetings.map((meeting) => <MeetingCard meeting={meeting} />)}</div> : <p class="muted-panel">No meetings about this comment period are listed yet.</p>}
       </section>
       <section class="source-list-block" aria-labelledby="official-notice">
-        <div class="content-heading"><p class="eyebrow">OFFICIAL SOURCE</p><h2 id="official-notice">Official notice</h2><p>The comment dates come from this passage.</p></div>
+        <div class="content-heading"><p class="eyebrow">Official source</p><h2 id="official-notice">Official notice</h2><p>The comment dates come from this passage.</p></div>
         <blockquote class="comment-period-quote">{period.sourceQuote}</blockquote>
         <a class="source-document" href={period.officialUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}><span class="document-icon" aria-hidden="true">↗</span><span><strong>Official notice</strong><small>{periodAgencyLabel(period) ?? period.agencyId}</small></span><span class="source-open">Open official notice ↗</span></a>
       </section>
     </div>
     <aside class="detail-aside">
-      <section class="aside-card"><p class="eyebrow">KEY DATES</p><h2>Comment window</h2>
+      <section class="aside-card"><p class="eyebrow">Key dates</p><h2>Comment window</h2>
         <dl class="logistics-list">
           <div><dt>Opens</dt><dd>{period.opensOn ? noticeDayLabel(period.opensOn, longDate) : 'Not stated in the notice'}</dd></div>
           <div><dt>{status === 'closed' ? 'Closed' : 'Comments due'}</dt><dd>{deadline}{!period.closesAt && <><br /><small class="comment-period-note">Exact closing time not stated</small></>}</dd></div>
           <div><dt>{period.host ? 'Host' : 'Agency'}</dt><dd>{period.host ?? (agency ? <a href={agency.officialUrl} target="_blank" rel="noopener noreferrer" {...clickEvent('outbound-agency', Astro.url.pathname, agency.id)}>{agency.name} ↗</a> : period.agencyId)}</dd></div>
         </dl>
       </section>
-      <section class="aside-card comment-period-how" aria-labelledby="how-to-comment"><p class="eyebrow">{status === 'closed' ? 'AS PUBLISHED' : 'SUBMIT A COMMENT'}</p><h2 id="how-to-comment">How to comment</h2>
+      <section class="aside-card comment-period-how" aria-labelledby="how-to-comment"><p class="eyebrow">{status === 'closed' ? 'As published' : 'Submit a comment'}</p><h2 id="how-to-comment">How to comment</h2>
         <p class="comment-period-instructions">{period.instructions ?? 'The notice does not state submission methods here. Check the official notice for how to comment.'}</p>
         {status !== 'closed' && (period.participationUrl ? <a class="button button-dark button-full" href={period.participationUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}>Comment instructions ↗</a> : <a class="button button-outline button-full" href={period.officialUrl} target="_blank" rel="noopener noreferrer" {...periodEvent}>Check the official notice ↗</a>)}
         <p class="aside-footnote">Dates and instructions are copied from the official notice.{status !== 'closed' && ' Confirm them with the agency before submitting.'}</p>
       </section>
-      <section class="aside-card"><p class="eyebrow">SOURCE STATUS</p><h2>Record updated {formatDate(period.updatedAt)}</h2><p class="history-note">Official notice last checked {formatDate(period.lastCheckedAt)}.</p></section>
+      <section class="aside-card"><p class="eyebrow">Source status</p><h2>Record updated {formatDate(period.updatedAt)}</h2><p class="history-note">Official notice last checked {formatDate(period.lastCheckedAt)}.</p></section>
     </aside>
   </section>
 </SiteLayout>

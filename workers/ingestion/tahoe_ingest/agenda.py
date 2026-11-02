@@ -8,7 +8,7 @@ engine (``outline``) or the hand-written parser the layout names
 (``agenda_custom``), until one validates. The title quote is copied exactly
 from one extracted page.
 
-Irregular numbering does not void an agenda (decision 0030): the items that
+Irregular numbering does not void an agenda (decision 0032): the items that
 could be read are published with operator notes, and a number the
 agenda skips is listed as a placeholder (``outline.PLACEHOLDER_TITLE``) with no
 quote. When several agenda PDFs read differently, the agenda is preferred over

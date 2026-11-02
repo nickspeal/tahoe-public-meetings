@@ -683,7 +683,7 @@ def __getattr__(name: str):
 def _load(conn, *, agency: str | None, meeting: str | None) -> dict[str, Meeting]:
     agencies = [agency] if agency else list(_supported())
     meetings: dict[str, Meeting] = {}
-    # Placeholders for skipped numbers (decision 0030) have no staff report to map.
+    # Placeholders for skipped numbers (decision 0032) have no staff report to map.
     for r in conn.execute(f"""SELECT i.id,i.meeting_id,i.number,i.title,i.section,i.source_fingerprint,i.citations,
             m.agency_id,m.title AS meeting_title,m.local_date,m.official_url
             FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id

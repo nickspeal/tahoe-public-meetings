@@ -4,7 +4,7 @@ Each fixture in tests/fixtures/agenda-layouts holds the extracted pages of one
 official agenda and the reviewed item list. "expected": null marks a document
 that must be rejected rather than guessed (a malformed agenda, or a synopsis).
 "notes" lists the review notes of an agenda published despite irregular
-numbering (decision 0030); a fixture without it must parse cleanly.
+numbering (decision 0032); a fixture without it must parse cleanly.
 Fixtures name an agency, so they also exercise the layouts its registry entry lists.
 """
 import json
@@ -84,7 +84,7 @@ def test_numbering_gap_needs_the_label_to_be_absent():
     assert result.complete
     assert [i["source_number"] for i in result.items][12:15] == ["13", "14", "15"]
     # A malformed label ("12x") is not a gap in the source, so it gets no placeholder; the items after it
-    # are still published, with a review note (decision 0030).
+    # are still published, with a review note (decision 0032).
     missing_middle = [dict(p, text=p["text"].replace("  12    Nye County", "  12x   Nye County")) for p in pages]
     result = parse_agenda("ndep", [{"id": "doc"}], missing_middle)
     assert result.complete
@@ -253,7 +253,7 @@ def test_lahontan_board_titles_end_at_the_description_dash():
     titles = [i["title"] for i in parse_agenda("lahontan-board", [{"id": "doc"}], pages).items]
     assert titles[7:9] == ["Closed Session", "Public Forum"]  # "Closed Session1" footnote marker, then Thursday's session
     assert "Adjournment" not in titles and "Call to Order and Introductions" not in titles
-    # A missing item number is published as a placeholder with a warning rather than renumbered (decision 0030).
+    # A missing item number is published as a placeholder with a warning rather than renumbered (decision 0032).
     tampered = [dict(p, text=p["text"].replace("\n9. Public Forum", "\n90. Public Forum")) for p in pages]
     result = parse_agenda("lahontan-board", [{"id": "doc"}], tampered)
     assert result.complete and any(i["title"] == "Not Found In Agenda" and i["source_number"] == "9" for i in result.items)

@@ -238,7 +238,7 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
         warnings.append("Official documents at this source are not retrieved automatically; read them at the official link.")
     if parsed and parsed.complete:
         warnings = [w for w in warnings if "agenda items require" not in w.lower()]
-        warnings.extend(parsed.notes)  # irregular numbering published for review (decision 0030)
+        warnings.extend(parsed.notes)  # irregular numbering published for review (decision 0032)
     else:
         warnings.append(parsed.warning if parsed else
                         "Document limit omitted source PDFs; agenda items require review." if docs else

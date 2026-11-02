@@ -17,6 +17,12 @@ Only calendars that could become current are read. A calendar is never published
 carries it, so meetings dated before the current calendar's publication date are skipped, and meetings are read
 newest first: once a valid calendar is stored, older meetings in the same run are skipped too. Unchanged inputs
 cost three lookups (stored versions, attachment lists, packet documents) and no downloads or writes.
+
+``force`` reads already stored calendars again after a format fix, still with no download: an attachment calendar
+from the page text stored with it, a packet calendar from the packet's stored pages (so ``locate`` runs again too).
+Each one's previews are replaced; planned meetings that no current preview supports are left out of the export.
+As without ``force``, meetings dated before the current calendar's publication date are skipped, so older stored
+versions, which are never shown, are not read.
 """
 from __future__ import annotations
 
@@ -60,6 +66,15 @@ def _stored(conn, keys: list[str]) -> dict[str, dict]:
         entry["shas"].add(r["sha256"])
         if r["status"] == "valid" and (entry["floor"] is None or r["published_on"] > entry["floor"]):
             entry["floor"] = r["published_on"]
+    return found
+
+
+def _stored_pages(conn, keys: list[str]) -> dict[str, dict]:
+    """Per stored attachment URL, its newest capture: ``{"sha256", "pages"}`` (for ``force``)."""
+    found = {}
+    for r in conn.execute("""SELECT url,sha256,pages FROM preview_sources WHERE source_kind=%s AND source_key=ANY(%s)
+            AND pages IS NOT NULL ORDER BY captured_at""", (KIND, keys)):
+        found[r["url"]] = {"sha256": r["sha256"], "pages": r["pages"]}
     return found
 
 
@@ -123,8 +138,8 @@ def _pages(conn, version_ids: list[str]) -> dict[str, list[dict]]:
 class _Reading:
     """One run's counters and the shared store step."""
 
-    def __init__(self, conn, today: date):
-        self.conn, self.today = conn, today
+    def __init__(self, conn, today: date, force: bool = False):
+        self.conn, self.today, self.force = conn, today, force
         self.report = {"calendarsFound": 0, "calendarsRead": 0, "calendarsUnchanged": 0, "previewsInserted": 0,
                        "plannedMeetings": [], "rejected": [], "failed": [], "byAgency": {}}
 
@@ -145,7 +160,7 @@ class _Reading:
             source = previews.PreviewSource(kind=KIND, key=key, sha256=sha256, url=url, title=parsed["title"],
                                             published_on=parsed["published_on"], pages=pages)
             result = previews.replace_source(self.conn, source, [previews.Preview(**e) for e in parsed["entries"]],
-                                             today=self.today)
+                                             today=self.today, force=self.force)
         except (CalendarInvalid, ValueError) as exc:
             self.conn.rollback()
             reason = getattr(exc, "reason", None) or str(exc) or type(exc).__name__
@@ -168,12 +183,13 @@ class _Reading:
 
 def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = False, reader=read_pdf,
                             delay: float = 0.0, today: date | None = None, max_calendars: int | None = None,
-                            deadline: float | None = None) -> dict:
+                            deadline: float | None = None, force: bool = False) -> dict:
     """Read every configured agency's new planning calendars and store their previews (see the module docstring).
 
     ``reader(url)`` downloads a PDF temporarily (``staff_reports.read_pdf``); ``max_calendars`` bounds downloads
     per run (the rest wait for the next run), and so does ``deadline`` (a ``time.monotonic()`` value): once it
     passes, no further calendar is downloaded. ``dry_run`` lists what would be read, with no downloads or writes.
+    ``force`` also reads stored calendars again from their stored text (see the module docstring).
     """
     today = today or date.today()
     rules = agency_rules()
@@ -181,9 +197,10 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
         if agency not in rules:
             raise SystemExit(f"{agency}: no planningCalendar in the registry (configured: {', '.join(sorted(rules)) or 'none'})")
         rules = {agency: rules[agency]}
-    reading = _Reading(conn, today)
+    reading = _Reading(conn, today, force)
     report = reading.report
     report["dryRun"] = dry_run
+    report["force"] = force
     if dry_run:
         report["wouldRead"] = []
     if not rules:
@@ -194,6 +211,7 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
     by_type = {kind: {a: floors[a] for a, rule in rules.items() if source_type(rule) == kind} for kind in SOURCES}
     attachment_meetings = _attachment_meetings(conn, by_type["items"])
     packet_meetings = _packet_meetings(conn, by_type["pages"])
+    stored_pages = _stored_pages(conn, [source_key(a) for a in by_type["items"]]) if force and by_type["items"] else {}
     conn.commit()  # no transaction stays open while calendars download
 
     downloads = 0
@@ -205,7 +223,8 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
             for meeting in attachment_meetings.get(agency_id, []):
                 for found in rule.locate(meeting["items"]):
                     reading.count(agency_id, "found")
-                    if found["url"] in seen["urls"]:
+                    again = force and found["url"] in stored_pages
+                    if found["url"] in seen["urls"] and not again:
                         reading.count(agency_id, "unchanged")
                         continue
                     if meeting["local_date"] < floor:
@@ -213,22 +232,25 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
                     if dry_run:
                         report["wouldRead"].append(found["url"])
                         continue
-                    if max_calendars is not None and downloads >= max_calendars:
-                        report["deferred"] = report.get("deferred", 0) + 1
-                        continue
-                    if deadline is not None and time.monotonic() >= deadline:
-                        report["deferred"] = report.get("deferred", 0) + 1
-                        report["stoppedEarly"] = "time budget reached; remaining calendars are read on the next run"
-                        report["timeBudgetReached"] = True
-                        continue
-                    if downloads and delay:
-                        time.sleep(delay)
-                    downloads += 1
-                    try:
-                        pdf = reader(found["url"])
-                    except (FetchFailed, EndpointSkipped, Uncertain, subprocess.SubprocessError) as exc:
-                        report["failed"].append({"agency": agency_id, "url": found["url"], "reason": str(exc)[:300]})
-                        continue
+                    if again:
+                        pdf = stored_pages.pop(found["url"])  # its stored text: no download, and read once per run
+                    else:
+                        if max_calendars is not None and downloads >= max_calendars:
+                            report["deferred"] = report.get("deferred", 0) + 1
+                            continue
+                        if deadline is not None and time.monotonic() >= deadline:
+                            report["deferred"] = report.get("deferred", 0) + 1
+                            report["stoppedEarly"] = "time budget reached; remaining calendars are read on the next run"
+                            report["timeBudgetReached"] = True
+                            continue
+                        if downloads and delay:
+                            time.sleep(delay)
+                        downloads += 1
+                        try:
+                            pdf = reader(found["url"])
+                        except (FetchFailed, EndpointSkipped, Uncertain, subprocess.SubprocessError) as exc:
+                            report["failed"].append({"agency": agency_id, "url": found["url"], "reason": str(exc)[:300]})
+                            continue
                     reading.count(agency_id, "read")
                     seen["urls"].add(found["url"])
                     published = reading.store(rule, carried_by=meeting["local_date"], sha256=pdf["sha256"],
@@ -240,7 +262,7 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
             pending = []
             for meeting in meetings:
                 for packet in meeting["packets"]:
-                    if packet["sha256"] in seen["shas"]:
+                    if packet["sha256"] in seen["shas"] and not force:
                         reading.count(agency_id, "found")
                         reading.count(agency_id, "unchanged")
                     elif packet["sha256"] not in {p["sha256"] for _, p in pending}:

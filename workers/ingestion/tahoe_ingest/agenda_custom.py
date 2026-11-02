@@ -4,7 +4,7 @@ A layout in ``config/agenda-layouts.json`` selects one of these with
 ``"parser"``. The layout still declares its label and cover like any other,
 and the parser runs only on a document whose cover matched. Each parser returns
 ``(items, warning)`` like ``outline.parse_layout`` and publishes nothing unless
-the whole agenda validates. NTCD's parser is the exception (decision 0030): it
+the whole agenda validates. NTCD's parser is the exception (decision 0032): it
 keeps the items around irregular numbering and returns them with warnings,
 which the dispatcher publishes as a note for the operator.
 

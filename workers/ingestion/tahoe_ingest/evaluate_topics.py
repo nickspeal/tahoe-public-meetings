@@ -117,7 +117,7 @@ class ModelError(Exception):
 
 def load_items(conn, *, agency: str | None = None, context_chars: int = DEFAULT_CONTEXT_CHARS) -> list[AgendaItem]:
     """Read active agenda items and the agenda-page text their citations point to."""
-    # Placeholders for skipped numbers (decision 0030) have no text to classify.
+    # Placeholders for skipped numbers (decision 0032) have no text to classify.
     rows = list(conn.execute(f"""SELECT i.id, i.meeting_id, i.number, i.item_order, i.title, i.section, i.citations,
             m.agency_id, a.name AS agency_name, m.title AS meeting_title, m.local_date
         FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id JOIN agencies a ON a.id=m.agency_id

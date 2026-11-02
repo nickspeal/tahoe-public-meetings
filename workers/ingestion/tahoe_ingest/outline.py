@@ -14,7 +14,7 @@ validates in full:
 * every title has an exact quote from one extracted page (a title that
   carries over a page break is quoted from the page where it starts).
 
-Irregular numbering does not discard the agenda (decision 0030). A number the
+Irregular numbering does not discard the agenda (decision 0032). A number the
 agenda skips (up to ``LENIENT_GAP`` labels, none of them printed anywhere) is
 kept as a placeholder item titled ``PLACEHOLDER_TITLE`` with no source quote;
 a numbered line that still cannot be placed (numbering that goes backwards or

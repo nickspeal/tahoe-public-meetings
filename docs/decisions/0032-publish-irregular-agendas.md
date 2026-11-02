@@ -1,4 +1,4 @@
-# 0030: Publish agendas with irregular numbering
+# 0032: Publish agendas with irregular numbering
 
 Status: accepted (maintainer direction); the gap limit and note wording are proposed defaults
 Date: 2026-11-02

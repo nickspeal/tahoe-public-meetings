@@ -91,9 +91,13 @@ action an agenda prints under the item (`requested_actions.py`, exact page
 text, no model), else the agenda excerpt. `map-staff-reports` links items to
 their own staff reports with one rule module per publishing format
 (`tahoe_ingest/staff_report_rules/`, chosen by each agency's `staffReports` entry; decision 0026) and lists SLT
-and TRPA attachments; `summarize-items` adds one or two sentences that Claude selects
-and trims from the report, published only when every sentence is the cited
-passage with words deleted (`item_summaries.validate`). Use `--dry-run` for
+and TRPA attachments; `summarize-items` adds one to three sentences that Claude selects
+and trims from the report, each published only when it is the cited passage with
+words deleted (`item_summaries.validate`; the first must pass, a later failing
+sentence is left out). Model and validator read the pages in reading order
+(`reading_view.py`: form side labels moved out of sentences, attested hyphenations
+joined); citations quote the stored page text. A rejected answer is retried with the
+reason, and kept in its `ai_usage.error` after `reply:`. Use `--dry-run` for
 pending items and cost; `--meeting ID` to try one meeting. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
 
 Previews (IDEA-018) are subjects an official source says are planned for a
@@ -102,7 +106,7 @@ future meeting before its agenda is posted. `extract-notices [--dry-run]
 notice that changed; it keeps only events whose quote, dates, times, places, and
 hosts appear in the notice, and turns them into one-off meetings and previews
 (`notices.py`). `read-planning-calendars [--agency ID] [--dry-run]
-[--max-calendars N]` parses each new agenda planning calendar with its
+[--max-calendars N] [--force]` parses each new agenda planning calendar with its
 format's deterministic rules (`tahoe_ingest/planning_calendar_rules/`, chosen
 by the agency's `planningCalendar` entry; see the [configuration
 guide](../../config/README.md#planning-calendars)), stores it with
@@ -110,7 +114,9 @@ guide](../../config/README.md#planning-calendars)), stores it with
 meeting, and then tags new subjects (`classify-subjects [--dry-run]`). Both
 accept `--max-cost` and `--monthly-budget`. Unchanged notices and calendars
 cost no download, model call, or write; the export reads current previews in
-one query.
+one query. After a format fix, `--force` reads stored calendars again from
+their stored text and replaces their previews (see the [rules
+README](tahoe_ingest/planning_calendar_rules/README.md#fixing-a-format-after-a-bad-calendar)).
 
 `evaluate-topics` compares the title rules with Claude Haiku 5.5 on stored
 agenda items, given either the title alone or the title plus the item's own

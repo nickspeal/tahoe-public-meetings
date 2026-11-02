@@ -1,4 +1,4 @@
-"""Agendas with irregular numbering are published as far as they can be read (decision 0030).
+"""Agendas with irregular numbering are published as far as they can be read (decision 0032).
 
 The Douglas County (Nov 5, 2026) and Washoe County (Oct 27, 2026) agendas are
 replayed in full by test_agenda_layouts; tests/fixtures/agenda-copies holds the

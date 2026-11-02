@@ -83,6 +83,17 @@ def test_merge_prefers_source_then_agenda_then_agency():
     assert merged["fromAgenda"] is False
 
 
+def test_agency_watch_link_never_overrides_a_meeting_link():
+    defaults = {"watchUrl": "https://cal-span.org", "url": "https://agency.example/remote", "sourceUrl": "x", "checkedOn": "2026-11-02"}
+    _, merged = participation.merged(None, {}, {"watchUrl": "https://cal-span.org/meeting/1"}, defaults)
+    assert merged["watchUrl"] == "https://cal-span.org/meeting/1" and merged["fromAgenda"]
+    _, merged = participation.merged(None, {"watchUrl": "https://youtube.example/live"}, None, defaults)
+    assert merged["watchUrl"] == "https://youtube.example/live"
+    _, merged = participation.merged(None, {}, None, defaults)  # no agenda yet: the standing link fills the gap
+    assert merged["watchUrl"] == "https://cal-span.org" and merged["url"] == "https://agency.example/remote"
+    assert merged["fromAgenda"] is False
+
+
 @pytest.fixture
 def conn():
     url = os.getenv("TEST_DATABASE_URL") or os.getenv("DATABASE_URL")

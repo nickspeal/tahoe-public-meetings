@@ -476,6 +476,11 @@
     "follow": true,
     "officialUrl": "https://www.eldoradocounty.ca.gov/County-Government/Board-of-Supervisors",
     "sourceUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
+    "participation": {
+      "watchUrl": "https://www.youtube.com/channel/UCUMjDk3NUltZJrpw2CL7Zkg",
+      "sourceUrl": "https://eldorado.legistar.com/View.ashx?M=A&ID=1440018&GUID=DE73E480-9A58-41E2-A117-835CC7266369",
+      "checkedOn": "2026-11-02"
+    },
     "discovery": {
       "type": "legistar",
       "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?GUID=8D6AEF28-D72E-4E85-9BCE-93169FD91B4F&ID=4317",
@@ -1066,6 +1071,13 @@
     "follow": true,
     "officialUrl": "https://www.waterboards.ca.gov/lahontan/",
     "sourceUrl": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html",
+    "participation": {
+      "watchUrl": "https://cal-span.org",
+      "url": "https://www.waterboards.ca.gov/lahontan/board_info/remote_meeting/",
+      "instructions": "Watch the webcast on CAL-SPAN. To comment on an agenda item or present to the Water Board by telephone or the remote meeting solution, follow the Water Board's remote meeting page.",
+      "sourceUrl": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026/oct/oct2026agenda_eng.pdf",
+      "checkedOn": "2026-11-02"
+    },
     "discovery": {
       "type": "dated-table",
       "indexUrl": "https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html",
@@ -1478,6 +1490,11 @@
     "follow": true,
     "officialUrl": "https://www.parks.ca.gov/",
     "sourceUrl": "https://ohv.parks.ca.gov/?page_id=27160",
+    "participation": {
+      "watchUrl": "https://cal-span.org",
+      "sourceUrl": "https://www.parks.ca.gov/pages/29247/files/SPRC%20March%20Meeting%20Agenda.pdf",
+      "checkedOn": "2026-11-02"
+    },
     "agenda": {
       "layouts": [
         "ohmvr-commission",

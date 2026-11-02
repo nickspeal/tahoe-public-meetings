@@ -19,6 +19,7 @@ Nothing in this repository names the operator's accounts. The Google project, bi
 | Alert policy "Tahoe ingestion job failed" plus an email channel | Sends an email when any execution fails (requires `ALERT_EMAIL`) |
 | Budget `tahoe-public-meetings-monthly` | $5 per month on this project. Emails go out at 50%, 90%, and 100%, and notifications go to Pub/Sub |
 | Pub/Sub topic `tahoe-budget-alerts`, push subscription, and private Cloud Run service `tahoe-budget-guard` | The budget guard. It pauses the scheduler once the month's cost reaches the budget |
+| Workload identity pool `github`, provider `tahoe-main`, service account `tahoe-github-deploy` (`github-deploy` command only) | Lets GitHub Actions roll out images from `main` (below). The account can push to `tahoe` and holds `run.developer` on `tahoe-ingest` and `tahoe-backfill` only, plus `serviceAccountUser` on the job's runtime account |
 
 Settings are environment variables at the top of the script, such as `REGION`, `JOB_MEMORY`, `TASK_TIMEOUT`, `SCHEDULE`, `BUDGET_AMOUNT`, and `KEEP_IMAGES`. The script never accepts a secret value as an argument and never prints one. It reads values from a hidden prompt, or from stdin for `set-secret`.
 
@@ -61,15 +62,27 @@ The script prints the active account and target, then asks you to type the proje
    ```
 4. **Vercel build.** Trigger the first production build (`vercel deploy --prod --scope <designated-scope>` or the dashboard). Run `run-now` again to confirm that the hook starts a build.
 
-## Redeploy a new image
+## Automatic image rollout
 
-Commit the worker changes, then rerun the script. It tags the image with the Git SHA, deploys it by digest, and leaves secrets and the scheduler state untouched. Without the `ANTHROPIC_*` IDs in the environment it keeps the deployed job's IDs. Before October 24, 2026 a redeploy without them turned Claude classification off, which happened on October 20:
+Every push to `main` that changes what the image contains (`workers/ingestion/`, `packages/domain/`, `config/`, `tests/fixtures/meetings.json`, or `.dockerignore`) runs [`deploy-ingestion.yml`](../../.github/workflows/deploy-ingestion.yml). It runs the worker tests against a throwaway Postgres, builds the image tagged with the first 12 characters of the commit SHA, and points `tahoe-ingest` and `tahoe-backfill` at it by digest. It changes nothing else: secrets, environment (including the Claude federation IDs), resources, and the scheduler state stay as the script left them. A running execution keeps its image; the next one uses the new image. Rollouts never overlap. A failed test or build leaves the jobs on their current image, and GitHub emails the repository owner. Start a rollout by hand from the Actions tab (Run workflow).
+
+GitHub Actions holds no Google key. Its OIDC token is exchanged through workload identity federation for a short-lived token of `tahoe-github-deploy`, and only tokens for pushes or manual runs on `refs/heads/main` of this repository qualify, matched by the repository's and owner's numeric IDs. Create or update that access once, as an operator:
+
+```sh
+PROJECT_ID=<project-id> scripts/deploy/gcp-ingestion.sh github-deploy --yes
+```
+
+It needs `gh` signed in, to read the repository IDs. The workflow names the provider and service account; neither is secret. Infrastructure changes (job resources, secrets, scheduler, alerts, budget) still go through the script's `deploy` command.
+
+## Redeploy a new image by hand
+
+Pushes to `main` normally do this (above). To deploy by hand, commit the worker changes, then rerun the script. It tags the image with the Git SHA, deploys it by digest, and leaves secrets and the scheduler state untouched. Without the `ANTHROPIC_*` IDs in the environment it keeps the deployed job's IDs. Before October 24, 2026 a redeploy without them turned Claude classification off, which happened on October 20:
 
 ```sh
 PROJECT_ID=<project-id> scripts/deploy/gcp-ingestion.sh --yes [--run-now]
 ```
 
-The script refuses to build from uncommitted changes under `workers/ingestion`, `packages/domain`, or `config` unless you set `ALLOW_DIRTY=1`. To roll the job back to an earlier image that is still in the registry (the newest 3 are kept), run `IMAGE_TAG=<old-sha> scripts/deploy/gcp-ingestion.sh --yes --skip-build`.
+The script refuses to build from uncommitted changes under `workers/ingestion`, `packages/domain`, or `config` unless you set `ALLOW_DIRTY=1`. To roll the job back to an earlier image that is still in the registry (the newest 3 are kept), run `IMAGE_TAG=<old-sha> scripts/deploy/gcp-ingestion.sh --yes --skip-build`. The script updates only `tahoe-ingest`, and the next worker change pushed to `main` rolls both jobs forward again, so revert the bad commit too.
 
 ## Rotate a secret
 

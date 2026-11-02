@@ -83,7 +83,6 @@ def test_merge_prefers_source_then_agenda_then_agency():
     assert merged["fromAgenda"] is False
 
 
-<<<<<<< HEAD
 def test_agency_watch_link_never_overrides_a_meeting_link():
     defaults = {"watchUrl": "https://cal-span.org", "url": "https://agency.example/remote", "sourceUrl": "x", "checkedOn": "2026-11-02"}
     _, merged = participation.merged(None, {}, {"watchUrl": "https://cal-span.org/meeting/1"}, defaults)
@@ -93,7 +92,8 @@ def test_agency_watch_link_never_overrides_a_meeting_link():
     _, merged = participation.merged(None, {}, None, defaults)  # no agenda yet: the standing link fills the gap
     assert merged["watchUrl"] == "https://cal-span.org" and merged["url"] == "https://agency.example/remote"
     assert merged["fromAgenda"] is False
-=======
+
+
 TEAMS = "https://teams.microsoft.com/l/meetup-join/19%3ameeting_x%40thread.v2/0?context=%7b%7d"
 TEAMS_HELP = "https://www.microsoft.com/microsoft-teams/join-a-meeting"
 ZOOM = "https://us02web.zoom.us/j/81234567890?pwd=abc123"
@@ -121,7 +121,6 @@ def test_embedded_links_reach_the_model_and_validate():
     assert user.endswith(source) and "Link:" not in source.split('number="4"')[1]
     kept, rejected = participation.validate(reply(remoteUrl=TEAMS), source)
     assert kept == {"remoteUrl": TEAMS} and not rejected
->>>>>>> b8d649f (Read join links embedded in agenda PDFs)
 
 
 @pytest.fixture

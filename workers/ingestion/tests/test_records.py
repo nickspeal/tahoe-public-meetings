@@ -431,3 +431,83 @@ def test_a_stored_meeting_takes_the_legistar_meeting_page_over_a_news_recap():
     assert snapshot.apply_links([candidate], coverage_start=date(2026, 1, 1)) == 0  # already the meeting page
     other = {**candidate, "official_url": "https://washoe-nv.legistar1.com/a.pdf"}
     assert snapshot.apply_links([other], coverage_start=date(2026, 1, 1)) == 0  # a file never replaces it
+
+
+# Trimmed from the public playlist page and browse continuation for a channel's uploads (2026-11-02): only the
+# nodes the reader uses are kept, in the shapes YouTube served.
+def _lockup(video, title, kind="LOCKUP_CONTENT_TYPE_VIDEO"):
+    return {"lockupViewModel": {"contentId": video, "contentType": kind,
+                                "metadata": {"lockupMetadataViewModel": {"title": {"content": title}}}}}
+
+
+def _token(value):
+    return {"continuationItemRenderer": {"continuationEndpoint": {"commandExecutorCommand": {"commands": [
+        {"innertubeCommand": {"commandMetadata": {"webCommandMetadata": {"apiUrl": "/youtubei/v1/browse"}},
+                              "continuationCommand": {"token": value, "request": "CONTINUATION_REQUEST_TYPE_BROWSE"}}}]}}}}
+
+
+PLAYLIST_PAGE_HTML = ('<html><script>ytcfg.set({"INNERTUBE_API_KEY":"AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",'
+                      '"INNERTUBE_CONTEXT":{"client":{"clientVersion":"2.20261029.11.00"}}});</script>'
+                      '<script>var ytInitialData = ' + json.dumps({"contents": [
+                          _lockup("jXyzkAdmOD4", "Board of County Commissioners | October 13, 2026"),
+                          _lockup("PLAYLIST001", "Washoe Way Back", "LOCKUP_CONTENT_TYPE_PLAYLIST"),
+                          _token("PAGE-TWO")]}) + ';</script></html>')
+CONTINUATION = {"onResponseReceivedActions": [{"appendContinuationItemsAction": {"continuationItems": [
+    _lockup("jA-Q-Zqke1Q", "Board of County Commissioners | September 15, 2026"),
+    _lockup("_4ES0vYRQyk", "Board of County Commissioners | September 8, 2026"),
+    _lockup("DgrBGUW2uw4", "Board of County Commissioners | October 28, 2025")]}}]}
+
+
+def test_page_videos_reads_first_page_then_continuation_without_a_key():
+    posted = []
+
+    def post(url, payload):
+        posted.append((url, payload))
+        return CONTINUATION
+    requested = []
+    videos = records.page_videos({"channelId": "UCyj1MIPXwvfcb-bhXNDSzQg"}, fetch_page=lambda url: requested.append(url) or PLAYLIST_PAGE_HTML,
+                                 post_json=post)
+    assert requested == ["https://www.youtube.com/playlist?list=UUyj1MIPXwvfcb-bhXNDSzQg"]
+    assert [v["id"] for v in videos] == ["jXyzkAdmOD4", "jA-Q-Zqke1Q", "_4ES0vYRQyk", "DgrBGUW2uw4"]  # playlists are skipped
+    assert len(posted) == 1 and posted[0][1]["continuation"] == "PAGE-TWO"
+    assert posted[0][0].startswith("https://www.youtube.com/youtubei/v1/browse?key=")
+    assert posted[0][1]["context"]["client"]["clientVersion"] == "2.20261029.11.00"
+
+
+def test_page_videos_stops_paging_once_titles_predate_since_and_reports_failures():
+    old = PLAYLIST_PAGE_HTML.replace("October 13, 2026", "October 13, 2025")
+    assert len(records.page_videos({"playlistId": "PLx"}, fetch_page=lambda url: old, post_json=lambda *a: pytest.fail("paged"))) == 1
+    with pytest.raises(RuntimeError, match="no playlist data"):
+        records.page_videos({"playlistId": "PLx"}, fetch_page=lambda url: "<html>consent</html>")
+
+    def failing(url, payload):
+        raise OSError(f"{url} refused")
+    with pytest.raises(RuntimeError) as error:
+        records.page_videos({"playlistId": "PLx"}, fetch_page=lambda url: PLAYLIST_PAGE_HTML, post_json=failing)
+    assert "AIza" not in str(error.value)
+
+
+def test_backfill_matches_meetings_older_than_the_feed():
+    meetings = [stored("washoe-commissioners:1", date(2026, 9, 8), "Washoe County Board of County Commissioners Meeting"),
+                stored("washoe-commissioners:2", date(2026, 9, 15), "Washoe County Board of County Commissioners Meeting")]
+    entry = {"agency": "washoe-commissioners", "channelId": "UCyj1MIPXwvfcb-bhXNDSzQg", "include": "^board of county commissioners\\b"}
+    videos = records.page_videos(entry, fetch_page=lambda url: PLAYLIST_PAGE_HTML, post_json=lambda url, payload: CONTINUATION)
+    assert records.youtube_matches(entry, videos, meetings, today=date(2026, 11, 2)) == {
+        "washoe-commissioners:1": "https://www.youtube.com/watch?v=_4ES0vYRQyk",
+        "washoe-commissioners:2": "https://www.youtube.com/watch?v=jA-Q-Zqke1Q"}
+
+
+def test_update_meeting_records_backfill_replaces_the_feed(tmp_path, monkeypatch):
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "meeting-records.json").write_text(json.dumps({"youtube": [
+        {"agency": "washoe-commissioners", "channelId": "UCyj1MIPXwvfcb-bhXNDSzQg", "include": "^board of county commissioners\\b"},
+        {"agency": "washoe-planning", "channelId": "UCyj1MIPXwvfcb-bhXNDSzQg", "include": "^planning commission\\b"}]}))
+    monkeypatch.setattr(records, "stored_for_records", lambda conn, agencies, today: {
+        "washoe-commissioners": [stored("washoe-commissioners:1", date(2026, 9, 8), "Board of County Commissioners Meeting")]})
+    pages = []
+    report = records.update_meeting_records(
+        None, tmp_path, today=date(2026, 11, 2), backfill=True, dry_run=True,
+        fetch_text=lambda url: pytest.fail("the feed is not read"),
+        fetch_page=lambda url: pages.append(url) or PLAYLIST_PAGE_HTML, post_json=lambda url, payload: CONTINUATION)
+    assert len(pages) == 1  # two bodies share one channel
+    assert report["errors"] == [] and report["byAgency"]["washoe-commissioners"]["matched"] == 1

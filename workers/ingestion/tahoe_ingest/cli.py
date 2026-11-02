@@ -201,6 +201,7 @@ def _parser() -> argparse.ArgumentParser:
     links = sub.add_parser("meeting-records", help="Match recordings and minutes (YouTube, Laserfiche, draft minutes in later agendas) to stored meetings")
     links.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."), help="Directory holding config/")
     links.add_argument("--since", type=_iso_date, help="With YOUTUBE_API_KEY set, read YouTube uploads back to this date through the Data API (one-time backfill)")
+    links.add_argument("--backfill", action="store_true", help="Read each YouTube channel's full upload list from its public playlist page (no API key) instead of the 15-video feed; for one-off runs, not the schedule")
     links.add_argument("--skip-feeds", action="store_true", help="Only draft minutes from stored agendas; no network requests")
     links.add_argument("--dry-run", action="store_true", help="Report matches without storing them")
     publish = sub.add_parser("publish-export", help="Validate an export file, store it in public_exports, and call the deploy hook if set")
@@ -463,7 +464,7 @@ def _meeting_records(conn, args) -> int:
         if args.since and not key:
             raise SystemExit("--since reads the YouTube Data API: set YOUTUBE_API_KEY")
         report["feeds"] = records.update_meeting_records(conn, args.root, today=today, api_key=key if args.since else None,
-                                                         since=args.since, dry_run=args.dry_run)
+                                                         since=args.since, backfill=args.backfill, dry_run=args.dry_run)
     report["draftMinutes"] = link_draft_minutes(conn, since=scheduled.COVERAGE_START, dry_run=args.dry_run)
     if args.dry_run:
         conn.rollback()

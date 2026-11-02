@@ -318,6 +318,78 @@ def api_videos(entry: dict, api_key: str, *, since: date, fetch=None, max_pages:
     return videos
 
 
+PAGE_BYTES = 8 * 1024 * 1024  # a playlist page and its continuation responses run 2 to 3 MB
+PLAYLIST_PAGE = "https://www.youtube.com/playlist?list="
+BROWSE_API = "https://www.youtube.com/youtubei/v1/browse"
+BACKFILL_PAGES = 6  # about 100 videos a page
+
+
+def _json_nodes(node, key: str):
+    """Every value stored under ``key`` anywhere in parsed JSON, in document order."""
+    if isinstance(node, dict):
+        for name, value in node.items():
+            if name == key:
+                yield value
+            yield from _json_nodes(value, key)
+    elif isinstance(node, list):
+        for item in node:
+            yield from _json_nodes(item, key)
+
+
+def _page_videos(data) -> tuple[list[dict], str | None]:
+    """Videos and the next continuation token in a playlist page's initial data or a browse continuation response."""
+    videos = []
+    for item in _json_nodes(data, "lockupViewModel"):
+        if item.get("contentType") != "LOCKUP_CONTENT_TYPE_VIDEO" or not re.fullmatch(r"[A-Za-z0-9_-]{11}", item.get("contentId") or ""):
+            continue
+        title = (((item.get("metadata") or {}).get("lockupMetadataViewModel") or {}).get("title") or {}).get("content")
+        if title:
+            videos.append({"id": item["contentId"], "title": title, "published": ""})
+    for item in _json_nodes(data, "playlistVideoRenderer"):  # the older page layout
+        title = "".join(run.get("text", "") for run in (item.get("title") or {}).get("runs", []))
+        if re.fullmatch(r"[A-Za-z0-9_-]{11}", item.get("videoId") or "") and title:
+            videos.append({"id": item["videoId"], "title": title, "published": ""})
+    token = next((c["token"] for c in _json_nodes(data, "continuationCommand") if isinstance(c.get("token"), str)), None)
+    return videos, token
+
+
+def page_videos(entry: dict, *, since: date = COVERAGE_START, fetch_page=None, post_json=None,
+                max_pages: int = BACKFILL_PAGES) -> list[dict]:
+    """A channel's uploads (or a configured playlist), read from the public playlist page without an API key.
+
+    The page embeds its first ~100 videos as JSON and a continuation token for the rest; the token is
+    posted to the same public endpoint the page itself uses. Everything fetched is untrusted: only video
+    IDs, titles, and the token are read. Paging stops at ``max_pages`` or once a page's dated titles all
+    predate ``since``. Slower and less stable than the feed, so it is for explicit backfills only.
+    """
+    playlist = entry.get("playlistId") or "UU" + entry["channelId"][2:]
+    fetch_page = fetch_page or (lambda url: fetch_bytes(url, max_bytes=PAGE_BYTES, accept="text/html")[0].decode("utf-8", "replace"))
+    post_json = post_json or (lambda url, payload: json.loads(fetch_bytes(url, max_bytes=PAGE_BYTES, accept="application/json",
+                                                                          payload=json.dumps(payload).encode())[0]))
+    html = fetch_page(PLAYLIST_PAGE + urllib.parse.quote(playlist))
+    initial = re.search(r"var ytInitialData = (\{.*?\});</script>", html, re.S)
+    if not initial:
+        raise RuntimeError(f"no playlist data on the YouTube page for {playlist}")
+    key = re.search(r'"INNERTUBE_API_KEY":"([A-Za-z0-9_-]{20,60})"', html)
+    version = re.search(r'"clientVersion":"(\d[\d.]{3,30})"', html)
+    videos, token = _page_videos(json.loads(initial[1]))
+    for _ in range(max_pages - 1):
+        days = [d for v in videos[-100:] if (d := title_date(v["title"]))]
+        if not token or not key or (days and max(days) < since):
+            break
+        try:
+            data = post_json(BROWSE_API + "?key=" + key[1],
+                             {"context": {"client": {"clientName": "WEB", "clientVersion": version[1] if version else "2.20260101.00.00"}},
+                              "continuation": token})
+        except Exception as exc:
+            raise RuntimeError(f"YouTube continuation for {playlist} failed: {type(exc).__name__}") from None
+        more, token = _page_videos(data)
+        if not more:
+            break
+        videos.extend(more)
+    return videos
+
+
 _PENALTY = re.compile(r"\b(?:original|untrimmed|raw|test|part\s*\d+|day\s*(?:two|three|2|3))\b", re.I)
 
 
@@ -416,12 +488,14 @@ def stored_for_records(conn, agencies: list[str], *, today: date) -> dict[str, l
 
 
 def update_meeting_records(conn, root: Path | str = ".", *, today: date, fetch_text=None, fetch_json=None,
-                           api_key: str | None = None, since: date | None = None, dry_run: bool = False) -> dict:
+                           api_key: str | None = None, since: date | None = None, backfill: bool = False,
+                           fetch_page=None, post_json=None, dry_run: bool = False) -> dict:
     """Match configured YouTube and Laserfiche records to stored meetings and store better links.
 
     Feeds are read once each even when several bodies share a channel. With
     ``api_key`` and ``since`` the YouTube Data API replaces the 15-video feed
-    (a one-time backfill). One failing feed never stops the others.
+    (a one-time backfill). With ``backfill`` and no key, each channel's uploads come from the public playlist
+    page instead (``page_videos``). One failing feed never stops the others.
     """
     from .discovery import fetch_text as default_fetch
     fetch_text = fetch_text or (lambda url: default_fetch(url, max_bytes=FEED_BYTES))
@@ -434,10 +508,16 @@ def update_meeting_records(conn, root: Path | str = ".", *, today: date, fetch_t
     meetings = stored_for_records(conn, sorted({e["agency"] for e in entries}), today=today)
     feeds: dict[str, list[dict] | Exception] = {}
     for entry in config.get("youtube", []):
-        key = feed_url(entry) + ("#api" if api_key and since else "")
+        use_api = bool(api_key and since)
+        key = feed_url(entry) + ("#api" if use_api else "#page" if backfill else "")
         if key not in feeds:
             try:
-                feeds[key] = (api_videos(entry, api_key, since=since) if api_key and since else parse_feed(fetch_text(feed_url(entry))))
+                if use_api:
+                    feeds[key] = api_videos(entry, api_key, since=since)
+                elif backfill:
+                    feeds[key] = page_videos(entry, fetch_page=fetch_page, post_json=post_json)
+                else:
+                    feeds[key] = parse_feed(fetch_text(feed_url(entry)))
             except Exception as exc:
                 feeds[key] = exc
                 report["errors"].append(f"{entry['agency']}: {feed_url(entry)}: {type(exc).__name__}: {str(exc)[:200]}")

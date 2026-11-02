@@ -4,7 +4,9 @@ A layout in ``config/agenda-layouts.json`` selects one of these with
 ``"parser"``. The layout still declares its label and cover like any other,
 and the parser runs only on a document whose cover matched. Each parser returns
 ``(items, warning)`` like ``outline.parse_layout`` and publishes nothing unless
-the whole agenda validates.
+the whole agenda validates. NTCD's parser is the exception (decision 0030): it
+keeps the items around irregular numbering and returns them with warnings,
+which the dispatcher publishes as a note for the operator.
 
 * ``ntcd-table``: NTCD prints its agenda as a table whose item numbers are
   vertically centered beside multi-line cells, so a cell's first line (its
@@ -25,7 +27,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .outline import CONNECTOR, ROMAN, ZERO_WIDTH, continues_on_next_page, section_name, title_case
+from .outline import (CONNECTOR, LENIENT_GAP, PLACEHOLDER_TITLE, ROMAN, ZERO_WIDTH, continues_on_next_page,
+                      is_placeholder, section_name, title_case)
 
 UNVALIDATED = "Agenda structure or source quote could not be validated; items require review."
 
@@ -83,34 +86,56 @@ def parse_ntcd(document_id: str, pages: list[dict]) -> tuple[list[dict], str | N
     parent_title = None
     parent_children = 0
     pending_parent = None
+    notes: list[str] = []
+    skipping = False  # the subitems of a number that was passed over
+    labels = {label for label, _ in cells}
+
+    def gap(expected: int, value: int, name) -> list[str] | None:
+        """The skipped labels before ``value``, or None when it cannot follow ``expected``."""
+        if not expected <= value <= expected + LENIENT_GAP:
+            return None
+        missing = [name(v) for v in range(expected, value)]
+        return None if any(m in labels for m in missing) else missing
+
     for label, lines in cells:
         title, quote, page = _cell_title(lines)
         if not title:
             return [], f"NTCD item {label} has no title; review required."
         if label.isdigit():
+            value = int(label)
+            missing = gap(numbers[-1] + 1 if numbers else 1, value, str)
+            if missing is None:
+                notes.append(f"NTCD agenda numbering is not sequential at item {label}; review required.")
+                skipping = True
+                continue
             if pending_parent is not None and parent_children == 0:
                 items.append(pending_parent)
-            value = int(label)
-            if value != (numbers[-1] + 1 if numbers else 1):
-                return [], f"NTCD agenda numbering is not sequential at item {label}; review required."
+            items.extend(_placeholder(m, None, document_id, page) for m in missing)
             numbers.append(value)
             letters = []
+            skipping = False
             parent_title, parent_children = title, 0
             pending_parent = _item(label, None, title, document_id, page, quote)
         else:
             value = ord(label) - 64
-            if not numbers or value != (letters[-1] + 1 if letters else 1):
-                return [], f"NTCD subitem {label} is out of sequence; review required."
+            missing = gap(letters[-1] + 1 if letters else 1, value, lambda v: chr(64 + v)) if numbers else None
+            if skipping or missing is None:
+                notes.append(f"NTCD subitem {label} is out of sequence; review required.")
+                continue
+            items.extend(_placeholder(f"{numbers[-1]}.{m}", section_name(parent_title), document_id, page) for m in missing)
             letters.append(value)
             parent_children += 1
             items.append(_item(f"{numbers[-1]}.{label}", section_name(parent_title), title, document_id, page, quote))
     if pending_parent is not None and parent_children == 0:
         items.append(pending_parent)
-    if not items or not items[-1]["title"].lower().startswith("adjournment") or len(items) < 4:
-        return [], "NTCD agenda ending or numbered sequence was not found; review required."
+    real = [item for item in items if not is_placeholder(item)]
+    if not real or not real[-1]["title"].lower().startswith("adjournment") or len(real) < 4:
+        return [], notes[0] if notes else "NTCD agenda ending or numbered sequence was not found; review required."
     for order, item in enumerate(items, 1):
         item["order"] = order
-    return items, None
+    notes += [f"NTCD agenda skips item {item['source_number']}; it is listed as “{PLACEHOLDER_TITLE}”; review required."
+              for item in items if is_placeholder(item)]
+    return items, list(dict.fromkeys(notes)) or None
 
 
 def _partition(region, marks):
@@ -216,6 +241,11 @@ def _cell_title(lines):
 def _item(number, section, title, document_id, page, quote):
     return {"source_number": number, "source_key": number or title, "order": 0, "section": section, "title": title,
             "source_pages": [{"document_id": document_id, "page_number": page, "quote": quote}]}
+
+
+def _placeholder(number, section, document_id, page):
+    """A number the agenda skips: no source text, so no quote (see ``outline.PLACEHOLDER_TITLE``)."""
+    return {**_item(number, section, PLACEHOLDER_TITLE, document_id, page, ""), "placeholder": True}
 
 
 BULLET = re.compile(r"^(\s*)[•●]\s+(\S.*)$")

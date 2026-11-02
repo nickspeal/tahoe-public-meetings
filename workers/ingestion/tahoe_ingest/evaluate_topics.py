@@ -31,6 +31,7 @@ from pathlib import Path
 from string import Template
 
 from .catalog import expand_topics, topic_catalog
+from .outline import NOT_PLACEHOLDER_SQL
 from .topics import CLASSIFIER_VERSION, classify
 
 MODEL_ID = "claude-haiku-5-5"
@@ -116,10 +117,11 @@ class ModelError(Exception):
 
 def load_items(conn, *, agency: str | None = None, context_chars: int = DEFAULT_CONTEXT_CHARS) -> list[AgendaItem]:
     """Read active agenda items and the agenda-page text their citations point to."""
-    rows = list(conn.execute("""SELECT i.id, i.meeting_id, i.number, i.item_order, i.title, i.section, i.citations,
+    # Placeholders for skipped numbers (decision 0030) have no text to classify.
+    rows = list(conn.execute(f"""SELECT i.id, i.meeting_id, i.number, i.item_order, i.title, i.section, i.citations,
             m.agency_id, a.name AS agency_name, m.title AS meeting_title, m.local_date
         FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id JOIN agencies a ON a.id=m.agency_id
-        WHERE i.active AND (%(agency)s::text IS NULL OR m.agency_id=%(agency)s)
+        WHERE i.active AND {NOT_PLACEHOLDER_SQL} AND (%(agency)s::text IS NULL OR m.agency_id=%(agency)s)
         ORDER BY m.agency_id, m.local_date NULLS LAST, m.id, i.item_order, i.id""", {"agency": agency}))
     items = [AgendaItem(id=r["id"], meeting_id=r["meeting_id"], agency_id=r["agency_id"], agency_name=r["agency_name"],
                         meeting_title=r["meeting_title"], meeting_date=r["local_date"].isoformat() if r["local_date"] else None,

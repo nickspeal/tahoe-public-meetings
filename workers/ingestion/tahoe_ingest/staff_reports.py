@@ -14,6 +14,7 @@ from typing import NewType
 
 from . import http
 from .http import EndpointSkipped
+from .outline import NOT_PLACEHOLDER_SQL
 
 METHOD_VERSION = "staff-report-map-v1"
 LEADING_PAGES = 3  # pages of each report kept for summaries and their citations
@@ -681,10 +682,12 @@ def __getattr__(name: str):
 def _load(conn, *, agency: str | None, meeting: str | None) -> dict[str, Meeting]:
     agencies = [agency] if agency else list(_supported())
     meetings: dict[str, Meeting] = {}
-    for r in conn.execute("""SELECT i.id,i.meeting_id,i.number,i.title,i.section,i.source_fingerprint,i.citations,
+    # Placeholders for skipped numbers (decision 0030) have no staff report to map.
+    for r in conn.execute(f"""SELECT i.id,i.meeting_id,i.number,i.title,i.section,i.source_fingerprint,i.citations,
             m.agency_id,m.title AS meeting_title,m.local_date,m.official_url
             FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id
-            WHERE i.active AND m.quarantine_reason IS NULL AND m.agency_id=ANY(%s) AND (%s::text IS NULL OR m.id=%s)
+            WHERE i.active AND {NOT_PLACEHOLDER_SQL} AND m.quarantine_reason IS NULL AND m.agency_id=ANY(%s)
+              AND (%s::text IS NULL OR m.id=%s)
             ORDER BY i.meeting_id,i.item_order,i.id""", (agencies, meeting, meeting)):
         m = meetings.setdefault(r["meeting_id"], Meeting(r["meeting_id"], r["agency_id"], r["meeting_title"], r["local_date"], [], [],
                                                                   r["official_url"]))

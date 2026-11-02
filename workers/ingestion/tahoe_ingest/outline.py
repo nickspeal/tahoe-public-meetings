@@ -3,8 +3,8 @@
 Each layout (configured in ``config/agenda-layouts.json``, see
 ``agenda_layouts``) describes how an agenda format numbers items: the marker
 style at each outline level, where the agenda ends, and which page furniture
-to ignore. The parser walks the extracted page text once and publishes items
-only when the whole outline validates:
+to ignore. The parser walks the extracted page text once. A clean outline
+validates in full:
 
 * the layout's cover text is present;
 * every level counts sequentially from its first value within its parent
@@ -14,6 +14,16 @@ only when the whole outline validates:
 * every title has an exact quote from one extracted page (a title that
   carries over a page break is quoted from the page where it starts).
 
+Irregular numbering does not discard the agenda (decision 0030). A number the
+agenda skips (up to ``LENIENT_GAP`` labels, none of them printed anywhere) is
+kept as a placeholder item titled ``PLACEHOLDER_TITLE`` with no source quote;
+a numbered line that still cannot be placed (numbering that goes backwards or
+repeats) is passed over. Either way the result carries a note for the operator
+(worded like the failure reasons), and the items read from the rest of the
+agenda are kept as long as at least ``min_items`` of them were recognized.
+Where indentation contradicts an otherwise sequential number, the number wins,
+so a confusing outline yields a flatter list rather than none.
+
 Unnumbered ALL-CAPS headings name the section of the items below them. A
 heading may carry a parenthetical note ("DEPARTMENT MATTERS (Items in this
 category may be called at any time)"). A standalone time line ("10:00 A.M. -
@@ -21,8 +31,9 @@ TIME ALLOCATION") ends the section, because its items are scheduled on their
 own. Items in an addendum printed after the ending marker join the section of
 the same name, after that section's last item.
 
-Anything else returns an incomplete result with a reason, so the meeting
-keeps its text and official links but no guessed items.
+Anything else (no cover, no ending, an untitled item) returns an incomplete
+result with a reason, so the meeting keeps its text and official links but no
+guessed items.
 """
 from __future__ import annotations
 
@@ -34,8 +45,18 @@ from .time_certain import time_heading
 ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10,
          "XI": 11, "XII": 12, "XIII": 13, "XIV": 14, "XV": 15, "XVI": 16, "XVII": 17, "XVIII": 18,
          "XIX": 19, "XX": 20}
+# A number the agenda skips is published as an item with this title, its number, and no source quote.
+PLACEHOLDER_TITLE = "Not Found In Agenda"
+# SQL condition (on agenda_items AS i) that leaves placeholders out of classification, summaries, and staff reports.
+NOT_PLACEHOLDER_SQL = f"NOT (i.title = '{PLACEHOLDER_TITLE}' AND i.citations = '[]'::jsonb)"
+LENIENT_GAP = 3  # the most consecutive missing labels bridged when the strict outline fails
 ZERO_WIDTH = re.compile("[​‌‍﻿]")
 CONNECTOR = re.compile(r"(?:[,;(&/\-–—]|\b(?:and|or|of|the|for|to|in|on|at|with|by|from|a|an|as|its|their|regarding|between))\s*$", re.I)
+
+
+def is_placeholder(item: dict) -> bool:
+    """Whether a parsed item stands for a number the agenda skipped (it has no source text)."""
+    return bool(item.get("placeholder")) and item.get("title") == PLACEHOLDER_TITLE
 
 
 def continues_on_next_page(title: str, next_line: str) -> bool:
@@ -144,6 +165,7 @@ class Entry:
     children: list["Entry"] = field(default_factory=list)
     heading: str | None = None
     hidden: bool = False
+    placeholder: bool = False  # a number the agenda skips (PLACEHOLDER_TITLE)
 
 
 class Invalid(Exception):
@@ -158,6 +180,16 @@ def value_of(kind: str, label: str) -> int:
     if kind in {"roman", "lroman"}:
         return ROMAN[label.upper()]
     return ord(label.lower()) - 96
+
+
+def label_of(kind: str, value: int) -> str:
+    """The printed label of ``value`` at a level of ``kind`` (inverse of ``value_of``)."""
+    if kind == "num":
+        return str(value)
+    if kind in {"roman", "lroman"}:
+        label = next(k for k, v in ROMAN.items() if v == value)
+        return label.lower() if kind == "lroman" else label
+    return chr((96 if kind == "lower" else 64) + value)
 
 
 def rows(layout: Layout, pages: list[dict]) -> list[Row]:
@@ -245,6 +277,50 @@ class Parser:
         self.heading_items = re.compile(layout.heading_items) if layout.heading_items else None
         self.header = re.compile(layout.column_header) if layout.column_header else None
         self.end_row = -1
+        self.notes: list[str] = []  # notes for the operator on an agenda published despite irregular numbering
+
+    def out_of_sequence(self, text: str) -> None:
+        """Note the first numbered line that does not fit the outline (later ones usually follow from it)."""
+        if not any("numbering is not sequential" in note for note in self.notes):
+            self.notes.append(f"{self.layout.label} numbering is not sequential near “{text[:60]}”; review required.")
+
+    def fill_gap(self, siblings: list[Entry], level_index: int, skipped: tuple, parent: Entry | None,
+                 page: int, heading: str | None, text: str) -> None:
+        """Placeholders for skipped labels that appear nowhere in the agenda; a printed one is only noted."""
+        kind = self.layout.levels[level_index].kind
+        for value in skipped:
+            label = value if kind == "free" else label_of(kind, value)
+            if self.printed(level_index, label, parent):
+                self.out_of_sequence(text)
+                continue
+            siblings.append(Entry(level_index, value_of(kind, label), label, PLACEHOLDER_TITLE, page, "", parent,
+                                  heading=heading, placeholder=True))
+
+    def printed(self, level_index: int, label: str, parent: Entry | None) -> bool:
+        kind = self.layout.levels[level_index].kind
+        if kind != "free":
+            value = value_of(kind, label)
+            return self.label_present(level_index, value, value + 1)
+        for row in self.rows:
+            match = self.patterns[level_index].match(row.clean)
+            if match and match.group("v") == label and match.groupdict().get("p") in (None, parent.label if parent else None):
+                return True
+        return False
+
+    def free_gap(self, siblings: list[Entry], level_index: int, label: str) -> tuple:
+        """Labels skipped between a free-form sibling ("D", "11.2") and this one ("F", "11.4")."""
+        previous = next((e for e in reversed(siblings) if e.level == level_index and not e.placeholder), None)
+        if previous is None:
+            return ()
+        if re.fullmatch(r"[A-Z]", label) and re.fullmatch(r"[A-Z]", previous.label):
+            first, last, name = ord(previous.label) + 1, ord(label), chr
+        elif label.isdigit() and previous.label.isdigit():
+            first, last, name = int(previous.label) + 1, int(label), str
+        else:
+            return ()
+        if not self.layout.max_gap < last - first <= LENIENT_GAP:
+            return ()
+        return tuple(name(value) for value in range(first, last))
 
     # -- marker detection -------------------------------------------------
     def markers(self, row: Row) -> list[tuple[int, re.Match]]:
@@ -396,7 +472,17 @@ class Parser:
                 if reference and reference[2] == row.page and not row.page_start and \
                         len(found[0][1].group("indent")) > reference[0] + layout.indent_tolerance:
                     continue  # a numbered list inside an item's description
-                raise Invalid(f"{layout.label} numbering is not sequential near “{stripped[:60]}”; review required.")
+                # Strict reading failed: bridge a short gap or ignore indentation, else pass over the line.
+                choice = self.choose(row, found, stack, level_indent, started, lenient=idx)
+                if choice is None and found[0][0] == 0 and self.end.search(found[0][1].group("t").strip()):
+                    choice = (0, found[0][1], ())  # a numbered ending ("18. Adjournment") still ends the agenda
+                if choice is None or not choice[2]:
+                    self.out_of_sequence(stripped)  # skipped labels are noted as they are filled
+                if choice is None:
+                    continue
+            skipped = ()
+            if choice is not None:
+                choice, skipped = choice[:2], choice[2]
             if choice is not None and choice[0] == -1:
                 # Dotted children ("7.1") without a printed "7." entry: the section heading names the parent.
                 match = choice[1]
@@ -422,7 +508,9 @@ class Parser:
                         stack = stack[:level_index]
                         placeholder = Entry(level_index, value_of(levels[level_index].kind, match.group("v")), match.group("v"),
                                             "", row.page, "", stack[-1] if stack else None, hidden=True)
-                        (placeholder.parent.children if placeholder.parent else roots).append(placeholder)
+                        siblings = placeholder.parent.children if placeholder.parent else roots
+                        self.fill_gap(siblings, level_index, skipped, placeholder.parent, row.page, heading, stripped)
+                        siblings.append(placeholder)
                         stack.append(placeholder)
                         continue
                     if title_row is None or self.rows[title_row].page != row.page or self.is_marker(self.rows[title_row]):
@@ -438,7 +526,11 @@ class Parser:
                 parent = stack[-1] if stack else None
                 entry = Entry(level_index, value_of(levels[level_index].kind, match.group("v")), match.group("v"),
                               title, row.page, quote, parent, heading=heading)
-                (parent.children if parent else roots).append(entry)
+                siblings = parent.children if parent else roots
+                if levels[level_index].kind == "free":
+                    skipped = self.free_gap(siblings, level_index, match.group("v"))
+                self.fill_gap(siblings, level_index, skipped, parent, row.page, heading, stripped)
+                siblings.append(entry)
                 stack.append(entry)
                 started = True
                 if level_index == 0:
@@ -491,7 +583,13 @@ class Parser:
         self.addendum(roots)
         return roots
 
-    def choose(self, row, found, stack, level_indent, started):
+    def choose(self, row, found, stack, level_indent, started, lenient: int | None = None):
+        """The (level, match, skipped values) a numbered line continues, or None.
+
+        ``lenient`` (the row's index) is the fallback when no strict reading fits: indentation
+        is ignored, and a forward gap of up to ``LENIENT_GAP`` labels is bridged unless a
+        skipped label is printed as a marker later on (then this line is the stray one).
+        """
         layout = self.layout
         options = []
         depth = len(stack)
@@ -501,14 +599,14 @@ class Parser:
             level = layout.levels[level_index]
             if level.kind == "free" and level_index == 1 and stack and match.groupdict().get("p") \
                     and layout.levels[0].kind == "num" and match.group("p") == str(stack[0].value + 1):
-                options.append((0, 0, -1, match))  # parent entry is implied by its children
+                options.append((0, 0, -1, match, ()))  # parent entry is implied by its children
                 continue
             if level.kind == "free":
                 # Compound labels such as 8.E.2 carry their parent's number; bare labels follow the open parent.
                 prefix = match.groupdict().get("p")
                 if level_index == 0 or level_index > depth or (prefix is not None and prefix != stack[level_index - 1].label):
                     continue
-                options.append((0, 0, level_index, match))
+                options.append((0, 0, level_index, match, ()))
                 continue
             value = value_of(level.kind, match.group("v"))
             if level_index == depth:
@@ -516,19 +614,26 @@ class Parser:
             else:
                 expected = stack[level_index].value + 1
             gap = value - expected
+            skipped: tuple = ()
             if gap > 0 and self.label_present(level_index, expected, value):
-                continue  # the skipped label exists, so this is not a numbering gap in the source
-            if gap < 0 or gap > layout.max_gap:
-                restart = level_index == 0 and value == 1 and (layout.restart or layout.section_restart)
-                if not restart:
+                # The skipped label exists, so this is not a numbering gap in the source.
+                if lenient is None or gap > LENIENT_GAP or self.label_later(level_index, expected, value, lenient):
                     continue
-                gap = 0
+                skipped = tuple(range(expected, value))
+            elif gap < 0 or gap > layout.max_gap:
+                restart = level_index == 0 and value == 1 and (layout.restart or layout.section_restart)
+                if restart:
+                    gap = 0
+                elif lenient is not None and 0 < gap <= LENIENT_GAP:
+                    skipped = tuple(range(expected, value))
+                else:
+                    continue
             if level_index == 0 and not started and value != 1:
                 continue
             indent, column = len(match.group("indent")), match.start("t")
             known = level_indent.get(level_index)
-            if known is not None and known[2] != row.page:
-                known = None  # pdftotext margins can shift between pages
+            if known is not None and (known[2] != row.page or lenient is not None):
+                known = None  # pdftotext margins can shift between pages; a lenient reading ignores indentation
             distance = 0
             if known is not None and not row.page_start:
                 # Right-aligned labels (VIII.) shift the label but keep the title column.
@@ -537,13 +642,13 @@ class Parser:
                     continue
             parent = level_indent.get(level_index - 1, (-1, -1, row.page))
             if known is None and level_index > 0 and stack and not row.page_start and parent[2] == row.page \
-                    and indent <= parent[0] - 1:
+                    and indent <= parent[0] - 1 and lenient is None:
                 continue
-            options.append((gap, distance, level_index, match))
+            options.append((gap, distance, level_index, match, skipped))
         if not options:
             return None
         options.sort(key=lambda o: (o[0], o[1], -o[2]))
-        return options[0][2], options[0][3]
+        return options[0][2], options[0][3], options[0][4]
 
     def label_present(self, level_index: int, first: int, stop: int) -> bool:
         pattern = self.patterns[level_index]
@@ -557,6 +662,15 @@ class Parser:
             if match and first <= value_of(kind, match.group("v")) < stop:
                 return True
             if loose and loose.match(row.clean):
+                return True
+        return False
+
+    def label_later(self, level_index: int, first: int, stop: int, after: int) -> bool:
+        """Whether a label in [first, stop) is printed as this level's marker after row ``after``."""
+        pattern, kind = self.patterns[level_index], self.layout.levels[level_index].kind
+        for row in self.rows[after + 1:]:
+            match = pattern.match(row.clean)
+            if match and first <= value_of(kind, match.group("v")) < stop:
                 return True
         return False
 
@@ -634,11 +748,15 @@ class Parser:
             if match and match.group("v") in listed:
                 _, _, consumed = self.title(idx, match.start("t"), None)
             elif match:
-                if value_of(level.kind, match.group("v")) != expected or not match.group("t").strip():
-                    raise Invalid(f"{self.layout.label} addendum numbering is not sequential near “{stripped[:60]}”; review required.")
+                value = value_of(level.kind, match.group("v"))
+                if not expected <= value <= expected + LENIENT_GAP or not match.group("t").strip():
+                    if not any("addendum numbering" in note for note in self.notes):
+                        self.notes.append(f"{self.layout.label} addendum numbering is not sequential near “{stripped[:60]}”; review required.")
+                    continue
                 title, quote, consumed = self.title(idx, match.start("t"), None)
-                added.append(Entry(0, expected, match.group("v"), title, row.page, quote, None, heading=heading))
-                expected += 1
+                self.fill_gap(added, 0, tuple(range(expected, value)), None, row.page, heading, stripped)
+                added.append(Entry(0, value, match.group("v"), title, row.page, quote, None, heading=heading))
+                expected = value + 1
             elif self.is_heading(stripped):
                 heading = self.heading_name(stripped)
             elif time_heading(stripped):
@@ -682,6 +800,8 @@ def flatten(layout: Layout, document_id: str, roots: list[Entry]) -> list[dict]:
         items.append({"source_number": source_number, "source_key": key, "order": len(items) + 1,
                       "section": section, "title": entry.title,
                       "source_pages": [{"document_id": document_id, "page_number": entry.page, "quote": entry.quote}]})
+        if entry.placeholder:
+            items[-1]["placeholder"] = True
 
     for root in roots:
         visit(root, root.heading)
@@ -699,19 +819,35 @@ def cover_matches(layout: Layout, pages: list[dict], patterns: tuple[str, ...] |
 
 
 def parse_layout(layout: Layout, document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
-    """Items for one document, or ([], reason) when the outline does not validate."""
+    """Items for one document, or ([], reason) when the outline does not validate.
+
+    Notes about irregular numbering are dropped here; ``parse_layout_notes`` returns them.
+    """
+    items, reason, _ = parse_layout_notes(layout, document_id, pages)
+    return items, reason
+
+
+def parse_layout_notes(layout: Layout, document_id: str, pages: list[dict]) -> tuple[list[dict], str | None, list[str]]:
+    """(items, None, operator notes) for one document, or ([], reason, []) when it cannot be published."""
     if not cover_matches(layout, pages):
-        return [], f"{layout.label} cover was not recognized; agenda items require review."
+        return [], f"{layout.label} cover was not recognized; agenda items require review.", []
+    parser = Parser(layout, document_id, pages)
     try:
-        roots = Parser(layout, document_id, pages).parse()
+        roots = parser.parse()
     except Invalid as exc:
-        return [], str(exc)
+        return [], str(exc), []
     items = flatten(layout, document_id, roots)
     page_text = {int(p["page_number"]): p["text"] for p in pages}
-    if len(items) < layout.min_items:
-        return [], f"{layout.label} has too few recognizable items; review required."
+    if sum(not is_placeholder(item) for item in items) < layout.min_items:
+        reason = parser.notes[0] if parser.notes else f"{layout.label} has too few recognizable items; review required."
+        return [], reason, []
     for item in items:
+        if is_placeholder(item):
+            continue  # it stands for text the agenda does not have, so there is no quote to check
         ref = item["source_pages"][0]
         if not item["title"] or not ref["quote"] or ref["quote"] not in page_text.get(ref["page_number"], ""):
-            return [], f"{layout.label} item {item['source_number'] or item['title'][:40]} has no exact source quote; review required."
-    return items, None
+            return [], f"{layout.label} item {item['source_number'] or item['title'][:40]} has no exact source quote; review required.", []
+    notes = list(parser.notes) + [
+        f"{layout.label} skips item {item['source_number']}; it is listed as “{PLACEHOLDER_TITLE}”; review required."
+        for item in items if is_placeholder(item)]
+    return items, None, notes

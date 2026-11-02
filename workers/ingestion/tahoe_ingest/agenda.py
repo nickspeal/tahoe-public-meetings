@@ -5,19 +5,28 @@ its documents use (``"agenda": {"layouts": [...]}``); the layouts themselves are
 data in ``config/agenda-layouts.json`` (see ``agenda_layouts``). Each layout
 whose cover a document matches reads it in turn, with the shared outline
 engine (``outline``) or the hand-written parser the layout names
-(``agenda_custom``), until one validates. Only a complete, sequential agenda is
-returned for automatic publication. The title quote is copied exactly from one
-extracted page.
+(``agenda_custom``), until one validates. The title quote is copied exactly
+from one extracted page.
+
+Irregular numbering does not void an agenda (decision 0030): the items that
+could be read are published with operator notes, and a number the
+agenda skips is listed as a placeholder (``outline.PLACEHOLDER_TITLE``) with no
+quote. When several agenda PDFs read differently, the agenda is preferred over
+the packet, then the copy with the most items.
 """
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from .agenda_custom import PARSERS, UNVALIDATED
 from .agenda_layouts import layouts
 from .catalog import agency_catalog
-from .outline import Layout, cover_matches, parse_layout
+from .outline import Layout, cover_matches, is_placeholder, parse_layout_notes
+
+DIFFERING = "Multiple agenda PDFs contain differing item sequences"
+# A packet's copy of the agenda adds its page references: "(Pages 4-5)", "– pages 4 - 22".
+PAGE_REFERENCE = re.compile(r"(?i)\s*(?:\(\s*pages?\s+[\d\s,&–-]+\)|[–—-]\s*pages?\s+[\d\s,&–-]+)$")
 
 
 @dataclass
@@ -25,12 +34,16 @@ class ParseResult:
     items: list[dict]
     complete: bool
     warning: str | None = None
+    # Operator notes on a published agenda whose numbering was irregular.
+    notes: tuple[str, ...] = ()
 
 
-def _result(items: list[dict], complete: bool, warning: str | None = None) -> ParseResult:
-    if not complete or not items or any(not i["source_pages"][0]["quote"] for i in items):
+def _result(items: list[dict], complete: bool, warning: str | None = None, notes: tuple[str, ...] = ()) -> ParseResult:
+    # A placeholder for a skipped number has no quote by design; every other item needs one.
+    if not complete or all(is_placeholder(i) for i in items) or \
+            any(not i["source_pages"][0]["quote"] and not is_placeholder(i) for i in items):
         return ParseResult([], False, warning or UNVALIDATED)
-    return ParseResult(items, True)
+    return ParseResult(items, True, notes=tuple(notes))
 
 
 def agenda_config(agency: str) -> dict:
@@ -48,9 +61,14 @@ def _parse_document(formats: tuple[Layout, ...], document_id: str, pages: list[d
     for layout in formats:
         if not cover_matches(layout, pages):
             continue
-        items, warning = PARSERS[layout.parser](document_id, pages) if layout.parser else parse_layout(layout, document_id, pages)
+        if layout.parser:
+            items, warning = PARSERS[layout.parser](document_id, pages)
+            # A custom parser's warnings alongside items are notes for the operator.
+            notes = ([warning] if isinstance(warning, str) else list(warning)) if items and warning else []
+        else:
+            items, warning, notes = parse_layout_notes(layout, document_id, pages)
         if items:
-            return _result(items, True), True
+            return _result(items, True, notes=tuple(notes)), True
         failure = failure or warning
     if failure:
         return _result([], False, failure), True
@@ -73,6 +91,7 @@ def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> Parse
         agendas = [d for d in documents if "-agenda-packet" not in str(d["id"]) and d["id"] in captured]
         documents = agendas or documents
     successes = []
+    sources = []
     failures = []
     for document in documents:
         doc_pages = [p for p in pages if p["document_id"] == document["id"]]
@@ -82,6 +101,7 @@ def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> Parse
         result, recognized = _parse_document(formats, document["id"], doc_pages)
         if result.complete:
             successes.append(result)
+            sources.append(document)
         elif recognized:
             failures.append((result, document.get("media_type", "application/pdf") != "application/pdf"))
     # Legistar's accessible HTML copy of a PDF agenda (View.ashx?M=AADA) is text the PDF
@@ -92,11 +112,31 @@ def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> Parse
     if len(successes) == 1:
         return successes[0]
     if len(successes) > 1:
-        signatures = [tuple((item["source_number"], re.sub(r"\W+", "", item["title"].lower()))
-                            for item in result.items) for result in successes]
+        signatures = [_signature(result) for result in successes]
         if all(signature == signatures[0] for signature in signatures[1:]):
             return successes[0]
-        return _result([], False, "Multiple agenda PDFs contain differing item sequences; review required.")
+        # Prefer the agenda to the packet that reprints it, then the copy that has the most items.
+        best = min(range(len(successes)), key=lambda k: ("-agenda-packet" in str(sources[k]["id"]),
+                                                         -sum(not is_placeholder(i) for i in successes[k].items), k))
+        chosen = successes[best]
+        if all(_same_items(chosen, result) for result in successes):
+            return chosen  # the copies differ only in page references, where a long title was cut, or placeholders
+        name = sources[best].get("title") or sources[best]["id"]
+        return replace(chosen, notes=chosen.notes + (f"{DIFFERING}; items are taken from “{name}”; review required.",))
     if failures:
         return _result([], False, failures[0].warning)
     return _result([], False, f"No complete {agency.upper()} agenda recognized in downloaded documents; review required.")
+
+
+def _signature(result: ParseResult) -> tuple:
+    return tuple((item["source_number"], re.sub(r"\W+", "", item["title"].lower())) for item in result.items)
+
+
+def _same_items(a: ParseResult, b: ParseResult) -> bool:
+    """Whether two copies list the same real items, ignoring the packet's page references and where a title was cut."""
+    def items(result: ParseResult) -> list[tuple[str, str]]:
+        return [(item["source_number"], re.sub(r"\W+", "", PAGE_REFERENCE.sub("", item["title"]).lower()))
+                for item in result.items if not is_placeholder(item)]
+    first, second = items(a), items(b)
+    return len(first) == len(second) and all(
+        x[0] == y[0] and (x[1].startswith(y[1]) or y[1].startswith(x[1])) for x, y in zip(first, second))

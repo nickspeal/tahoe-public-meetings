@@ -75,16 +75,21 @@ def test_unknown_layout_is_review_only():
     assert "review" in parsed.warning.lower()
 
 
-def test_different_agenda_pdfs_require_review():
+def test_different_agenda_pdfs_publish_one_copy_for_review():
+    # Decision 0030: differing copies no longer void the agenda; the agenda is preferred to the
+    # packet (then the copy with the most items), and the meeting carries a review note.
     bundle = json.loads(FIXTURE.read_text())
     meeting = next(m for m in bundle["meetings"] if m["agency"] == "truckee" and m["documents"])
     original = meeting["documents"][0]
+    assert "-agenda-packet" in original["id"]
     pages = meeting["pages"]
     altered = [{**page, "document_id": "second", "text": page["text"].replace("5.1    Tahoe Truckee", "5.2    Tahoe Truckee")}
                for page in pages]
-    result = parse_agenda("truckee", [original, {"id": "second"}], pages + altered)
-    assert not result.complete
-    assert result.items == []
+    result = parse_agenda("truckee", [original, {"id": "second", "title": "Agenda"}], pages + altered)
+    assert result.complete
+    assert {i["source_pages"][0]["document_id"] for i in result.items} == {"second"}
+    assert "5.2" in [i["source_number"] for i in result.items]
+    assert result.notes == ("Multiple agenda PDFs contain differing item sequences; items are taken from “Agenda”; review required.",)
 
 
 def test_slt_standalone_number_uses_same_page_title_quote():

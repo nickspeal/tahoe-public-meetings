@@ -25,6 +25,7 @@ from .participation import annotated_join_url, merged as merged_participation
 from .schedules import PACIFIC, forecast_meetings
 from .records import links_of, merged as merged_links
 from .http import skipped_endpoint
+from .outline import NOT_PLACEHOLDER_SQL, is_placeholder
 
 
 TOPICS = public_topics()
@@ -402,7 +403,8 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                 raise ValueError(f"item {source_key} references missing document {doc_id}")
             page_num = int(ref.get("page_number") or ref.get("page"))
             page_text = page_rows.get((doc_id, page_num), "")
-            quote = ref.get("quote") or _first_quote(page_text, item["title"])
+            # A placeholder for a skipped number has no source text; never search the page for its title.
+            quote = ref.get("quote") or ("" if is_placeholder(item) else _first_quote(page_text, item["title"]))
             if quote:
                 citations.append(_citation(version_id, page_num, quote))
         incoming_items.append((item, source_key, citations))
@@ -447,6 +449,13 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                 THEN clock_timestamp() ELSE agenda_items.updated_at END""",
                 (item_id, meeting_id, source_key, number, int(item["order"]), item["title"], item.get("section"),
                  fingerprint, json.dumps(valid_citations), item_change))
+        if is_placeholder(item):
+            # No summary, topics, or citation check for a number the agenda skips (decision 0030).
+            conn.execute("DELETE FROM summaries WHERE item_id=%s", (item_id,))
+            conn.execute("DELETE FROM item_topics WHERE item_id=%s", (item_id,))
+            conn.execute("UPDATE agenda_items SET classifier_version=%s WHERE id=%s AND classifier_version IS DISTINCT FROM %s",
+                         (CLASSIFIER_VERSION, item_id, CLASSIFIER_VERSION))
+            continue
         if changed:
             summary_text = _summary_from_citations(citations) if summary_status == "published" else ""
             conn.execute("""INSERT INTO summaries(item_id,text,status,method,generated_at,source_fingerprint,citations,error)
@@ -543,8 +552,8 @@ def reclassify_topics(conn, *, dry_run=False) -> dict:
     stored evidence is compared instead, so a hint edit rewrites only the items whose
     tags or their provenance (rule name, matched text) change.
     """
-    rows = list(conn.execute("""SELECT i.id,i.meeting_id,i.title,i.citations,i.classifier_version,m.agency_id
-        FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id WHERE i.active ORDER BY i.id"""))
+    rows = list(conn.execute(f"""SELECT i.id,i.meeting_id,i.title,i.citations,i.classifier_version,m.agency_id
+        FROM agenda_items i JOIN meetings m ON m.id=i.meeting_id WHERE i.active AND {NOT_PLACEHOLDER_SQL} ORDER BY i.id"""))
     before = {t["id"]: 0 for t in TOPICS}
     after = dict(before)
     changed = 0

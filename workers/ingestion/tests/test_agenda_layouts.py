@@ -3,6 +3,8 @@
 Each fixture in tests/fixtures/agenda-layouts holds the extracted pages of one
 official agenda and the reviewed item list. "expected": null marks a document
 that must be rejected rather than guessed (a malformed agenda, or a synopsis).
+"notes" lists the review notes of an agenda published despite irregular
+numbering (decision 0030); a fixture without it must parse cleanly.
 Fixtures name an agency, so they also exercise the layouts its registry entry lists.
 """
 import json
@@ -14,7 +16,7 @@ import pytest
 from tahoe_ingest.agenda import _parse_document, agenda_config, has_parser, parse_agenda
 from tahoe_ingest.agenda_layouts import _layout, layouts, validate_agency_agendas
 from tahoe_ingest.catalog import agency_catalog
-from tahoe_ingest.outline import parse_layout
+from tahoe_ingest.outline import PLACEHOLDER_TITLE, is_placeholder, parse_layout
 
 FIXTURES = sorted((Path(__file__).resolve().parents[3] / "tests/fixtures/agenda-layouts").glob("*.json"))
 MEETINGS = Path(__file__).resolve().parents[3] / "tests/fixtures/meetings.json"
@@ -36,12 +38,17 @@ def test_layout_fixture(path):
         return
     assert result.complete, result.warning
     assert [[i["source_number"], i["section"], i["title"]] for i in result.items] == fixture["expected"]
+    assert list(result.notes) == fixture.get("notes", [])
+    assert all("review required" in note for note in result.notes)
     page_text = {p["page_number"]: p["text"] for p in pages}
     keys = [i.get("source_key") or i["source_number"] for i in result.items]
     assert len(keys) == len(set(keys)), "item keys must be unique within a meeting"
     for order, item in enumerate(result.items, 1):
         assert item["order"] == order
         ref = item["source_pages"][0]
+        if is_placeholder(item):  # a skipped number: nothing in the agenda to quote
+            assert item["title"] == PLACEHOLDER_TITLE and not ref["quote"]
+            continue
         assert ref["quote"] and ref["quote"] in page_text[ref["page_number"]], item["title"]
 
 
@@ -76,8 +83,15 @@ def test_numbering_gap_needs_the_label_to_be_absent():
     result = parse_agenda("ndep", [{"id": "doc"}], tampered)
     assert result.complete
     assert [i["source_number"] for i in result.items][12:15] == ["13", "14", "15"]
+    # A malformed label ("12x") is not a gap in the source, so it gets no placeholder; the items after it
+    # are still published, with a review note (decision 0030).
     missing_middle = [dict(p, text=p["text"].replace("  12    Nye County", "  12x   Nye County")) for p in pages]
-    assert not parse_agenda("ndep", [{"id": "doc"}], missing_middle).complete
+    result = parse_agenda("ndep", [{"id": "doc"}], missing_middle)
+    assert result.complete
+    assert [i["source_number"] for i in result.items][10:13] == ["11", "13", "15"]
+    assert not any(is_placeholder(i) for i in result.items)
+    assert result.notes == ("Nevada Division of Environmental Protection board agenda numbering is not sequential near "
+                            "“13    Las Vegas Valley Water District – Blue Diamond Water S”; review required.",)
 
 
 def test_wrong_agency_cover_is_not_recognized():
@@ -114,10 +128,19 @@ def test_addendum_items_join_their_named_sections():
     numbers = [i["source_number"] for i in result.items]
     assert numbers.index("28") == numbers.index("5") + 1  # "Item 28 is hereby added to Closed Session"
     assert numbers.index("29") == numbers.index("9") + 1  # after the last General Government consent item
-    # An addendum that skips a number is rejected rather than published without its items.
+    # An addendum that skips a number keeps its items and lists the skipped number as a placeholder.
     skipped = [dict(p, text=p["text"].replace("    29. 26-1714", "    30. 26-1714")) for p in pages]
     result = parse_agenda(fixture["agency"], [{"id": "doc"}], skipped)
-    assert not result.complete and "addendum numbering" in result.warning
+    assert result.complete
+    numbers = [i["source_number"] for i in result.items]
+    assert numbers.index("29") + 1 == numbers.index("30") == numbers.index("9") + 2
+    assert is_placeholder(result.items[numbers.index("29")])
+    assert result.notes == ("El Dorado County Legistar agenda skips item 29; it is listed as “Not Found In Agenda”; review required.",)
+    # A jump too far to bridge keeps the main agenda and notes the line it passed over.
+    jumped = [dict(p, text=p["text"].replace("    29. 26-1714", "    35. 26-1714")) for p in pages]
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], jumped)
+    assert result.complete and {"29", "35"}.isdisjoint(i["source_number"] for i in result.items)
+    assert len(result.notes) == 1 and "addendum numbering is not sequential" in result.notes[0]
 
 
 def test_a_redesigned_cover_blocks_publication_instead_of_being_ignored():

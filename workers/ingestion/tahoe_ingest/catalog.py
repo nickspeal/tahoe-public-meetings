@@ -56,13 +56,13 @@ def agency_catalog_path() -> Path:
 
 
 # Every key an agency entry may have, in the order the registry file keeps them (`registry_text`).
-AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "meetingHost", "officialUrl", "sourceUrl", "participation",
+AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "meetingHost", "officialUrl", "sourceUrl", "coverageNote", "participation",
                "participationTypes", "discovery", "agenda", "staffReports", "itemScope", "planningCalendar", "topicHints", "schedule", "duration", "legacy")
 # What an entry says about its own body, never inherited through `extends`: its identity, the decision to follow it,
-# how readers take part, when and how long it meets, and its research record. The rest describes the publisher's
+# what this website cannot show for it, how readers take part, when and how long it meets, and its research record. The rest describes the publisher's
 # website and document formats, which sibling bodies share.
 # A planning calendar belongs to the body whose agenda carries it; its `bodies` map covers sibling bodies.
-OWN_KEYS = frozenset({"id", "name", "aliases", "extends", "follow", "meetingHost", "participation", "planningCalendar", "schedule", "duration", "legacy"})
+OWN_KEYS = frozenset({"id", "name", "aliases", "extends", "follow", "meetingHost", "coverageNote", "participation", "planningCalendar", "schedule", "duration", "legacy"})
 
 
 def registry_text(entries: list[dict]) -> str:
@@ -128,6 +128,9 @@ def agency_catalog() -> tuple[dict, ...]:
         aliases = agency.get("aliases", [])
         if not isinstance(aliases, list) or not all(isinstance(a, str) and a.strip() for a in aliases):
             raise ValueError(f"invalid aliases: {agency['id']}")
+        # A durable limitation of this website for the body, shown under it on the Coverage page.
+        if "coverageNote" in agency and not (isinstance(agency["coverageNote"], str) and agency["coverageNote"].strip()):
+            raise ValueError(f"invalid coverageNote: {agency['id']}")
         validate_discovery(agency)
         if "meetingHost" in agency:
             # Such an entry is not a body: its records name their own host, so nothing is discovered or forecast for it.

@@ -212,7 +212,9 @@ export interface PublicData {
   generatedAt: string;
   mode: 'fixture' | 'live';
   coverageNote: string;
-  agencies: { id: string; name: string; shortName: string; officialUrl: string; sourceUrl: string; lastCheckedAt: string | null; status: 'ok' | 'error' | 'never_checked' | 'blocked'; error: string | null }[];
+  agencies: { id: string; name: string; shortName: string; officialUrl: string; sourceUrl: string; lastCheckedAt: string | null; status: 'ok' | 'error' | 'never_checked' | 'blocked'; error: string | null;
+    /** A durable limitation of this website for the body (registry `coverageNote`), shown on the Coverage page. */
+    coverageNote?: string }[];
   topics: { id: string; name: string; description: string }[];
   meetings: Meeting[];
   commentPeriods?: PublicCommentPeriod[];

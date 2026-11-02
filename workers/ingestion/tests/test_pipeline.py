@@ -480,6 +480,7 @@ def test_explicit_fixture_source_check_is_retained_without_claiming_replay_check
     agency = next(a for a in export_public(db)["agencies"] if a["id"] == "ttd")
     assert agency["lastCheckedAt"] == "2026-10-08T16:20:00Z"
     assert agency["status"] == "ok"
+    assert agency["coverageNote"].startswith("Meeting recordings are not published")  # from the registry entry
     row.pop("source_checked_at")
     assert ingest_bundle(db, bundle)["failed"] == 0
     replay = next(a for a in export_public(db)["agencies"] if a["id"] == "ttd")

@@ -52,7 +52,7 @@ def test_child_inherits_formats_but_not_its_parents_identity():
                                                                    "bodyPattern": "Board", "titlePrefix": "B "},
               "agenda": {"layouts": ["a", "b"], "agendaBeforePacket": True}, "topicHints": {"transit": [{"rule": "r", "pattern": "x"}]},
               "schedule": {"source": "configured"}, "duration": {"mode": "fixed"}, "legacy": {"sourceRow": 3},
-              "participation": {"sourceUrl": "https://example.gov/p"}}
+              "participation": {"sourceUrl": "https://example.gov/p"}, "coverageNote": "Recordings are not published."}
     child = {"legacy": {"sourceRow": 4}, "follow": True, "id": "committee", "name": "Committee", "extends": "board",
              "discovery": {"bodyPattern": "Committee"}, "agenda": {"layouts": ["c"]}}
     resolved = dict(zip(("board", "committee"), resolve_extends([parent, child])))
@@ -63,7 +63,7 @@ def test_child_inherits_formats_but_not_its_parents_identity():
     assert committee["agenda"] == {"layouts": ["c"], "agendaBeforePacket": True}  # lists replace
     assert committee["shortName"] == "B" and committee["topicHints"] == parent["topicHints"]
     assert committee["follow"] is True and committee["legacy"] == {"sourceRow": 4}
-    assert not {"aliases", "schedule", "duration", "participation"} & set(committee)
+    assert not {"aliases", "schedule", "duration", "participation", "coverageNote"} & set(committee)
     assert resolved["board"] == parent and "extends" not in committee
     assert OWN_KEYS <= set(AGENCY_KEYS)
 
@@ -93,11 +93,27 @@ def test_unknown_registry_keys_and_bad_inherited_blocks_stop_the_load(registry):
         agency_catalog()
 
 
+@pytest.mark.parametrize("note", ["", "   ", 3, None, ["Recordings are not published."]])
+def test_a_coverage_note_must_be_a_non_empty_string(registry, note):
+    entries = raw_registry()
+    registry([*entries, {"id": "x", "name": "X", "shortName": "X", "follow": False, "coverageNote": note}])
+    with pytest.raises(ValueError, match="invalid coverageNote: x"):
+        agency_catalog()
+
+
+def test_coverage_notes_belong_to_the_body_they_are_set_on():
+    agencies = {a["id"]: a for a in agency_catalog()}
+    assert agencies["trpa-governing"]["coverageNote"].startswith("Expected meetings show a date but no time")
+    assert "coverageNote" not in agencies["trpa-advisory"]  # extends trpa-governing, sets no note of its own
+    assert "coverageNote" not in agencies["douglas-planning"]
+    assert agencies["ttd-rtcpc"]["coverageNote"] == agencies["ttd"]["coverageNote"]  # set on each, not inherited
+
+
 def test_sibling_bodies_share_their_parents_formats():
     agencies = {a["id"]: a for a in agency_catalog()}
     raw = {e["id"]: e for e in raw_registry()}
     rtcpc, board = agencies["ttd-rtcpc"], agencies["ttd"]
-    assert set(raw["ttd-rtcpc"]) <= {"id", "name", "aliases", "extends", "follow", "discovery", "staffReports"}
+    assert set(raw["ttd-rtcpc"]) <= {"id", "name", "aliases", "extends", "follow", "coverageNote", "discovery", "staffReports"}
     assert {k: rtcpc[k] for k in ("shortName", "officialUrl", "agenda", "topicHints")} == \
         {k: board[k] for k in ("shortName", "officialUrl", "agenda", "topicHints")}
     assert rtcpc["discovery"]["indexUrl"] == board["discovery"]["indexUrl"] and rtcpc["discovery"]["documentIdPrefix"] == "ttd"

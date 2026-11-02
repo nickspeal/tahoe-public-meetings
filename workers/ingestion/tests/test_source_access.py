@@ -368,3 +368,19 @@ def test_export_check_accepts_blocked_agencies():
     for status,ok in (('blocked',True),('stale',False)):
         errors,_=export_check.check({**base,'agencies':[{**agency,'status':status}]})
         assert (not any('freshness status' in e for e in errors))==ok
+
+
+def test_each_agency_exports_its_own_coverage_note(monkeypatch):
+    from tahoe_ingest import export_check
+    from tahoe_ingest.core import public_agency
+    monkeypatch.setenv('TAHOE_SOURCE_ROOT',str(Path(__file__).resolve().parents[3]))
+    def row(aid):
+        return {'id':aid,'name':aid,'short_name':aid,'official_url':'https://example.gov/','source_url':None,
+                'last_checked_at':None,'status':'ok','error':None}
+    ttd,advisory=public_agency(row('ttd'),'https://example.gov/m'),public_agency(row('trpa-advisory'),'https://example.gov/m')
+    assert ttd['coverageNote']=='Meeting recordings are not published; TTD shares them on request.'
+    assert 'coverageNote' not in advisory and ttd['sourceUrl']=='https://example.gov/m'
+    base={'schemaVersion':2,'mode':'live','coverageNote':'x','generatedAt':'2026-11-02T00:00:00Z','meetings':[]}
+    for note,ok in ((ttd['coverageNote'],True),('  ',False),(None,False)):
+        errors,_=export_check.check({**base,'agencies':[{**ttd,'coverageNote':note}]})
+        assert (not any('coverageNote' in e for e in errors))==ok

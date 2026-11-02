@@ -621,6 +621,16 @@ def agency_freshness(agency: dict, status: str, error: str | None) -> tuple[str,
     return status, error
 
 
+def public_agency(row, fallback_url: str) -> dict:
+    """One `agencies[]` entry: the stored row's source state plus the registry's own coverage note, if any."""
+    status, error = agency_freshness(AGENCIES[row["id"]], row["status"], row["error"])
+    agency = {"id": row["id"], "name": row["name"], "shortName": row["short_name"], "officialUrl": row["official_url"] or fallback_url,
+              "sourceUrl": row["source_url"] or fallback_url, "lastCheckedAt": iso(row["last_checked_at"]), "status": status, "error": error}
+    if note := AGENCIES[row["id"]].get("coverageNote"):
+        agency["coverageNote"] = note
+    return agency
+
+
 def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date | None = None) -> dict:
     """Export stored records, plus derived forecasts when ``forecast_days`` > 0.
 
@@ -643,9 +653,7 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         if a["id"] not in AGENCIES or (a["id"] not in comment_agencies and a["id"] not in first_url):
             continue
         fallback = first_url.get(a["id"]) or next(p["officialUrl"] for p in comment_periods if p["agencyId"] == a["id"])
-        status, error = agency_freshness(AGENCIES[a["id"]], a["status"], a["error"])
-        agencies.append({"id": a["id"], "name": a["name"], "shortName": a["short_name"], "officialUrl": a["official_url"] or fallback,
-                         "sourceUrl": a["source_url"] or fallback, "lastCheckedAt": iso(a["last_checked_at"]), "status": status, "error": error})
+        agencies.append(public_agency(a, fallback))
     pages_by_version = {}
     first_page_links = {}  # embedded links on each current document's page 1, for the join link rule
     for p in conn.execute("""SELECT p.document_version_id,p.page_number,p.text,p.links FROM document_pages p

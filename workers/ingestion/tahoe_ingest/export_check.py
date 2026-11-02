@@ -56,6 +56,9 @@ def check(data):
         require(agency.get("status") in ("ok", "error", "never_checked", "blocked"), f"{agency['id']}: invalid freshness status")
         timestamp(agency.get("lastCheckedAt"), f"{agency['id']}.lastCheckedAt", nullable=True)
         url(agency.get("officialUrl"), f"{agency['id']}.officialUrl")
+        if "coverageNote" in agency:
+            note = agency["coverageNote"]
+            require(isinstance(note, str) and bool(note.strip()), f"{agency['id']}: coverageNote must be non-empty text")
     seen_meetings = set()
     seen_items = set()
     citation_count = 0

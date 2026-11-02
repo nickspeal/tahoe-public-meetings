@@ -186,3 +186,29 @@ def test_ttd_excerpts_leave_out_the_packet_page_column():
     for quote in ("Adopt Resolution 2026-12", "Approval of Minutes of May 6, 2026", "Fiscal Year\n            2026",
                   "Phase 2", "Amendment No. 3"):
         assert excerpt_text(quote) == quote
+
+
+def test_ntcd_titles_and_excerpts_run_across_wrapped_lines():
+    from tahoe_ingest.core import excerpt_text
+
+    def parsed(name):
+        fixture, pages = _fixture(name)
+        items = parse_agenda("ntcd", [{"id": "doc"}], pages).items
+        return ({i["source_number"]: i["title"] for i in items},
+                {i["source_number"]: " ".join(excerpt_text(i["source_pages"][0]["quote"]).split()) for i in items})
+
+    titles, excerpts = parsed("ntcd--2026-04-27")
+    # The cell's label and page number ("A ... 4") sit between the title's two lines; the excerpt leaves them out.
+    assert excerpts["5.A"] == "For Possible Action: Approval of the Board of Supervisors Meeting Minutes for March 23, 2026"
+    assert excerpts["5.B"] == "For Possible Action: Approval of the NTCD Proposed Budget and Work Plan for Fiscal Year 2027"
+    assert titles["11"].endswith("with Tahoe Douglas Fire Protection District in the Amount of $170,000")
+    # The description below a title ("This item is to update ...") stays out of it.
+    assert titles["9"] == "Increase of District Manager Signing Authority"
+    titles, excerpts = parsed("ntcd--2026-08-12")
+    # A wrapped title line in title case continues the title; the description's first sentence does not.
+    assert titles["5.E"] == ("Approval of the Upper Third Creek and Rosewood Creek Construction Inspection Agreement with "
+                             "Washoe County for $35,765.00, Expiring on December 31, 2026")
+    assert excerpts["9"] == ("For Possible Action: Approval of the Tahoe Meadows West Trailhead Improvement Project Grant "
+                             "Agreement for $145,000 with the Nevada Department of Conservation and Natural Resources")
+    assert excerpts["12.C"] == ("Report: Department of Conservation and Natural Resources Conservation District Program "
+                                "report (No Action)")

@@ -32,6 +32,14 @@ test('a packet page column inside a wrapped TTD title is not agenda text', () =>
   assert.equal(detail.text, 'Adopt Resolution 2026-12 for Phase 2');
 });
 
+test('an NTCD label and page row between a title\'s lines is not agenda text', () => {
+  // NTCD, April 27, 2026, item 5.A.
+  const quote = 'For Possible Action: Approval of the Board of Supervisors Meeting Minutes for\n'
+    + '          A                                                                                                        4\n'
+    + '              March 23, 2026';
+  assert.equal(itemDetail({ title: 'Approval of the Board of Supervisors Meeting Minutes for March 23, 2026', summary: excerpt(quote) }), null);
+});
+
 test('an excerpt with agenda text beyond the title is shown without its label prefix', () => {
   const detail = itemDetail({ title: 'CLOSING STATEMENTS', summary: excerpt('CLOSING STATEMENTS (Statements from the Board and Staff no discussion is permitted)') });
   assert.deepEqual(detail, { label: 'From the agenda', text: 'CLOSING STATEMENTS (Statements from the Board and Staff no discussion is permitted)' });

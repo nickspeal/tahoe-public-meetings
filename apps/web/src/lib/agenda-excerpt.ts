@@ -5,6 +5,8 @@ const EXCERPT_METHOD = 'deterministic-source-excerpt-v1';
 const MIN_EXTRA_WORDS = 4;
 /** A packet page number in a right-hand column (TTD agendas); the same rule as the worker's excerpt_text. */
 const PAGE_COLUMN_REFERENCE = /(?<=\S)[ \t]{3,}(?:Page(?:[ \t]+\d{1,3})?|\d{1,3})[ \t]*$/gm;
+/** A row holding only an item label and/or page number inside a wrapped title (NTCD tables); as excerpt_text. */
+const LABEL_ROW = /^[ \t]*(?:[A-Z]|\d{1,3})(?:[ \t]{3,}\d{1,3})?[ \t]*\n/gm;
 
 const words = (text: string) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
 
@@ -21,6 +23,7 @@ export function itemDetail(item: Pick<AgendaItem, 'title' | 'summary'>): { label
   if (summary.method !== EXCERPT_METHOD) return { label: 'Summary', text: summary.text };
   const quote = (summary.citations[0]?.quote ?? summary.text.replace(/^Agenda excerpt:\s*/, ''))
     .replace(/^[“"]|[”"]$/g, '')
+    .replace(LABEL_ROW, '')
     .replace(PAGE_COLUMN_REFERENCE, '')
     .replace(/\s+Page\s+\d+\s*$/i, '')
     .replace(/\s+/g, ' ')

@@ -165,12 +165,15 @@ def _first_quote(text: str, title: str) -> str:
 # A packet page reference in a right-hand column: a wide gap after the line's text, then "Page 12", "Page", or "12"
 # ending the line. A number that belongs to the title ("Resolution 2026-12", "of\n   2026") has no such gap.
 PAGE_COLUMN_REFERENCE = re.compile(r"(?<=\S)[ \t]{3,}(?:Page(?:[ \t]+\d{1,3})?|\d{1,3})[ \t]*$", re.M)
+# A row inside a quote that holds only an item label and/or a page number: a table's label and page columns beside
+# a wrapped title (NTCD prints "A ... 5" between a title's two lines).
+LABEL_ROW = re.compile(r"^[ \t]*(?:[A-Z]|\d{1,3})(?:[ \t]{3,}\d{1,3})?[ \t]*\n", re.M)
 EXCERPT_METHOD = "deterministic-source-excerpt-v1"
 
 
 def excerpt_text(quote: str) -> str:
-    """A citation quote as shown in an excerpt: verbatim, less any page-number column it spans (TTD agendas)."""
-    return PAGE_COLUMN_REFERENCE.sub("", quote)
+    """A citation quote as shown in an excerpt: verbatim, less the page-number and label columns it spans."""
+    return PAGE_COLUMN_REFERENCE.sub("", LABEL_ROW.sub("", quote))
 
 
 def _summary_from_citations(citations: list[dict]) -> str:

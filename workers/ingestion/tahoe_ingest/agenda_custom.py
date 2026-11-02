@@ -8,7 +8,8 @@ the whole agenda validates.
 
 * ``ntcd-table``: NTCD prints its agenda as a table whose item numbers are
   vertically centered beside multi-line cells, so a cell's first line (its
-  title) sits above the number.
+  title) sits above the number. A title wraps over several lines before the
+  item's description, which is written in sentences.
 * ``south-shore-tma-bullets``: South Shore TMA lists items as bullets under
   unnumbered headings.
 * ``ttd-sections``, ``slt-council``, ``truckee-council``: the original TTD,
@@ -41,16 +42,16 @@ def _page_lines(pages: list[dict], first_pages: int):
         text = page["text"]
         position = 0
         for raw in text.split("\n"):
-            yield int(page["page_number"]), raw, text
+            yield int(page["page_number"]), raw, text, position
             position += len(raw) + 1
 
 
 def parse_ntcd(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
     # Collect table regions: the rows after each "Agenda Item" header.
-    regions: list[list[tuple[int, str, str]]] = []
+    regions: list[list[tuple[int, str, str, tuple[str, int]]]] = []
     current = None
     ended = False
-    for page, raw, source in _page_lines(pages, 4):
+    for page, raw, source, position in _page_lines(pages, 4):
         clean = PAGE_COLUMN.sub("", ZERO_WIDTH.sub("", raw)).rstrip()
         stripped = clean.strip()
         if "Agenda Item" in clean:
@@ -64,7 +65,7 @@ def parse_ntcd(document_id: str, pages: list[dict]) -> tuple[list[dict], str | N
             continue
         if not stripped:
             continue
-        current.append((page, raw, clean))
+        current.append((page, raw, clean, (source, position)))
         if re.match(r"^\d{1,2}\s{2,}Adjournment\b", stripped) or stripped == "Adjournment":
             ended = True
             break
@@ -72,7 +73,7 @@ def parse_ntcd(document_id: str, pages: list[dict]) -> tuple[list[dict], str | N
         return [], "NTCD agenda ending was not found; review required."
     cells = []
     for region in regions:
-        marks = [i for i, (_, _, clean) in enumerate(region) if NTCD_NUMBER.match(clean) or NTCD_LETTER.match(clean)]
+        marks = [i for i, (_, _, clean, _) in enumerate(region) if NTCD_NUMBER.match(clean) or NTCD_LETTER.match(clean)]
         if not marks:
             continue
         cells.extend(_partition(region, marks))
@@ -149,7 +150,7 @@ def _partition(region, marks):
         label_match = NTCD_NUMBER.match(region[mark][2]) or NTCD_LETTER.match(region[mark][2])
         cells.append((label_match.group(1), region[start:end + 1], mark - start))
         start = end + 1
-    return [(label, [(page, raw, clean, idx == offset) for idx, (page, raw, clean) in enumerate(rows)])
+    return [(label, [(page, raw, clean, at, idx == offset) for idx, (page, raw, clean, at) in enumerate(rows)])
             for label, rows, offset in cells]
 
 
@@ -159,22 +160,57 @@ def _cell_text(clean: str, is_marker: bool) -> str:
     return clean.strip()
 
 
+# A wrapped title line, not the start of the cell's description: description lines are sentences.
+FINITE_VERB = re.compile(r"\b(?:is|are|was|were|will|has|have|had|be|been|can|may|shall|would|should)\b")
+MINOR_WORDS = {"with", "from", "into", "upon", "onto", "over", "under", "through", "between", "within", "without",
+               "their", "about", "after", "before", "during", "than", "that", "this"}
+
+
+def _title_case(text: str) -> bool:
+    """A line written like a title: no finite verb, and its longer words mostly capitalized."""
+    words = [w for w in re.findall(r"[A-Za-z][\w’'/-]*", text) if len(w) >= 4 and w.lower() not in MINOR_WORDS]
+    return bool(words) and not FINITE_VERB.search(text) and sum(w[0].isupper() for w in words) >= 0.75 * len(words)
+
+
+def _continues_title(parts: list[str], line: str) -> bool:
+    """Whether ``line`` carries on the title in ``parts`` (as in ``outline``: an unfinished line or a lowercase
+    start), or is a wrapped line of a long title rather than the first line of the item's description."""
+    previous, joined = parts[-1], " ".join(parts)
+    if re.match(r"^[a-z0-9$(“\"']", line) or CONNECTOR.search(previous) or joined.count("(") > joined.count(")"):
+        return True
+    if len(parts) == 1 and len(line) < 0.6 * len(previous) and not line.endswith("."):
+        return True  # a short last line ("Financial Report")
+    return not previous.endswith(".") and _title_case(line)
+
+
 def _cell_title(lines):
-    texts = [(page, raw, _cell_text(clean, marker)) for page, raw, clean, marker in lines]
+    """The title from a cell's leading lines, its exact quote, and its page.
+
+    A title continues across wrapped lines until the cell's description starts. The quote runs from the title's
+    first line to its last line on the same page, and stops before a line that also prints an item label: rows
+    holding only a label or a page number are page furniture that the excerpt leaves out (``core.excerpt_text``).
+    """
+    texts = [(page, raw, _cell_text(clean, marker), at) for page, raw, clean, at, marker in lines]
     texts = [t for t in texts if t[2]]
     if not texts:
         return "", "", None
-    page, raw, first = texts[0]
+    page, raw, first, (source, position) = texts[0]
     parts = [first]
-    if len(texts) > 1:
-        second = texts[1][2]
-        if (re.match(r"^[a-z0-9$(]", second) or CONNECTOR.search(first) or first.count("(") > first.count(")")
-                or (len(second) < 0.6 * len(first) and not second.endswith("."))):
-            parts.append(second)
+    for _, _, text, _ in texts[1:]:
+        if not _continues_title(parts, text):
+            break
+        parts.append(text)
     title = " ".join(" ".join(parts).split())
     title = re.sub(r"^For Possible Action:\s*", "", title)
-    quote = first if first in raw else ""
-    return title, quote, page
+    if first not in raw:
+        return title, "", page
+    start = position + raw.index(first)
+    end = start + len(first)
+    for line_page, line_raw, text, (_, line_position) in texts[1:len(parts)]:
+        if line_page != page or line_raw.strip() != text:
+            break  # another page, or a label or page number printed beside the title text
+        end = line_position + line_raw.index(text) + len(text)
+    return title, source[start:end][:300], page
 
 
 def _item(number, section, title, document_id, page, quote):
@@ -187,7 +223,7 @@ SUB_BULLET = re.compile(r"^\s*(?:o|▪|◦|-)\s+\S")
 
 
 def parse_south_shore_tma(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
-    rows = [(page, raw, ZERO_WIDTH.sub("", raw).rstrip()) for page, raw, _ in _page_lines(pages, 3)]
+    rows = [(page, raw, ZERO_WIDTH.sub("", raw).rstrip()) for page, raw, *_ in _page_lines(pages, 3)]
     start = next((i for i, (_, _, clean) in enumerate(rows) if clean.strip() == "Call to Order"), None)
     if start is None:
         return [], "South Shore TMA agenda start was not found; review required."

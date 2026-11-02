@@ -91,9 +91,13 @@ action an agenda prints under the item (`requested_actions.py`, exact page
 text, no model), else the agenda excerpt. `map-staff-reports` links items to
 their own staff reports with one rule module per publishing format
 (`tahoe_ingest/staff_report_rules/`, chosen by each agency's `staffReports` entry; decision 0026) and lists SLT
-and TRPA attachments; `summarize-items` adds one or two sentences that Claude selects
-and trims from the report, published only when every sentence is the cited
-passage with words deleted (`item_summaries.validate`). Use `--dry-run` for
+and TRPA attachments; `summarize-items` adds one to three sentences that Claude selects
+and trims from the report, each published only when it is the cited passage with
+words deleted (`item_summaries.validate`; the first must pass, a later failing
+sentence is left out). Model and validator read the pages in reading order
+(`reading_view.py`: form side labels moved out of sentences, attested hyphenations
+joined); citations quote the stored page text. A rejected answer is retried with the
+reason, and kept in its `ai_usage.error` after `reply:`. Use `--dry-run` for
 pending items and cost; `--meeting ID` to try one meeting. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
 
 Previews (IDEA-018) are subjects an official source says are planned for a

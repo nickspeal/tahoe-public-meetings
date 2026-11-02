@@ -344,7 +344,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             sid=day+('-'+qualifier[1].lower() if qualifier else '')
             # Drop the trailing "(Tuesday, October 13, 2026, 2:00 p.m. @ ...)" from the display title.
             shown=config.get('titlePrefix','')+re.sub(r'\s*(?:[-–]\s*)?\((?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,[^)]*\)\s*$','',title)
-            rows.append(candidate(agency,sid,shown,day,target,documents_in(detail,target,agency),title+' '+description))
+            # A post can link other uploads (a budget book, a presentation); only the agenda and its packet belong to the meeting.
+            docs=[d for d in documents_in(detail,target,agency) if not d['id'].startswith(agency+'-attachment')]
+            rows.append(candidate(agency,sid,shown,day,target,docs,title+' '+description))
     else:raise ValueError(f'unsupported source type: {kind}')
     if config.get('horizonDays'):
         # Placeholder calendars list dates far ahead that would crowd out the near-term meetings below.

@@ -309,3 +309,11 @@ def test_temp_file_is_removed_when_reading_fails(monkeypatch,tmp_path):
     with pytest.raises(RuntimeError):
         with http.download('https://example.gov/a.pdf',max_bytes=100):raise RuntimeError('caller failed')
     assert list(tmp_path.iterdir())==[]
+
+
+def test_wordpress_feed_attaches_only_the_agenda_and_packet_not_other_uploads():
+    feed=_fixture("ntpud-meetings-feed.xml")
+    page=("<a href=\"https://ntpud.org/wp-content/uploads/2026/09/09092026-Regular-Board-Meeting-Agenda-and-Packet.pdf\">Agenda and Packet</a>"
+          "<a href=\"https://ntpud.org/wp-content/uploads/2025/09/2026-Budget-Book-Print-Version.pdf\">FY26 Budget and Capital Plan</a>")
+    rows=discover_configured("ntpud",_live_config("ntpud"),limit=10,fetch=lambda u:feed if u.endswith("/feed/") else page)
+    assert rows and all([d["url"] for d in r["documents"]]==["https://ntpud.org/wp-content/uploads/2026/09/09092026-Regular-Board-Meeting-Agenda-and-Packet.pdf"] for r in rows)

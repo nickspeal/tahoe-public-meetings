@@ -36,6 +36,9 @@ CREATE TABLE IF NOT EXISTS document_pages (
   page_number integer NOT NULL CHECK(page_number > 0), text text NOT NULL,
   PRIMARY KEY(document_version_id, page_number)
 );
+-- Web links embedded in a PDF page as link annotations (a "Zoom Link" whose URL the text omits),
+-- kept for the first three pages and the last page (tahoe_ingest.source.link_annotations).
+ALTER TABLE document_pages ADD COLUMN IF NOT EXISTS links jsonb NOT NULL DEFAULT '[]'::jsonb;
 CREATE TABLE IF NOT EXISTS agenda_items (
   id text PRIMARY KEY, meeting_id text NOT NULL REFERENCES meetings(id), source_key text NOT NULL,
   number text NOT NULL, item_order integer NOT NULL, title text NOT NULL, section text,

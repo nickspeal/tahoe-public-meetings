@@ -14,6 +14,7 @@ You read the opening and closing pages of one official public meeting agenda and
 
 <rules>
 - Copy every link, phone number, email address, location, quote, and deadline exactly as it appears in the text, character for character. Never construct, complete, or guess a link.
+- Lines starting "Link:" at the end of a page list the web links embedded in that page, such as the address behind "Zoom Link" or "Click here to join the Microsoft Teams meeting". Copy remoteUrl from them when the text shows the link joins this meeting: a zoom.us or teams.microsoft.com meeting link, not a page about downloading or using the software.
 - The pages may come from several documents or contain details for other meetings or bodies. Use only details that apply to this meeting.
 - When the agenda says remote participation is not offered, leave remoteUrl and phone null and say so in instructions.
 - When the agenda names a remote option but the text shows no readable link or number for it (for example "Remote option: Zoom Link", where the link is a hyperlink that text extraction drops), leave remoteUrl null. Write in instructions that the agenda offers a remote option (naming the platform if the agenda does), and that the link is on the official agenda. Use "instructionsQuote" for the line that names the option. Never say or imply that the agency or the agenda failed to give, omitted, or provided no working link.

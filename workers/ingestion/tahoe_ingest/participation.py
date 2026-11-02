@@ -7,6 +7,9 @@ meeting's current agenda documents to Haiku (Sonnet as fallback) and keeps only
 fields that pass deterministic checks against that text: links, emails, phone
 numbers, locations, deadlines, and the quote behind the instructions must all
 appear in the source. Rejected fields are stored with the reason, never shown.
+Links embedded in those pages (``document_pages.links``) are part of the source
+text, and a single Zoom or Teams join link on page 1 sets ``remoteUrl`` at export
+without the model (``annotated_join_url``).
 
 Results live in ``ai_participation``, one row per meeting, keyed to the document
 versions read. The export uses a row only while those versions are still the
@@ -40,6 +43,25 @@ MAX_INPUT_CHARS = 24_000  # about 6K tokens per meeting
 LOOKBACK_DAYS = 14  # past meetings need no joining details; undated meetings are always included
 FIELDS = ("location", "remoteUrl", "watchUrl", "phone", "commentUrl", "commentEmail", "instructions", "instructionsQuote", "deadline")
 NOT_AGENDA = re.compile(r"minutes|synopsis|supplement|staff report|attachment|presentation|notice of decision", re.I)
+# A link that joins one Zoom or Microsoft Teams meeting, not a vendor's help or download page.
+JOIN_LINK = re.compile(r"(?i)^https://(?:[\w-]+\.)*(?:zoom\.us|zoomgov\.com)/(?:j|w|s|my|webinar/register|meeting/register)/\S+$"
+                       r"|^https://teams\.(?:microsoft|live)\.com/(?:l/meetup-join|meet)/\S+$")
+
+
+def agenda_documents(docs: list) -> list:
+    """The documents read for participation: up to two that are not minutes, reports, or attachments."""
+    return ([d for d in docs if not NOT_AGENDA.search(d["title"])] or docs)[:2]
+
+
+def annotated_join_url(docs: list) -> str | None:
+    """The join link when the agendas' first pages carry exactly one Zoom or Teams link annotation.
+
+    ``docs`` are ``{"title", "links"}`` with the page 1 links of each current document. An agenda
+    that prints "Remote option: Zoom Link" holds the URL only in the link, so this needs no model;
+    two different join links leave the choice to the model, which sees every link.
+    """
+    found = {url for doc in agenda_documents(docs) for url in doc.get("links") or [] if JOIN_LINK.match(url)}
+    return found.pop() if len(found) == 1 else None
 
 
 def response_schema() -> dict:
@@ -240,8 +262,7 @@ def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, toda
     stored = {r["meeting_id"]: r for r in conn.execute("SELECT meeting_id,version_ids,prompt_sha256 FROM ai_participation")}
     pending = {}
     for meeting_id, docs in current.items():
-        agendas = [d for d in docs if not NOT_AGENDA.search(d["title"])] or docs
-        agendas = agendas[:2]
+        agendas = agenda_documents(docs)
         old = stored.get(meeting_id)
         if force or not old or old["prompt_sha256"] != prompt_hash or sorted(old["version_ids"]) != sorted(d["id"] for d in agendas):
             pending[meeting_id] = agendas
@@ -253,26 +274,33 @@ def _pages(conn, pending: dict) -> dict:
     pages = {}
     if not wanted:
         return pages
-    for p in conn.execute("""SELECT document_version_id,page_number,text FROM document_pages
+    for p in conn.execute("""SELECT document_version_id,page_number,text,links FROM document_pages
             WHERE document_version_id = ANY(%s) ORDER BY document_version_id,page_number""", (list(wanted),)):
         count = wanted[p["document_version_id"]]
         if p["page_number"] <= LEADING_PAGES or p["page_number"] == count:
-            pages.setdefault(p["document_version_id"], []).append((p["page_number"], p["text"]))
+            links = p["links"] if isinstance(p["links"], list) else json.loads(p["links"] or "[]")
+            pages.setdefault(p["document_version_id"], []).append((p["page_number"], p["text"], links))
     return pages
 
 
 def render_user_message(docs: list, pages: dict) -> tuple[str, str]:
-    """The model's input and the exact source text that validation checks against."""
+    """The model's input and the exact source text that validation checks against.
+
+    A page's embedded links follow its text as "Link: <url>" lines, so a join link
+    printed only as "Zoom Link" can be copied and still validates against the source.
+    """
     first = docs[0]
     header = f"Agency: {first['agency_name']}\nMeeting: {first['meeting_title']}"
     if first["local_date"]:
         header += f" ({first['local_date'].isoformat()})"
     blocks, budget = [], MAX_INPUT_CHARS
     for doc in docs:
-        for number, text in pages.get(doc["id"], []):
+        for number, text, links in pages.get(doc["id"], []):
             text = text.strip()[:budget]
             if not text:
                 continue
+            if links:
+                text += "\n" + "\n".join(f"Link: {url}" for url in links)
             blocks.append(f'<page document="{doc["title"]}" number="{number}">\n{text}\n</page>')
             budget -= len(text)
             if budget <= 0:

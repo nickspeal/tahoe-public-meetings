@@ -83,6 +83,7 @@ def test_merge_prefers_source_then_agenda_then_agency():
     assert merged["fromAgenda"] is False
 
 
+<<<<<<< HEAD
 def test_agency_watch_link_never_overrides_a_meeting_link():
     defaults = {"watchUrl": "https://cal-span.org", "url": "https://agency.example/remote", "sourceUrl": "x", "checkedOn": "2026-11-02"}
     _, merged = participation.merged(None, {}, {"watchUrl": "https://cal-span.org/meeting/1"}, defaults)
@@ -92,6 +93,35 @@ def test_agency_watch_link_never_overrides_a_meeting_link():
     _, merged = participation.merged(None, {}, None, defaults)  # no agenda yet: the standing link fills the gap
     assert merged["watchUrl"] == "https://cal-span.org" and merged["url"] == "https://agency.example/remote"
     assert merged["fromAgenda"] is False
+=======
+TEAMS = "https://teams.microsoft.com/l/meetup-join/19%3ameeting_x%40thread.v2/0?context=%7b%7d"
+TEAMS_HELP = "https://www.microsoft.com/microsoft-teams/join-a-meeting"
+ZOOM = "https://us02web.zoom.us/j/81234567890?pwd=abc123"
+
+
+def test_one_join_link_on_the_first_page_is_the_remote_link():
+    agenda = {"title": "Board Meeting Agenda", "links": [TEAMS_HELP, TEAMS]}
+    assert participation.annotated_join_url([agenda]) == TEAMS
+    assert participation.annotated_join_url([agenda, {"title": "Agenda packet", "links": [TEAMS]}]) == TEAMS
+    assert participation.annotated_join_url([{"title": "Agenda", "links": [TEAMS_HELP, "https://zoom.us/download"]}]) is None
+    assert participation.annotated_join_url([{"title": "Agenda", "links": [TEAMS, ZOOM]}]) is None  # the model decides
+    assert participation.annotated_join_url([agenda, {"title": "Staff report", "links": [ZOOM]}]) == TEAMS
+    assert participation.annotated_join_url([{"title": "Agenda"}]) is None
+    for url in ("https://ss-tma.zoom.us/j/123", "https://zoomgov.com/j/1", "https://us06web.zoom.us/webinar/register/WN_x",
+                "https://teams.microsoft.com/meet/2544?p=x", "https://teams.live.com/meet/9"):
+        assert participation.annotated_join_url([{"title": "Agenda", "links": [url]}]) == url
+
+
+def test_embedded_links_reach_the_model_and_validate():
+    docs = [{"id": "v1", "title": "Board Meeting Agenda", "agency_name": "NTCD", "meeting_title": "Board Meeting",
+             "local_date": date(2026, 4, 27)}]
+    pages = {"v1": [(1, "Click here to join the Microsoft Teams meeting", [TEAMS_HELP, TEAMS]), (4, "Adjournment", [])]}
+    user, source = participation.render_user_message(docs, pages)
+    assert f"Click here to join the Microsoft Teams meeting\nLink: {TEAMS_HELP}\nLink: {TEAMS}\n</page>" in user
+    assert user.endswith(source) and "Link:" not in source.split('number="4"')[1]
+    kept, rejected = participation.validate(reply(remoteUrl=TEAMS), source)
+    assert kept == {"remoteUrl": TEAMS} and not rejected
+>>>>>>> b8d649f (Read join links embedded in agenda PDFs)
 
 
 @pytest.fixture
@@ -153,6 +183,28 @@ def test_extraction_is_stored_exported_and_not_repeated(conn):
     # A replaced agenda hides the old extraction until the next run reads the new one.
     conn.execute("UPDATE ai_participation SET version_ids='[\"gone\"]'")
     assert ttd(conn)["participation"]["remoteUrl"] is None
+
+
+def test_a_first_page_join_link_sets_the_remote_link_without_the_model(conn):
+    assert ttd(conn)["participation"]["remoteUrl"] is None
+    bundle = json.loads(FIXTURE.read_text())
+    bundle["meetings"] = [m for m in bundle["meetings"] if (m["agency"], m["id"]) == ("ttd", "7110")]
+    for page in bundle["meetings"][0]["pages"]:
+        if page["page_number"] == 1:
+            page["links"] = [TEAMS_HELP, TEAMS]
+    assert ingest_bundle(conn, bundle)["failed"] == 0  # the same file again: its stored page gains the links
+    stored = conn.execute("SELECT page_number,links FROM document_pages ORDER BY page_number").fetchall()
+    assert stored[0]["links"] == [TEAMS_HELP, TEAMS] and all(p["links"] == [] for p in stored[1:])
+    assert ttd(conn)["participation"]["remoteUrl"] == TEAMS
+    # The link outranks the model's choice of the help page.
+    versions = [r["version_id"] for r in conn.execute("SELECT version_id FROM document_current WHERE meeting_id='ttd:7110'")]
+    participation._store(conn, "ttd:7110", versions, "test", "test", {"remoteUrl": TEAMS_HELP, "watchUrl": TEAMS}, [])
+    exported = ttd(conn)["participation"]
+    assert exported["remoteUrl"] == TEAMS and exported["watchUrl"] != TEAMS and exported["fromAgenda"]
+    page = next(p for p in bundle["meetings"][0]["pages"] if p["page_number"] == 1)
+    page["links"] = ["javascript:alert(1)"]
+    result = ingest_bundle(conn, bundle)
+    assert result["failed"] == 1 and "page links must be a list of http(s) URLs" in result["errors"][0]
 
 
 def test_malformed_replies_fall_back_to_sonnet(conn):

@@ -21,7 +21,7 @@ from .durations import meeting_duration
 from .time_certain import time_certain
 from .start_times import agenda_start_time
 from .history import HISTORY_SQL, document_history
-from .participation import merged as merged_participation
+from .participation import annotated_join_url, merged as merged_participation
 from .schedules import PACIFIC, forecast_meetings
 from .records import links_of, merged as merged_links
 from .http import skipped_endpoint
@@ -341,6 +341,7 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
     changed_items = False
     changed_topics = False
     page_rows = {(p["document_id"], int(p["page_number"])): p["text"] for p in row.get("pages", [])}
+    page_links = {(p["document_id"], int(p["page_number"])): _page_links(p) for p in row.get("pages", []) if p.get("links")}
     for doc in row.get("documents", []):
         doc_id = str(doc["id"])
         hash_value = doc["sha256"]
@@ -366,20 +367,27 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
         if not pages or not any(text.strip() for _, text in pages):
             raise ValueError(f"no extracted pages for {doc_id}; refusing empty publication")
         version_ids[doc_id] = version_id
+        links = {n: page_links[(doc_id, n)] for n, _ in pages if (doc_id, n) in page_links}
         if current and current["version_id"] == version_id and current["pages"] >= len(pages):
             if current["url"] != doc["url"]:
                 # The same file at a new address (South Lake Tahoe's agenda viewer link for the
                 # attachment URL stored earlier): the link follows, so the meeting can settle.
                 conn.execute("UPDATE document_versions SET url=%s WHERE id=%s", (doc["url"], version_id))
+            if links:
+                # Pages stored before link annotations were read get them on the next capture of the same file.
+                conn.execute("""UPDATE document_pages d SET links=p.links::jsonb
+                    FROM unnest(%s::int[],%s::text[]) AS p(n,links)
+                    WHERE d.document_version_id=%s AND d.page_number=p.n AND d.links IS DISTINCT FROM p.links::jsonb""",
+                    (list(links), [json.dumps(v) for v in links.values()], version_id))
             continue  # The same file with all of its pages is already current.
         conn.execute("""INSERT INTO document_versions(id,meeting_id,source_document_id,title,url,sha256,fetched_at,page_count,status,warnings,media_type)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'extracted',%s,%s) ON CONFLICT(id) DO NOTHING""",
             (version_id, meeting_id, doc_id, doc.get("title") or doc.get("kind") or "Official document", doc["url"], hash_value,
              datetime.fromisoformat(fetched_at.replace("Z", "+00:00")), page_count, json.dumps(warnings), doc.get("media_type", "application/pdf")))
-        conn.execute("""INSERT INTO document_pages(document_version_id,page_number,text)
-            SELECT %s,n,text FROM unnest(%s::int[],%s::text[]) AS p(n,text)
+        conn.execute("""INSERT INTO document_pages(document_version_id,page_number,text,links)
+            SELECT %s,n,text,links::jsonb FROM unnest(%s::int[],%s::text[],%s::text[]) AS p(n,text,links)
             ON CONFLICT(document_version_id,page_number) DO NOTHING""",
-            (version_id, [n for n, _ in pages], [text for _, text in pages]))
+            (version_id, [n for n, _ in pages], [text for _, text in pages], [json.dumps(links.get(n, [])) for n, _ in pages]))
         conn.execute("""INSERT INTO document_current(meeting_id,source_document_id,version_id) VALUES (%s,%s,%s)
             ON CONFLICT(meeting_id,source_document_id) DO UPDATE SET version_id=excluded.version_id""", (meeting_id, doc_id, version_id))
 
@@ -497,6 +505,14 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                 THEN 'never_checked' ELSE 'ok' END,error=NULL WHERE id=%s""", (aid, aid, aid))
     conn.execute("""INSERT INTO processing_runs(agency_id,meeting_id,stage,status,finished_at,detail)
         VALUES (%s,%s,'ingest','succeeded',now(),%s)""", (aid, meeting_id, json.dumps({"mode": mode, "revised_documents": sorted(revised_documents)})))
+
+
+def _page_links(page: dict) -> list[str]:
+    """A page's embedded web links (``source.link_annotations``): a list of http(s) URLs."""
+    links = page["links"]
+    if not isinstance(links, list) or not all(isinstance(u, str) and re.fullmatch(r"https?://\S+", u) for u in links):
+        raise ValueError(f"page links must be a list of http(s) URLs: {page['document_id']} page {page['page_number']}")
+    return links
 
 
 def _json(value):
@@ -622,9 +638,12 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         agencies.append({"id": a["id"], "name": a["name"], "shortName": a["short_name"], "officialUrl": a["official_url"] or fallback,
                          "sourceUrl": a["source_url"] or fallback, "lastCheckedAt": iso(a["last_checked_at"]), "status": status, "error": error})
     pages_by_version = {}
-    for p in conn.execute("""SELECT p.document_version_id,p.page_number,p.text FROM document_pages p
+    first_page_links = {}  # embedded links on each current document's page 1, for the join link rule
+    for p in conn.execute("""SELECT p.document_version_id,p.page_number,p.text,p.links FROM document_pages p
             WHERE p.document_version_id IN (SELECT version_id FROM document_current) ORDER BY p.document_version_id,p.page_number"""):
         pages_by_version.setdefault(p["document_version_id"], []).append({"number": p["page_number"], "text": p["text"]})
+        if p["page_number"] == 1:
+            first_page_links[p["document_version_id"]] = _json(p["links"]) or []
     docs_by_meeting = {}
     for d in conn.execute("""SELECT c.meeting_id,v.* FROM document_current c JOIN document_versions v ON v.id=c.version_id
             ORDER BY c.meeting_id,v.source_document_id"""):
@@ -702,6 +721,9 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
         # Agenda-read details count only while the documents they came from are still current.
         extracted = agenda_participation.get(m["id"])
         extracted = _json(extracted["fields"]) if extracted and set(_json(extracted["version_ids"])) <= {d["id"] for d in stored_docs} else None
+        if join := annotated_join_url([{"title": d["title"], "links": first_page_links.get(d["id"], [])} for d in stored_docs]):
+            # One Zoom or Teams link behind the agenda's first page outranks the model's reading of the text.
+            extracted = {k: v for k, v in (extracted or {}).items() if v != join} | {"remoteUrl": join}
         location, participation = merged_participation(m["location"], _json(m["participation"]), extracted,
                                                        AGENCIES[m["agency_id"]].get("participation"))
         start, warnings = exported_start(m, docs, _json(m["warnings"]), planned=preview_store.is_planned(m))

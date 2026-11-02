@@ -1,6 +1,7 @@
 """Bounded official-document retrieval and temporary PDF extraction."""
 from __future__ import annotations
 
+import re
 import subprocess
 from urllib.parse import urlparse
 
@@ -8,6 +9,8 @@ from .http import USER_AGENT, SourceTooLarge, download
 
 MAX_PDF_BYTES = 80 * 1024 * 1024
 MAX_PAGES = 800
+LINK_PAGES = 3  # opening pages whose embedded links are kept (with the last page): where agendas print join links
+MAX_LINKS_PER_PAGE = 20
 
 
 class TooManyPages(SourceTooLarge):
@@ -63,6 +66,10 @@ def _extract_pdf(fetched) -> dict:
     if texts and not texts[-1].strip():
         texts.pop()
     pages = [{"page_number": n, "text": text.strip()} for n, text in enumerate(texts, 1) if text.strip()]
+    links = link_annotations(path, page_count)
+    for page in pages:
+        if links.get(page["page_number"]):
+            page["links"] = links[page["page_number"]]
     warnings = []
     if len(pages) < page_count:
         warnings.append(f"Text extracted on {len(pages)} of {page_count} pages; scanned pages may require OCR.")
@@ -70,3 +77,27 @@ def _extract_pdf(fetched) -> dict:
         raise ValueError("PDF extraction produced no text; OCR/manual review required")
     return {"sha256": fetched.sha256, "bytes": fetched.size, "media_type": "application/pdf", "page_count": page_count,
             "pages": pages, "warnings": warnings}
+
+
+def link_annotations(path: str, page_count: int) -> dict[int, list[str]]:
+    """Web links embedded in the first ``LINK_PAGES`` pages and the last page, by page number.
+
+    A "Zoom Link" or "Click here to join the Microsoft Teams meeting" is a link
+    annotation whose URL pdftotext never prints; ``pdfinfo -url`` lists them. Only
+    http(s) links are kept, in page order without repeats. Listing them is best
+    effort: a PDF that pdfinfo cannot list keeps its text and simply has no links.
+    """
+    wanted = set(range(1, min(LINK_PAGES, page_count) + 1)) | {page_count}
+    try:
+        listed = subprocess.run(["pdfinfo", "-url", path], capture_output=True, timeout=30, check=True).stdout
+    except (OSError, subprocess.SubprocessError):
+        return {}
+    found: dict[int, list[str]] = {}
+    for line in listed.decode("utf-8", "replace").splitlines():
+        match = re.match(r"^\s*(\d+)\s+\S+\s+(https?://\S+)\s*$", line)
+        if not match or int(match.group(1)) not in wanted:
+            continue
+        page = found.setdefault(int(match.group(1)), [])
+        if match.group(2) not in page and len(page) < MAX_LINKS_PER_PAGE:
+            page.append(match.group(2))
+    return found

@@ -179,10 +179,16 @@ def trpa_documents(agency, config, markup, base, day):
     return docs,bool(docs)
 
 
+_CANCEL_NOTICE=re.compile(r'^\s*Notice\s+of\s+Cancell?ation\s+of\s+(?:the\s+)?',re.I)
+
+
 def candidate(agency, sid, title, day, url, docs, text=''):
+    # "Notice of Cancelation of Town Council Meeting" is the meeting itself, canceled: show the meeting's name.
+    notice=_CANCEL_NOTICE.match(title or '')
+    if notice and title[notice.end():].strip():title=title[notice.end():].strip()
     return {'agency':agency,'source_id':sid,'title':title,'date':day,
             'start_time':time_in(text),'official_url':url,'documents':docs,
-            'status':'canceled' if re.search(r'\bcancel(?:led|ed|lation|ation)\b',text,re.I) else 'unknown',
+            'status':'canceled' if notice or re.search(r'\bcancel(?:led|ed|lation|ation)\b',text,re.I) else 'unknown',
             'warnings':[]}
 
 

@@ -332,3 +332,11 @@ def test_ndep_index_lists_a_numeric_date_and_an_abbreviated_month_date():
            "<tr><td>Sept. 17, 2026</td><td></td></tr><tr><td>Dec 2</td><td></td></tr></table>")
     rows=discover_configured("ndep",_live_config("ndep"),limit=10,fetch=lambda _:table)
     assert sorted(r["date"] for r in rows)==["2026-09-17","2026-10-21","2026-11-04"]
+
+
+def test_a_cancellation_notice_title_names_the_canceled_meeting():
+    from tahoe_ingest.source_discovery import candidate
+    row=candidate("truckee","8d8df4df-3bbc-452c-8107-c91b6480d648","Notice of Cancelation of Town Council Meeting","2026-10-13","https://example.test/m",[],"5:00 PM")
+    assert (row["title"],row["status"])==("Town Council Meeting","canceled")
+    assert candidate("x","1","Notice of Cancellation of the Board Meeting","2026-10-13","https://example.test/m",[])["title"]=="Board Meeting"
+    assert candidate("x","1","Special Town Council Meeting","2026-10-13","https://example.test/m",[])["status"]=="unknown"

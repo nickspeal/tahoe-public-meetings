@@ -9,7 +9,10 @@ following lines of its column, with the other column interleaved, and a block ma
 "CANCELED", "CANCELLED", "No Meeting", and "N/A" describe a column's state, not items, and a canceled column has
 no entries. Only labels in ``bodies`` are read, so the TTC and Finance & Personnel columns are skipped. The "Pending
 Items" list at the top names no body label, so it is skipped too. The packet's page footer ("~ Page 188 ~", "Meeting Packet - October 7, 2026") is not
-part of the calendar. There is no "(Updated ...)" date: the calendar is as of the meeting whose packet carries it.
+part of the calendar, nor is the staff-report line above it ("JM/lr    AGENDA ITEM: VIII"), whose initials name the
+report's author. Late in the year the next year's calendar may follow on the same page under its own title ("2027
+TTD/C Board/Committees Tentative Agenda Calendar"); the title is not an item, and its January blocks roll into the
+new year as any heading after December does. There is no "(Updated ...)" date: the calendar is as of the meeting whose packet carries it.
 """
 from __future__ import annotations
 
@@ -24,7 +27,7 @@ STATE = re.compile(r"(?:CANCELL?ED|No Meeting|N/A)\.?", re.I)
 HEADING = re.compile(r"(?:(?P<label>[A-Z][A-Za-z&/]*)\s+)?(?P<month>[A-Z][a-z]+)\.?\s+(?P<day>\d{1,2})(?:\s*-\s*(?P<state>.+))?")
 RIGHT_LABEL = re.compile(r"(?P<label>.+?)(?:\s*-\s*|\s+)(?:(?P<state>CANCELL?ED)|\d{1,2}:\d{2}(?:\s*[ap]\.?m\.?)?)", re.I)
 LABEL = re.compile(r"[A-Z][A-Za-z&/]*(?: [A-Z&][A-Za-z&/]*)*")
-FOOTER = re.compile(r"~\s*Page\s+\d+\s*~")
+FOOTER = re.compile(r"~\s*Page\s+\d+\s*~|AGENDA ITEM:", re.I)
 TOLERANCE = 2  # characters right-column text may start before the header's right label
 
 
@@ -102,12 +105,12 @@ def add(block: dict, column: int, text: str, page: int) -> None:
 
 
 def calendar_lines(page: dict, title: str) -> list[str]:
-    """The page's lines without its repeated title and the packet footer."""
+    """The page's lines without calendar titles (this year's, repeated, or the next year's) and the packet footer."""
     lines = []
     for line in page["text"].splitlines():
         if FOOTER.search(line):
             break
-        lines.append("" if line.strip() == title else line)
+        lines.append("" if title.casefold() in line.casefold() else line)
     return lines
 
 
@@ -119,7 +122,7 @@ def parse(pages: list[dict], *, config: dict, carried_by: date) -> dict:
     cursor, blocks, block, pending = YearCursor(year), [], None, False
     for page in pages:
         number = page["page_number"]
-        for line in calendar_lines(page, title):
+        for line in calendar_lines(page, config["title"]):
             cells = runs(line)
             if not cells:
                 if block:

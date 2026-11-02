@@ -493,7 +493,7 @@ _PRINTED_DATE = re.compile(r"\s*([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:,\s*|\s+)(\d{4}
 
 
 def parse_printed_date(text: str) -> date | None:
-    """The date ``text`` starts with (``PRINTED_DATE``: a full or three-letter month name, any case, "Sept", and
+    r"""The date ``text`` starts with (``PRINTED_DATE``: a full or three-letter month name, any case, "Sept", and
     zero-padded days allowed), or None. Rules find it after their own label, e.g.
     ``re.search(rf"MEETING DATE:\s*({PRINTED_DATE})", page)``."""
     found = _PRINTED_DATE.match(text)

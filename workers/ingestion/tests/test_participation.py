@@ -170,8 +170,9 @@ def test_extraction_is_stored_exported_and_not_repeated(conn):
     assert after["location"] == before["location"]  # the source adapter's value wins
     assert after["participation"]["remoteUrl"] == answer["remoteUrl"]
     assert after["participation"]["email"] == "lrao@tahoetransportation.org"
-    assert before["participation"]["url"] == answer["remoteUrl"]  # the source feed files the Zoom link as the comment URL
-    assert after["participation"]["url"] is None  # a join link is never the comment link
+    # The source feed files the Zoom link as its participation URL; a join link is the remote link, never the comment link.
+    assert before["participation"]["remoteUrl"] == answer["remoteUrl"] and before["participation"]["url"] is None
+    assert after["participation"]["url"] is None
     assert after["participation"]["watchUrl"] is None and after["participation"]["fromAgenda"]
     usage = conn.execute("SELECT purpose,ok FROM ai_usage").fetchall()
     assert [(u["purpose"], u["ok"]) for u in usage] == [("participation-extraction", True)]
@@ -181,11 +182,12 @@ def test_extraction_is_stored_exported_and_not_repeated(conn):
 
     # A replaced agenda hides the old extraction until the next run reads the new one.
     conn.execute("UPDATE ai_participation SET version_ids='[\"gone\"]'")
-    assert ttd(conn)["participation"]["remoteUrl"] is None
+    assert ttd(conn)["participation"]["email"] == before["participation"]["email"] != "lrao@tahoetransportation.org"
 
 
 def test_a_first_page_join_link_sets_the_remote_link_without_the_model(conn):
-    assert ttd(conn)["participation"]["remoteUrl"] is None
+    feed_join = ttd(conn)["participation"]["remoteUrl"]
+    assert feed_join and feed_join != TEAMS  # the feed's Zoom link, until the agenda's own link outranks it
     bundle = json.loads(FIXTURE.read_text())
     bundle["meetings"] = [m for m in bundle["meetings"] if (m["agency"], m["id"]) == ("ttd", "7110")]
     for page in bundle["meetings"][0]["pages"]:

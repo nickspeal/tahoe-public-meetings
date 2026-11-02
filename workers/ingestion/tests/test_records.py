@@ -511,3 +511,22 @@ def test_update_meeting_records_backfill_replaces_the_feed(tmp_path, monkeypatch
         fetch_page=lambda url: pages.append(url) or PLAYLIST_PAGE_HTML, post_json=lambda url, payload: CONTINUATION)
     assert len(pages) == 1  # two bodies share one channel
     assert report["errors"] == [] and report["byAgency"]["washoe-commissioners"]["matched"] == 1
+
+
+def test_legistar_api_links_for_meetings_missing_from_the_department_page_become_records_only_entries():
+    config = {"type": "legistar", "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?ID=4415", "bodyPattern": "Planning Commission"}
+    events = [{"EventId": 5313, "EventBodyName": "Planning Commission", "EventDate": "2026-10-22T00:00:00", "EventMedia": 2690},
+              # Not on the department page (it lists only its newest rows); the video was attached after the meeting.
+              {"EventId": 5286, "EventBodyName": "Planning Commission", "EventDate": "2026-09-10T00:00:00", "EventMedia": 2611},
+              {"EventId": 5287, "EventBodyName": "Planning Commission", "EventDate": "2026-09-03T00:00:00", "EventMedia": None}]
+    fetch = lambda url: json.dumps(events) if url.startswith("https://webapi.legistar.com/") else LEGISTAR
+    found = discover_configured("el-dorado-planning", config, fetch=fetch)
+    [page] = [c for c in found if not c.get("records_only")]
+    [late] = [c for c in found if c.get("records_only")]
+    assert page["date"] == "2026-10-22"
+    assert (late["agency"], late["date"]) == ("el-dorado-planning", "2026-09-10")
+    assert late["recording_url"] == "https://eldorado.legistar.com/Video.aspx?Mode=Granicus&ID1=2611&Mode2=Video"
+    # The entry matches the stored meeting of that date and adds the video to it.
+    stored_meeting = stored("el-dorado-planning:2026-09-10", date(2026, 9, 10), "El Dorado County Planning Commission Meeting")
+    assert records.match_meeting([stored_meeting], date.fromisoformat(late["date"]), records.qualifiers(late["title"])) is stored_meeting
+    assert records.merged(stored_meeting, late)["recording_url"] == late["recording_url"]

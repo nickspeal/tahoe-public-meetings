@@ -370,7 +370,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
         for row in result:
             row['documents']=meeting_files(agency,row,fetch)
     if kind=='legistar':
-        legistar_links(config,result,fetch)
+        extras.extend(legistar_links(config,result,fetch,agency))
     return result+extras
 
 
@@ -448,21 +448,31 @@ def event_links(client, event):
     return links
 
 
-def legistar_links(config, rows, fetch):
-    """Add web API minutes and video to department-page rows, matched by date; a failing API adds nothing."""
+def legistar_links(config, rows, fetch, agency=None):
+    """Add web API minutes and video to department-page rows, matched by date; a failing API adds nothing.
+
+    The department page lists only its newest rows, and a video or minutes file is often attached to an
+    event long after the meeting. So the API is read back 400 days from the newest row, and an event with
+    links but no page row becomes a records-only entry that scheduled runs apply to the stored meeting
+    of that date (the way minutes links on a later index are applied). Returns those entries.
+    """
     days=sorted(r['date'] for r in rows if r.get('date'))
-    if not days:return
+    if not days:return []
     until=date.fromisoformat(days[-1])
     try:
-        client,events=legistar_events(config,max(date.fromisoformat(days[0]),until-timedelta(days=400)),until,fetch=fetch)
+        client,events=legistar_events(config,until-timedelta(days=400),until,fetch=fetch)
     except Exception:  # The department page alone still gives meetings and video.
-        return
+        return []
     by_day={}
     for event in events:
         by_day.setdefault((event.get('EventDate') or '')[:10],[]).append(event)
     for row in rows:
         same=by_day.get(row.get('date'),[])
         if len(same)==1:row.update(event_links(client,same[0]))
+    shown={r.get('date') for r in rows}
+    return [records_entry(agency,day,f"{same[0].get('EventBodyName') or 'Meeting'} {day}",links)
+            for day,same in sorted(by_day.items()) if agency and day and day not in shown and len(same)==1
+            and (links:=event_links(client,same[0]))]
 
 
 def meeting_files(agency, row, fetch):

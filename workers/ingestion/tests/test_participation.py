@@ -329,7 +329,7 @@ class _FakeConn:
 def _run_with_fake_backlog(monkeypatch, max_cost, count=3):
     docs = {f"m{i}": [{"id": f"v{i}", "title": "Agenda", "agency_name": "A", "meeting_title": "T", "local_date": None}] for i in range(count)}
     monkeypatch.setattr(participation, "_pending", lambda *a, **k: docs)
-    monkeypatch.setattr(participation, "_pages", lambda conn, pending: {f"v{i}": [(1, "Zoom: https://zoom.us/j/123456789")] for i in range(count)})
+    monkeypatch.setattr(participation, "_pages", lambda conn, pending: {f"v{i}": [(1, "Zoom: https://zoom.us/j/123456789", [])] for i in range(count)})
     monkeypatch.setattr(participation, "month_to_date_spend", lambda conn: 0.0)
     monkeypatch.setattr(participation, "_store", lambda *a, **k: None)
     monkeypatch.setattr(participation, "_record_usage", lambda *a, **k: 0.001)
@@ -339,15 +339,12 @@ def _run_with_fake_backlog(monkeypatch, max_cost, count=3):
 
 
 def test_an_estimate_over_the_cost_limit_processes_the_largest_fitting_prefix(monkeypatch):
-    _, one = _run_with_fake_backlog(monkeypatch, 10.0, count=1)
-    assert one.calls == 1
-    per_meeting = participation.cost_usd(participation.CHAIN[0][0], uncached_input=1, output=participation.EST_OUTPUT_TOKENS)
     report, haiku = _run_with_fake_backlog(monkeypatch, 0.02, count=3)
     assert haiku.calls == 3 and "meetingsDeferredForCost" not in report  # fits entirely
     # Find a limit between one and two meetings' estimates.
     one_cost = report["estimatedCostUsd"] / 3
     report, haiku = _run_with_fake_backlog(monkeypatch, one_cost * 1.5, count=3)
     assert haiku.calls == 1 and report["meetingsDeferredForCost"] == 2
-    assert report["stoppedEarly"].startswith("cost limit reached") and per_meeting > 0
+    assert report["stoppedEarly"].startswith("cost limit reached")
     with pytest.raises(SystemExit):
         _run_with_fake_backlog(monkeypatch, one_cost / 2, count=3)

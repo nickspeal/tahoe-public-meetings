@@ -44,7 +44,7 @@ LOOKBACK_DAYS = 14  # past meetings need no joining details; undated meetings ar
 FIELDS = ("location", "remoteUrl", "watchUrl", "phone", "commentUrl", "commentEmail", "instructions", "instructionsQuote", "deadline")
 NOT_AGENDA = re.compile(r"minutes|synopsis|supplement|staff report|attachment|presentation|notice of decision", re.I)
 # A link that joins one Zoom or Microsoft Teams meeting, not a vendor's help or download page.
-JOIN_LINK = re.compile(r"(?i)^https://(?:[\w-]+\.)*(?:zoom\.us|zoomgov\.com)/(?:j|w|s|my|webinar/register|meeting/register)/\S+$"
+JOIN_LINK = re.compile(r"(?i)^https://(?:[\w-]+\.)*(?:zoom\.us|zoom\.com|zoomgov\.com)/(?:j|w|s|my|wc|webinar|webinar/register|meeting/register)/\S+$"
                        r"|^https://teams\.(?:microsoft|live)\.com/(?:l/meetup-join|meet)/\S+$")
 
 
@@ -184,9 +184,6 @@ def _instructions(value: str, source_normalized: str, source_compact: str) -> tu
         if clock not in source_normalized:
             return None, "mentions a time not in the agenda text"
     return value, None
-
-
-JOIN_LINK = re.compile(r"(?i)^https?://([a-z0-9-]+\.)*(zoom\.(us|com)/(j|w|my|wc|webinar)/|teams\.microsoft\.com/(l/meetup-join|meet)/|teams\.live\.com/meet/)")
 
 
 def is_join_url(url: str | None) -> bool:

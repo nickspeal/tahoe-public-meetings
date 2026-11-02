@@ -135,6 +135,8 @@ def _parser() -> argparse.ArgumentParser:
     calendars.add_argument("--agency", help="Only this agency ID (any agency with a planningCalendar)")
     calendars.add_argument("--dry-run", action="store_true", help="List calendars that would be read; no downloads, writes, or API calls")
     calendars.add_argument("--max-calendars", type=int, help="Download at most this many calendars")
+    calendars.add_argument("--force", action="store_true", help="Also read stored calendars again from their stored text "
+                           "(after a format fix); replaces their previews, no downloads")
     calendars.add_argument("--delay", type=float, default=1.0, help="Seconds between downloads")
     calendars.add_argument("--max-cost", type=float, default=ai_topics.DEFAULT_MAX_RUN_COST, help="USD limit for subject tags this run")
     calendars.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
@@ -277,7 +279,7 @@ def main(argv=None) -> int:
             init_db(conn)
             report = {"calendars": planning_calendars.read_planning_calendars(
                 conn, agency=args.agency, dry_run=args.dry_run, delay=args.delay, max_calendars=args.max_calendars,
-                today=datetime.now(scheduled.PACIFIC).date())}
+                today=datetime.now(scheduled.PACIFIC).date(), force=args.force)}
             report["subjects"] = previews.classify_subjects(conn, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
                                                             dry_run=args.dry_run)
             print(json.dumps(report, indent=2, default=str))

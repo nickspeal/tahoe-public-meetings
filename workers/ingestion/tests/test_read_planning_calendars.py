@@ -289,3 +289,61 @@ def test_a_passed_deadline_defers_downloads(db, slt):
     report = planning_calendars.read_planning_calendars(db, reader=slt, today=TODAY, deadline=time.monotonic() - 1)
     assert slt.calls == [] and report["deferred"] == 1 and report["timeBudgetReached"]
     assert planning_calendars.read_planning_calendars(db, reader=slt, today=TODAY)["calendarsRead"] == 1
+
+
+@contextlib.contextmanager
+def buggy_parse(monkeypatch, agency_id: str, drop):
+    """The agency's format as it stood before a fix: its parse leaves out the entries ``drop`` matches."""
+    real = planning_calendars.agency_rules
+
+    def rules():
+        found = real()
+        rule = found[agency_id]
+
+        def parse(pages, **kwargs):
+            parsed = rule.parse(pages, **kwargs)
+            return {**parsed, "entries": [e for e in parsed["entries"] if not drop(e)]}
+        return {**found, agency_id: rule._replace(parse=parse)}
+    with monkeypatch.context() as patch:
+        patch.setattr(planning_calendars, "agency_rules", rules)
+        yield
+
+
+def test_force_reads_a_stored_packet_calendar_again_after_a_format_fix(db, monkeypatch):
+    assert ingest_bundle(db, ttd_bundle())["failed"] == 0
+    def no_downloads(url, **_):
+        raise AssertionError("forced calendars are read from stored text")
+    today = date(2026, 10, 8)
+    with buggy_parse(monkeypatch, "ttd", lambda e: e["agency_id"] == "ttd-rtcpc"):
+        assert planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)["plannedMeetings"] == []
+    # The fixed format alone does not touch a stored calendar.
+    assert planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)["calendarsUnchanged"] == 1
+    assert "ttd-rtcpc:planned-2026-11-02" not in export(db, today)[1]
+
+    dry = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True, dry_run=True)
+    assert dry["wouldRead"] == [load("ttd-packet-2026-10-07")["url"]]
+    report = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
+    assert report["byAgency"]["ttd"]["read"] == 1 and report["plannedMeetings"] == ["ttd-rtcpc:planned-2026-11-02"]
+    assert {"Quarterly Parking Report", "Project Spotlight"} <= {
+        p["subject"] for p in export(db, today)[1]["ttd-rtcpc:planned-2026-11-02"]["previews"]}
+    count = "SELECT count(*) AS n FROM meeting_previews"
+    before = db.execute(count).fetchone()["n"]
+    planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
+    assert db.execute(count).fetchone()["n"] == before  # replaced, not duplicated
+
+    # A fix that drops an item withdraws the planned meeting it alone supported.
+    with buggy_parse(monkeypatch, "ttd", lambda e: e["agency_id"] == "ttd-rtcpc"):
+        planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
+    payload, meetings = export(db, today)
+    assert "ttd-rtcpc:planned-2026-11-02" not in meetings
+    assert validate_export(payload)[0] == []
+
+
+def test_force_reads_a_stored_attachment_calendar_from_its_stored_text(db, slt, monkeypatch):
+    url = load("slt-apc-2026-09-30")["url"]
+    with buggy_parse(monkeypatch, "slt", lambda e: e["local_date"] == date(2026, 12, 1)):
+        planning_calendars.read_planning_calendars(db, reader=slt, today=TODAY)
+    assert "slt:planned-2026-12-01" not in export(db)[1]
+    report = planning_calendars.read_planning_calendars(db, reader=slt, today=TODAY, force=True)
+    assert slt.calls == [url] and report["calendarsRead"] == 1 and report["rejected"] == []
+    assert export(db)[1]["slt:planned-2026-12-01"]["previews"]

@@ -102,7 +102,7 @@ future meeting before its agenda is posted. `extract-notices [--dry-run]
 notice that changed; it keeps only events whose quote, dates, times, places, and
 hosts appear in the notice, and turns them into one-off meetings and previews
 (`notices.py`). `read-planning-calendars [--agency ID] [--dry-run]
-[--max-calendars N]` parses each new agenda planning calendar with its
+[--max-calendars N] [--force]` parses each new agenda planning calendar with its
 format's deterministic rules (`tahoe_ingest/planning_calendar_rules/`, chosen
 by the agency's `planningCalendar` entry; see the [configuration
 guide](../../config/README.md#planning-calendars)), stores it with
@@ -110,7 +110,9 @@ guide](../../config/README.md#planning-calendars)), stores it with
 meeting, and then tags new subjects (`classify-subjects [--dry-run]`). Both
 accept `--max-cost` and `--monthly-budget`. Unchanged notices and calendars
 cost no download, model call, or write; the export reads current previews in
-one query.
+one query. After a format fix, `--force` reads stored calendars again from
+their stored text and replaces their previews (see the [rules
+README](tahoe_ingest/planning_calendar_rules/README.md#fixing-a-format-after-a-bad-calendar)).
 
 `evaluate-topics` compares the title rules with Claude Haiku 5.5 on stored
 agenda items, given either the title alone or the title plus the item's own

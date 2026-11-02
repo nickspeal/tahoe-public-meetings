@@ -191,11 +191,12 @@ def _naive(value):
 
 # --- Storage ------------------------------------------------------------------------------------------------
 
-def replace_source(conn, source: PreviewSource, previews: list[Preview], *, today: date) -> dict:
+def replace_source(conn, source: PreviewSource, previews: list[Preview], *, today: date, force: bool = False) -> dict:
     """Store this version and its previews, keep the key's current version and one previous, create planned meetings.
 
     Rows are inserted only when this (kind, key, sha256) has none yet, so a re-run with the same source costs
-    the one version lookup and no writes. Planned meetings (R6) are created only when this version is current.
+    the one version lookup and no writes. ``force`` replaces this version's stored rows with ``previews`` (a parser
+    fix re-read from the same file). Planned meetings (R6) are created only when this version is current.
     Returns ``{"inserted", "current", "planned", "unchanged", "pruned"}`` (plus ``errors`` when an ingest failed).
     """
     _validate(source, previews)
@@ -231,7 +232,11 @@ def replace_source(conn, source: PreviewSource, previews: list[Preview], *, toda
             # Older than both kept versions (a backfill re-capture): storing it would only delete it again.
             result.update(unchanged=True, superseded=True)
             return result
-        if same_metadata and (has_rows or not previews):
+        if force and has_rows:
+            conn.execute("DELETE FROM meeting_previews WHERE source_kind=%s AND source_key=%s AND source_sha256=%s",
+                         (source.kind, source.key, source.sha256))
+            has_rows = False
+        elif same_metadata and (has_rows or not previews):
             result["unchanged"] = True
             return result
 

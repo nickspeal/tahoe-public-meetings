@@ -77,6 +77,14 @@ The dry run reports generated topic changes. Applying them records the classifie
 
 Use the [source review queue](operations/source-review.md) and its canonical `config/source-reviews.json` to review questionable source identities, missing agenda archives, and download failures one at a time. Pending flags do not change followed coverage. Record the maintainer’s decision with the stable SR ID before disabling a source or changing its intended scope. Missing parsers and recovered acquisition problems are maintainer work and are labeled separately.
 
+## Check usage and quotas
+
+```sh
+python3 scripts/usage/usage.py --open
+```
+
+This collects Prisma operations and storage, AI cost and tokens by model and workflow, Cloud Run compute, GitHub Actions minutes, and Vercel usage. It then writes a local dashboard and summaries (`summary.md`, `summary.json`) to the gitignored `private/usage/`. It shows each quota's use this month (or over the last 30 days for Vercel), a month-end projection, the past 7 and 30 days, and weekly and monthly history. Run it before work that spends a quota, such as a topic catalog edit, a backfill, or a new agency. A collection costs two production database operations. See [scripts/usage/README.md](../scripts/usage/README.md).
+
 ## Check database storage
 
 ```sh

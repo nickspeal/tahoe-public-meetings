@@ -2,16 +2,18 @@
 
 For every item with a verified staff report (``staff_reports``), the first pages of
 the report go to Haiku 5.5 (Sonnet 5.5 as fallback, as in ``ai_topics``), which
-returns two or three sentences, each trimmed from one passage of the report and
+returns one to three sentences, each trimmed from one passage of the report and
 citing its page. The maintainer's rule (decision 0024) is that a summary repeats
 the staff report verbatim as much as possible, changing it only to shorten it.
 
 ``validate`` enforces that rule before anything is published (decision 0010; no
-human approval): each cited passage must be found on its page in the stored text,
-and each sentence must be the passage with words deleted, allowing only a
-grammatical "the", "a", "an", or "and" to be inserted. Numbers must come from the
-passage, and a deleted negation fails the sentence. A summary with any failing
-sentence is not published; the item keeps its agenda excerpt.
+human approval): each cited passage must be found on its page (read in reading
+order, ``reading_view``), and each sentence must be the passage with words deleted,
+allowing only a grammatical "the", "a", "an", or "and" to be inserted. Numbers must
+come from the passage, and a deleted negation fails the sentence. When the first
+sentence fails, nothing is published and the item keeps its agenda text; a later
+sentence that fails is left out of the summary. A rejected answer is retried with
+the rejected sentence, its source, the page text near it, and how to fix it.
 
 Results live in ``ai_item_summaries``, one row per item, keyed to everything the
 model saw. The export shows a published row only while it matches the item's
@@ -32,13 +34,16 @@ from pathlib import Path
 from .ai_topics import DEFAULT_MONTHLY_BUDGET, month_to_date_spend, out_of_time, time_budget_stop
 from .evaluate_topics import AnthropicTopicModel, ModelError, USAGE_FIELDS, cost_usd, estimate_tokens, has_credentials
 from .requested_actions import for_meeting as requested_actions
+from .reading_view import View, view, vocabulary
 from .staff_reports import clean_text, procedural, Item, report_document_id
 
 PROMPT = Path(__file__).with_name("prompts") / "staff_report_summary.md"
 METHOD = "claude-staff-report-v1"
 # Raise when ``validate`` accepts more than it did: items that failed validation are tried again once, and only they
 # (a prompt change would send every item again). Stored on each result; results from before it existed count as 1.
-VALIDATOR_VERSION = 1
+# 2 (2026-11-02): reading view, every occurrence of a passage, passages opening with "$" or "(", list markers and
+# bullets, dropped earlier sentences, negations limited to the kept sentence, later failing sentences left out.
+VALIDATOR_VERSION = 2
 CHAIN = (("claude-haiku-5-5", "low"), ("claude-sonnet-5-5", "medium"))
 # Haiku gets a second try with the validator's objection; Sonnet costs about 20 times more, so one try.
 ATTEMPTS = {"claude-haiku-5-5": 2, "claude-sonnet-5-5": 1}
@@ -77,38 +82,122 @@ def prompt_sha256(system: str) -> str:
 
 
 # --- Validation ------------------------------------------------------------------
+#
+# Every check runs on the reading view of each page (``reading_view``): side labels moved out of the sentences
+# beside them, and words hyphenated across a line break joined when the report prints the joined word. A
+# citation still quotes the page's own text (``View.span``), which is what the export checks and the site shows.
+
+class Rejected(ValueError):
+    """Why a summary or one of its sentences failed, with what a retry message needs to explain it."""
+
+    def __init__(self, number: int | None, kind: str, problem: str, *, entry: dict | None = None, near: str = "",
+                 show_sentence: bool = False):
+        entry = entry or {}
+        self.number, self.kind, self.problem, self.near = number, kind, problem, near
+        self.sentence = " ".join(str(entry.get("sentence", "")).split())
+        self.source = " ".join(str(entry.get("source", "")).split())
+        self.page = entry.get("page")
+        message = problem if number is None else f"sentence {number}: {problem}"
+        super().__init__(message + (f": “{self.sentence[:200]}”" if show_sentence else ""))
+
 
 def _tokens(text: str) -> list[tuple[str, int, int]]:
     """Words with their character offsets in ``text`` itself (callers clean page text first)."""
     return [(m.group().casefold(), m.start(), m.end()) for m in re.finditer(r"[^\W_]+", text)]
 
 
-def locate(source: str, page_text: str) -> tuple[int, int] | None:
-    """Character span of ``source`` on the page, comparing words only (case, punctuation, and line breaks ignored).
+# Characters that open a passage before its first word: "$900 collected", "(1) Approve", "“Make the Best Better”".
+OPENERS = "$(\"“‘'[#"
+# A list marker or bullet before a passage starts it: "3)", "(a)", "•", the Symbol-font bullet (U+F0B7) that
+# pdftotext reads from Word documents; "1.", "b.", "iv.", an "o" sub-bullet, or a dash only at the start of a line
+# (a period after "F." mid-line is more often an initial).
+_MARKER_END = re.compile(r"(?:(?:^|\s)(?:\(?(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})\)|[•●▪■◦‣∙])"
+                         r"|(?:^|\n)[ \t]*(?:[o*–—-]|(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})\.))$")
+# Abbreviations whose period does not end a sentence: "Amendment No. 3", "Mr. Smith", "approx. 40".
+# A single letter is an initial ("Edward F. Ricketts"), except as a list marker after a sentence ("work. A. The")
+# or as the name of an attachment, exhibit, or the like ("included as Attachment C. Both").
+_ABBREVIATION = re.compile(r"(?:^|[\s(])(?:no|nos|mr|mrs|ms|dr|st|vs|approx|ca|e\.g|i\.e)\.$", re.I)
+_INITIAL = re.compile(r"(?:^|[\s(])([A-Za-z]+\s+)?[A-Za-z]\.$")
+_NAMED_LETTER = {"attachment", "exhibit", "appendix", "section", "item", "table", "figure", "phase", "option",
+                 "alternative", "schedule", "part", "unit", "zone", "area", "tier", "plan", "lot", "parcel"}
 
-    A copy with a stray word or two still finds its passage, but the span returned
-    is always the page's own text, which is what the sentence is checked against.
+
+def _passage_start(text: str, start: int) -> int:
+    """``start`` moved back over the punctuation that opens the passage's first word."""
+    while start and text[start - 1] in OPENERS:
+        start -= 1
+    return start
+
+
+def _starts_sentence(text: str, start: int) -> bool:
+    """Whether a sentence of ``text`` may start at ``start``: after a sentence's end, a heading's colon, a list
+    marker or bullet, or at a line that starts with a capital letter, a digit, or an opening mark."""
+    start = _passage_start(text, start)
+    before = text[:start]
+    if not before.strip():
+        return True
+    stripped = before.rstrip()
+    first = text[start:start + 1]
+    if stripped[-1] in ":;" or _MARKER_END.search(stripped):
+        return True
+    if re.search(r"[.?!:;]\s+(?:[A-Za-z]|\d{1,2}|[ivx]{1,4})\.$", stripped):
+        return True  # a list marker after a sentence: "proceed with the work. A. The Fire Station ..."
+    if re.search(r"[.?!][\"”’)]?$", stripped):
+        initial = _INITIAL.search(stripped)
+        if initial and (initial.group(1) or "").strip().casefold() not in _NAMED_LETTER:
+            return False
+        return not first.islower() and not _ABBREVIATION.search(stripped)
+    return "\n" in before[len(stripped):] and (first.isupper() or first.isdigit() or first in OPENERS)
+
+
+def _spans(source: str, text: str) -> list[tuple[int, int]]:
+    """Character spans of ``source`` in ``text``, comparing words only (case, punctuation, and line breaks ignored).
+
+    Every exact occurrence is returned, so a recommended motion that repeats the item's title is found where it
+    starts a sentence. A copy with a stray word or two still finds its one passage, but a span is always the
+    page's own text, which is what the sentence is checked against.
     """
     wanted = [t for t, _, _ in _tokens(source)]
-    page = _tokens(page_text)
+    page = _tokens(text)
     words = [t for t, _, _ in page]
-    if len(wanted) < MIN_SENTENCE_WORDS or len(wanted) > MAX_SOURCE_WORDS:
-        return None
     n = len(wanted)
-    for start in range(len(words) - n + 1):
-        if words[start:start + n] == wanted:
-            return page[start][1], page[start + n - 1][2]
+    exact = [(page[s][1], page[s + n - 1][2]) for s in range(len(words) - n + 1) if words[s:s + n] == wanted]
+    if exact:
+        return exact
     blocks = [b for b in SequenceMatcher(None, words, wanted, autojunk=False).get_matching_blocks() if b.size]
     if not blocks:
-        return None
+        return []
     # The longest run anchors the passage; keep the runs that line up with it.
     anchor = max(blocks, key=lambda b: b.size)
-    aligned = [b for b in blocks if b.a - b.b == anchor.a - anchor.b or abs((b.a - b.b) - (anchor.a - anchor.b)) <= 2]
+    aligned = [b for b in blocks if abs((b.a - b.b) - (anchor.a - anchor.b)) <= 2]
     matched = sum(b.size for b in aligned)
     first, last = min(b.a for b in aligned), max(b.a + b.size for b in aligned) - 1
     if matched < 0.9 * n or last - first + 1 > n + 3:
-        return None
-    return page[first][1], page[last][2]
+        return []
+    return [(page[first][1], page[last][2])]
+
+
+def _nearest(source: str, text: str) -> str:
+    """The page text around the closest match for ``source``, for a retry message."""
+    wanted = [t for t, _, _ in _tokens(source)]
+    page = _tokens(text)
+    blocks = [b for b in SequenceMatcher(None, [t for t, _, _ in page], wanted, autojunk=False).get_matching_blocks() if b.size]
+    if not blocks:
+        return ""
+    anchor = max(blocks, key=lambda b: b.size)
+    start = page[max(0, anchor.a - anchor.b)][1]
+    end = page[min(len(page) - 1, anchor.a - anchor.b + len(wanted) + 3)][2]
+    return text[max(0, start - 120):end + 40]
+
+
+def _sentence_ids(passage: str, tokens: list[tuple[str, int, int]]) -> list[int]:
+    """Which sentence of ``passage`` each token is in."""
+    ids, current = [], 0
+    for index, (_, start, _) in enumerate(tokens):
+        if index and re.search(r"[.?!]", passage[tokens[index - 1][2]:start]) and _starts_sentence(passage, start):
+            current += 1
+        ids.append(current)
+    return ids
 
 
 def _alignment(sentence: list[str], passage: list[str]) -> list[tuple[int, int]]:
@@ -130,66 +219,125 @@ def _alignment(sentence: list[str], passage: list[str]) -> list[tuple[int, int]]
     return pairs
 
 
-def check_sentence(sentence: str, passage: str) -> str | None:
-    """Why ``sentence`` is not ``passage`` with words deleted, or None when it is."""
+def _problem(sentence: str, passage: str) -> tuple[str, str] | None:
+    """Why ``sentence`` is not ``passage`` with words deleted, as (kind, explanation), or None when it is."""
     said = [t for t, _, _ in _tokens(sentence)]
-    source = [t for t, _, _ in _tokens(passage)]
+    tokens = _tokens(passage)
+    source = [t for t, _, _ in tokens]
     if not MIN_SENTENCE_WORDS <= len(said) <= MAX_SENTENCE_WORDS:
-        return f"sentence has {len(said)} words (allowed {MIN_SENTENCE_WORDS}-{MAX_SENTENCE_WORDS})"
+        return "length", f"sentence has {len(said)} words (allowed {MIN_SENTENCE_WORDS}-{MAX_SENTENCE_WORDS})"
     pairs = _alignment(said, source)
     kept = {i for i, _ in pairs}
     added = [said[i] for i in range(len(said)) if i not in kept]
     if any(word not in GLUE for word in added):
-        return "adds words not in the cited passage: " + ", ".join(sorted({w for w in added if w not in GLUE}))
+        return "adds", "adds words not in the cited passage: " + ", ".join(sorted({w for w in added if w not in GLUE}))
     if len(added) > max(1, len(said) // 10):
-        return "inserts too many connecting words"
+        return "glue", "inserts too many connecting words"
     used = [j for _, j in pairs]
     if not used:
-        return "shares no words with the cited passage"
-    if min(used) > 0:  # Dropping a sentence's opening is fine only up to a comma or colon ("If X is approved, ...").
-        opening = passage[:_tokens(passage)[min(used)][1]].rstrip()
-        if not opening.endswith((",", ":", ";")) and not re.search(r"(?:^|\s)\(?(?:\d{1,2}|[a-zA-Z])[.)]$", opening):
-            return "starts in the middle of the passage's sentence"
+        return "unrelated", "shares no words with the cited passage"
+    # The sentence may drop whole sentences before it, an opening clause up to its comma, colon, or semicolon
+    # ("If X is approved, ..."), or a list marker ("(1)"); never part of its own sentence.
+    if min(used) > 0:
+        start = tokens[min(used)][1]
+        opening = passage[:_passage_start(passage, start)].rstrip()
+        if not opening.endswith(",") and not _starts_sentence(passage, start):
+            return "opening", "starts in the middle of the passage's sentence"
     cuts = [b - a - 1 for a, b in zip(used, used[1:]) if b - a > 1]
     if len(cuts) > MAX_INNER_CUTS or any(cut > MAX_INNER_CUT_WORDS for cut in cuts):
-        return f"cuts too much from the middle of the passage ({len(cuts)} cuts, longest {max(cuts)} words)"
-    dropped = set(range(min(used) - 3, max(used) + 4)) - set(used)
-    if any(0 <= j < len(source) and source[j] in NEGATIONS for j in dropped):
-        return "drops a negation from the cited passage"
+        return "cuts", f"cuts too much from the middle of the passage ({len(cuts)} cuts, longest {max(cuts)} words)"
+    # A negation within or next to the kept words must be kept, within the kept words' own sentences:
+    # "No action is required." after the kept sentence, or "Project No. 0184", is not a negation of it.
+    ids = _sentence_ids(passage, tokens)
+    own = range(ids[min(used)], ids[max(used)] + 1)
+    for j in set(range(min(used) - 3, max(used) + 4)) - set(used):
+        if 0 <= j < len(source) and source[j] in NEGATIONS and ids[j] in own:
+            if source[j] == "no" and re.match(r"\.\s*\d", passage[tokens[j][2]:]):
+                continue
+            return "negation", "drops a negation from the cited passage"
     return None
 
 
-def validate(sentences: list[dict], pages: dict[int, str], document_id: str, *, limit: int = MAX_SENTENCES) -> tuple[str, list[dict]]:
-    """The summary text and its citations, or ValueError naming the first problem."""
-    if not 1 <= len(sentences) <= limit:
-        raise ValueError(f"{len(sentences)} sentences (allowed 1-{limit})")
-    pages = {n: clean_text(text) for n, text in pages.items()}
+def check_sentence(sentence: str, passage: str) -> str | None:
+    """Why ``sentence`` is not ``passage`` with words deleted, or None when it is."""
+    found = _problem(sentence, passage)
+    return found[1] if found else None
+
+
+def _check_entry(number: int, entry: dict, views: dict) -> tuple[str, dict, int]:
+    """One sentence: its published text, its citation (the page's own text), and its word count; or Rejected."""
+    sentence = " ".join(str(entry.get("sentence", "")).split())
+    page = entry.get("page")
+    if page not in views:
+        raise Rejected(number, "page", f"cites page {page}, which was not provided", entry=entry)
+    source = str(entry.get("source", ""))
+    count = len(_tokens(source))
+    if count < MIN_SENTENCE_WORDS:
+        raise Rejected(number, "short-source", f"its source has {count} words (at least {MIN_SENTENCE_WORDS})", entry=entry)
+    if count > MAX_SOURCE_WORDS:
+        raise Rejected(number, "long-source", f"its source has {count} words (at most {MAX_SOURCE_WORDS})", entry=entry)
+    view = views[page]
+    spans = _spans(source, view.text)
+    if not spans:
+        raise Rejected(number, "not-found", f"cited passage is not on page {page}", entry=entry, near=_nearest(source, view.text))
+    starting = [span for span in spans if _starts_sentence(view.text, span[0])]
+    if not starting:
+        start = spans[0][0]
+        raise Rejected(number, "mid-page", f"the cited passage starts in the middle of a sentence on page {page}",
+                       entry=entry, near=view.text[max(0, start - 160):start + 60])
+    start, end = starting[0]
+    start = _passage_start(view.text, start)
+    passage = view.text[start:end]
+    found = _problem(sentence, passage)
+    if found:
+        raise Rejected(number, found[0], found[1], entry=entry, near=passage, show_sentence=True)
+    if not re.search(r"[.!?][\"”’)]?$", sentence):
+        sentence += "."
+    first, last = view.span(start, end)
+    citation = {"page": page, "quote": view.source[first:last]}
+    return sentence[0].upper() + sentence[1:], citation, len(_tokens(sentence))
+
+
+def page_views(pages: dict[int, str]) -> dict[int, View]:
+    """The reading view of each page, with the report's own words attesting joined hyphenations."""
+    cleaned = {n: clean_text(text) for n, text in pages.items()}
+    words = vocabulary(cleaned.values())
+    return {n: view(text, words) for n, text in cleaned.items()}
+
+
+def validate(sentences: list[dict], pages: dict[int, str], document_id: str, *, limit: int = MAX_SENTENCES,
+             dropped: list[str] | None = None) -> tuple[str, list[dict]]:
+    """The summary text and its citations, or Rejected (a ValueError) naming the first problem.
+
+    The first sentence must pass. A later sentence that fails, repeats an earlier one, or goes past the
+    sentence or word limits is left out (and described in ``dropped``); every sentence published has
+    passed every check.
+    """
+    if not sentences:
+        raise Rejected(None, "count", f"0 sentences (allowed 1-{limit})")
+    dropped = [] if dropped is None else dropped
+    views = page_views(pages)
     texts, citations, total = [], [], 0
     for number, entry in enumerate(sentences, 1):
-        sentence = " ".join(str(entry.get("sentence", "")).split())
-        page = entry.get("page")
-        if page not in pages:
-            raise ValueError(f"sentence {number} cites page {page}, which was not provided")
-        span = locate(str(entry.get("source", "")), pages[page])
-        if span is None:
-            raise ValueError(f"sentence {number}: cited passage is not on page {page}")
-        passage = pages[page][span[0]:span[1]]
-        before = pages[page][:span[0]]
-        if before.strip() and not (before.rstrip()[-1] in ".?!:;•" or ("\n" in before[len(before.rstrip()):] or before.endswith("\n"))
-                                   and (passage[0].isupper() or passage[0].isdigit())):
-            raise ValueError(f"sentence {number}: the cited passage starts in the middle of a sentence on page {page}")
-        problem = check_sentence(sentence, passage)
-        if problem:
-            raise ValueError(f"sentence {number}: {problem}: “{sentence[:200]}”")
-        total += len(_tokens(sentence))
-        if not re.search(r"[.!?][\"”’)]?$", sentence):
-            sentence += "."
-        texts.append(sentence[0].upper() + sentence[1:])
-        citations.append({"documentId": document_id, "page": page, "quote": passage})
-    if total > MAX_SUMMARY_WORDS:
-        raise ValueError(f"summary has {total} words (at most {MAX_SUMMARY_WORDS})")
-    if len({t.casefold() for t in texts}) != len(texts):
-        raise ValueError("repeats a sentence")
+        if number > limit:
+            dropped.append(f"sentence {number}: more than {limit} sentences")
+            continue
+        try:
+            text, citation, words = _check_entry(number, entry, views)
+        except Rejected as rejected:
+            if number == 1:
+                raise
+            dropped.append(str(rejected))
+            continue
+        if text.casefold() in {t.casefold() for t in texts}:
+            dropped.append(f"sentence {number}: repeats a sentence")
+            continue
+        if total + words > MAX_SUMMARY_WORDS:
+            dropped.append(f"sentence {number}: the summary would pass {MAX_SUMMARY_WORDS} words")
+            continue
+        texts.append(text)
+        citations.append({"documentId": document_id, **citation})
+        total += words
     return " ".join(texts), citations
 
 
@@ -271,7 +419,9 @@ def render_user_message(row: dict) -> str:
               + (f" ({row['local_date'].isoformat()})" if row["local_date"] else "")]
     header.append(f"Agenda item {row['number']}: {row['title']}" if row["number"] else f"Agenda item: {row['title']}")
     header.append(f"Report: {row['report_title']}")
-    pages = "\n\n".join(f'<page number="{p["number"]}">\n{p["text"]}\n</page>' for p in row["pages"])
+    # The model reads the pages as the validator does: in reading order (``reading_view``).
+    views = page_views({p["number"]: p["text"] for p in row["pages"]})
+    pages = "\n\n".join(f'<page number="{n}">\n{v.text}\n</page>' for n, v in views.items())
     if row.get("action"):
         return ("\n".join(header) + f"\n\n<requested_action>{row['action']['text']}</requested_action>\n\n"
                 "The summary already begins with this requested action from the agenda. Add one or two sentences from the "
@@ -351,14 +501,12 @@ def _summarize(row: dict, system: str, schema: dict, clients: dict, usage: list,
     action = row.get("action")
     base = {"item_id": row["item_id"], "input_sha256": row["input_sha256"], "source_fingerprint": row["source_fingerprint"],
             "report_sha256": row["report_sha256"], "text": "", "citations": [], "error": None}
-    last_error, answered = None, False
+    last_error, feedback, answered = None, "", False
     for model, effort in CHAIN:
         client = clients.get(model) or clients.setdefault(model, AnthropicTopicModel(model, effort))
         for _ in range(ATTEMPTS[model]):
-            user = row["user"] if not last_error else row["user"] + (
-                f"\n\nAn earlier answer was rejected ({last_error}). Copy the report's own words; only delete words.")
             try:
-                reply = client.complete(system=system, user=user, schema=schema, max_tokens=MAX_TOKENS)
+                reply = client.complete(system=system, user=row["user"] + feedback, schema=schema, max_tokens=MAX_TOKENS)
             except ModelError as exc:
                 if exc.fatal:
                     raise SystemExit(f"Item summaries stopped: {exc}") from exc
@@ -367,6 +515,7 @@ def _summarize(row: dict, system: str, schema: dict, clients: dict, usage: list,
                 continue
             answered = True
             parsed, problem = _parse(reply)
+            rejected, dropped = None, []
             if problem is None and parsed["decision"] == "skip":
                 report["costUsd"] += _add_usage(usage, model, row["meeting_id"], reply.usage, ok=True, error=None)
                 report["itemsSkipped"] += 1
@@ -380,21 +529,78 @@ def _summarize(row: dict, system: str, schema: dict, clients: dict, usage: list,
                             report["costUsd"] += _add_usage(usage, model, row["meeting_id"], reply.usage, ok=True, error=None)
                             report["itemsSkipped"] += 1
                             return {**base, "model": reply.model or model, "status": "skipped", "error": "only repeats the requested action"}
-                    text, citations = validate(sentences, pages, document_id, limit=MAX_SENTENCES - 1 if action else MAX_SENTENCES)
+                    text, citations = validate(sentences, pages, document_id, limit=MAX_SENTENCES - 1 if action else MAX_SENTENCES,
+                                               dropped=dropped)
                     if action:
                         text, citations = action["text"] + " " + text, [action["citation"], *citations]
-                except ValueError as exc:
-                    problem = f"validation: {exc}"
-            report["costUsd"] += _add_usage(usage, model, row["meeting_id"], reply.usage, ok=problem is None, error=problem)
+                except Rejected as exc:
+                    rejected, problem = exc, f"validation: {exc}"
+            # A rejected reply is kept with its usage row, so a validator change can be checked against it offline.
+            note = problem or ("published without " + "; ".join(dropped) if dropped else None)
+            report["costUsd"] += _add_usage(usage, model, row["meeting_id"], reply.usage, ok=problem is None,
+                                            error=note and f"{note}{REPLY_MARK}{reply.text[:MAX_STORED_REPLY]}")
             if problem is None:
                 report["published"][model] = report["published"].get(model, 0) + 1
+                report["sentencesDropped"] = report.get("sentencesDropped", 0) + len(dropped)
                 return {**base, "model": reply.model or model, "status": "published", "text": text, "citations": citations}
             last_error = problem
-            report["failures"][problem.split(":")[0]] = report["failures"].get(problem.split(":")[0], 0) + 1
+            kind = f"validation: {rejected.kind}" if rejected else problem
+            report["failures"][kind] = report["failures"].get(kind, 0) + 1
+            feedback = retry_message(rejected, problem)
     if not answered:
         return None  # Only API errors: nothing is recorded, so the next run tries again.
     report["validationFailed"] += 1
     return {**base, "model": CHAIN[-1][0], "status": "validation_failed", "error": (last_error or "")[:500]}
+
+
+# What a retry is told for each kind of rejection, after the rejected sentence, its source, and the page text near it.
+FIXES = {
+    "short-source": ("That source is too short to stand as a sentence. Leave out one-line labels and boilerplate such as "
+                     "\"Receive and file\", \"For presentation only\", \"None\", or \"No financial impact\"; choose a passage "
+                     "of at least 5 words that says what the item is or does, or leave that sentence out."),
+    "long-source": "Give as `source` only the one sentence you trimmed, not its whole paragraph.",
+    "not-found": ("Copy `source` character for character from the page it is on (the page text nearest to it is shown "
+                  "above). A passage never spans two pages."),
+    "mid-page": ("Start `source` where the report's sentence starts: after the previous sentence's period, a heading's "
+                 "colon, or a list marker (the page text just before it is shown above)."),
+    "opening": ("Keep the start of the passage's sentence. You may drop only whole sentences before it, an opening clause "
+                "that ends in a comma or colon, or a list marker."),
+    "cuts": ("Delete from the end of the sentence rather than its middle: at most 3 cuts inside it, each of at most 12 "
+             "words. A sentence that stops early is fine."),
+    "negation": ("Keep \"not\", \"no\", \"without\", \"unless\", and similar words with the words around them, or end "
+                 "the sentence before the clause that contains them."),
+    "adds": "Use only words that are in `source`; the only words you may add are \"the\", \"a\", \"an\", and \"and\".",
+    "glue": "Add at most one \"the\", \"a\", \"an\", or \"and\" for every ten words.",
+    "length": ("Each sentence has 5 to 45 words: end a long one earlier, or instead of a short label choose a passage "
+               "that says what the item is or does."),
+    "page": "Give as `page` the number of the <page> tag the passage is on.",
+    "unrelated": "Each sentence is its `source` with words deleted.",
+    "count": "Return one to three sentences, or skip.",
+}
+REPLY_MARK = "\n\nreply: "  # separates a usage row's error from the reply it rejected (scripts/usage groups on the part before)
+MAX_STORED_REPLY = 6000
+
+
+def retry_message(rejected: Rejected | None, problem: str) -> str:
+    """What the next attempt is told about the last one."""
+    if rejected is None:
+        return f"\n\nYour previous answer was rejected: {problem}. Answer again in the required format."
+    lines = ["", "", "<rejected_answer>",
+             "Your previous answer was rejected and will not be published. "
+             + (f"Sentence {rejected.number} (page {rejected.page}): " if rejected.number else "") + rejected.problem + "."]
+    if rejected.sentence:
+        lines.append(f"Rejected sentence: “{rejected.sentence}”")
+    if rejected.source:
+        lines.append(f"Its source: “{rejected.source}”")
+    if rejected.near:
+        near = " ".join(rejected.near.split())
+        lines.append(("The page's own passage" if rejected.kind in _SENTENCE_KINDS else "Page text near it") + f": “{near}”")
+    lines += [f"How to fix it: {FIXES.get(rejected.kind, FIXES['unrelated'])}", "</rejected_answer>",
+              "Answer again with the whole summary, following every rule."]
+    return "\n".join(lines)
+
+
+_SENTENCE_KINDS = {"length", "adds", "glue", "unrelated", "opening", "cuts", "negation"}
 
 
 def _repeats(sentence: str, action: str) -> bool:

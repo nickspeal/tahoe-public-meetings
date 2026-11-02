@@ -1,4 +1,4 @@
-# 0030: Lake Calendar visual design
+# 0031: Lake Calendar visual design
 
 Status: accepted
 Date: 2026-11-02

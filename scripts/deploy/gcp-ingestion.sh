@@ -12,6 +12,7 @@
 #   scripts/deploy/gcp-ingestion.sh set-secret database-url|vercel-deploy-hook-url|ntfy-url
 #   scripts/deploy/gcp-ingestion.sh run-now [--yes]
 #   scripts/deploy/gcp-ingestion.sh monitoring [--yes]   # run-duration metrics and dashboard only
+#   scripts/deploy/gcp-ingestion.sh github-deploy [--yes] # let GitHub Actions on main roll out images
 #
 # Secret values are never accepted as arguments or printed. They are read from
 # a hidden terminal prompt, or from stdin for `set-secret`, and piped straight
@@ -55,6 +56,13 @@ ANTHROPIC_FEDERATION_RULE_ID="${ANTHROPIC_FEDERATION_RULE_ID:-}"
 ANTHROPIC_ORGANIZATION_ID="${ANTHROPIC_ORGANIZATION_ID:-}"
 ANTHROPIC_SERVICE_ACCOUNT_ID="${ANTHROPIC_SERVICE_ACCOUNT_ID:-}"
 ANTHROPIC_WORKSPACE_ID="${ANTHROPIC_WORKSPACE_ID:-}"
+# GitHub Actions image rollout (.github/workflows/deploy-ingestion.yml) via workload identity federation.
+GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-nickspeal/tahoe-public-meetings}"
+GITHUB_BRANCH="${GITHUB_BRANCH:-main}"
+BACKFILL_JOB="${BACKFILL_JOB:-tahoe-backfill}"
+GITHUB_POOL="${GITHUB_POOL:-github}"
+GITHUB_PROVIDER="${GITHUB_PROVIDER:-tahoe-main}"
+GITHUB_SA_NAME="${GITHUB_SA_NAME:-tahoe-github-deploy}"
 
 SECRET_DATABASE_URL="tahoe-database-url"
 SECRET_DEPLOY_HOOK="tahoe-vercel-deploy-hook-url"
@@ -69,6 +77,7 @@ BUILD_SA="${BUILD_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 BUILD_SOURCE_BUCKET="${PROJECT_ID}_cloudbuild"      # where `gcloud builds submit` stages the source
 GUARD_SA="${GUARD_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 GUARD_IMAGE_BASE="${AR_HOST}/${PROJECT_ID}/${AR_REPO}/${GUARD_NAME}"
+GITHUB_SA="${GITHUB_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 BUDGET_ALERT_PUBLISHER="serviceAccount:billing-budget-alert@system.gserviceaccount.com"
 
 ASSUME_YES=0
@@ -90,12 +99,12 @@ g() { "$GCLOUD" --project="$PROJECT_ID" --quiet "$@"; }
 cleanup() { if [[ -n "$TMP_DIR" ]]; then rm -rf "$TMP_DIR"; fi; }
 trap cleanup EXIT
 
-usage() { sed -n '2,15p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
 
 parse_args() {
   while (($#)); do
     case "$1" in
-      deploy|run-now|monitoring) COMMAND="$1" ;;
+      deploy|run-now|monitoring|github-deploy) COMMAND="$1" ;;
       set-secret) COMMAND="set-secret"; SECRET_ARG="${2:-}"; shift || true ;;
       --yes|-y) ASSUME_YES=1 ;;
       --run-now) RUN_NOW=1 ;;
@@ -743,6 +752,53 @@ print(" ".join(d["name"] for d in json.load(sys.stdin) if d.get("displayName") =
   info "dashboard '$DASHBOARD_NAME': https://console.cloud.google.com/monitoring/dashboards?project=$PROJECT_ID"
 }
 
+# ---------------------------------------------------------------- GitHub Actions rollout
+# GitHub's OIDC token is exchanged for a short-lived token of a service account that can
+# push to the image repository and change the image of the two jobs, nothing else. Only
+# pushes to $GITHUB_BRANCH of $GITHUB_REPOSITORY qualify; the repository and owner are
+# matched by numeric ID, so a renamed or re-created repository with the same name cannot.
+ensure_github_deploy() {
+  log "GitHub Actions rollout ($GITHUB_REPOSITORY, $GITHUB_BRANCH)"
+  command -v gh >/dev/null || die "gh not found; it reads the repository's numeric IDs"
+  local ids repo_id owner_id number pool provider
+  ids="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '"\(.id) \(.owner.id)"')" || die "cannot read $GITHUB_REPOSITORY with gh"
+  read -r repo_id owner_id <<<"$ids"
+  g services enable iamcredentials.googleapis.com sts.googleapis.com
+  number="$(g projects describe "$PROJECT_ID" --format='value(projectNumber)')"
+  pool="projects/${number}/locations/global/workloadIdentityPools/${GITHUB_POOL}"
+  if ! g iam workload-identity-pools describe "$GITHUB_POOL" --location=global >/dev/null 2>&1; then
+    g iam workload-identity-pools create "$GITHUB_POOL" --location=global --display-name="GitHub Actions" >/dev/null
+    info "workload identity pool $GITHUB_POOL created"
+  fi
+  local condition="assertion.repository_id=='${repo_id}' && assertion.repository_owner_id=='${owner_id}' && assertion.ref=='refs/heads/${GITHUB_BRANCH}' && assertion.event_name in ['push', 'workflow_dispatch']"
+  local mapping="google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.ref=assertion.ref"
+  local verb=create-oidc
+  if g iam workload-identity-pools providers describe "$GITHUB_PROVIDER" --location=global \
+      --workload-identity-pool="$GITHUB_POOL" >/dev/null 2>&1; then verb=update-oidc; fi
+  g iam workload-identity-pools providers "$verb" "$GITHUB_PROVIDER" --location=global \
+    --workload-identity-pool="$GITHUB_POOL" --issuer-uri=https://token.actions.githubusercontent.com \
+    --attribute-mapping="$mapping" --attribute-condition="$condition" >/dev/null
+  provider="${pool}/providers/${GITHUB_PROVIDER}"
+  info "provider $GITHUB_PROVIDER: repository $repo_id, owner $owner_id, refs/heads/$GITHUB_BRANCH only"
+  ensure_sa "$GITHUB_SA_NAME" "Tahoe image rollout from GitHub Actions"
+  g iam service-accounts add-iam-policy-binding "$GITHUB_SA" --role=roles/iam.workloadIdentityUser \
+    --member="principalSet://iam.googleapis.com/${pool}/attribute.repository_id/${repo_id}" >/dev/null
+  g artifacts repositories add-iam-policy-binding "$AR_REPO" --location="$REGION" \
+    --member="serviceAccount:${GITHUB_SA}" --role=roles/artifactregistry.writer >/dev/null
+  local job
+  for job in "$JOB_NAME" "$BACKFILL_JOB"; do
+    g run jobs add-iam-policy-binding "$job" --region="$REGION" \
+      --member="serviceAccount:${GITHUB_SA}" --role=roles/run.developer >/dev/null
+  done
+  # Updating a job means deploying it as its runtime identity.
+  g iam service-accounts add-iam-policy-binding "$JOB_SA" --role=roles/iam.serviceAccountUser \
+    --member="serviceAccount:${GITHUB_SA}" >/dev/null
+  info "$GITHUB_SA may push to $AR_REPO and update $JOB_NAME and $BACKFILL_JOB"
+  info "workflow settings (not secret):"
+  info "  workload_identity_provider: $provider"
+  info "  service_account:            $GITHUB_SA"
+}
+
 main() {
   parse_args "$@"
   TMP_DIR="$(mktemp -d)"
@@ -750,6 +806,7 @@ main() {
     set-secret) check_identity; cmd_set_secret ;;
     run-now) check_identity; cmd_run_now ;;
     monitoring) check_identity; ensure_run_metrics ;;
+    github-deploy) check_identity; ensure_github_deploy ;;
     deploy)
       check_identity
       ensure_project

@@ -98,3 +98,19 @@ Shared rules (`__init__.py`):
    `tests/test_planning_calendars.py`. Fixtures are public, so take them from public agency documents only.
 
 Run the tests with `cd workers/ingestion && uv run pytest tests/test_planning_calendars.py -q`.
+
+## Fixing a format after a bad calendar
+
+A stored calendar is never read again on its own, so a format fix reaches already published previews only when
+you ask for it:
+
+1. Copy the misread pages from the database (`document_pages` for a packet, `preview_sources.pages` for an
+   attachment) into a fixture under `tests/fixtures/planning-calendars/`. Add a test that fails on the current
+   format, then fix the format.
+2. Run `python3 scripts/project.py worker read-planning-calendars --agency ID --force --dry-run`, then run it again
+   without `--dry-run`. `--force` reads the current calendar again from its stored text, with no download. A packet
+   calendar is located again from the packet's stored pages. The calendar's previews are replaced, and a planned
+   meeting that no preview supports any more drops out of the export.
+3. To fix production, run the same command with `DATABASE_URL` set to the production URL (the `tahoe-database-url`
+   secret). This runs the checkout's code, so no image deploy is needed. The next scheduled run publishes the
+   change. To publish sooner, run `worker export --mode live --out FILE`, then `worker publish-export --file FILE`.

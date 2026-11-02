@@ -396,3 +396,16 @@ def test_stored_meetings_apply_links_for_settled_and_records_only_candidates(db)
     assert snapshot.apply_links(candidates, coverage_start=date(2026, 1, 1)) == 0
     row = db.execute("SELECT minutes_url,recording_url FROM meetings WHERE id='ttd:7144'").fetchone()
     assert row == {"minutes_url": "https://tahoetransportation.org/m.pdf", "recording_url": "https://www.youtube.com/watch?v=2J7EcPKNfw8"}
+
+
+def test_a_url_stored_under_two_document_ids_is_exported_once():
+    from tahoe_ingest.core import one_per_url
+    html = "https://meetings.municode.com/adaHtmlDocument/index?cc=TRUCKEECA&me=365001dc14804044b4edd416938af109&ip=false"
+    docs = [{"id": "truckee-agenda-html", "title": "Official agenda (HTML)", "url": html},
+            {"id": "truckee-agenda-pdf", "title": "Official agenda (PDF)", "url": "https://example.test/a.pdf"},
+            {"id": "truckee-town-council-agenda-2026-09-22", "title": "Official Municode HTML agenda", "url": html}]
+    assert [(d["id"], d["title"]) for d in one_per_url(docs, {"truckee-agenda-html"})] == [
+        ("truckee-agenda-html", "Official agenda (HTML)"), ("truckee-agenda-pdf", "Official agenda (PDF)")]
+    # The copy the items cite keeps its id so citations resolve, under the first label.
+    assert [(d["id"], d["title"]) for d in one_per_url(docs, {"truckee-town-council-agenda-2026-09-22"})] == [
+        ("truckee-town-council-agenda-2026-09-22", "Official agenda (HTML)"), ("truckee-agenda-pdf", "Official agenda (PDF)")]

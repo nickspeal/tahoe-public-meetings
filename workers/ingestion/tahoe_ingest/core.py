@@ -101,6 +101,15 @@ def _citation(version_id: str, page: int, quote: str) -> dict:
     return {"documentId": version_id, "page": page, "quote": quote}
 
 
+def one_per_url(docs: list[dict], cited: set[str]) -> list[dict]:
+    """Each URL once, under the label of its first document. Two discovery passes can store one agenda under two ids
+    (the scheduled listing and a verified-source manifest); the copy that items cite keeps its id so citations resolve."""
+    groups = {}
+    for d in docs:
+        groups.setdefault(d["url"], []).append(d)
+    return [{**next((d for d in group if d["id"] in cited), group[0]), "title": group[0]["title"]} for group in groups.values()]
+
+
 def stored_page_texts(conn, citations: list[dict]) -> dict:
     """Stored text of every page the citations name, keyed by (version id, page), in one query."""
     keys = sorted({(c["documentId"], int(c["page"])) for c in citations})
@@ -653,12 +662,13 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
                 items[-1]["staffReport"] = staff_report
             if attachments := supporting.attachments(i["id"]):
                 items[-1]["attachments"] = attachments
+        stored_docs, docs = docs, one_per_url(docs, {c["documentId"] for i in items for c in [*i["citations"], *((i["summary"] or {}).get("citations") or [])]})
         timed = time_certain(docs, items)
         for item in items:
             item["timeCertain"] = timed.get(item["id"])
         # Agenda-read details count only while the documents they came from are still current.
         extracted = agenda_participation.get(m["id"])
-        extracted = _json(extracted["fields"]) if extracted and set(_json(extracted["version_ids"])) <= {d["id"] for d in docs} else None
+        extracted = _json(extracted["fields"]) if extracted and set(_json(extracted["version_ids"])) <= {d["id"] for d in stored_docs} else None
         location, participation = merged_participation(m["location"], _json(m["participation"]), extracted,
                                                        AGENCIES[m["agency_id"]].get("participation"))
         start, warnings = m["starts_at"], _json(m["warnings"])

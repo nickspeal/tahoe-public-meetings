@@ -69,8 +69,13 @@ def test_an_incomplete_or_inconsistent_page_publishes_no_items():
     without_43 = re.sub(r'<tr[^>]*>\s*<th[^>]*><span[^>]*>43</span></th>.*?</tr>', "", PAGE, count=1, flags=re.S)
     assert without_43 != PAGE
     assert parse(without_43) == ([], False)
-    assert parse(PAGE.replace("<h2>IX. Adjourn</h2>", "<h2>IX. Recess</h2>")) == ([], False)
+    cut_off = PAGE[:PAGE.index('<span style="font-size: 11pt;">61</span>')] + "</table></div></div></body></html>"
+    assert parse(cut_off) == ([], False)  # items 61-64 missing from "Regular Calendar 58-64"
     assert parse(PAGE.replace("Consent Calendar 01-57</h2>", "Consent Calendar 01-56</h2>")) == ([], False)
+    assert parse(PAGE.replace("Regular Calendar 58-64</h2>", "Regular Calendar</h2>")) == ([], False)  # 58-64 unstated
+    # Pages before 2026 have no Adjourn part; the numbering checks still apply.
+    items, complete = parse(PAGE.replace("<h2>IX. Adjourn</h2>", ""))
+    assert complete and items[-1]["source_number"] == "VIII"
     assert parse(PAGE.replace("<h2>VII. Commissioners", "<h2>VIII. Commissioners")) == ([], False)
 
 

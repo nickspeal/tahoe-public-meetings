@@ -8,10 +8,12 @@ PDF, then the description. An emergency item added to a part is a paragraph labe
 "(a)" followed by the paragraph that names it. Text before the heading (the outline and
 the voting record that the page gains after the meeting) is not read.
 
-The parse is all or nothing: Roman parts must run I, II, III… and end with "Adjourn";
-numbered items must run 1, 2, 3… with no gap or repeat; a part headed with a range
-("Consent Calendar 01-57") must hold exactly those numbers; and every title must be
-quoted exactly from the page text.
+The parse is all or nothing: Roman parts must run I, II, III…; numbered items must run
+1, 2, 3… with no gap or repeat; a calendar that states its numbers ("Consent Calendar
+01-57", "Informational Calendar 60") must hold exactly those, and the stated calendars
+together every item; and every title must be quoted exactly from the page text. Pages
+since 2026 end with an "Adjourn" part, which ends the reading; earlier ones end with
+Closed Session or Public Comment.
 """
 from __future__ import annotations
 
@@ -22,7 +24,7 @@ from .html_dom import Node, document
 
 ROMAN = re.compile(r"^(?P<label>[IVX]+)\.\s+(?P<title>\S.*)$")
 LETTER = re.compile(r"^\((?P<label>[a-z])\)\s+(?P<title>\S.*)$")
-RANGE = re.compile(r"\b(\d{1,3})\s*[-–]\s*(\d{1,3})$")
+RANGE = re.compile(r"\bCalendar\s+(\d{1,3})(?:\s*[-–]\s*(\d{1,3}))?$")
 MAX_TITLE = 280
 _ROMAN_VALUES = {"I": 1, "V": 5, "X": 10}
 
@@ -165,17 +167,26 @@ def _valid(rows: list[dict]) -> bool:
     numbers = [int(r["number"]) for r in rows if r["kind"] == "item"]
     if not parts or [roman(p["number"]) for p in parts] != list(range(1, len(parts) + 1)):
         return False
-    if not parts[-1]["title"].lower().startswith("adjourn"):
-        return False
     if numbers != list(range(1, len(numbers) + 1)):
         return False
+    # Each calendar states its numbers ("Consent Calendar 01-57", "Informational Calendar 60"):
+    # it must hold exactly those, and together they must hold every item, so a cut-off table fails.
+    held: dict[int, list[int]] = {}
+    current = None
+    for row in rows:
+        if row["kind"] == "part":
+            current = id(row)
+        elif row["kind"] == "item":
+            held.setdefault(current, []).append(int(row["number"]))
+    stated_all = []
     for part in parts:
         stated = RANGE.search(part["title"])
         if stated:
-            held = [int(r["number"]) for r in rows if r["kind"] == "item" and r["section"] == part["title"]]
-            if held != list(range(int(stated[1]), int(stated[2]) + 1)):
+            span = list(range(int(stated[1]), int(stated[2] or stated[1]) + 1))
+            if held.get(id(part), []) != span:
                 return False
-    return True
+            stated_all += span
+    return not stated_all or stated_all == numbers
 
 
 def parse(markup: str, text: str) -> tuple[list[dict], bool]:

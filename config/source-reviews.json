@@ -829,7 +829,7 @@
         "resolvedAt": "2026-10-20",
         "note": "Keep State Lands Commission. Official meeting page remains the source; future agenda publication is a routine deferred check, not a blocked source."
       },
-      "implementation": "Since 2026-11-02: the WordPress Meeting category feed lists each meeting post, whose page is the HTML agenda (meeting-post-feed discovery); items come from the page's Order of Business markup. The feed held ten meetings (October 2025 to October 2026) when checked, and all ten pages parsed. The meetings page's annual schedule gives start times and notices before an agenda is posted."
+      "implementation": "Since 2026-11-02: the WordPress Meeting category feed lists each meeting post, whose page is the HTML agenda (meeting-post-feed discovery); items come from the page's Order of Business markup. The feed held ten meetings (October 2025 to October 2026) when checked, and its second page ten more back to June 2024; all twenty agendas parsed. The meetings page's annual schedule gives start times and notices before an agenda is posted."
     },
     {
       "id": "SR-031",

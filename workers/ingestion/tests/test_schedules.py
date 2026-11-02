@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from tahoe_ingest import core
+from tahoe_ingest import core, export_check
 from tahoe_ingest.catalog import agency_catalog
 from tahoe_ingest.core import export_public, ingest_bundle
 from tahoe_ingest.schedules import (PACIFIC, describe, forecast_meetings, learn_schedule, local_start, matches_date, regular_title,
@@ -103,6 +103,34 @@ def test_export_derived_schedules_match_the_dates_they_cite(agency_id, dates, pa
                  "timezone": PACIFIC} for day in dates]
     learned = learn_schedule(agency_id, meetings, learned_on=date(2026, 11, 2))
     assert learned["status"] == "proposed" and learned["schedule"]["rules"] == schedule["rules"]
+
+
+
+def test_trpa_board_schedule_is_date_only():
+    schedule = {a["id"]: a for a in agency_catalog()}["trpa-governing"]["schedule"]
+    assert schedule["source"] == "configured" and "start times differ" in schedule["note"]
+    assert [("time" in r, r["ordinal"], r["weekday"]) for r in schedule["rules"]] == [(False, 4, "wednesday")]
+    assert describe(schedule["rules"]) == "Usually the fourth Wednesday"
+    for day in ("2026-07-22", "2026-08-26", "2026-09-23", "2026-10-28"):
+        assert matches_date(schedule["rules"][0], date.fromisoformat(day))
+
+
+def test_a_rule_without_time_forecasts_a_date_without_a_start():
+    untimed = {k: v for k, v in FIRST_WEDNESDAY.items() if k != "time"}
+    validate_schedule("ttd", {"source": "configured", "rules": [untimed]})
+    assert describe([untimed]) == "Usually the first Wednesday"
+    expected = forecast({"source": "configured", "rules": [untimed]})
+    assert [(m["date"], m["startsAt"]) for m in expected] == [("2026-11-04", None), ("2026-12-02", None), ("2027-01-06", None)]
+    assert expected[0]["forecast"]["basis"] == "Usually the first Wednesday"
+    data = {"generatedAt": "2026-10-20T15:00:00Z", "agencies": [{"id": "ttd", "officialUrl": "https://agency.example/"}],
+            "meetings": expected}
+    for checker in (_check_export_module(), export_check):
+        assert checker.check_kinds(data) == ([], 3)
+        # A date-only forecast is still checked against the export date and nearby real records.
+        stale = {**data, "generatedAt": "2026-11-10T15:00:00Z",
+                 "meetings": expected + [{"id": "ttd:x", "kind": "confirmed", "agencyId": "ttd", "date": "2026-12-03", "forecast": None}]}
+        errors, _ = checker.check_kinds(stale)
+        assert any("after the export date" in e for e in errors) and any("real record" in e for e in errors)
 
 
 def test_descriptions_read_as_plain_patterns():

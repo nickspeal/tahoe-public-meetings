@@ -165,7 +165,7 @@ Each rule has:
 - `ordinal`: `1`–`4` or `"last"`, as in "the first Wednesday of the month". Use two rules for a pattern such as the second and fourth Tuesday.
 - `every` with `anchor` instead of `ordinal`: a meeting every N weeks (`2` = every other week), counted from a real meeting date (`YYYY-MM-DD`, on that weekday).
 - `months` (optional): month numbers 1–12 for quarterly or seasonal bodies. Omit it for every month.
-- `time`: the 24-hour local start, `HH:MM`. `timezone` must be `America/Los_Angeles`.
+- `time` (optional): the 24-hour local start, `HH:MM`. Omit it when the body's start time varies (as for the TRPA Governing Board); its forecasts then carry a date and no `startsAt`, and the website shows them as date-only. `timezone` must be `America/Los_Angeles`. The learner always sets a time.
 - `label`: the expected meeting's title.
 
 `source` is `configured` (verified by an operator, such as the maintainer's statement that TTD meets on the first Wednesday at 3 PM, or an official calendar) or `learned`. Learned schedules also record `confidence` (match rate) and `learnedFrom` (meetings considered and matched, date span, and learning date). `note` is optional. A malformed schedule stops the registry from loading.

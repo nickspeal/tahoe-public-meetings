@@ -64,8 +64,9 @@ def validate_schedule(agency_id: str, schedule) -> None:
             fail(f"unknown rule keys in {rule}")
         if rule.get("weekday") not in WEEKDAYS:
             fail("weekday must be a lowercase English weekday")
-        if not isinstance(rule.get("time"), str) or not _TIME.fullmatch(rule["time"]):
-            fail("time must be HH:MM (24-hour)")
+        # A rule may omit time when the agency's start time varies; its forecasts carry a date only.
+        if "time" in rule and (not isinstance(rule["time"], str) or not _TIME.fullmatch(rule["time"])):
+            fail("time must be HH:MM (24-hour), or left out")
         if rule.get("timezone") != PACIFIC:
             fail(f"timezone must be {PACIFIC}")
         if not isinstance(rule.get("label"), str) or not rule["label"].strip():
@@ -168,7 +169,7 @@ def describe(rules: list[dict]) -> str:
     groups: dict[tuple, list] = {}
     for rule in rules:
         cadence = ("every", rule["every"], rule["anchor"]) if "every" in rule else ("monthly",)
-        key = (cadence, rule["weekday"], tuple(rule.get("months") or ()), rule["time"])
+        key = (cadence, rule["weekday"], tuple(rule.get("months") or ()), rule.get("time"))
         groups.setdefault(key, []).append(rule)
     parts = []
     for (cadence, weekday, months, clock), grouped in groups.items():
@@ -180,7 +181,7 @@ def describe(rules: list[dict]) -> str:
             phrase = f"the {_join([ORDINAL_WORDS[o] for o in ordinals])} {day}"
         if months:
             phrase += f"{' in' if cadence[0] == 'every' else ' of'} {_join([MONTH_NAMES[m - 1] for m in sorted(months)])}"
-        parts.append(f"{phrase} at {clock_label(clock)}")
+        parts.append(f"{phrase} at {clock_label(clock)}" if clock else phrase)
     return "Usually " + "; ".join(parts)
 
 
@@ -202,12 +203,12 @@ def forecast_meetings(agency_id: str, schedule: dict | None, record_dates: list[
         for day in rule_dates(rule, start, end):
             if day in forecasts or any(abs((day - recorded).days) <= SUPPRESSION_DAYS for recorded in record_dates):
                 continue
-            starts = local_start(day, rule["time"], rule["timezone"])
             same_label = [r for r in schedule["rules"] if r["label"] == rule["label"]]
             forecasts[day] = {
                 "id": f"forecast:{agency_id}:{day.isoformat()}", "agencyId": agency_id,
                 "sourceId": f"forecast-{day.isoformat()}", "kind": "forecast", "title": rule["label"], "topics": [],
-                "startsAt": starts.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+                "startsAt": local_start(day, rule["time"], rule["timezone"]).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+                if rule.get("time") else None,
                 "date": day.isoformat(), "timezone": rule["timezone"], "status": "scheduled", "location": None,
                 "officialUrl": official_url,
                 "participation": {"instructions": None, "url": None, "remoteUrl": None, "deadline": None},

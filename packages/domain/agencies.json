@@ -271,6 +271,18 @@
       "rule": "trpa-meeting-materials",
       "packetName": "Governing\\s+Board"
     },
+    "schedule": {
+      "source": "configured",
+      "note": "Derived on 2026-11-02 from 2026 public-export dates: July 22, August 26, September 23, and October 28, each the fourth Wednesday. No time is set because their start times differ (9:00, 9:30, 10:00, and 9:15 AM), so forecasts carry a date only. Needs confirmation against the agency's published meeting calendar.",
+      "rules": [
+        {
+          "ordinal": 4,
+          "weekday": "wednesday",
+          "timezone": "America/Los_Angeles",
+          "label": "Tahoe Regional Planning Agency Governing Board Meeting"
+        }
+      ]
+    },
     "duration": {
       "mode": "fixed",
       "fixedMinutes": 240,

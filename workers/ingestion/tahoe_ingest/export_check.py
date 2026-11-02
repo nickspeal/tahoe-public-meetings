@@ -209,19 +209,21 @@ def check_kinds(data):
         require(mid == f"forecast:{meeting.get('agencyId')}:{meeting.get('date')}", f"{mid}: forecast ID must be forecast:<agency>:<date>")
         require(not meeting.get("documents") and not meeting.get("items") and not meeting.get("topics"),
                 f"{mid}: forecasts carry no documents, agenda items, or topics")
-        require(meeting.get("status") == "scheduled" and bool(meeting.get("startsAt")), f"{mid}: forecast needs scheduled status and an expected start")
+        require(meeting.get("status") == "scheduled", f"{mid}: forecast needs scheduled status")
+        require(bool(meeting.get("date")), f"{mid}: forecast needs an expected date")
         require(bool(info.get("ruleLabel")) and bool(info.get("basis")) and info.get("source") in ("learned", "configured"),
                 f"{mid}: forecast needs ruleLabel, basis, and source")
         require(meeting.get("officialUrl") == agency_urls.get(meeting.get("agencyId")), f"{mid}: forecast must link to the agency page")
     for meeting, day in forecasts:
         mid = meeting["id"]
-        if day is None or not meeting.get("startsAt"):
+        if day is None:
             continue
-        try:
-            starts = datetime.fromisoformat(meeting["startsAt"].replace("Z", "+00:00")).astimezone(PACIFIC).date()
-        except (AttributeError, ValueError):
-            continue
-        require(starts == day, f"{mid}: expected start is not on the forecast date")
+        if meeting.get("startsAt"):  # A rule without a time gives a date-only forecast.
+            try:
+                starts = datetime.fromisoformat(meeting["startsAt"].replace("Z", "+00:00")).astimezone(PACIFIC).date()
+            except (AttributeError, ValueError):
+                continue
+            require(starts == day, f"{mid}: expected start is not on the forecast date")
         require(export_day is None or day > export_day, f"{mid}: forecasts must be after the export date")
         require(not any(abs((recorded - day).days) <= SUPPRESSION_DAYS for recorded in confirmed_days.get(meeting["agencyId"], [])),
                 f"{mid}: a real record within {SUPPRESSION_DAYS} days must replace the forecast")

@@ -1286,7 +1286,7 @@
       "indexUrl": "https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/",
       "bodyPattern": ".",
       "title": "Nevada Board for Financing Water Projects Meeting",
-      "datePattern": "^\\s*\\d{1,2}/\\d{1,2}/\\d{2}\\s*$",
+      "datePattern": "^\\s*(?:\\d{1,2}/\\d{1,2}/\\d{2}|[A-Za-z]{3,9}\\.?\\s+\\d{1,2},?\\s+\\d{4})\\s*$",
       "horizonDays": 120
     },
     "agenda": {

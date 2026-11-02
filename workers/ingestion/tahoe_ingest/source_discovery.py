@@ -76,6 +76,10 @@ def date_in(text):
         for found in re.finditer(pattern,text,re.I):
             try:return datetime.strptime(found.group().replace(',',''),fmt).date().isoformat()
             except ValueError:continue
+    # "Nov 4, 2026", "Sept. 17, 2026", "Sep 17 2026": a month abbreviated to three or four letters, with or without a period.
+    for found in re.finditer(r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]{0,6}\.?\s+(\d{1,2}),?\s+(\d{4})\b',text,re.I):
+        try:return datetime.strptime(' '.join(found.groups()),'%b %d %Y').date().isoformat()
+        except ValueError:continue
     return None
 
 

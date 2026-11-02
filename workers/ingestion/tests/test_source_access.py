@@ -224,7 +224,7 @@ def test_special_district_indexes_use_the_agenda_link_and_file_name_date():
     assert sstma[0]['title'].endswith('Board of Directors Meeting')
 
 
-def test_ndep_table_reads_two_digit_years_ignores_workshops_and_far_future_placeholders(monkeypatch):
+def test_ndep_table_reads_two_digit_years_and_the_second_table_of_abbreviated_dates_but_not_far_future_placeholders(monkeypatch):
     from datetime import datetime as real
     from tahoe_ingest import source_discovery
     class Clock(real):
@@ -232,8 +232,8 @@ def test_ndep_table_reads_two_digit_years_ignores_workshops_and_far_future_place
         def now(cls,tz=None):return real(2026,10,20,12,tzinfo=tz)
     monkeypatch.setattr(source_discovery,'datetime',Clock)
     rows=discover_configured('ndep',_live_config('ndep'),limit=3,fetch=lambda _:_fixture('ndep-board-meetings.html'))
-    assert [r['source_id'] for r in rows]==['2026-12-02','2026-08-19','2026-06-03']
-    assert rows[1]['documents'][0]['url'].startswith('https://ndep.nv.gov/uploads/')
+    assert [r['source_id'] for r in rows]==['2026-12-02','2026-11-04','2026-08-19']  # Nov 3 2027 and May 5 2027 are past the horizon
+    assert rows[2]['documents'][0]['url'].startswith('https://ndep.nv.gov/uploads/')
     assert rows[0]['documents']==[]  # dated before the agenda is posted
 
 
@@ -317,3 +317,18 @@ def test_wordpress_feed_attaches_only_the_agenda_and_packet_not_other_uploads():
           "<a href=\"https://ntpud.org/wp-content/uploads/2025/09/2026-Budget-Book-Print-Version.pdf\">FY26 Budget and Capital Plan</a>")
     rows=discover_configured("ntpud",_live_config("ntpud"),limit=10,fetch=lambda u:feed if u.endswith("/feed/") else page)
     assert rows and all([d["url"] for d in r["documents"]]==["https://ntpud.org/wp-content/uploads/2026/09/09092026-Regular-Board-Meeting-Agenda-and-Packet.pdf"] for r in rows)
+
+
+def test_abbreviated_month_dates_are_read():
+    assert date_in("Nov 4, 2026")=="2026-11-04"
+    assert date_in("Sept. 17, 2026")=="2026-09-17"
+    assert date_in("Sep 17 2026")=="2026-09-17"
+    assert date_in("Dec. 2, 2026 workshop")=="2026-12-02"
+
+
+def test_ndep_index_lists_a_numeric_date_and_an_abbreviated_month_date():
+    table=("<table><tr><td>10/21/26</td><td><a href=\"/uploads/a.pdf\">Agenda</a></td></tr>"
+           "<tr><td>Nov 4, 2026</td><td><strong>Workshop</strong> <a href=\"/uploads/w.pdf\">Agenda</a></td></tr>"
+           "<tr><td>Sept. 17, 2026</td><td></td></tr><tr><td>Dec 2</td><td></td></tr></table>")
+    rows=discover_configured("ndep",_live_config("ndep"),limit=10,fetch=lambda _:table)
+    assert sorted(r["date"] for r in rows)==["2026-09-17","2026-10-21","2026-11-04"]

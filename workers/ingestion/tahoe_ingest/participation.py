@@ -155,10 +155,21 @@ def _instructions(value: str, source_normalized: str, source_compact: str) -> tu
             return None, "mentions an email not in the agenda text"
     if not _numbers_present(value, source_compact):
         return None, "mentions a number not in the agenda text"
+    for code in re.findall(r"(?i)\bpass(?:code|word)\s*:?\s*(\S+)", value):
+        if code.rstrip(".,;:)").casefold() not in source_compact:
+            return None, "mentions a passcode not in the agenda text"
     for clock in re.findall(r"\b\d{1,2}:\d{2}", value):
         if clock not in source_normalized:
             return None, "mentions a time not in the agenda text"
     return value, None
+
+
+JOIN_LINK = re.compile(r"(?i)^https?://([a-z0-9-]+\.)*(zoom\.(us|com)/(j|w|my|wc|webinar)/|teams\.microsoft\.com/(l/meetup-join|meet)/|teams\.live\.com/meet/)")
+
+
+def is_join_url(url: str | None) -> bool:
+    """A Zoom or Microsoft Teams meeting link: it joins the meeting, so it is never a public comment form."""
+    return bool(url and JOIN_LINK.match(url.strip()))
 
 
 def validate(reply: dict, source: str) -> tuple[dict, list[dict]]:
@@ -192,12 +203,26 @@ def validate(reply: dict, source: str) -> tuple[dict, list[dict]]:
             check(name, _instructions(reply[name], source_normalized, source_compact))
     if "instructions" in kept and "instructionsQuote" not in kept:
         rejected.append({"field": "instructions", "value": kept.pop("instructions"), "reason": "no supporting quote in the agenda text"})
+    if is_join_url(kept.get("commentUrl")):
+        link = kept.pop("commentUrl")
+        kept.setdefault("remoteUrl", link)
+        if kept["remoteUrl"] != link and not is_join_url(kept["remoteUrl"]):
+            kept["remoteUrl"] = link
     if kept.get("remoteUrl") and kept.get("remoteUrl") == kept.get("watchUrl"):
         kept.pop("watchUrl")
     return kept, rejected
 
 
 # --- Input selection ------------------------------------------------------------
+
+def _priority(local_date: date | None, today: date, meeting_id: str) -> tuple:
+    """Sort key: nearest upcoming date first, then undated meetings, then past meetings, most recent first."""
+    if local_date is None:
+        return (1, 0, meeting_id)
+    if local_date >= today:
+        return (0, local_date.toordinal(), meeting_id)
+    return (2, -local_date.toordinal(), meeting_id)
+
 
 def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, today: date, prompt_hash: str) -> dict:
     """Meetings whose current agenda documents (or the prompt) changed since their last extraction."""
@@ -210,6 +235,8 @@ def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, toda
               AND (%s::text IS NULL OR m.agency_id=%s) AND (%s::text IS NULL OR m.id=%s)
             ORDER BY c.meeting_id,v.source_document_id""", (since, agency, agency, meeting, meeting)):
         current.setdefault(r["meeting_id"], []).append(r)
+    # Upcoming meetings first: a cost or time stop must never leave a meeting next week behind old ones.
+    current = dict(sorted(current.items(), key=lambda kv: _priority(kv[1][0]["local_date"], today, kv[0])))
     stored = {r["meeting_id"]: r for r in conn.execute("SELECT meeting_id,version_ids,prompt_sha256 FROM ai_participation")}
     pending = {}
     for meeting_id, docs in current.items():
@@ -373,10 +400,13 @@ def merged(meeting_location, participation: dict, extracted: dict | None, agency
     def pick(*values):
         return next((v for v in values if v), None)
 
+    # A Zoom or Teams join link is the remote link wherever a source filed it (some feeds name it the participation URL).
+    comment_urls = [u for u in (participation.get("url"), extracted.get("commentUrl"), defaults.get("url")) if u]
+    joins = [u for u in comment_urls if is_join_url(u)]
     result = {
         "instructions": pick(participation.get("instructions"), extracted.get("instructions"), defaults.get("instructions")),
-        "url": pick(participation.get("url"), extracted.get("commentUrl"), defaults.get("url")),
-        "remoteUrl": pick(participation.get("remoteUrl"), extracted.get("remoteUrl")),
+        "url": pick(*(u for u in comment_urls if not is_join_url(u))),
+        "remoteUrl": pick(participation.get("remoteUrl"), extracted.get("remoteUrl"), *joins),
         "watchUrl": pick(participation.get("watchUrl"), extracted.get("watchUrl"), defaults.get("watchUrl")),
         "phone": pick(participation.get("phone"), extracted.get("phone")),
         "email": pick(participation.get("email"), extracted.get("commentEmail"), defaults.get("email")),

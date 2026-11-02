@@ -130,7 +130,8 @@ def test_extraction_is_stored_exported_and_not_repeated(conn):
     assert after["location"] == before["location"]  # the source adapter's value wins
     assert after["participation"]["remoteUrl"] == answer["remoteUrl"]
     assert after["participation"]["email"] == "lrao@tahoetransportation.org"
-    assert after["participation"]["url"] == before["participation"]["url"]
+    assert before["participation"]["url"] == answer["remoteUrl"]  # the source feed files the Zoom link as the comment URL
+    assert after["participation"]["url"] is None  # a join link is never the comment link
     assert after["participation"]["watchUrl"] is None and after["participation"]["fromAgenda"]
     usage = conn.execute("SELECT purpose,ok FROM ai_usage").fetchall()
     assert [(u["purpose"], u["ok"]) for u in usage] == [("participation-extraction", True)]
@@ -164,3 +165,92 @@ def test_a_passed_deadline_stops_before_the_first_meeting(conn):
     assert report["stoppedEarly"] == "time budget reached; remaining meetings are extracted on the next run"
     again = participation.extract_participation(conn, clients={"claude-haiku-5-5": haiku}, today=date(2026, 10, 1))
     assert haiku.calls == 1 and again["extracted"] == {"claude-haiku-5-5": 1}
+
+
+# --- Ordering, join-link normalization, and remote details without a link (text from the production export) ----------
+
+def test_pending_order_is_upcoming_soonest_then_undated_then_past_recent_first():
+    today = date(2026, 11, 2)
+    meetings = {"a": date(2026, 10, 30), "b": date(2026, 12, 1), "c": None, "d": date(2026, 11, 3), "e": date(2026, 11, 2), "f": date(2026, 10, 21)}
+    ordered = sorted(meetings, key=lambda mid: participation._priority(meetings[mid], today, mid))
+    assert ordered == ["e", "d", "b", "c", "a", "f"]
+
+
+TTD_PAGE = """Tahoe Regional Planning Agency                                                       October 7, 2026
+                    To attend the TTD Board Meeting remotely, use the following link:
+              https://us06web.zoom.us/webinar/register/WN_x4BFkKUvRe-QKhqeAZBCiw
+
+ email at lrao@tahoetransportation.org. Please note which agenda item the comment pertains to."""
+TTD_LINK = "https://us06web.zoom.us/webinar/register/WN_x4BFkKUvRe-QKhqeAZBCiw"
+
+
+def test_a_join_link_in_the_comment_url_moves_to_the_remote_url():
+    kept, rejected = participation.validate(reply(commentUrl=TTD_LINK, commentEmail="lrao@tahoetransportation.org"), TTD_PAGE)
+    assert kept == {"remoteUrl": TTD_LINK, "commentEmail": "lrao@tahoetransportation.org"} and not rejected
+    kept, _ = participation.validate(reply(commentUrl=TTD_LINK, remoteUrl=TTD_LINK), TTD_PAGE)
+    assert kept == {"remoteUrl": TTD_LINK}
+    form = "Submit comments at https://forms.example.gov/comment"
+    kept, _ = participation.validate(reply(commentUrl="https://forms.example.gov/comment"), form)
+    assert kept == {"commentUrl": "https://forms.example.gov/comment"}
+
+
+@pytest.mark.parametrize("url,expected", [
+    ("https://us06web.zoom.us/j/88991557512", True), (TTD_LINK, True), ("https://zoom.us/j/1?pwd=x", True),
+    ("https://teams.microsoft.com/l/meetup-join/19%3ameeting", True), ("https://zoom.us/", False),
+    ("https://forms.example.gov/comment", False), (None, False)])
+def test_join_url_detection(url, expected):
+    assert participation.is_join_url(url) is expected
+
+
+def test_export_merge_files_a_join_link_as_the_remote_url_whoever_supplied_it():
+    # The TTD feed names the Zoom link its participation URL (Oct 7, 2026 export), and no extraction had run.
+    _, merged = participation.merged("TRPA", {"url": TTD_LINK}, None, None)
+    assert merged["remoteUrl"] == TTD_LINK and merged["url"] is None
+    _, merged = participation.merged("TRPA", {"url": TTD_LINK}, {"commentUrl": "https://form.example/c"}, None)
+    assert merged["remoteUrl"] == TTD_LINK and merged["url"] == "https://form.example/c"
+    _, merged = participation.merged("TRPA", {"remoteUrl": "https://zoom.us/j/9"}, None, {"url": TTD_LINK})
+    assert merged["remoteUrl"] == "https://zoom.us/j/9" and merged["url"] is None
+
+
+NDEP_PAGE = """                                     Join the Meeting virtually at:
+
+                                          Microsoft Teams:
+                                    Meeting ID: 217 707 950 084 88
+                                         Passcode: hN2VS7fz
+
+                                    Call in by Phone (audio only)
+                                    United States: +1 (775) 321-6111
+                                    Meeting extension: 610 223 794#
+"""
+
+
+def test_teams_meeting_id_and_passcode_survive_in_the_instructions():
+    answer = reply(instructions="Join Microsoft Teams with Meeting ID 217 707 950 084 88 and Passcode hN2VS7fz.",
+                   instructionsQuote="Microsoft Teams: Meeting ID: 217 707 950 084 88 Passcode: hN2VS7fz")
+    kept, rejected = participation.validate(answer, NDEP_PAGE)
+    assert kept["instructions"] == answer["instructions"] and not rejected
+    answer["instructions"] = "Join Microsoft Teams with Meeting ID 217 707 950 084 88 and Passcode zzzzzzzz."
+    kept, rejected = participation.validate(answer, NDEP_PAGE)
+    assert "instructions" not in kept and rejected[0]["reason"] == "mentions a passcode not in the agenda text"
+    assert participation.response_schema()["required"] == list(participation.FIELDS)
+
+
+SSTMA_PAGE = """Board of Directors Agenda
+                                       Friday, September 18, 2026
+                                             8:30-10:00 am
+              In-person option: Lisa Maloff University Center | Lake Tahoe Community College
+                             1 College Drive
+                             South Lake Tahoe, CA 96150
+              Remote option:        Zoom Link
+"""
+
+
+def test_remote_option_without_a_readable_link_is_accepted_and_the_prompt_forbids_blame():
+    answer = reply(instructions="The agenda offers a Zoom remote option; the link is on the official agenda.",
+                   instructionsQuote="Remote option: Zoom Link")
+    kept, rejected = participation.validate(answer, SSTMA_PAGE)
+    assert kept["instructions"] == answer["instructions"] and not rejected
+    assert "remoteUrl" not in kept
+    prompt = participation.PROMPT.read_text()
+    assert 'Remote option: Zoom Link' in prompt and "the link is on the official agenda" in prompt
+    assert "Never say or imply that the agency or the agenda failed to give" in prompt

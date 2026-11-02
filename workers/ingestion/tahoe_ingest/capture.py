@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 import time
+import urllib.parse
 from datetime import date, datetime, timezone
 
 from .agenda import ParseResult, parse_agenda
@@ -64,6 +65,11 @@ def _bridge(conn, candidate, same_date_rows):
     return sid
 
 
+def is_legistar_meeting_page(url: str) -> bool:
+    """A Legistar ``MeetingDetail.aspx`` page: the meeting's own record, not a news post or a file."""
+    return urllib.parse.urlparse(url).path.lower().endswith("/meetingdetail.aspx")
+
+
 class StoredMeetings:
     """One bulk read of what is stored, for deciding which of many candidates to fetch.
 
@@ -118,7 +124,11 @@ class StoredMeetings:
         updated = 0
         for candidate in candidates:
             links = links_of(candidate)
-            if not links or (candidate.get("date") or "") < coverage_start.isoformat():
+            if (candidate.get("date") or "") < coverage_start.isoformat():
+                continue
+            moved = not candidate.get("records_only") and self._upgrade_official_url(candidate)
+            if not links:
+                updated += moved
                 continue
             if candidate.get("records_only"):
                 day = date.fromisoformat(candidate["date"])
@@ -126,9 +136,24 @@ class StoredMeetings:
                 meeting = match_meeting(pool, day, qualifiers(candidate.get("title", "")))
             else:
                 meeting = self.meetings.get(stable_id(candidate["agency"], self.identity(candidate)))
-            if meeting and apply_links(self.conn, meeting, links):
+            if (meeting and apply_links(self.conn, meeting, links)) or moved:
                 updated += 1
         return updated
+
+    def _upgrade_official_url(self, candidate: dict) -> bool:
+        """Point a stored meeting at its Legistar meeting page when it links something else.
+
+        A hand-checked candidate may link a news recap or the agenda file; a Legistar listing
+        links the meeting record itself, and a settled meeting is never captured again to take it.
+        """
+        url = candidate.get("official_url") or ""
+        meeting = self.meetings.get(stable_id(candidate["agency"], self.identity(candidate)))
+        if not meeting or not is_legistar_meeting_page(url) or is_legistar_meeting_page(meeting["official_url"] or "") \
+                or meeting["official_url"] == url:
+            return False
+        self.conn.execute("UPDATE meetings SET official_url=%s,updated_at=clock_timestamp() WHERE id=%s", (url, meeting["id"]))
+        meeting["official_url"] = url
+        return True
 
     def local_date(self, meeting_id: str):
         row = self.meetings.get(meeting_id)

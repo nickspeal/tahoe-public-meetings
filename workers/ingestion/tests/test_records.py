@@ -409,3 +409,25 @@ def test_a_url_stored_under_two_document_ids_is_exported_once():
     # The copy the items cite keeps its id so citations resolve, under the first label.
     assert [(d["id"], d["title"]) for d in one_per_url(docs, {"truckee-town-council-agenda-2026-09-22"})] == [
         ("truckee-town-council-agenda-2026-09-22", "Official agenda (HTML)"), ("truckee-agenda-pdf", "Official agenda (PDF)")]
+
+
+def test_a_stored_meeting_takes_the_legistar_meeting_page_over_a_news_recap():
+    from tahoe_ingest.capture import StoredMeetings
+    recap = "https://washoelife.washoecounty.gov/washoe-county/top-headlines-from-the-board-of-county-commissioners-meeting-20-34/"
+    detail = "https://washoe-nv.legistar.com/MeetingDetail.aspx?ID=1347922&GUID=A23BE870-0670-4502-844D-7648883ABBED&Options=&Search="
+    meeting = {"id": "washoe-commissioners:2026-09-08", "agency_id": "washoe-commissioners", "source_id": "2026-09-08",
+               "official_url": recap, "local_date": date(2026, 9, 8), "quarantine_reason": None}
+    ran = []
+
+    class Conn:
+        def execute(self, sql, params=()):
+            ran.append(params)
+
+    snapshot = object.__new__(StoredMeetings)
+    snapshot.conn, snapshot.meetings, snapshot.by_source, snapshot.aliases = Conn(), {meeting["id"]: meeting}, {("washoe-commissioners", "2026-09-08"): meeting}, {}
+    candidate = {"agency": "washoe-commissioners", "source_id": "2026-09-08", "title": "Board of County Commissioners", "date": "2026-09-08", "official_url": detail}
+    assert snapshot.apply_links([candidate], coverage_start=date(2026, 1, 1)) == 1
+    assert meeting["official_url"] == detail and ran == [(detail, "washoe-commissioners:2026-09-08")]
+    assert snapshot.apply_links([candidate], coverage_start=date(2026, 1, 1)) == 0  # already the meeting page
+    other = {**candidate, "official_url": "https://washoe-nv.legistar1.com/a.pdf"}
+    assert snapshot.apply_links([other], coverage_start=date(2026, 1, 1)) == 0  # a file never replaces it

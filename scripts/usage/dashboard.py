@@ -53,6 +53,7 @@ th { color: var(--text-secondary); font-weight: 500; font-size: 12px; }
 details summary { cursor: pointer; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
 .breakdowns { display: grid; grid-template-columns: repeat(auto-fit, minmax(520px, 1fr)); gap: 18px; margin-top: 12px; }
 .fail { color: var(--critical); }
+table.wrap td, table.wrap th { white-space: normal; text-align: left; } a { color: var(--series-1); }
 #tip { position: fixed; pointer-events: none; background: var(--surface-1); color: var(--text-primary);
   border: 1px solid var(--border); border-radius: 6px; padding: 6px 9px; font-size: 12px; display: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12); white-space: pre; }
@@ -87,6 +88,8 @@ def column_chart(points, unit, quota=None, width=560, height=170):
     peak = max([p[2] for p in points] + [0])
     show_quota = bool(quota) and peak >= 0.2 * quota
     y_max = nice_max(max(peak, quota if show_quota else 0) * 1.05)
+    if unit == "count" and y_max < 4:
+        y_max = 2 if peak <= 2 else 4  # whole-number ticks for small counts
     y = lambda v: top + plot_h - plot_h * v / y_max
     out = [f'<svg viewBox="0 0 {width} {height}" role="img">']
     for tick in (0, y_max / 2, y_max):
@@ -194,6 +197,41 @@ Point-in-time readings, kept only from collections (history cannot be recomputed
 </section>"""
 
 
+def failures_card(summary):
+    def cell(w):
+        rate = f" ({w['rate_pct']}%)" if w["rate_pct"] is not None else ""
+        return f"{esc(fmt(w['failed'], 'count', True))} / {esc(fmt(w['total'], 'count', True))}{rate}"
+    rows, charts = [], []
+    for f in summary["failures"]:
+        rows.append(f"<tr><td>{esc(f['label'])}</td><td>{cell(f['past7'])}</td><td>{cell(f['past30'])}</td>"
+                    f"<td>{cell(f['month_to_date'])}</td></tr>")
+        weekly = [(short_day(w["start"]), f"Week of {short_day(w['start'])}", w["value"], w["partial"])
+                  for w in f["weekly"][-26:]]
+        if weekly:
+            charts.append(f'<div><div class="chart-title">{esc(f["label"])} failed, weekly</div>'
+                          f'{column_chart(weekly, "count", width=420, height=130)}</div>')
+    d = summary["failure_details"]
+    ai = "".join(f"<tr><td>{esc(e['source'])}</td><td>{esc(e['purpose'])}</td><td>{esc(e['error'])}</td>"
+                 f"<td>{e['calls']}</td><td>{esc(fmt(e['cost_usd'], 'usd'))}</td><td>{esc(e['last_seen'][:16])}</td></tr>"
+                 for e in d["ai_errors"])
+    run = "".join(f"<tr><td>{esc(e['started_at'][:16])}</td><td>{esc(e['name'])}</td><td>{esc(e['message'])}</td></tr>"
+                  for e in d["cloud_run"])
+    gh = "".join(f"<tr><td>{esc(r['created_at'][:16])}</td><td>{esc(r['workflow'])}</td><td>{esc(r['conclusion'])}</td>"
+                 f"<td><a href=\"{esc(r['url'])}\">run</a></td></tr>" for r in d["github"])
+    ai_parts = next((f.get("breakdown") for f in summary["failures"] if f.get("breakdown")), None)
+    ai_breakdown = breakdown_tables({"unit": "count", "breakdown": ai_parts}) if ai_parts else ""
+    return f"""<section class="card"><h2>Failures</h2><p class="note">Failed / total (failure rate). Failed AI calls
+are mostly outputs rejected by validation; they are still billed.</p>
+<table><tr><th>What</th><th>Past 7 days</th><th>Past 30 days</th><th>This month</th></tr>{''.join(rows)}</table>
+<div class="breakdowns">{''.join(charts)}</div>
+<details><summary>Failed AI calls by source, purpose, and model</summary>{ai_breakdown}</details>
+<details {'open' if ai else ''}><summary>Recent AI failures, grouped by error (numbers shown as #)</summary><table class="wrap"><tr><th>Source</th><th>Purpose</th>
+<th>Error</th><th>Calls</th><th>Cost</th><th>Last seen</th></tr>{ai}</table></details>
+<details><summary>Failed Cloud Run executions ({len(d['cloud_run'])})</summary><table class="wrap"><tr><th>Started (UTC)</th><th>Execution</th><th>Message</th></tr>{run}</table></details>
+<details><summary>Failed GitHub Actions runs ({len(d['github'])} most recent)</summary><table><tr><th>Created (UTC)</th><th>Workflow</th><th>Conclusion</th><th></th></tr>{gh}</table></details>
+</section>"""
+
+
 def render(summary):
     metrics = summary["metrics"]
     status_rows = "".join(
@@ -226,6 +264,7 @@ def render(summary):
 Refresh with <code>python3 scripts/usage/usage.py</code>.</div>
 <section class="card"><h2>Quotas</h2><p class="note">Monthly quotas reset on the 1st (UTC). Vercel Hobby limits are judged on the last 30 days. Projection extends this month's pace to month end.</p>
 <table><tr><th>Metric</th><th>Window</th><th>Used</th><th>Quota</th><th>Used</th><th>Projected</th><th>Status</th></tr>{''.join(quota_rows)}</table></section>
+{failures_card(summary)}
 {''.join(cards)}
 <section class="card"><h2>Other metrics</h2><table><tr><th>Metric</th><th>Past 7 days</th><th>Past 30 days</th><th>This month</th><th>Projected month</th></tr>{others}</table></section>
 <section class="card"><h2>Collection status</h2><table><tr><th>Service</th><th>Last collection (UTC)</th><th>Result</th><th>Detail</th></tr>{status_rows}</table></section>

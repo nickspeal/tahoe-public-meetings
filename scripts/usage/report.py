@@ -6,6 +6,11 @@ import statistics
 
 from store import METRICS, SERVICES, SOURCES, now
 
+# (label, failed metric, total metric)
+FAILURES = [("AI calls", ("ai", "failed_calls"), ("ai", "calls")),
+            ("Cloud Run executions", ("cloudrun", "failed_executions"), ("cloudrun", "executions")),
+            ("GitHub Actions runs", ("github", "failed_runs"), ("github", "runs")),
+            ("Vercel builds", ("vercel", "failed_builds"), ("vercel", "builds"))]
 STATUS = {"ok": "On track", "watch": "Watch", "risk": "At risk", "over": "Over quota", "none": "No quota"}
 
 
@@ -133,6 +138,8 @@ def summarize(conn):
                                  month_to_date=window_sum(own, month_start, today), all_time=sum(own.values())))
             if len(rows) > 1 or dim in ("model", "purpose"):
                 parts[dim] = sorted(rows, key=lambda r: -r["all_time"])
+        order = ["source", "purpose", "model"]
+        parts = dict(sorted(parts.items(), key=lambda kv: order.index(kv[0]) if kv[0] in order else len(order)))
         metrics.append(dict(base, data_from=first, past7=window_sum(series, w7, today), past30=past30,
                             month_to_date=mtd, projected_month=projected, quota_used_pct=used,
                             projected_pct=projected_pct, status=status(used, projected_pct),
@@ -143,10 +150,33 @@ def summarize(conn):
         c = collections.get(source)
         services.append(dict(collector=source, name=name, last_collection=c and c["run_at"], ok=bool(c and c["ok"]),
                              message=c and c["message"], last_success=last_ok.get(source)))
+    by_key = {(x["service"], x["metric"]): x for x in metrics}
+    failures = []
+    for label, failed, total in FAILURES:
+        f, t = by_key.get(failed), by_key.get(total)
+        if not t:
+            continue
+        row = dict(label=label, service=failed[0], weekly=f["weekly"] if f else [])
+        for window in ("past7", "past30", "month_to_date"):
+            n, d = (f[window] if f else 0), t[window]
+            row[window] = dict(failed=n, total=d, rate_pct=pct(n, d))
+        if f and failed == ("ai", "failed_calls"):
+            row["breakdown"] = f["breakdown"]
+        failures.append(row)
+    failure_details = dict(
+        ai_errors=[dict(r) for r in conn.execute(
+            "SELECT source, purpose, error, calls, cost_usd, last_seen FROM ai_errors ORDER BY last_seen DESC, calls DESC "
+            "LIMIT 15")],
+        cloud_run=[dict(r) for r in conn.execute(
+            "SELECT name, job, started_at, message FROM cloud_run_executions WHERE succeeded=0 "
+            "ORDER BY started_at DESC LIMIT 10")],
+        github=[dict(r) for r in conn.execute(
+            "SELECT workflow, conclusion, created_at, url FROM github_failed_runs ORDER BY created_at DESC LIMIT 10")])
     return dict(generated_at=moment.isoformat(timespec="seconds"), today_utc=today.isoformat(),
                 windows={"past7": f"{w7} to {today}", "past30": f"{w30} to {today}",
                          "month_to_date": f"{month_start} to {today}"},
-                services=services, metrics=metrics, largest_tables=tables)
+                services=services, failures=failures, failure_details=failure_details, metrics=metrics,
+                largest_tables=tables)
 
 
 def markdown(summary):
@@ -171,6 +201,24 @@ def markdown(summary):
         proj = f"{x['projected_pct']}%" if x.get("projected_pct") is not None else "-"
         m.append(f"| {x['label']} | {window} | {fmt(used, x['unit'], True)} | {fmt(x['quota'], x['unit'], True)} | "
                  f"{x['quota_used_pct']}% | {proj} | {STATUS[x['status']]} |")
+    m += ["", "## Failures\n", "Failed / total (failure rate).\n",
+          "| What | Past 7 days | Past 30 days | This month |", "|---|---|---|---|"]
+    cell = lambda w: f"{fmt(w['failed'], 'count', True)} / {fmt(w['total'], 'count', True)}" + (
+        f" ({w['rate_pct']}%)" if w["rate_pct"] is not None else "")
+    m += [f"| {f['label']} | {cell(f['past7'])} | {cell(f['past30'])} | {cell(f['month_to_date'])} |"
+          for f in summary["failures"]]
+    details = summary["failure_details"]
+    if details["ai_errors"]:
+        m += ["", "Recent AI failures, grouped by error (numbers shown as #):\n",
+              "| Source | Purpose | Error | Calls | Cost | Last seen |", "|---|---|---|---|---|---|"]
+        m += [f"| {e['source']} | {e['purpose']} | {e['error'].replace('|', '/')} | {e['calls']} | "
+              f"{fmt(e['cost_usd'], 'usd')} | {e['last_seen'][:16]} |" for e in details["ai_errors"]]
+    if details["cloud_run"]:
+        m += ["", "Failed Cloud Run executions:\n"]
+        m += [f"- {e['started_at'][:16]} {e['name']}: {e['message']}" for e in details["cloud_run"]]
+    if details["github"]:
+        m += ["", "Failed GitHub Actions runs:\n"]
+        m += [f"- {r['created_at'][:16]} {r['workflow']} ({r['conclusion']}): {r['url']}" for r in details["github"]]
     anomalies = [x for x in summary["metrics"] if x.get("anomaly")]
     if anomalies:
         m += ["", "## Anomalies\n"]

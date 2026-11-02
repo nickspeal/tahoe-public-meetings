@@ -35,10 +35,12 @@ METRICS = {
     ("postgres", "database_bytes"): dict(label="Production database size (pg_database_size)", unit="bytes",
                                          kind="gauge"),
     ("ai", "cost_usd"): dict(label="AI cost (estimated)", unit="usd", quota=ai_monthly_budget(), window="month",
-                             primary=True, note="From the ai_usage table, priced by the ingestion code. The quota is the "
+                             primary=True, note="From the ai_usage tables, priced by the ingestion code. Source cloud = the production database "
+                             "(Cloud Run jobs, or any command pointed at production); local = the local database. The quota is the "
                              "job's own monthly budget guard (DEFAULT_MONTHLY_BUDGET)."),
     ("ai", "calls"): dict(label="AI calls", unit="count"),
-    ("ai", "failed_calls"): dict(label="AI calls that failed", unit="count"),
+    ("ai", "failed_calls"): dict(label="AI calls that failed", unit="count",
+                                 note="Calls whose output was rejected (validation) or that errored; they still cost money."),
     ("ai", "input_tokens"): dict(label="AI uncached input tokens", unit="count"),
     ("ai", "output_tokens"): dict(label="AI output tokens", unit="count"),
     ("ai", "cache_write_tokens"): dict(label="AI cache-write tokens", unit="count"),
@@ -83,7 +85,12 @@ CREATE TABLE IF NOT EXISTS snapshots(service TEXT NOT NULL, metric TEXT NOT NULL
 -- Raw executions, kept because Cloud Run does not retain execution history forever.
 CREATE TABLE IF NOT EXISTS cloud_run_executions(name TEXT PRIMARY KEY, job TEXT NOT NULL, started_at TEXT NOT NULL,
   completed_at TEXT NOT NULL, succeeded INTEGER NOT NULL, task_count INTEGER NOT NULL, vcpu REAL NOT NULL,
-  gib REAL NOT NULL);
+  gib REAL NOT NULL, message TEXT NOT NULL DEFAULT '');
+-- Failure details, rebuilt on every collection from the services.
+CREATE TABLE IF NOT EXISTS ai_errors(source TEXT NOT NULL, purpose TEXT NOT NULL, error TEXT NOT NULL,
+  calls INTEGER NOT NULL, cost_usd REAL NOT NULL, last_seen TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS github_failed_runs(workflow TEXT NOT NULL, conclusion TEXT, created_at TEXT NOT NULL,
+  url TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS collections(run_at TEXT NOT NULL, service TEXT NOT NULL, ok INTEGER NOT NULL,
   message TEXT NOT NULL);
 """
@@ -106,6 +113,9 @@ def connect():
     conn = sqlite3.connect(DATA_DIR / "usage.sqlite")
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    columns = {r["name"] for r in conn.execute("PRAGMA table_info(cloud_run_executions)")}
+    if "message" not in columns:  # stores created before failure details were kept
+        conn.execute("ALTER TABLE cloud_run_executions ADD COLUMN message TEXT NOT NULL DEFAULT ''")
     return conn
 
 

@@ -13,7 +13,8 @@ python3 scripts/usage/usage.py --report-only       # rebuild reports from stored
 
 Outputs in `private/usage/`:
 
-- `dashboard.html`: quotas, weekly and monthly charts, the past 7 and 30 days, and breakdowns.
+- `dashboard.html`: quotas, failures, weekly and monthly charts, the past 7 and 30 days, and breakdowns.
+  Open it without collecting: `open private/usage/dashboard.html`.
 - `summary.md`: the same figures as text. Agents should read this before decisions that spend a quota.
 - `summary.json`: machine-readable, with the same fields.
 - `usage.sqlite`: one value per metric, per breakdown, per UTC day, plus point-in-time snapshots.
@@ -23,7 +24,7 @@ Outputs in `private/usage/`:
 | Collector | Reads | Needs |
 | --- | --- | --- |
 | `prisma` | Daily operations and storage for every database in the Prisma workspace (the quota is workspace-wide) | `npx prisma` signed in, or `PRISMA_SERVICE_TOKEN` |
-| `database` | `ai_usage` (cost, tokens, and calls by day, purpose, model) and database and table sizes, from production and, if it is running, the local database | `gcloud` access to the `tahoe-database-url` secret, and `psql` |
+| `database` | `ai_usage` (cost, tokens, calls, and failed calls grouped by error, by day, purpose, model) and database and table sizes. Source `cloud` is the production database (the Cloud Run jobs, or any command pointed at production); `local` is the local database, if it is running | `gcloud` access to the `tahoe-database-url` secret, and `psql` |
 | `cloudrun` | Job executions, turned into vCPU-seconds and GiB-seconds from each execution's duration and configured limits | `gcloud` |
 | `github` | Workflow runs and their wall-time minutes | `gh` |
 | `vercel` | Team usage (edge requests, data transfer, functions, builds) with this project's share | The Vercel CLI login (refreshed automatically), or `VERCEL_TOKEN` / `VERCEL_ADMIN_TOKEN` |

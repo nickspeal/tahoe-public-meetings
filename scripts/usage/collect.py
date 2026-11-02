@@ -100,9 +100,16 @@ def collect_prisma(conn, cfg, start):
 
 # --- Production database: AI usage and size --------------------------------------------
 
-AI_SQL = """select (recorded_at at time zone 'UTC')::date::text as day, purpose, model, ok, count(*) as calls,
+AI_USAGE = """select (recorded_at at time zone 'UTC')::date::text as day, purpose, model, ok, count(*) as calls,
   sum(input_tokens) as input, sum(output_tokens) as output, sum(cache_creation_input_tokens) as cache_write,
   sum(cache_read_input_tokens) as cache_read, sum(cost_usd)::float8 as cost from ai_usage group by 1, 2, 3, 4"""
+# Failed calls grouped by error, with numbers and quoted text masked so "sentence 2 ... page 3" variants group.
+AI_ERRORS = """select purpose, regexp_replace(regexp_replace(left(regexp_replace(coalesce(error, 'unknown'), '\\s+', ' ', 'g'),
+  300), '“[^”]*”', '“…”', 'g'), '[0-9]+', '#', 'g') as error, count(*) as calls, sum(cost_usd)::float8 as cost,
+  max(recorded_at) as last_seen from ai_usage where not ok group by 1, 2"""
+# One statement (one Prisma operation) for both.
+AI_SQL = f"""select (select coalesce(json_agg(u), '[]') from ({AI_USAGE}) u) as usage,
+  (select coalesce(json_agg(e), '[]') from ({AI_ERRORS}) e) as errors"""
 SIZE_SQL = """select json_build_object('database', pg_database_size(current_database()), 'tables',
   (select json_object_agg(c.relname, pg_total_relation_size(c.oid)) from pg_class c
    join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r'))"""
@@ -139,19 +146,26 @@ def ai_rows(rows, source):
 
 
 def collect_database(conn, cfg, start):
-    url = database_url()
-    rows = list(ai_rows(query(url, AI_SQL), "production"))
-    notes = [f"{len(rows)} AI rows from production"]
-    if cfg.get("ai", {}).get("include_local", True) and shutil.which("psql"):
-        # Local experiments (evaluations, local runs) spend real money too; skip quietly if the DB is down.
+    """AI usage from the production database (written by the Cloud Run jobs) and the local one."""
+    url, rows, errors = database_url(), [], []
+    sources = [("cloud", url, 60)]
+    if cfg.get("ai", {}).get("include_local", True):
+        sources.append(("local", os.environ.get("TAHOE_USAGE_LOCAL_DATABASE_URL", LOCAL_URL), 15))
+    notes = []
+    for source, source_url, timeout in sources:
         try:
-            local = list(ai_rows(query(os.environ.get("TAHOE_USAGE_LOCAL_DATABASE_URL", LOCAL_URL), AI_SQL, 15),
-                                 "local"))
-            rows += local
-            notes.append(f"{len(local)} from the local database")
+            result = query(source_url, AI_SQL, timeout)[0]
         except CollectError:
-            notes.append("local database not reachable")
+            if source == "cloud":
+                raise
+            notes.append("local database not reachable")  # local experiments are optional
+            continue
+        rows += list(ai_rows(result["usage"], source))
+        errors += [(source, e["purpose"], e["error"], e["calls"], e["cost"] or 0, e["last_seen"]) for e in result["errors"]]
+        notes.append(f"{len(result['usage'])} {source} AI groups")
     replace_daily(conn, "ai", "0000-00-00", "9999-99-99", rows)
+    conn.execute("DELETE FROM ai_errors")
+    conn.executemany("INSERT INTO ai_errors VALUES (?,?,?,?,?,?)", errors)
     sizes = query(url, SIZE_SQL)[0]["json_build_object"]
     snapshot(conn, "postgres", "database_bytes", sizes["database"])
     taken_at = now().isoformat(timespec="seconds")
@@ -185,11 +199,12 @@ def collect_cloudrun(conn, cfg, start):
         if not status.get("completionTime") or not status.get("startTime"):
             continue  # still running; picked up by the next collection
         limits = e["spec"]["template"]["spec"]["containers"][0].get("resources", {}).get("limits", {})
-        conn.execute("INSERT OR REPLACE INTO cloud_run_executions VALUES (?,?,?,?,?,?,?,?)", (
+        completed = next((c for c in status.get("conditions", []) if c["type"] == "Completed"), {})
+        conn.execute("INSERT OR REPLACE INTO cloud_run_executions VALUES (?,?,?,?,?,?,?,?,?)", (
             e["metadata"]["name"], e["metadata"]["labels"].get("run.googleapis.com/job", "?"), status["startTime"],
             status["completionTime"], int(not status.get("failedCount") and not status.get("cancelledCount")),
             int(e["spec"].get("taskCount", 1)), quantity(limits.get("cpu", "1"), CPU),
-            quantity(limits.get("memory", "512Mi"), MEMORY_GIB)))
+            quantity(limits.get("memory", "512Mi"), MEMORY_GIB), completed.get("message", "")))
         kept += 1
     rows = []
     for e in conn.execute("SELECT * FROM cloud_run_executions"):
@@ -215,11 +230,11 @@ def github_repo(cfg):
 
 def collect_github(conn, cfg, start):
     repo = github_repo(cfg)
-    jq = ".workflow_runs[] | {name, conclusion, status, run_started_at, updated_at, created_at}"
+    jq = ".workflow_runs[] | {name, conclusion, status, run_started_at, updated_at, created_at, html_url}"
     out = run(["gh", "api", "--paginate", f"repos/{repo}/actions/runs?per_page=100&created=>={start.isoformat()}",
                "--jq", jq], timeout=180)
     runs = [json.loads(line) for line in out.splitlines() if line.strip()]
-    rows = []
+    rows, failures = [], []
     for r in runs:
         if r["status"] != "completed":
             continue
@@ -228,6 +243,9 @@ def collect_github(conn, cfg, start):
         rows += [("runs", dim, day, 1), ("minutes", dim, day, max(1, math.ceil(seconds / 60)))]
         if r["conclusion"] not in ("success", "skipped", "neutral"):
             rows.append(("failed_runs", dim, day, 1))
+            failures.append((r["name"], r["conclusion"], r["created_at"], r["html_url"]))
+    conn.execute("DELETE FROM github_failed_runs")
+    conn.executemany("INSERT INTO github_failed_runs VALUES (?,?,?,?)", failures)
     replace_daily(conn, "github", start.isoformat(), "9999-99-99", rows)
     return f"{len(runs)} run(s) in {repo}"
 

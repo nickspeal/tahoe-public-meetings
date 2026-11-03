@@ -18,7 +18,9 @@ the rejected sentence, its source, the page text near it, and how to fix it.
 Results live in ``ai_item_summaries``, one row per item, keyed to everything the
 model saw. The export shows a published row only while it matches the item's
 current source fingerprint and staff report, so a revised agenda or report falls
-back to the excerpt until the next run. Operator corrections and suppression in
+back to the excerpt until the next run. An agenda re-posted unchanged as a new
+file changes the fingerprint but not the input, so its results are rebound
+(``_rebind``) rather than summarized again. Operator corrections and suppression in
 ``editorial`` apply on top. Usage goes to ``ai_usage`` under the shared monthly
 budget, and writes are batched per meeting (decision 0020).
 """
@@ -344,8 +346,10 @@ def validate(sentences: list[dict], pages: dict[int, str], document_id: str, *, 
 
 # --- Input selection ------------------------------------------------------------------
 
-def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, prompt_hash: str, today: date) -> list[dict]:
-    rows, candidates = [], []
+def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, prompt_hash: str,
+             today: date) -> tuple[list[dict], list[dict]]:
+    """The items to summarize, nearest meeting first, and the stored results to rebind (``_rebind``)."""
+    rows, candidates, rebind = [], [], []
     for r in conn.execute("""SELECT s.item_id,s.sha256 AS report_sha256,s.title AS report_title,s.pages,s.source_fingerprint,
             i.meeting_id,i.number,i.title,i.section,i.citations,m.title AS meeting_title,m.local_date,m.agency_id,
             a.name AS agency_name,x.input_sha256 AS done,x.status AS done_status,x.prompt_sha256 AS done_prompt,
@@ -369,10 +373,37 @@ def _pending(conn, *, agency: str | None, meeting: str | None, force: bool, prom
         r["input_sha256"] = hashlib.sha256(json.dumps({"prompt": prompt_hash, "report": r["report_sha256"],
                                                        "user": r["user"]}).encode()).hexdigest()
         r["reason"] = _reason(r, prompt_hash)
+        if r["done"] == r["input_sha256"] and r["done_fingerprint"] != r["source_fingerprint"]:
+            rebind.append({"item_id": r["item_id"], "input_sha256": r["input_sha256"], "old_fingerprint": r["done_fingerprint"],
+                           "source_fingerprint": r["source_fingerprint"], "action_citation": (r["action"] or {}).get("citation")})
         if r["reason"] or force:
             r["reason"] = r["reason"] or "forced"
             rows.append(r)
-    return sorted(rows, key=lambda r: (abs((r["local_date"] - today).days) if r["local_date"] else 10_000, r["meeting_id"]))
+    rows.sort(key=lambda r: (abs((r["local_date"] - today).days) if r["local_date"] else 10_000, r["meeting_id"]))
+    return rows, rebind
+
+
+def _rebind(conn, rebind: list[dict]) -> int:
+    """Point stored results at their items' current fingerprints, in one statement; returns the rows updated.
+
+    An agenda posted again as a new file, with the same text, changes every item's fingerprint (its citations name
+    the new document version) but not what the model would be sent, so the input hash still matches and nothing is
+    summarized again. The stored result keeps its text and is rebound to the current fingerprint, without which
+    the export would hide it. A published summary that leads with the agenda's requested action also has that
+    citation replaced by the current one, so it names a document version the export still carries. Skipped and
+    validation-failed results are rebound too: they were judged on the same input, and staying bound to the
+    agenda version they describe keeps ``_reason`` and the stored row consistent.
+    """
+    if not rebind:
+        return 0
+    return conn.execute("""UPDATE ai_item_summaries x SET source_fingerprint=r.source_fingerprint,
+            citations=CASE WHEN r.action_citation IS NOT NULL AND x.status='published'
+              AND x.citations->0->>'quote'=r.action_citation->>'quote'
+              THEN jsonb_set(x.citations,'{0}',r.action_citation) ELSE x.citations END
+        FROM jsonb_to_recordset(%s::jsonb) AS r(item_id text,input_sha256 text,old_fingerprint text,source_fingerprint text,
+          action_citation jsonb)
+        WHERE x.item_id=r.item_id AND x.input_sha256=r.input_sha256 AND x.source_fingerprint IS NOT DISTINCT FROM r.old_fingerprint""",
+                        (json.dumps(rebind),)).rowcount
 
 
 def _reason(row: dict, prompt_hash: str) -> str | None:
@@ -445,7 +476,9 @@ def summarize_items(conn, *, agency: str | None = None, meeting: str | None = No
     system = PROMPT.read_text().strip()
     schema = response_schema()
     prompt_hash = prompt_sha256(system)
-    pending = _pending(conn, agency=agency, meeting=meeting, force=force, prompt_hash=prompt_hash, today=today or date.today())
+    pending, rebind = _pending(conn, agency=agency, meeting=meeting, force=force, prompt_hash=prompt_hash, today=today or date.today())
+    # Results whose input is unchanged but whose agenda was posted again are rebound, not summarized (a dry run only counts them).
+    rebound = len(rebind) if dry_run else _rebind(conn, rebind)
     shared = estimate_tokens(system) + estimate_tokens(json.dumps(schema))
     estimates = [cost_usd(CHAIN[0][0], uncached_input=shared + estimate_tokens(r["user"]), output=EST_OUTPUT_TOKENS) for r in pending]
     # A run takes as many items as its cost limit allows; the rest wait for the next run.
@@ -459,7 +492,8 @@ def summarize_items(conn, *, agency: str | None = None, meeting: str | None = No
     reasons: dict[str, int] = {}
     for row in pending:
         reasons[row["reason"]] = reasons.get(row["reason"], 0) + 1
-    report = {"itemsPending": len(pending), "itemsPendingByReason": reasons, "itemsSelected": len(selected), "estimatedCostUsd": round(running, 4),
+    report = {"itemsPending": len(pending), "itemsPendingByReason": reasons, "itemsRebound": rebound,
+              "itemsSelected": len(selected), "estimatedCostUsd": round(running, 4),
               "monthToDateUsd": round(spent_this_month, 4), "monthlyBudgetUsd": monthly_budget, "dryRun": dry_run,
               "published": {}, "itemsSkipped": 0, "validationFailed": 0, "failures": {}, "apiErrors": 0, "costUsd": 0.0}
     if len(selected) < len(pending):

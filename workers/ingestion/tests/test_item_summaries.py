@@ -320,3 +320,53 @@ def test_time_budget_stops_before_the_next_item_and_keeps_finished_ones(conn, mo
 
     rest = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     assert rest["itemsPending"] == 4 and haiku.calls == 6 and stored() == 6 and "stoppedEarly" not in rest
+
+
+class NoCallModel:
+    """Fails the test if any request is sent."""
+
+    def complete(self, **kwargs):
+        raise AssertionError("no request expected")
+
+
+def test_an_unchanged_agenda_reposted_as_a_new_pdf_keeps_its_summaries_without_a_request(conn, monkeypatch):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": StubModel("claude-haiku-5-5")}, today=TODAY)
+    before = items(conn)
+    assert before["9"]["summary"]["method"] == item_summaries.METHOD
+
+    # The agency posts the same agenda again as a new file: a new document version, so every item's fingerprint changes.
+    reposted = slt_bundle()
+    agenda = next(d for d in reposted["meetings"][0]["documents"] if d["id"] == "slt-agenda")
+    agenda["sha256"] = "0" * 64
+    assert ingest_bundle(conn, reposted)["failed"] == 0
+
+    def reposted_reader(url, **kwargs):
+        found = reader(url, **kwargs)
+        return {**found, "sha256": agenda["sha256"]} if url == agenda["url"] else found
+    assert staff_reports.map_staff_reports(conn, reader=reposted_reader, delay=0, today=TODAY)["itemsMapped"] == 6
+    agenda_version = "slt:2339:slt-agenda:" + "0" * 16
+    assert items(conn)["9"]["citations"][0]["documentId"] == agenda_version
+    assert items(conn)["9"]["summary"]["method"] != item_summaries.METHOD  # hidden until rebound
+
+    dry = item_summaries.summarize_items(conn, dry_run=True, today=TODAY)
+    assert dry["itemsPending"] == 0 and dry["itemsRebound"] == 6
+    assert items(conn)["9"]["summary"]["method"] != item_summaries.METHOD  # a dry run writes nothing
+
+    clients = {"claude-haiku-5-5": NoCallModel(), "claude-sonnet-5-5": NoCallModel()}
+    with statement_count(monkeypatch) as rebinding:
+        result = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
+    assert result["itemsPending"] == 0 and result["itemsRebound"] == 6 and result["costUsd"] == 0
+    assert rebinding["n"] <= 6  # selection, one rebind statement, month-to-date spend: nothing per item
+    after = items(conn)
+    summary = after["9"]["summary"]
+    assert summary["method"] == item_summaries.METHOD and summary["text"] == before["9"]["summary"]["text"]
+    # The requested action is cited to the agenda as posted now; the staff report citation is unchanged.
+    assert summary["citations"][0]["documentId"] == agenda_version
+    assert summary["citations"][1:] == before["9"]["summary"]["citations"][1:]
+    assert after["5"]["summary"]["text"] == before["5"]["summary"]["text"]
+    assert check_export(export_public(conn))[0] == []
+    stale = conn.execute("""SELECT count(*) AS n FROM ai_item_summaries x JOIN agenda_items i ON i.id=x.item_id
+        WHERE x.source_fingerprint IS DISTINCT FROM i.source_fingerprint""").fetchone()["n"]
+    assert stale == 0  # skipped items are rebound too
+    assert item_summaries.summarize_items(conn, dry_run=True, today=TODAY)["itemsRebound"] == 0

@@ -261,9 +261,17 @@ def test_settled_meetings_are_skipped_until_a_new_document_is_linked(db):
     assert "settled" not in report and report["captured"] == 2 and fetched.count(minutes) == 1
     report, fetched = discover_report(db, rows)
     assert report["settled"] == 1 and minutes not in fetched
-    # Documents beyond the per-meeting cap are never fetched, so they cannot unsettle a meeting.
-    rows[0]["documents"].append({"id": "slt-planning-old-extra", "title": "Extra", "url": "https://example.gov/x.pdf"})
+    # Every listed document is captured: a third one (Legistar's agenda PDF after its HTML agenda and packet)
+    # unsettles the meeting once, then it settles with all three.
+    extra = "https://example.gov/x.pdf"
+    rows[0]["documents"].append({"id": "slt-planning-old-extra", "title": "Extra", "url": extra})
+    report, fetched = discover_report(db, rows)
+    assert "settled" not in report and fetched.count(extra) == 1
+    assert len(scheduled.stored_meetings(db).document_urls["slt-planning:old"]) == 3
     assert discover_report(db, rows)[0]["settled"] == 1
+    # Documents beyond the safety cap are never fetched, so they cannot unsettle a meeting.
+    rows[0]["documents"].append({"id": "slt-planning-old-over", "title": "Over", "url": "https://example.gov/over.pdf"})
+    assert discover_report(db, rows, max_documents=3)[0]["settled"] == 1
 
 
 def test_failed_downloads_of_settled_age_meetings_retry_daily(db):
@@ -319,6 +327,43 @@ def test_oversized_packet_beside_a_captured_agenda_is_left_out_without_a_failure
     stored = scheduled.stored_meetings(db)
     assert stored.oversized == {PACKET_URL}
     assert scheduled._skip_reason(stored, "slt:old", rows[0], TODAY, options()) == "settled"
+
+
+def test_capture_reads_every_listed_document_after_an_oversized_packet(db):
+    # Legistar's order: the agenda, its packet, then the agenda PDF. The packet is over the limits, and the
+    # agenda PDF listed after it is still captured (it used to fall past a two-document limit).
+    init_db(db)
+    second = "https://example.gov/planning/agenda-copy.pdf"
+    rows = [packet_meeting("three", TODAY + timedelta(days=9),
+                           [("Agenda", AGENDA_URL), ("Agenda Packet", PACKET_URL), ("Agenda PDF", second)], "slt")]
+    fetched = []
+    base = oversized_fetch(fetched)
+    result = capture.capture_candidates(db, rows, fetch=lambda url: base(AGENDA_URL if url == second else url))
+    assert result["captureFailures"] == [] and fetched == [AGENDA_URL, PACKET_URL, AGENDA_URL]
+    urls = {r["url"] for r in db.execute("SELECT v.url FROM document_current c JOIN document_versions v ON v.id=c.version_id "
+                                         "WHERE c.meeting_id='slt:three'")}
+    assert urls == {AGENDA_URL, second}
+    warnings = db.execute("SELECT warnings FROM meetings WHERE id='slt:three'").fetchone()["warnings"]
+    assert not any("require review" in w or "limit" in w for w in warnings)
+    assert [r["detail"]["url"] for r in db.execute("SELECT detail FROM processing_runs WHERE status='oversized'")] == [PACKET_URL]
+    # Known oversized packets are still skipped without a download.
+    fetched.clear()
+    capture.capture_candidates(db, rows, fetch=lambda url: base(AGENDA_URL if url == second else url))
+    assert fetched == [AGENDA_URL, AGENDA_URL]
+
+
+def test_a_listing_over_the_safety_cap_is_logged_and_not_parsed(db, capsys):
+    init_db(db)
+    many = [("Agenda", AGENDA_URL)] + [(f"Exhibit {n}", f"https://example.gov/e{n}.pdf") for n in range(capture.MAX_DOCUMENTS)]
+    rows = [packet_meeting("many", TODAY + timedelta(days=9), many)]
+    fetched = []
+    capture.capture_candidates(db, rows, fetch=lambda url: fetched.append(url) or fake_fetch(AGENDA_URL))
+    assert len(fetched) == capture.MAX_DOCUMENTS
+    line = json.loads(capsys.readouterr().err.strip().splitlines()[-1])
+    assert line["severity"] == "WARNING" and line["documentsListed"] == capture.MAX_DOCUMENTS + 1
+    warnings = db.execute("SELECT warnings FROM meetings WHERE id='slt-planning:many'").fetchone()["warnings"]
+    assert any(f"more than the {capture.MAX_DOCUMENTS} capture reads" in w for w in warnings)
+    assert db.execute("SELECT count(*) AS n FROM agenda_items WHERE meeting_id='slt-planning:many'").fetchone()["n"] == 0
 
 
 def test_the_same_file_at_a_new_address_moves_the_link_so_the_meeting_settles(db):

@@ -533,10 +533,14 @@ _REPORTS = {"legislation-text": text_report, "planning-attachment": planning_att
 
 def map_legistar(ctx: Context, *, client: str, body: str,
                  report: Literal["legislation-text", "planning-attachment", "staff-report", "agenda-item"]) -> list[Mapping]:
-    agendas = [d for d in ctx.meeting.documents if d.media_type == "application/pdf"
-               and re.match(rf"https://{re.escape(client)}\.legistar1?\.com/", d.url, re.I)
+    on_legistar = re.compile(rf"https://{re.escape(client)}\.legistar1?\.com/", re.I)
+    agendas = [d for d in ctx.meeting.documents if d.media_type == "application/pdf" and on_legistar.match(d.url)
                and not re.search(r"minutes|packet", d.source_document_id + " " + d.title, re.I)]
     if not agendas:
+        meeting_page = re.search(r"/MeetingDetail\.aspx\b", ctx.meeting.official_url or "", re.I)
+        if (meeting_page and on_legistar.match(ctx.meeting.official_url)) or any(on_legistar.match(d.url) for d in ctx.meeting.documents):
+            # A Legistar meeting (its meeting page, accessible agenda, or packet) whose agenda PDF was not captured.
+            raise Uncertain("the meeting's Legistar agenda PDF was not captured")
         raise Uncertain("the agenda is not a Legistar agenda (meetings before Legistar are not in its API)")
     items = ctx.numbered()
     if not items or not ctx.meeting.local_date:

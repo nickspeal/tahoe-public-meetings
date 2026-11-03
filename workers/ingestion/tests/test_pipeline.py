@@ -360,7 +360,7 @@ def test_capture_limit_does_not_publish_partial_document_set(db, tmp_path, monke
     assert cli.main(["--database-url", "local-test", "capture", str(path), "--max-documents", "1"]) == 0
     meeting = export_public(db, mode="live")["meetings"][0]
     assert meeting["items"] == []
-    assert any("limit omitted" in warning for warning in meeting["warnings"])
+    assert any("more than the 1 capture reads" in warning for warning in meeting["warnings"])
 
 
 def test_meeting_freshness_advances_for_revision_and_operator_edit_but_not_replay(db):

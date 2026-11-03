@@ -91,14 +91,15 @@ def test_a_page_without_an_agenda_never_removes_stored_documents():
     assert row["documents"] == [] and "documents_complete" not in row
 
 
-def test_agenda_and_packet_are_both_within_the_default_document_limit():
-    # Legistar lists an accessible HTML agenda, the same agenda as a PDF, the packet, and minutes.
+def test_the_agenda_comes_first_then_its_packet():
+    # Legistar lists an accessible HTML agenda, the same agenda as a PDF, the packet, and minutes. Minutes
+    # (M=M) are not a meeting document; capture reads the other three, the agenda first.
     links = [("https://example.legistar.com/View.ashx?M=AADA&ID=1", "Accessible Agenda"),
              ("https://example.legistar.com/View.ashx?M=A&ID=1", "Agenda"),
              ("https://example.legistar.com/View.ashx?M=M&ID=1", "Minutes"),
              ("https://example.legistar.com/View.ashx?M=PA&ID=1", "Agenda Packet")]
     docs = documents_in("".join(f'<a href="{u}">{label}</a>' for u, label in links), "https://example.legistar.com/", "board")
-    assert [d["title"] for d in docs[:2]] == ["Accessible Agenda", "Agenda Packet"]
+    assert [d["title"] for d in docs] == ["Accessible Agenda", "Agenda Packet", "Agenda"]
     # A committee's agenda and minutes on the same page wait behind the packet.
     markup = """<a href="/minutes.pdf">Board Minutes</a><a href="/agenda.pdf">Board Agenda</a>
     <a href="/committee-agenda.pdf">Finance Committee Agenda</a><a href="/packet.pdf">Board Packet</a>

@@ -27,7 +27,7 @@ What new evidence would change the decision?
 
 [0003: Editorial stance](0003-editorial-stance.md) confirms mostly neutral coverage with limited attributed commentary (superseded by 0010).
 
-[0004: Source-first storage](0004-source-first-storage.md) accepts minimal PDF retention and official source links.
+[0004: Source-first storage](0004-source-first-storage.md) accepts minimal PDF retention and official source links; updated 2026-10-29 for oversized packets and 2026-11-03 to keep the text of every document discovery lists for a meeting (safety cap 10).
 
 [0005: Selected stack and Vercel identity](0005-selected-stack.md) accepts Vercel, Prisma Postgres, Cloud Run Jobs, and Cloud Scheduler.
 

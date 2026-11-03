@@ -133,10 +133,10 @@ def _document_rank(d):
 def agenda_then_packet(docs):
     """Order a meeting's documents: the agenda, then its full packet, then minutes and other material.
 
-    Capture keeps only the first few (`max_documents`, 2 by default), so when a page
-    offers both a short agenda and a packet, the packet comes second, ahead of a
+    Capture reads every listed document (up to `capture.MAX_DOCUMENTS`) in this order:
+    the first is the agenda whose items are kept when copies parse alike, and when a
+    page offers both a short agenda and a packet, the packet comes second, ahead of a
     second copy of the agenda (an HTML agenda's PDF), other agendas, and minutes.
-    Readers then find both the agenda and the packet under the meeting's sources.
     """
     docs=sorted(docs,key=_document_rank)  # accessible HTML / short agenda first, then packets, then minutes
     first=_document_rank(docs[0]) if docs else None
@@ -578,9 +578,11 @@ def sheet_meetings(agency, markup, url, limit):
             role='agenda-packet' if 'packet' in label.lower() else 'minutes' if 'minutes' in label.lower() else 'agenda'
             docs.append({'id':agency+'-'+role,'title':label,'url':target})
         if not docs:continue
-        docs.sort(key=lambda d:('minutes' in d['id'],'packet' in d['id']))
+        # Minutes are the meeting's minutes link, not one of its agenda documents (capture reads every document).
+        minutes=next((d for d in docs if d['id'].endswith('-minutes')),None)
+        docs=sorted((d for d in docs if not d['id'].endswith('-minutes')),key=lambda d:'packet' in d['id'])
         row=candidate(agency,day,agency.upper()+' Board meeting',day,url,docs)
-        if minutes:=next((d for d in docs if d['id'].endswith('-minutes')),None):row.update(listing_minutes(minutes['url'],minutes['title']))
+        if minutes:row.update(listing_minutes(minutes['url'],minutes['title']))
         rows.append(row)
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
 

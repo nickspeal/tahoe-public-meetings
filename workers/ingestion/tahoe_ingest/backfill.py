@@ -33,7 +33,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from . import ai_topics, records, scheduled
-from .capture import capture_candidates
+from .capture import MAX_DOCUMENTS, capture_candidates
 from .http import EndpointSkipped
 from .catalog import followed_agencies
 from .core import export_public, init_db, record_failure, stable_id
@@ -48,7 +48,7 @@ LOCK_POLL_SECONDS = 30
 
 
 class Options:
-    def __init__(self, *, since: date, until: date | None = None, agencies=None, root=".", max_documents=2, delay=1.0,
+    def __init__(self, *, since: date, until: date | None = None, agencies=None, root=".", max_documents=MAX_DOCUMENTS, delay=1.0,
                  forecast_days=None, min_meetings=1, max_cost=ai_topics.DEFAULT_MAX_RUN_COST,
                  monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET, out=None, publish=True, dry_run=False,
                  lock_wait_seconds=DEFAULT_LOCK_WAIT_SECONDS, claude_time_budget=0, today: date | None = None):

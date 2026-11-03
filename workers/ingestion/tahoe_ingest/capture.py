@@ -6,7 +6,9 @@ removed as soon as its text is extracted.
 """
 from __future__ import annotations
 
+import json
 import re
+import sys
 import time
 import urllib.parse
 from datetime import date, datetime, timezone
@@ -18,6 +20,20 @@ from .http import EndpointSkipped, SourceTooLarge
 from .records import apply_links, links_of, match_meeting, qualifiers
 from .source import download_extract
 from .start_times import agenda_date
+
+
+# Capture reads every document discovery lists for a meeting. The discovery readers keep a
+# meeting's own agenda and packet and leave out minutes, staff reports, attachments, and
+# other bodies' agendas, so a listing holds one to three documents (Legistar: accessible
+# agenda, agenda PDF, packet). This cap only guards against a page that suddenly links
+# dozens of files: reaching it is logged, and the meeting is then stored without items
+# until the listing is fixed or the cap raised.
+MAX_DOCUMENTS = 10
+
+
+def capture_documents(candidate: dict, max_documents: int = MAX_DOCUMENTS) -> list[dict]:
+    """The documents a capture of ``candidate`` fetches: all of them, in discovery's order, up to the safety cap."""
+    return candidate.get("documents", [])[:max_documents]
 
 
 def discover_agency(agency_id: str, config: dict, *, limit: int) -> list[dict]:
@@ -174,7 +190,11 @@ def _is_packet(document: dict) -> bool:
 
 def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, failure_records: list, delay: float,
                  *, known_oversized: frozenset = frozenset(), oversized: list | None = None) -> dict:
-    """One meeting's ingest row from its first ``max_documents`` documents.
+    """One meeting's ingest row from its documents (every one listed, up to ``max_documents``).
+
+    Discovery's order is kept: the agenda first, then its packet, so items cite the
+    agenda and the first document is the one labeled as it. A listing over the cap is
+    logged; the documents read are stored, but items are not parsed from a partial set.
 
     A packet over the size or page limits (``SourceTooLarge``) beside another captured
     document is left out without a failure: the agenda still parses, and the URL is
@@ -190,7 +210,14 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
     skipped = []
     too_large = []
     fetched_any = False
-    for index, document in enumerate(candidate["documents"][:max_documents]):
+    listed = len(candidate.get("documents", []))
+    truncated = listed > max_documents
+    if truncated:
+        print(json.dumps({"severity": "WARNING", "message": f"capture: {candidate['agency']}:{candidate['source_id']} lists "
+                          f"{listed} documents; only the first {max_documents} are read",
+                          "agency": candidate["agency"], "sourceId": str(candidate["source_id"]),
+                          "documentsListed": listed, "documentLimit": max_documents}), file=sys.stderr, flush=True)
+    for document in capture_documents(candidate, max_documents):
         if document["url"] in known_oversized:
             too_large.append((document, "previously exceeded the capture limits; not downloaded again"))
             continue
@@ -228,7 +255,7 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
         document_errors.append(reason)
         failures.append(f"{candidate['agency']}:{candidate['source_id']}: {reason}")
         failure_records.append((candidate["agency"], candidate["source_id"], reason))
-    complete_document_set = not document_errors and not skipped and len(candidate["documents"]) <= max_documents
+    complete_document_set = not document_errors and not skipped and not truncated
     parsed = ParseResult(html_items, True) if html_items else (
         parse_agenda(candidate["agency"], docs, pages) if docs and complete_document_set else None)
     warnings = list(candidate.get("warnings", []))
@@ -241,7 +268,9 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
         warnings.extend(parsed.notes)  # irregular numbering published for review (decision 0032)
     else:
         warnings.append(parsed.warning if parsed else
-                        "Document limit omitted source PDFs; agenda items require review." if docs else
+                        f"The listing links {listed} documents, more than the {max_documents} capture reads; "
+                        "agenda items require review." if docs and truncated else
+                        "Not every listed document was captured; agenda items require review." if docs else
                         "No agenda PDF is linked; agenda items require review.")
     day = candidate.get("date")
     if not day and (found := agenda_date(candidate["title"], [
@@ -258,9 +287,9 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
             "items_complete": bool(parsed and parsed.complete), **links_of(candidate)}
 
 
-def capture_candidates(conn, candidates: list[dict], *, max_documents: int = 2, fetch=download_extract,
+def capture_candidates(conn, candidates: list[dict], *, max_documents: int = MAX_DOCUMENTS, fetch=download_extract,
                        incremental: bool = False, delay: float = 0.0, oversized: frozenset | None = None) -> dict:
-    """Download each candidate's first ``max_documents`` documents and ingest the meetings.
+    """Download every document of each candidate (up to ``max_documents``) and ingest the meetings.
 
     With ``incremental`` each meeting is ingested and committed on its own, and
     no transaction stays open during downloads (for long scheduled runs against

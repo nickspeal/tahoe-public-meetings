@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .core import connect, edit_item, export_public, ingest_bundle, init_db, reclassify_topics, record_failure
 from .reparse import reparse_meetings
-from .capture import capture_candidates, discover_agency, source_identity
+from .capture import MAX_DOCUMENTS, capture_candidates, discover_agency, source_identity
 from .source import download_extract
 from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
@@ -96,7 +96,8 @@ def _parser() -> argparse.ArgumentParser:
     capture = sub.add_parser("capture", help="Fetch PDFs for discovered candidates; agenda items need review")
     capture.add_argument("path")
     capture.add_argument("--max-meetings", type=int, default=5)
-    capture.add_argument("--max-documents", type=int, default=2)
+    capture.add_argument("--max-documents", type=int, default=MAX_DOCUMENTS,
+                         help=f"Documents fetched per meeting (default: every listed one, up to {MAX_DOCUMENTS})")
     ai = sub.add_parser("classify-topics", help="Tag new or changed agenda items with Claude (Haiku, then Sonnet); rule tags remain the fallback")
     ai.add_argument("--agency", help="Only this agency ID")
     ai.add_argument("--max-meetings", type=int, help="Classify at most this many pending meetings")
@@ -164,7 +165,8 @@ def _parser() -> argparse.ArgumentParser:
                                help="Rows read from each agency index before the window is applied (1..20)")
     scheduled_run.add_argument("--past-days", type=int, default=scheduled.PAST_DAYS, help="Capture discovered meetings this many days back")
     scheduled_run.add_argument("--future-days", type=int, default=scheduled.FUTURE_DAYS, help="Capture discovered meetings this many days ahead")
-    scheduled_run.add_argument("--max-documents", type=int, default=2, help="Documents fetched per meeting (1..10)")
+    scheduled_run.add_argument("--max-documents", type=int, default=MAX_DOCUMENTS,
+                               help=f"Documents fetched per meeting (default: every listed one, up to {MAX_DOCUMENTS})")
     scheduled_run.add_argument("--delay", type=float, default=1.0, help="Seconds between source downloads")
     scheduled_run.add_argument("--forecast-days", type=int, default=int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS)))
     scheduled_run.add_argument("--min-meetings", type=int, default=1, help="Refuse to publish an export with fewer meetings")
@@ -187,7 +189,8 @@ def _parser() -> argparse.ArgumentParser:
     history.add_argument("--until", type=_iso_date, help=f"Last meeting date (default: {backfill.DEFAULT_FUTURE_DAYS} days ahead)")
     history.add_argument("--agency", action="append", default=[], help="Only this followed agency ID (repeatable)")
     history.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."), help="Directory holding config/")
-    history.add_argument("--max-documents", type=int, default=2, help="Documents fetched per meeting (1..10)")
+    history.add_argument("--max-documents", type=int, default=MAX_DOCUMENTS,
+                         help=f"Documents fetched per meeting (default: every listed one, up to {MAX_DOCUMENTS})")
     history.add_argument("--delay", type=float, default=1.0, help="Seconds between source downloads (at least 1)")
     history.add_argument("--forecast-days", type=int, default=int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS)))
     history.add_argument("--min-meetings", type=int, default=1)
@@ -399,8 +402,8 @@ def main(argv=None) -> int:
             print(json.dumps(result, indent=2))
             return 1 if result["failed"] else 0
         elif args.command == "capture":
-            if not 1 <= args.max_meetings <= 20 or not 1 <= args.max_documents <= 10:
-                raise SystemExit("capture limits must be 1..20 meetings and 1..10 documents")
+            if not 1 <= args.max_meetings <= 20 or not 1 <= args.max_documents <= MAX_DOCUMENTS:
+                raise SystemExit(f"capture limits must be 1..20 meetings and 1..{MAX_DOCUMENTS} documents")
             candidates = json.loads(Path(args.path).read_text())["candidates"][:args.max_meetings]
             result = capture_candidates(conn, candidates, max_documents=args.max_documents,
                                         fetch=lambda url: download_extract(url))
@@ -413,8 +416,8 @@ _source_identity = source_identity  # Kept for callers of the former CLI helper.
 
 
 def _run_scheduled(conn, args) -> int:
-    if not 1 <= args.discovery_limit <= 20 or not 1 <= args.max_documents <= 10 or not 0 <= args.forecast_days <= 366:
-        raise SystemExit("run-scheduled limits: --discovery-limit 1..20, --max-documents 1..10, --forecast-days 0..366")
+    if not 1 <= args.discovery_limit <= 20 or not 1 <= args.max_documents <= MAX_DOCUMENTS or not 0 <= args.forecast_days <= 366:
+        raise SystemExit(f"run-scheduled limits: --discovery-limit 1..20, --max-documents 1..{MAX_DOCUMENTS}, --forecast-days 0..366")
     if args.claude_time_budget < 0:
         raise SystemExit("run-scheduled limits: --claude-time-budget >= 0 (0 disables it)")
     options = scheduled.Options(
@@ -438,8 +441,8 @@ def _iso_date(value: str):
 
 
 def _backfill(conn, args) -> int:
-    if not 1 <= args.max_documents <= 10 or args.delay < 1 or not 0 <= args.forecast_days <= 366 or args.lock_wait_minutes < 0:
-        raise SystemExit("backfill limits: --max-documents 1..10, --delay >= 1, --forecast-days 0..366, --lock-wait-minutes >= 0")
+    if not 1 <= args.max_documents <= MAX_DOCUMENTS or args.delay < 1 or not 0 <= args.forecast_days <= 366 or args.lock_wait_minutes < 0:
+        raise SystemExit(f"backfill limits: --max-documents 1..{MAX_DOCUMENTS}, --delay >= 1, --forecast-days 0..366, --lock-wait-minutes >= 0")
     try:
         options = backfill.Options(
             since=args.since, until=args.until, agencies=args.agency, root=args.root, max_documents=args.max_documents,

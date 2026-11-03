@@ -51,7 +51,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import ai_topics, item_summaries, notices, participation, planning_calendars, previews, records, staff_reports
-from .capture import StoredMeetings, capture_candidates, discover_agency
+from .capture import MAX_DOCUMENTS, StoredMeetings, capture_candidates, capture_documents, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
 from .comment_periods import ingest_comment_periods
@@ -94,7 +94,7 @@ DEFAULT_CLAUDE_TIME_BUDGET = 45 * 60
 class Options:
     def __init__(self, *, root=".", discovery_limit=INDEX_LIMIT, past_days=PAST_DAYS, future_days=FUTURE_DAYS,
                  recapture_past_days=RECAPTURE_PAST_DAYS, max_captures_per_agency=MAX_CAPTURES_PER_AGENCY,
-                 coverage_start=COVERAGE_START, max_documents=2, delay=1.0, forecast_days=None, min_meetings=1,
+                 coverage_start=COVERAGE_START, max_documents=MAX_DOCUMENTS, delay=1.0, forecast_days=None, min_meetings=1,
                  max_cost=ai_topics.DEFAULT_MAX_RUN_COST, monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET,
                  summary_max_cost=item_summaries.DEFAULT_MAX_RUN_COST,
                  staff_report_meetings=staff_reports.DEFAULT_MAX_MEETINGS,
@@ -233,9 +233,9 @@ def comment_periods(conn, root: Path, run: Run, fetch):
     return ("degraded" if result["failed"] else "ok"), {"processed": result["processed"], "failed": result["failed"]}
 
 
-def documents_skipped(candidate: dict, max_documents: int) -> bool:
+def documents_skipped(candidate: dict, max_documents: int = MAX_DOCUMENTS) -> bool:
     """True when the candidate lists documents and every one a capture would fetch is a configured skip."""
-    documents = candidate.get("documents", [])[:max_documents]
+    documents = capture_documents(candidate, max_documents)
     return bool(documents) and all(skipped_endpoint(d["url"]) for d in documents)
 
 
@@ -303,7 +303,7 @@ def _skip_reason(stored: StoredMeetings, meeting_id: str, candidate: dict, today
     if not local_date or local_date >= today - timedelta(days=options.recapture_past_days):
         return None
     urls = stored.document_urls.get(meeting_id)
-    if urls and all(d["url"] in urls for d in candidate.get("documents", [])[:options.max_documents]):
+    if urls and all(d["url"] in urls for d in capture_documents(candidate, options.max_documents)):
         return "settled"
     if meeting_id in stored.failed:
         return "retryLater"

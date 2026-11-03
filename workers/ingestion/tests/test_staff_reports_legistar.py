@@ -232,6 +232,24 @@ def test_pre_legistar_agenda_is_uncertain():
         run_rule(data)
 
 
+@pytest.mark.parametrize("keep", ["accessible agenda", "meeting page"])
+def test_legistar_meeting_without_its_agenda_pdf_says_so(keep):
+    # Only the accessible HTML agenda and the packet were captured (el-dorado-planning:1455549 before capture read
+    # every listed document): the meeting is on Legistar, so the message names the missing agenda PDF.
+    data = load("el-dorado-planning")
+    [agenda] = data["documents"]
+    data["documents"] = [{**agenda, "source_document_id": "el-dorado-planning-agenda-packet", "title": "Agenda Packet",
+                          "url": agenda["url"].replace("M=A&", "M=PA&")}]
+    if keep == "accessible agenda":
+        data["documents"].append({**agenda, "source_document_id": "el-dorado-planning-agenda-html", "title": "Accessible Agenda",
+                                  "url": agenda["url"].replace("M=A&", "M=AADA&"), "media_type": "text/html"})
+        data["meeting"]["official_url"] = None
+    else:  # the meeting's own Legistar page, with a packet hosted elsewhere
+        data["documents"][0]["url"] = "https://example.org/packet.pdf"
+    with pytest.raises(staff_reports.Uncertain, match="Legistar agenda PDF was not captured"):
+        run_rule(data)
+
+
 def test_agenda_rows_compose_split_numbers():
     rows_ = [{"EventItemAgendaSequence": 1, "EventItemAgendaNumber": "8.", "EventItemMatterId": None, "EventItemTitle": "Public Hearings"},
              {"EventItemAgendaSequence": 2, "EventItemAgendaNumber": "A.", "EventItemMatterId": None, "EventItemTitle": "Case WAB26-0009"},

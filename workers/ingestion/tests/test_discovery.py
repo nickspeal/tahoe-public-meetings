@@ -183,3 +183,16 @@ def test_bodies_sharing_an_index_read_it_once_per_discovery_pass(monkeypatch):
         fetch_text("https://example.gov/other")
     fetch_text("https://example.gov/index")  # outside the pass: read again
     assert calls == ["https://example.gov/index", "https://example.gov/other", "https://example.gov/index"]
+
+
+def test_sheet_minutes_are_a_link_not_a_meeting_document():
+    # NTCD's published sheet links each meeting's agenda, packet, and minutes. Capture reads every document,
+    # so the minutes stay the meeting's minutes link instead of being parsed beside the agenda.
+    base = "https://ntcd.org/wp-content/uploads/2026"
+    markup = (f'<table><tr><td>9/28/2026</td><td><a href="{base}/Agenda.pdf">Agenda 09.28.2026</a></td>'
+              f'<td><a href="{base}/Packet.pdf">Packet 09.28.2026</a></td><td><a href="{base}/Minutes.pdf">Minutes 09.28.2026</a></td></tr>'
+              f'<tr><td>8/24/2026</td><td><a href="{base}/Minutes-08.pdf">Minutes 08.24.2026</a></td></tr></table>')
+    september, august = source_discovery.sheet_meetings("ntcd", markup, "https://docs.google.com/x/pubhtml/sheet", 5)
+    assert [d["id"] for d in september["documents"]] == ["ntcd-agenda", "ntcd-agenda-packet"]
+    assert september["minutes_url"] == f"{base}/Minutes.pdf"
+    assert august["documents"] == [] and august["minutes_url"] == f"{base}/Minutes-08.pdf"

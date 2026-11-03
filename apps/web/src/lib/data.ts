@@ -176,9 +176,8 @@ export function residentWarning(value: string) {
   if (/playback timestamps/i.test(value)) return 'A recording start time may differ from the scheduled meeting time; check the official agenda.';
   if (/CivicClerk.*wall.clock/i.test(value)) return 'The scheduled start time has not been verified; check the official agenda.';
   if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
-  // Parser and discovery outcomes, and a missing agenda, are explained by the agenda section itself (see agendaAvailability).
+  // Parser and discovery outcomes are explained by the agenda section itself (see agendaAvailability).
   if (/No parser exists|review required|agenda items require (?:source )?review|No complete .* agenda recognized/i.test(value)) return '';
-  if (/No agenda document is linked|did not link an agenda/i.test(value)) return '';
   // Shown briefly in the agenda history card instead (see agendaSourceNote).
   if (AGENDA_SOURCE_NOTES.some(([pattern]) => pattern.test(value))) return '';
   // A blanket caveat that early notice extractions stored; it names no known issue, and the worker rereads revised notices.
@@ -238,13 +237,6 @@ export function agendaAvailability(meeting: Meeting): AgendaAvailability {
   }
   const value = meetingDateValue(meeting);
   const upcoming = !value || localDateKey(value) >= localDateKey(new Date().toISOString());
-  // Source notes record when the agency page has an agenda that could not be captured (blocked or not yet parsed).
-  const agendaElsewhere = meeting.warnings.some((warning) => !/\bno agenda|not posted|did not link/i.test(warning) &&
-    /\b(?:includes|links|lists|verified)\b[^.]*\bagenda\b|\bagenda\b[^.]*\b(?:is linked|was verified)\b/i.test(warning));
-  if (agendaElsewhere) {
-    return { kind: 'elsewhere', label: 'Agenda on agency website', heading: 'Agenda available on the agency website',
-      body: 'Open the official meeting page for the agenda.', href: meeting.officialUrl, linkText: 'Official meeting page' };
-  }
   if (upcoming) {
     return { kind: 'not-posted', label: '', heading: 'Agenda not posted yet',
       body: 'Agencies usually publish agendas a few days before a meeting. Check back closer to the meeting date, or follow the official meeting page.',

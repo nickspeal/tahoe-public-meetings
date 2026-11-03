@@ -101,16 +101,9 @@ test('a meeting without listed items explains whether its agenda is posted, pend
     assert.match(panel.textContent, /Open the official agenda/);
     assert.ok(posted.documents.some((document) => document.url === panel.querySelector('a').getAttribute('href')));
   }
-  const pending = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date > today &&
-    meeting.warnings.some((warning) => /no agenda document is linked|did not link an agenda|not posted/i.test(warning)));
-  const blocked = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date > today &&
-    meeting.warnings.some((warning) => /includes the agenda|agenda PDF was verified/i.test(warning)));
-  if (blocked) {
-    // The agency has an agenda that could not be captured, so the page must not claim it is unpublished.
-    const document = await meetingDocument(blocked);
-    assert.equal(document.querySelector('.empty-panel').dataset.agendaAvailability, 'elsewhere');
-    assert.doesNotMatch(document.querySelector('.detail-main').textContent, /not posted yet/);
-  }
+  // Availability is derived from the documents and the date; no stored warning is needed (decision 0033).
+  const regular = (meeting) => !meeting.documents.length && meeting.date && !meeting.sourceId.startsWith('one-off-') && !meeting.planned;
+  const pending = stored.find((meeting) => regular(meeting) && meeting.date > today);
   if (pending) {
     const document = await meetingDocument(pending);
     assert.equal(document.querySelector('.empty-panel').dataset.agendaAvailability, 'not-posted');
@@ -120,8 +113,7 @@ test('a meeting without listed items explains whether its agenda is posted, pend
     // The agenda panel and pill already say the agenda is missing; discovery notes are not for readers.
     assert.doesNotMatch(document.querySelector('.meeting-detail-hero').textContent, /source review|did not (?:link|include) an agenda|No agenda document/i);
   }
-  const past = stored.find((meeting) => !meeting.documents.length && meeting.date && meeting.date < today &&
-    !meeting.warnings.some((warning) => /Municode/.test(warning)));
+  const past = stored.find((meeting) => regular(meeting) && meeting.date < today);
   if (past) {
     const panel = (await meetingDocument(past)).querySelector('.empty-panel');
     assert.equal(panel.dataset.agendaAvailability, 'elsewhere');

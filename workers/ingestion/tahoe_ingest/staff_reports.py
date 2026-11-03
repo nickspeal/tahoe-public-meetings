@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import NewType
 
-from . import http, item_scope
+from . import http, item_scope, pdf_columns
 from .http import EndpointSkipped
 from .outline import NOT_PLACEHOLDER_SQL
 
@@ -159,11 +159,13 @@ def norm_number(value: str) -> str:
 # --- Temporary PDF reading ------------------------------------------------------
 
 def read_pdf(url: str, *, last_page: int | None = None, links: bool = False, max_bytes: int = MAX_PDF_BYTES,
-             max_pages: int = MAX_PDF_PAGES) -> dict:
+             max_pages: int = MAX_PDF_PAGES, columns: bool = True) -> dict:
     """Download a PDF into a temporary directory and return its hash, page count, text, and (optionally) link annotations.
 
     Pages are ``[{"page_number", "text"}]`` from ``pdftotext -layout`` (all pages, or
-    pages 1..``last_page``); links are ``[{"page", "url", "text"}]`` from ``pdftohtml -xml``.
+    pages 1..``last_page``), with each column that pdftotext ran into the text beside it
+    set apart again from the words' positions (``pdf_columns``; ``columns=False`` keeps
+    pdftotext's text as printed); links are ``[{"page", "url", "text"}]`` from ``pdftohtml -xml``.
     ``max_bytes`` and ``max_pages`` bound the download; a rule may raise them for one
     format's known packet sizes. The file streams to disk (``http.download``), so it is never
     held in memory whole, and nothing is kept after the call returns or raises.
@@ -186,6 +188,8 @@ def read_pdf(url: str, *, last_page: int | None = None, links: bool = False, max
             raise Uncertain(f"{url} has {count} pages")
         args = ["pdftotext", "-layout", "-enc", "UTF-8"] + (["-l", str(last_page)] if last_page else []) + [path, "-"]
         texts = subprocess.run(args, capture_output=True, timeout=180, check=True).stdout.decode("utf-8", "replace").split("\f")
+        if columns:
+            texts = _aligned(path, texts, min(last_page or count, count))
         found, boxes = [], []
         if links:
             xml = subprocess.run(["pdftohtml", "-xml", "-i", "-q", "-stdout", path], capture_output=True,
@@ -196,6 +200,23 @@ def read_pdf(url: str, *, last_page: int | None = None, links: bool = False, max
     pages = [{"page_number": n, "text": t} for n, t in enumerate(texts[:last_page or count], 1)]
     return {"sha256": sha256, "page_count": count, "pages": pages, "links": found,
             "boxes": [b for b in boxes if not b["url"]]}
+
+
+BBOX_CHUNK = 200  # pages of word boxes read at a time, so a large packet's boxes are never all in memory
+
+
+def _aligned(path: str, texts: list[str], pages: int) -> list[str]:
+    """``texts`` (pdftotext -layout pages) with collapsed columns set apart from ``pdftotext -bbox`` word boxes."""
+    texts = list(texts)
+    for first in range(1, pages + 1, BBOX_CHUNK):
+        last = min(first + BBOX_CHUNK - 1, pages)
+        markup = subprocess.run(["pdftotext", "-bbox", "-f", str(first), "-l", str(last), path, "-"], capture_output=True,
+                                timeout=180, check=True).stdout.decode("utf-8", "replace")
+        for offset, boxes in enumerate(pdf_columns.bbox_pages(markup)):
+            index = first - 1 + offset
+            if index < len(texts) and index <= last - 1:
+                texts[index] = pdf_columns.align(texts[index], boxes)
+    return texts
 
 
 def pdf_boxes(xml: str) -> list[dict]:

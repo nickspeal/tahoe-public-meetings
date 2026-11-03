@@ -98,7 +98,7 @@ still check the report's own heading.
 | `ctx.by_title(texts, items=None, *, floor=0.8)` | `{item id: key}` from `texts` (`{key: printed link text or heading}`), unique both ways. Unmatched items are skipped. |
 | `ctx.stored_pages(version_id)` | Stored page texts `{page: text}` of a captured document. No download. |
 | `ctx.pages(document, needed=fn)` | Stored pages, or the PDF downloaded once (and its hash checked) when `needed(stored)` is false. |
-| `ctx.read(url, last_page=, links=)` | Temporary PDF download: `{"sha256", "page_count", "pages", "links", "boxes"}`. `links=True` adds link annotations with page and position. |
+| `ctx.read(url, last_page=, links=)` | Temporary PDF download: `{"sha256", "page_count", "pages", "links", "boxes"}`. `links=True` adds link annotations with page and position. Page text is `pdftotext -layout`, with any column that pdftotext ran into the text beside it (a form's label column printed one space before its body) set apart again from the words' positions (`pdf_columns`); only spaces are added. |
 | `ctx.read_report(item, url)` | First `LEADING_PAGES` pages of one report, or None (with the item skipped) if it can't be read. Download failures are retried with the meeting; a report over the size limit is skipped for good. |
 | `ctx.html(url)` | The raw markup of an HTML page, for rules that read more than its links (Granicus agenda tables). |
 | `ctx.html_links(url)` | `[{"url", "text"}]`: absolute http(s) links on an HTML page (`ctx.html`), in document order. Raises `Uncertain` when the page has no links. |

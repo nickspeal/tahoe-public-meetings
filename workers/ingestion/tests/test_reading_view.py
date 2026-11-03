@@ -68,3 +68,66 @@ def test_hyphenated_words_join_only_when_the_report_prints_them_whole():
     start = joined.text.index("microtransit zones")
     first, last = joined.span(start, start + len("microtransit zones"))
     assert pages[0][first:last] == "micro-\ntransit zones"
+
+
+# A form's label column as pdf_columns prints it: bodies at one column after a gutter of two or more spaces, the
+# recipient's name above the block, and the page footer below it (shortened from a Nevada water board report).
+GUTTERED = """Orovada General Improvement District
+ Total Commitment      Recommendation
+ $1,499,974.44         The Nevada Division of Environmental Protection (NDEP) recommends that the
+                       Board for Financing Water Projects (Board) approve a loan commitment to Orovada
+                       General Improvement District for a redundant tank and transmission line.
+ Amount                Resolution         Program and Terms
+
+     Project    The project includes the construction of a new 215,000-gallon storage tank and a
+   Narrative    connecting main.
+     Project    The Preliminary Engineering Report details three options, including no action; this project
+Alternatives    was determined to be the best alternative.
+   Evaluated
+Page 1 of 6                             Orovada GID                                  May 2026
+"""
+
+
+def test_a_guttered_label_column_reads_label_first_even_beside_a_heading_and_footer():
+    text = view(GUTTERED).text
+    assert text.startswith("Orovada General Improvement District\nTotal Commitment\nRecommendation\n")
+    # A line that continues the sentence with a capital ("General Improvement District") keeps the label beside
+    # the next line ("Amount") waiting.
+    assert ("Recommendation\n$1,499,974.44\nThe Nevada Division of Environmental Protection (NDEP) recommends that the\n"
+            "Board for Financing Water Projects (Board) approve a loan commitment to Orovada\nGeneral Improvement District "
+            "for a redundant tank and transmission line.\nAmount\n") in text
+    assert "Project\nThe project includes the construction of a new 215,000-gallon storage tank and a\nconnecting main.\n" in text
+    assert text.endswith("Evaluated\nPage 1 of 6                             Orovada GID                                  May 2026\n")
+
+
+def test_memo_headers_and_lists_stay_in_rows():
+    memo = ("TO:          Board of Directors                  DATE:   August 14, 2026\n"
+            "FROM:        Kim Boyd                            SUBJ:   Lodge Project Update\n"
+            "             Director of Strategic Affairs\n")
+    assert view(memo).text.split("\n")[0] == "TO:          Board of Directors                  DATE:   August 14, 2026"
+    bullets = ("•    For the Department Lands Pass Program, add Big Springs Ranch and remove Hope\n"
+               "     Valley Wildlife Area, Crescent City Marsh WA, and the Eel River WA from the\n"
+               "     program (see Exhibit 2 for the rationale for each property)\n"
+               "•    Revise language to reflect existing federal regulations for seven refuges,\n"
+               "     and reorganize information in consistent order across all nine refuges\n")
+    assert view(bullets).text.split("\n")[0].startswith("•    For the Department")
+    exhibits = ("A2.  Petition 2023-01, received January 19, 2023\n"
+                "A3.  Petition 2026-06, received April 20, 2026\n"
+                "A8.  Staff memo – Analysis and Recommendation for Petition 2026-11, dated August 7,\n"
+                "     2026\n")
+    assert view(exhibits).text.startswith("A2.  Petition 2023-01")
+
+
+def test_a_table_of_wrapped_cells_reads_column_by_column():
+    table = ("Requests the Commission add to an                The Act authorizes the Commission to establish\n"
+             "agenda the status of the Fish and Game           a pilot program for issuing salvage permits,\n"
+             "Code section, for discussion and to provide      contingent upon appropriation of funds. The\n"
+             "a public explanation of the program.             requestor has been provided with a response.\n")
+    assert view(table).text == ("Requests the Commission add to an\nagenda the status of the Fish and Game\nCode section, for "
+                                "discussion and to provide\na public explanation of the program.\nThe Act authorizes the "
+                                "Commission to establish\na pilot program for issuing salvage permits,\ncontingent upon "
+                                "appropriation of funds. The\nrequestor has been provided with a response.\n")
+    rows = ("Emerald Bay Shuttle Support                     $15,500\n"
+            "FY 23-24 TTD Operations Support                 $1,148,135\n"
+            "SSTMA Microtransit Operations – awarded FY 26   $750,000\n")
+    assert view(rows).text == "\n".join(line.strip() for line in rows.split("\n"))

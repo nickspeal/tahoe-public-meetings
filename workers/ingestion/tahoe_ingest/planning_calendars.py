@@ -247,7 +247,7 @@ def read_planning_calendars(conn, *, agency: str | None = None, dry_run: bool = 
                             time.sleep(delay)
                         downloads += 1
                         try:
-                            pdf = reader(found["url"])
+                            pdf = reader(found["url"], columns=False)  # the calendar parsers read pdftotext's own layout
                         except (FetchFailed, EndpointSkipped, Uncertain, subprocess.SubprocessError) as exc:
                             report["failed"].append({"agency": agency_id, "url": found["url"], "reason": str(exc)[:300]})
                             continue

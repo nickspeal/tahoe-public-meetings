@@ -64,7 +64,7 @@ The script prints the active account and target, then asks you to type the proje
 
 ## Automatic image rollout
 
-Every push to `main` that changes what the image contains (`workers/ingestion/`, `packages/domain/`, `config/`, `tests/fixtures/meetings.json`, or `.dockerignore`) runs [`deploy-ingestion.yml`](../../.github/workflows/deploy-ingestion.yml). It runs the worker tests against a throwaway Postgres, builds the image tagged with the first 12 characters of the commit SHA, and points `tahoe-ingest` and `tahoe-backfill` at it by digest. It changes nothing else: secrets, environment (including the Claude federation IDs), resources, and the scheduler state stay as the script left them. A running execution keeps its image; the next one uses the new image. Rollouts never overlap. A failed test or build leaves the jobs on their current image, and GitHub emails the repository owner. Start a rollout by hand from the Actions tab (Run workflow).
+Every push to `main` that changes what the image contains (`workers/ingestion/`, `packages/domain/`, `config/`, or `.dockerignore`) runs [`deploy-ingestion.yml`](../../.github/workflows/deploy-ingestion.yml). It runs the worker tests against a throwaway Postgres, builds the image tagged with the first 12 characters of the commit SHA, and points `tahoe-ingest` and `tahoe-backfill` at it by digest. It changes nothing else: secrets, environment (including the Claude federation IDs), resources, and the scheduler state stay as the script left them. A running execution keeps its image; the next one uses the new image. Rollouts never overlap. A failed test or build leaves the jobs on their current image, and GitHub emails the repository owner. Start a rollout by hand from the Actions tab (Run workflow).
 
 GitHub Actions holds no Google key. Its OIDC token is exchanged through workload identity federation for a short-lived token of `tahoe-github-deploy`, and only tokens for pushes or manual runs on `refs/heads/main` of this repository qualify, matched by the repository's and owner's numeric IDs. Create or update that access once, as an operator:
 
@@ -219,7 +219,7 @@ This pauses the scheduler, so resume it afterward. If the push fails with an aut
 ## Rollback
 
 - **Website:** Vercel keeps previous deployments. Promote or instant-rollback to a known-good deployment in the dashboard (`vercel rollback --scope <designated-scope>`). A failed build leaves the current deployment live.
-- **Data:** each run only appends a validated row to `public_exports` and keeps the latest 30, so an earlier export remains available for the site build to use. An invalid export is never stored or published.
+- **Data:** each run only appends a validated row to `public_exports` and keeps the latest 5, so an earlier export remains available for the site build to use. An invalid export is never stored or published.
 - **Database unavailable:** if a Vercel build cannot read `public_exports` (for example, the Prisma operations quota is used up), it reuses the export the live site serves at `/data/public-export.json`, so code and UI changes still deploy with the last published data. The build log says so, and `/status.json` keeps that export's `generatedAt`, so the freshness alert still reports the stale data. Set `TAHOE_FALLBACK_EXPORT_URL` to read a different deployment's copy. The build fails only when neither source works.
 - **Job image:** redeploy an earlier tag (see above). To stop ingestion entirely, pause the scheduler.
 

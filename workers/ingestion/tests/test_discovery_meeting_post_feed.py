@@ -58,7 +58,7 @@ def test_a_scheduled_meeting_gets_a_notice_until_its_agenda_is_posted(monkeypatc
     notice = discover_configured("state-lands", config, limit=3, fetch=pages.__getitem__)[0]
     assert (notice["source_id"], notice["title"], notice["start_time"], notice["official_url"], notice["documents"]) == (
         "2026-10-21", "Commission Meeting", "13:00", MEETINGS_URL, [])
-    assert "not posted yet" in notice["warnings"][0]
+    assert notice["warnings"] == []  # an empty document list is the state; the export says "no agenda yet"
     # A scheduled date that has passed without a post gets no notice.
     config, pages = setup(monkeypatch, (2026, 11, 2), unposted)
     found = discover_configured("state-lands", config, limit=None, fetch=pages.__getitem__)

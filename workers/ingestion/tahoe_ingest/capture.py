@@ -266,12 +266,12 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
     if parsed and parsed.complete:
         warnings = [w for w in warnings if "agenda items require" not in w.lower()]
         warnings.extend(parsed.notes)  # irregular numbering published for review (decision 0032)
-    else:
+    elif parsed or docs:
         warnings.append(parsed.warning if parsed else
                         f"The listing links {listed} documents, more than the {max_documents} capture reads; "
-                        "agenda items require review." if docs and truncated else
-                        "Not every listed document was captured; agenda items require review." if docs else
-                        "No agenda PDF is linked; agenda items require review.")
+                        "agenda items require review." if truncated else
+                        "Not every listed document was captured; agenda items require review.")
+    # With no document at all nothing is stored: the export derives "no agenda yet" from the empty document list.
     day = candidate.get("date")
     if not day and (found := agenda_date(candidate["title"], [
             {**d, "pages": [{"number": p["page_number"], "text": p["text"]} for p in pages if p["document_id"] == d["id"]]}

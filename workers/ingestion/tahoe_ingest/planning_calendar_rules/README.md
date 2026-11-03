@@ -113,4 +113,4 @@ you ask for it:
    meeting that no preview supports any more drops out of the export.
 3. To fix production, run the same command with `DATABASE_URL` set to the production URL (the `tahoe-database-url`
    secret). This runs the checkout's code, so no image deploy is needed. The next scheduled run publishes the
-   change. To publish sooner, run `worker export --mode live --out FILE`, then `worker publish-export --file FILE`.
+   change. To publish sooner, run `worker export --out FILE`, then `worker publish-export --file FILE`.

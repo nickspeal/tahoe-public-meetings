@@ -46,5 +46,5 @@ def load_one_offs(path: str | Path) -> dict:
         row.setdefault("topics", [])
         row.setdefault("documents_complete", False)
         row.setdefault("items_complete", False)
-        row.setdefault("warnings", ["Manually registered meeting notice; check the official page for updates."])
+        row.setdefault("warnings", [])  # A warning names a known issue; the official link is always shown.
     return bundle

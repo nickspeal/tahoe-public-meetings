@@ -554,7 +554,6 @@ def meeting_files(agency, row, fetch):
         if urllib.parse.urlparse(target).scheme=='https' and re.match(r'agenda\b',name,re.I) and name.lower().endswith('.pdf'):
             docs.append({'id':agency+'-agenda','title':node.text() or 'Official agenda','url':target})
             break
-    if not docs:row['warnings'].append('No agenda file is listed on the official meeting page yet.')
     return docs
 
 
@@ -715,8 +714,7 @@ def meeting_post_feed(agency, config, limit, fetch):
         title=regular
         if qualifier:title=f'{qualifier[1].title()} {title}'
         row=candidate(agency,day+('-'+qualifier[1].lower() if qualifier else ''),title,day,config['scheduleUrl'],[],line)
-        row['start_time']=start
-        row['warnings'].append('The agenda is not posted yet; the date and time come from the published meeting schedule.')
+        row['start_time']=start  # Not posted yet: the empty document list is the state; the export says so.
         rows.append(row)
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
 

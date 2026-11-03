@@ -77,6 +77,14 @@ def options(**overrides):
     return scheduled.Options(**{"root": ROOT, "delay": 0, "forecast_days": 30, "staff_report_meetings": 0, **overrides})
 
 
+def stored_fixture_meetings(db):
+    """Meetings a test needs already stored: the agendas in tests/fixtures/meetings.json (the pipeline never loads them)."""
+    from tahoe_ingest.core import ingest_bundle
+    init_db(db)
+    ingest_bundle(db, json.loads((ROOT / "tests/fixtures/meetings.json").read_text()))
+    db.commit()
+
+
 def no_staff_reports(url, **_):
     raise staff_reports.Uncertain("no staff report documents in this test")
 
@@ -89,7 +97,7 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
                                       fetch=fake_fetch, post=hook, read_pdf=no_staff_reports)
     json.dumps(summary)  # One JSON line for Cloud Logging.
     steps = {s["name"]: s for s in summary["steps"]}
-    assert list(steps) == ["init-db", "seed-fixtures", "comment-periods", "notices", "one-offs", "verified-sources", "discover",
+    assert list(steps) == ["init-db", "comment-periods", "notices", "one-offs", "discover",
                            "quarantine", "reparse", "reclassify", "meeting-records", "draft-minutes", "classify-topics", "participation",
                            "staff-reports", "planning-calendars", "classify-subjects", "summarize-items", "export", "validate",
                            "store", "deploy-hook"]
@@ -97,16 +105,17 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     # Source failures degrade the run but never stop publication.
     assert summary["status"] == "degraded" and summary["exportId"]
     assert steps["classify-topics"]["status"] == "skipped" and steps["summarize-items"]["status"] == "skipped"
-    # Every meeting of a supported agency is scanned once; nothing unverifiable is stored.
+    # Nothing unverifiable is stored (the one discovered agenda has no parsed items to scan).
     assert steps["staff-reports"]["status"] == "ok" and steps["staff-reports"]["detail"]["itemsMapped"] == 0
-    assert db.execute("SELECT count(*) AS n FROM staff_report_scans").fetchone()["n"] == steps["staff-reports"]["detail"]["meetingsScanned"] > 0
-    assert steps["seed-fixtures"]["detail"]["processed"] == 19
+    assert db.execute("SELECT count(*) AS n FROM staff_report_scans").fetchone()["n"] == steps["staff-reports"]["detail"]["meetingsScanned"]
     assert steps["discover"]["detail"]["agenciesWithFailures"] == ["tcpud"]
     assert steps["discover"]["detail"]["byAgency"]["slt-planning"]["captured"] == 1  # the 400-day-old row predates the coverage floor
     assert any(f.startswith("discover:tcpud: index down") for f in summary["failures"])
     assert hook.calls == ["https://hooks.example/secret-token"]
     assert "secret-token" not in json.dumps(summary)
-    assert summary["counts"]["meetings"] >= 19 and summary["counts"]["agenciesWithMeetings"] > 3
+    # Meetings come only from live discovery: nothing hand-built is loaded (decision 0033).
+    assert db.execute("SELECT array_agg(id) AS ids FROM meetings").fetchone()["ids"] == ["slt-planning:9001"]
+    assert summary["counts"]["meetings"] == 1
     stored = db.execute("SELECT schema_version, payload FROM public_exports").fetchall()
     assert len(stored) == 1 and stored[0]["schema_version"] == 2
     assert stored[0]["payload"] == json.loads((tmp_path / "public.json").read_text())
@@ -114,16 +123,12 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     assert db.execute("SELECT status FROM agencies WHERE id='slt-planning'").fetchone()["status"] == "ok"
     assert db.execute("SELECT 1 FROM meetings WHERE id='slt-planning:9001'").fetchone()
     assert db.execute("SELECT count(*) AS n FROM processing_runs WHERE stage='discover' AND status='failed'").fetchone()["n"] == 1
-    # Quarantined candidates from tracked config are never ingested.
-    assert not db.execute("SELECT 1 FROM meetings WHERE id='placer-tahoe-design-review:2026-10-01' AND quarantine_reason IS NULL").fetchone()
 
     meetings = db.execute("SELECT count(*) AS n FROM meetings").fetchone()["n"]
     fetched = []
     again = scheduled.run_scheduled(db, options(), discover=fake_discover, fetch=lambda url: fetched.append(url) or fake_fetch(url), post=hook)
     steps = {s["name"]: s for s in again["steps"]}
-    # A rerun neither reapplies the fixture bundle nor retries documents that failed within the day.
-    assert steps["seed-fixtures"]["detail"]["processed"] == 0
-    assert steps["verified-sources"]["detail"].get("captured", 0) == 0
+    # A rerun does not retry documents that failed within the day.
     # Only the upcoming discovered agenda is checked again; comment-period notices are re-verified every run by design.
     notices = {p["official_url"] for p in json.loads((ROOT / scheduled.COMMENT_PERIODS).read_text())["comment_periods"]}
     assert [url for url in fetched if url not in notices] == [AGENDA_URL]
@@ -155,6 +160,7 @@ def stub_claude(monkeypatch):
 
 def test_a_spent_time_budget_stops_claude_steps_and_still_publishes(db, monkeypatch, stub_claude):
     monkeypatch.setenv("VERCEL_DEPLOY_HOOK_URL", "https://hooks.example/secret-token")
+    stored_fixture_meetings(db)
     hook = Hook()
     summary = scheduled.run_scheduled(db, options(deadline=time.monotonic() - 1, staff_report_meetings=50), discover=fake_discover,
                                       fetch=fake_fetch, post=hook, read_pdf=no_staff_reports)
@@ -420,6 +426,7 @@ def test_invalid_or_empty_export_is_not_stored_or_deployed(db, monkeypatch, tmp_
 
 def test_failed_deploy_hook_fails_the_run_after_storing(db, monkeypatch):
     monkeypatch.setenv("VERCEL_DEPLOY_HOOK_URL", "https://hooks.example/secret-token")
+    stored_fixture_meetings(db)
     summary = scheduled.run_scheduled(db, options(skip_discovery=True), fetch=fake_fetch, post=Hook(fail=True))
     assert summary["status"] == "failed" and summary["exportId"]
     assert next(s for s in summary["steps"] if s["name"] == "deploy-hook")["status"] == "failed"
@@ -510,7 +517,7 @@ def test_planning_calendars_in_the_scheduled_run(db, monkeypatch, tmp_path):
                    (item["id"], item["source_fingerprint"], staff_reports.METHOD_VERSION, json.dumps(files)))
         db.commit()
 
-    run()  # seeds the fixture agendas, slt:2339 (October 6, with its "Agenda Planning Calendar" item) among them
+    stored_fixture_meetings(db)  # slt:2339 (October 6, with its "Agenda Planning Calendar" item) among them
     stored = {"url": calendar["url"], "name": calendar["attachmentName"], "label": "APC 09 30 2026"}
     attach([stored])
     summary, steps, meetings = run()

@@ -12,7 +12,6 @@ on:
       - 'workers/ingestion/**'
       - 'packages/domain/**'
       - 'config/**'
-      - 'tests/fixtures/meetings.json'
       - '.dockerignore'
       - '.github/workflows/deploy-ingestion.yml'
   workflow_dispatch:

@@ -13,11 +13,6 @@
 !/packages/domain/
 /packages/domain/*
 !/packages/domain/*.json
-!/tests/
-/tests/*
-!/tests/fixtures/
-/tests/fixtures/*
-!/tests/fixtures/meetings.json
 !/workers/
 /workers/*
 !/workers/ingestion/

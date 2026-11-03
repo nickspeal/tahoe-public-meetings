@@ -8,12 +8,11 @@ The registry has **47 entries**. **40 are followed**; the 6 entries disabled by 
 
 ## How meetings arrive
 
-The scheduled job (`tahoe-ingest run-scheduled`, [decision 0018](../decisions/0018-scheduled-publication.md)) has two inputs:
+The scheduled job (`tahoe-ingest run-scheduled`, [decision 0018](../decisions/0018-scheduled-publication.md)) gets meetings from **live discovery** only ([decision 0033](../decisions/0033-production-data-only-from-live-pipeline.md)): each run reads the index named by the `discovery` block of every followed entry that has one ([configuration guide](../../config/README.md#reviewed-source-configuration-and-repeatable-acquisition)). Besides meetings, it reads `config/public-comment-periods.json` (each notice fetched and verified) and the one-off notices in `config/one-off-meetings.json` (currently none).
 
-1. **Live discovery.** Each run reads the index named by the `discovery` block of every followed entry that has one ([configuration guide](../../config/README.md#reviewed-source-configuration-and-repeatable-acquisition)). Only these entries stay current on their own.
-2. **Tracked config.** The job loads `config/verified-agency-meetings-*.json`, `config/one-off-meetings.json`, and `config/public-comment-periods.json`. These are snapshots found and checked by hand. Nothing refreshes them. An entry that has only these goes stale and misses new meetings.
+Until November 2026 the job also loaded hand-built meeting records: a proof-of-concept bundle and the dated candidate lists of the October 20, 2026 source review (now [`docs/research/verified-agency-meetings/`](../research/verified-agency-meetings/)). Meetings they created stay stored until `clean-hand-built` removes the empty ones, but nothing adds to them.
 
-An entry's coverage is therefore one of: **automatic**, **snapshot only**, or **blocked** (the official source refuses automated requests, so neither a better adapter nor a retry helps until the source or the agency changes). "Blocked" and "snapshot only" are different. A snapshot-only entry may just need a discovery block, or a new discovery type.
+An entry's coverage is therefore one of: **automatic**, **no live discovery**, or **blocked** (the official source refuses automated requests, so neither a better adapter nor a retry helps until the source or the agency changes). "Blocked" and "no live discovery" are different. An entry without live discovery may just need a discovery block, or a new discovery type.
 
 ## Automatic: live discovery
 
@@ -85,9 +84,9 @@ Behavior while blocked: the meeting notice stays published with its official lin
 
 **Update on `ctc` and `state-lands`.** These were listed as blocked (SOURCE-002). On October 20, 2026, after the fetcher began identifying itself as `TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)` instead of `(+local research prototype)`, one request each to the Tahoe Conservancy and State Lands meeting pages returned real pages (HTTP 200), not the Cloudflare block page. A User-Agent rule is a plausible explanation, but it is a hypothesis. `www.placer.ca.gov` still returned 403 with the new identification. State Lands has had live discovery since November 2, 2026 (see the notes above); `ctc` is still snapshot-only.
 
-## Snapshot only, not blocked
+## No live discovery, not blocked
 
-These have no live discovery. Their meetings come only from tracked config snapshots, so they do not update.
+These have no live discovery, so no new meetings arrive for them. Meetings stored from the former hand-built records stay until cleaned up.
 
 <!-- generated: no-discovery -->
 | Registry ID | Name | Records | Official page |

@@ -321,7 +321,7 @@ def test_airport_meeting_files_pages_supply_the_agenda_and_special_label():
     assert by_id['412']['date']=='2026-10-21' and by_id['412']['start_time']=='16:30'  # "Next meeting" block
     assert by_id['417']['title'].endswith('Special Board Meeting') and by_id['409']['title'].endswith('Regular Board Meeting')
     assert by_id['417']['documents'][0]['url'].endswith('file=agenda+september+23+2026+s.pdf')
-    assert by_id['412']['documents']==[] and by_id['412']['warnings']
+    assert by_id['412']['documents']==[] and by_id['412']['warnings']==[]  # no agenda yet: state, not a warning
 
 
 def test_streamed_download_matches_the_in_memory_fetch(monkeypatch,tmp_path):

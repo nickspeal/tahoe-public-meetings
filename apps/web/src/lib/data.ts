@@ -187,12 +187,9 @@ export function residentWarning(value: string) {
 
   const retainedPages = value.match(/Text retained for (\d+) of (\d+) source pages/i);
   if (retainedPages) return `Agenda text covers ${retainedPages[1]} of ${retainedPages[2]} source pages; open the official document for full context.`;
-  if (/only selected source pages are available as text/i.test(value)) return 'Agenda text only; open the packet for supporting reports.';
   if (/original fetch time is unknown/i.test(value)) return 'Original source capture time is unknown.';
-  if (/links a Municode HTML agenda/i.test(value)) return 'Agenda is available on the official meeting page; agenda items are not listed here yet.';
-  if (/marks this regular meeting canceled/i.test(value)) return 'Canceled; the official event page lists replacement meetings at 4:00 p.m. and 5:30 p.m.';
   if (/extract|scanned page|ocr|text.*(?:failed|unavailable)/i.test(value)) return 'Some pages could not be read; open the official document.';
-  return value.replace(/\bfixture\b/gi, 'source record').replace(/\bsample\b/gi, 'source record');
+  return value;
 }
 
 export type AgendaAvailability = {

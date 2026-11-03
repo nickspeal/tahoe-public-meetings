@@ -4,7 +4,6 @@
 *
 !config/*.json
 !packages/domain/*.json
-!tests/fixtures/meetings.json
 !workers/ingestion/pyproject.toml
 !workers/ingestion/README.md
 !workers/ingestion/build_hook.py

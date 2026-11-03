@@ -4,39 +4,38 @@
 stops the run, but an invalid export is never published:
 
 1. init-db             idempotent schema and agency registry
-2. seed-fixtures       tracked source bundle; only meetings not yet stored (never reapplied)
-3. comment-periods     config/public-comment-periods.json (fetches and verifies notices)
-4. notices             Claude reads each changed tracked notice: one-off meetings and previews (IDEA-018); same guards as 14
-5. one-offs            config/one-off-meetings.json (idempotent upsert; after notices, so a configured entry overrides)
-6. verified-sources    config/verified-agency-meetings-*.json; captures meetings not yet stored
-7. discover            each followed agency with a discovery block: recent and upcoming meetings, polite delays
-8. quarantine          config/quarantined-meeting-candidates.json
-9. reparse             stored text of meetings without items
-10. reclassify         rule topic tags
-11. meeting-records    YouTube and Laserfiche links from config/meeting-records.json (skipped with --skip-discovery)
-12. draft-minutes      draft minutes found through later agendas (stored items only)
-13. classify-topics    Claude tags, only with Claude credentials, within cost guards
-14. participation      Claude reads location, remote links, and comment instructions from agendas; same guards
-15. staff-reports      link items to their own staff reports (agencies whose staffReports names a rule); a few meetings per run
-16. planning-calendars new agenda planning calendars (agencies with planningCalendar) become previews; new calendars only
-17. classify-subjects  Claude tags for new preview subjects; same guards as 13
-18. summarize-items    Claude selects summary sentences from those reports; its own per-run cost limit
-19. export             public JSON (mode "live")
-20. validate           the same checks as scripts/check_export.py, plus a minimum size
-21. store              insert into public_exports, keep the latest 5
-22. deploy-hook        POST to VERCEL_DEPLOY_HOOK_URL when set
+2. comment-periods     config/public-comment-periods.json (fetches and verifies notices)
+3. notices             Claude reads each changed tracked notice: one-off meetings and previews (IDEA-018); same guards as 12
+4. one-offs            config/one-off-meetings.json (idempotent upsert; after notices, so a configured entry overrides)
+5. discover            each followed agency with a discovery block: recent and upcoming meetings, polite delays
+6. quarantine          config/quarantined-meeting-candidates.json
+7. reparse             stored text of meetings without items
+8. reclassify          rule topic tags
+9. meeting-records     YouTube and Laserfiche links from config/meeting-records.json (skipped with --skip-discovery)
+10. draft-minutes      draft minutes found through later agendas (stored items only)
+11. classify-topics    Claude tags, only with Claude credentials, within cost guards
+12. participation      Claude reads location, remote links, and comment instructions from agendas; same guards
+13. staff-reports      link items to their own staff reports (agencies whose staffReports names a rule); a few meetings per run
+14. planning-calendars new agenda planning calendars (agencies with planningCalendar) become previews; new calendars only
+15. classify-subjects  Claude tags for new preview subjects; same guards as 11
+16. summarize-items    Claude selects summary sentences from those reports; its own per-run cost limit
+17. export             public JSON (mode "live")
+18. validate           the same checks as scripts/check_export.py, plus a minimum size
+19. store              insert into public_exports, keep the latest 5
+20. deploy-hook        POST to VERCEL_DEPLOY_HOOK_URL when set
 
-Only 19-22 failing makes the run fail.
+Only 17-20 failing makes the run fail. Meetings come only from live discovery (and the
+backfill, which shares its capture path); no hand-built meeting record is loaded
+(decision 0033).
 
 A time budget (`--claude-time-budget`, 45 minutes from the run's start by default)
-keeps 19-22 inside the Cloud Run task timeout: steps 4, 13-18 check it before each
+keeps 17-20 inside the Cloud Run task timeout: steps 3, 11-16 check it before each
 new meeting, item, batch, or download, stop cleanly once it has passed (work done
 so far stays committed), and report `stoppedEarly` and `timeBudgetReached`. The
 run summary then lists those steps under `timeBudgetSteps`, and the run is degraded.
 """
 from __future__ import annotations
 
-import glob
 import json
 import os
 import resource
@@ -68,10 +67,8 @@ from .source_discovery import UNDATED_TYPES, date_in
 PACIFIC = ZoneInfo("America/Los_Angeles")
 RETAINED_EXPORTS = 5
 RUN_LOCK = 0x7461686f65  # pg advisory lock key shared by every scheduled run
-FIXTURE_BUNDLE = "tests/fixtures/meetings.json"
 ONE_OFFS = "config/one-off-meetings.json"
 COMMENT_PERIODS = "config/public-comment-periods.json"
-VERIFIED_GLOB = "config/verified-agency-meetings-*.json"
 QUARANTINED = "config/quarantined-meeting-candidates.json"
 FAILED_RETRY_HOURS = 24
 MAX_LISTED_FAILURES = 100
@@ -184,10 +181,6 @@ def _read_json(path: Path):
     return json.loads(path.read_text())
 
 
-def _existing(conn) -> set[str]:
-    return {r["id"] for r in conn.execute("SELECT id FROM meetings")}
-
-
 def _quarantined(root: Path) -> list[dict]:
     path = root / QUARANTINED
     return _read_json(path).get("records", []) if path.is_file() else []
@@ -195,22 +188,6 @@ def _quarantined(root: Path) -> list[dict]:
 
 def _quarantine_keys(root: Path) -> set[tuple[str, str]]:
     return {(r["candidate"]["agency"], str(r["candidate"]["source_id"])) for r in _quarantined(root)}
-
-
-def seed_fixtures(conn, root: Path, run: Run):
-    path = root / FIXTURE_BUNDLE
-    if not path.is_file():
-        return "skipped", {"reason": f"{FIXTURE_BUNDLE} not present"}
-    bundle = _read_json(path)
-    followed = followed_agencies()
-    stored = _existing(conn)
-    fresh = [m for m in bundle["meetings"] if m.get("agency") in followed
-             and stable_id(m["agency"], str(m.get("id") or m.get("source_id"))) not in stored]
-    result = ingest_bundle(conn, {**bundle, "meetings": fresh}, mode="fixture")
-    for error in result["errors"]:
-        run.fail("seed-fixtures", error)
-    return ("degraded" if result["failed"] else "ok"), {"inBundle": len(bundle["meetings"]), "alreadyStored": len(bundle["meetings"]) - len(fresh),
-                                                        "processed": result["processed"], "failed": result["failed"]}
 
 
 def one_offs(conn, root: Path, run: Run):
@@ -241,42 +218,6 @@ def documents_skipped(candidate: dict, max_documents: int = MAX_DOCUMENTS) -> bo
 
 def stored_meetings(conn) -> StoredMeetings:
     return StoredMeetings(conn, failure_hours=FAILED_RETRY_HOURS)
-
-
-def verified_sources(conn, root: Path, run: Run, options: Options, fetch):
-    """Capture reviewed candidates from tracked config once; retry missing documents at most daily."""
-    files = sorted(glob.glob(str(root / VERIFIED_GLOB)))
-    if not files:
-        return "skipped", {"reason": f"no {VERIFIED_GLOB} files"}
-    followed = followed_agencies()
-    quarantined = _quarantine_keys(root)
-    pending, counts = [], {"files": len(files), "candidates": 0, "alreadyStored": 0, "quarantined": 0, "unfollowed": 0}
-    stored = stored_meetings(conn)
-    for name in files:
-        for candidate in _read_json(Path(name)).get("candidates", []):
-            counts["candidates"] += 1
-            key = (candidate.get("agency"), str(candidate.get("source_id")))
-            if key[0] not in followed:
-                counts["unfollowed"] += 1
-                continue
-            if key in quarantined:
-                counts["quarantined"] += 1
-                continue
-            meeting_id = stable_id(key[0], stored.identity(candidate))
-            if meeting_id in stored.meetings and (not candidate.get("documents") or meeting_id in stored.document_urls
-                                                  or documents_skipped(candidate, options.max_documents)
-                                                  or meeting_id in stored.failed):
-                counts["alreadyStored"] += 1
-                continue
-            pending.append(candidate)
-    conn.commit()
-    log("INFO", f"verified-sources: capturing {len(pending)} candidates", counts=counts)
-    result = capture_candidates(conn, pending, max_documents=options.max_documents, fetch=fetch,
-                                incremental=True, delay=options.delay, oversized=stored.oversized)
-    for error in result["errors"] + result["captureFailures"]:
-        run.fail("verified-sources", error)
-    counts.update(captured=result["processed"], failed=result["failed"], documentFailures=len(result["captureFailures"]))
-    return ("degraded" if result["failed"] or result["captureFailures"] else "ok"), counts
 
 
 def _window_reason(candidate: dict, today: date, options: Options) -> str | None:
@@ -625,11 +566,9 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         run.step("init-db", lambda: init_db(conn), fatal=True)
         if run.fatal:
             return _summary(run, started_at, payload, published)
-        run.step("seed-fixtures", lambda: seed_fixtures(conn, root, run))
         run.step("comment-periods", lambda: comment_periods(conn, root, run, fetch))
         run.step("notices", lambda: extract_notices(conn, options, today, deadline))
         run.step("one-offs", lambda: one_offs(conn, root, run))
-        run.step("verified-sources", lambda: verified_sources(conn, root, run, options, fetch))
         if options.skip_discovery:
             run.steps.append({"name": "discover", "status": "skipped", "detail": {"reason": "--skip-discovery"}})
         else:

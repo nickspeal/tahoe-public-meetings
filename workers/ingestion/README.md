@@ -10,20 +10,16 @@ From the repository root:
 UV_CACHE_DIR=/private/tmp/tahoe-uv-cache uv sync --project workers/ingestion --extra test
 export DATABASE_URL='postgresql://tahoe:tahoe-local@127.0.0.1:55432/tahoe'
 workers/ingestion/.venv/bin/tahoe-ingest init-db
-workers/ingestion/.venv/bin/tahoe-ingest ingest-fixtures
-workers/ingestion/.venv/bin/tahoe-ingest export --out apps/web/src/data/public.json
+workers/ingestion/.venv/bin/tahoe-ingest run-scheduled --no-publish --out apps/web/src/data/public.json
 workers/ingestion/.venv/bin/tahoe-ingest status
 ```
 
-The checked-in source bundle contains selected meetings and extracted source
-pages, not complete agency archives. The public export describes the covered
-records and links to the official sources without claiming exhaustive coverage.
-Fixture replay does not claim a new live source check. An explicit
-`source_checked_at` from an actual source-index check is retained; archive
-records without one do not gain a fabricated check time. Meetings with a known
+Meetings come only from the live pipeline: discovery of each agency's official
+index and capture of the documents it links (decision 0033). No hand-built
+meeting record is loaded, locally or in production; `tests/fixtures/` holds test
+inputs only. The public export describes the covered records and links to the
+official sources without claiming exhaustive coverage. Meetings with a known
 date but no published start time remain date-only in the export.
-`ingest-manifest FILE.json` accepts the same bundle shape for reviewed live
-captures; it does not infer meeting dates or policy outcomes from PDFs.
 For one already-known meeting, `refresh-document MEETING_ID DOC_ID HTTPS_PDF_URL`
 downloads and extracts with bounded bytes/pages, then records the hash and text.
 That marks affected summaries pending until items are reprocessed. An OCR or
@@ -174,13 +170,11 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 
 ## Scheduled pipeline (Cloud Run Job)
 
-`tahoe-ingest run-scheduled` builds an empty database from scratch and keeps it current. Production data comes only from this command: tracked config and fixtures in the image plus live official sources, never a local dump. Steps, in order:
+`tahoe-ingest run-scheduled` builds an empty database from scratch and keeps it current. Production data comes only from this command: live official sources, read as the tracked configuration in the image describes, never a local dump or a hand-built meeting record (decision 0033). Steps, in order:
 
 1. `init-db` (idempotent; includes `public_exports`).
-2. `seed-fixtures`: `tests/fixtures/meetings.json`, only meetings not yet stored, so a later live capture is never overwritten.
-3. `comment-periods` from `config/` (comment notices are fetched and verified). 4. `notices`: Claude reads each tracked notice whose text or prompt changed (`extract-notices`; only with Claude credentials, within `--max-cost`/`--monthly-budget`). 5. `one-offs` from `config/`, after `notices`, so a configured entry with the same ID overrides extracted fields.
-6. `verified-sources`: `config/verified-agency-meetings-*.json` candidates not yet stored; missing documents are retried at most once a day. Candidates in `config/quarantined-meeting-candidates.json` are skipped.
-7. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
+2. `comment-periods` from `config/` (comment notices are fetched and verified). 3. `notices`: Claude reads each tracked notice whose text or prompt changed (`extract-notices`; only with Claude credentials, within `--max-cost`/`--monthly-budget`). 4. `one-offs` from `config/`, after `notices`, so a configured entry with the same ID overrides extracted fields.
+5. `discover`: every followed agency with a discovery adapter. History before the scheduled window comes from the separate one-time backfill; this step only keeps recent and upcoming meetings current. The policy constants live at the top of `tahoe_ingest/scheduled.py`:
    - Each index is read up to discovery's maximum (`--discovery-limit 20`; undated WordPress posts, which each cost a page fetch, stay at 6). The window is applied after reading, so far-future postings never crowd out recent past meetings.
    - Each index page is read once per run: bodies that share a publisher's index (Douglas County's three and South Lake Tahoe's four, on 4 MB Granicus pages) reuse it. An index read that times out or loses its connection is retried once after 5 seconds; HTTP errors are not retried.
    - Window: 60 days back (`--past-days`) to 120 days ahead (`--future-days`). The look-back lets minutes and revised packets linked after a monthly or bimonthly body's next meeting still be picked up. Dated meetings before the coverage floor, 2026-01-01, are never captured; undated WordPress posts are exempt.
@@ -188,15 +182,25 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
    - At most 10 meetings per agency are captured per run, nearest to today first; the rest wait for the next run. Every document discovery lists for a meeting is captured, in discovery's order (the agenda first, then its packet), 1 second between downloads. Discovery leaves out minutes, staff reports, attachments, and other bodies' agendas, so a meeting has one to three documents (Legistar: accessible agenda, packet, agenda PDF). A safety cap of 10 (`capture.MAX_DOCUMENTS`, `--max-documents`) guards against a page that suddenly links dozens of files: a listing over it logs a `capture: … lists N documents` warning, and the meeting is stored without items, with a warning, until the listing is fixed.
    - Stored meetings outside the window are never deleted or hidden.
    - Minutes and video links on each listing row are kept with the candidate. For meetings not captured this run (settled, deferred, or outside the window) they update the stored meeting directly, without a download (decision 0025).
-8. `quarantine`, 9. `reparse`, 10. `reclassify`.
-11. `meeting-records`: YouTube feeds and the Truckee Laserfiche minutes folder from `config/meeting-records.json`, matched to stored meetings (skipped with `--skip-discovery`). 12. `draft-minutes`: draft minutes found through "Approval of minutes" items in later agendas. See [decision 0025](../../docs/decisions/0025-minutes-and-recording-links.md).
-13. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 14. `participation` (same guards).
-15. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and attachment links (`map-staff-reports`; one rule per agency, decision 0026). 16. `planning-calendars`: new agenda planning calendars become previews and planned meetings (`read-planning-calendars`; IDEA-018); at most `--max-calendars` (4) downloads, and only calendars newer than the stored one. A calendar that fails validation is named in `failures`. 17. `classify-subjects`: Claude tags for new preview subjects (same guards as `classify-topics`). 18. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
-19. `export` (mode `live`), 20. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 21. `store` in `public_exports` (latest 30 kept), 22. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
+   - Candidates in `config/quarantined-meeting-candidates.json` are skipped.
+   - Each capture replaces the meeting's whole warning list with what the listing and this download show; see "Meeting warnings" below.
+6. `quarantine`, 7. `reparse`, 8. `reclassify`.
+9. `meeting-records`: YouTube feeds and the Truckee Laserfiche minutes folder from `config/meeting-records.json`, matched to stored meetings (skipped with `--skip-discovery`). 10. `draft-minutes`: draft minutes found through "Approval of minutes" items in later agendas. See [decision 0025](../../docs/decisions/0025-minutes-and-recording-links.md).
+11. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 12. `participation` (same guards).
+13. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and attachment links (`map-staff-reports`; one rule per agency, decision 0026). 14. `planning-calendars`: new agenda planning calendars become previews and planned meetings (`read-planning-calendars`; IDEA-018); at most `--max-calendars` (4) downloads, and only calendars newer than the stored one. A calendar that fails validation is named in `failures`. 15. `classify-subjects`: Claude tags for new preview subjects (same guards as `classify-topics`). 16. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
+17. `export` (mode `live`), 18. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 19. `store` in `public_exports` (latest 5 kept), 20. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
 
-A failure in steps 2–18 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
+A failure in steps 2–16 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
 
-`--claude-time-budget SECONDS` (default 2700, 45 minutes from the run's start; 0 disables it) keeps steps 19–22 inside the job's 60-minute timeout. Once it has passed, steps 4, 13, 14, 17, and 18 send no new Claude request, 16 starts no new download, and 15 is skipped. Each checks before its next meeting, notice, subject batch, item, or calendar, never mid-request, keeps what it finished, and reports `stoppedEarly` ("time budget reached; remaining … on the next run"), `timeBudgetReached`, and what it deferred. Such a step is `degraded`; the summary adds `timeBudgetSeconds`, `timeBudgetReached`, and `timeBudgetSteps`, and an ntfy alert names the stopped steps and the run's length. See [Time budget](../../docs/operations/deployment.md#time-budget).
+`--claude-time-budget SECONDS` (default 2700, 45 minutes from the run's start; 0 disables it) keeps steps 17–20 inside the job's 60-minute timeout. Once it has passed, steps 3, 11, 12, 15, and 16 send no new Claude request, 14 starts no new download, and 13 is skipped. Each checks before its next meeting, notice, subject batch, item, or calendar, never mid-request, keeps what it finished, and reports `stoppedEarly` ("time budget reached; remaining … on the next run"), `timeBudgetReached`, and what it deferred. Such a step is `degraded`; the summary adds `timeBudgetSeconds`, `timeBudgetReached`, and `timeBudgetSteps`, and an ntfy alert names the stopped steps and the run's length. See [Time budget](../../docs/operations/deployment.md#time-budget).
+
+### Meeting warnings
+
+A stored warning names a known issue with what was captured (a document that could not be retrieved or read, an agenda the parser could not verify, a start time not confirmed). Agenda availability is state, not a warning: an upcoming meeting with no captured document is shown as "Agenda not posted yet" from its empty document list (`agendaAvailability` in the website), and the agency's last check comes from the run.
+
+Discovery capture owns a meeting's warning list. Each capture writes the whole list from the listing row and that download (`capture._capture_row`), so a warning from an earlier capture, a planned-meeting preview, or a former hand-built record does not outlive the next capture. Between captures, live steps may add what they find (a revised source PDF awaiting reprocessing, an event withdrawn from a revised notice), and `reparse` drops the parser warnings it supersedes; the next capture replaces those too. One-off meetings (from `config/one-off-meetings.json` or a notice) and planned meetings (from a planning calendar) carry the warnings their own step writes on each run, until a capture takes over a planned meeting. A document version captured again with more of its pages takes the new capture's warnings.
+
+`clean-hand-built [--apply]` is the one-time cleanup of what the former hand-built records (`tests/fixtures/meetings.json` and the dated lists now in `docs/research/verified-agency-meetings/`) left in a database: their warnings, the document warnings the bundle wrote, and meetings that exist only because of them and hold no source content. It is a dry run unless `--apply` is given, reads in one statement, and running it again changes nothing. Run it from a repository checkout; see `tahoe_ingest/hand_built.py` for the rules.
 
 ### History backfill
 
@@ -229,7 +233,7 @@ The JSON summary extends the `run-scheduled` summary with:
 
 A live dry run on 2026-10-20 for `--since 2026-01-01` found 201 meetings in 19 agencies. Every source reached 2026-01-01 except four whose indexes list only recent items: `trcd` (earliest 2026-01-13), `trpa-advisory` (2026-03-11), `trpa-governing` (2026-07-22), and `truckee-north-shore-tma` (2026-10-01). Placer returned its known 403 ([SOURCE-001](../../docs/issues/SOURCE-001-placer-downloads.md)). See the [deployment runbook](../../docs/operations/deployment.md#history-backfill) for the separate `tahoe-backfill` Cloud Run job.
 
-Environment: `DATABASE_URL` (required; hosted URLs need `?sslmode=require`), `VERCEL_DEPLOY_HOOK_URL` (optional, from Secret Manager), the `ANTHROPIC_*` federation IDs with `TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata` (optional; `ANTHROPIC_API_KEY` also works locally), `TAHOE_FORECAST_DAYS`. `TAHOE_SOURCE_ROOT` (`/app` in the image) locates `config/` and `tests/fixtures/`; `TAHOE_SCRATCH_DIR` overrides the scratch parent (default `TMPDIR`).
+Environment: `DATABASE_URL` (required; hosted URLs need `?sslmode=require`), `VERCEL_DEPLOY_HOOK_URL` (optional, from Secret Manager), the `ANTHROPIC_*` federation IDs with `TAHOE_IDENTITY_TOKEN_SOURCE=gcp-metadata` (optional; `ANTHROPIC_API_KEY` also works locally), `TAHOE_FORECAST_DAYS`. `TAHOE_SOURCE_ROOT` (`/app` in the image) locates `config/`; `TAHOE_SCRATCH_DIR` overrides the scratch parent (default `TMPDIR`).
 
 Build from the repository root; the root `.dockerignore` is an allowlist, and `.gcloudignore` mirrors it for Cloud Build (keep the two in step):
 

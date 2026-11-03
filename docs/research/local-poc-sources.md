@@ -1,5 +1,7 @@
 # Local meeting source coverage
 
+Since [decision 0033](../decisions/0033-production-data-only-from-live-pipeline.md) this bundle is a test input only; no production or local run loads it. The text below records how it was assembled.
+
 Checked 2026-10-20. The machine-readable bundle is [`tests/fixtures/meetings.json`](../../tests/fixtures/meetings.json); curated topic examples are in [`tests/fixtures/topic-expectations.json`](../../tests/fixtures/topic-expectations.json). It contains 19 actual meetings: 6 Tahoe Transportation District (TTD), 6 South Lake Tahoe (SLT), and 7 Truckee Town Council records. The bundle stores complete agenda text for 12 posted agendas (243 parsed entries) and logistics/status records for seven events where no agenda text is available. It does not represent a complete agency archive or live feed.
 
 ## Meeting inventory

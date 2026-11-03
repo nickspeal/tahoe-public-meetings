@@ -2,7 +2,7 @@
 
 A local Tahoe-area meeting timeline with configurable agencies and six shared topics: **Biking, Transit, Housing, Short Term Rentals, Environment, and Hot Topics**. The October 20, 2026 local capture contains 123 confirmed meetings across 35 agencies/bodies. The [source review](docs/operations/source-review.md) records the reviewed sources and remaining gaps; [source coverage](docs/operations/source-coverage.md) lists every registry entry and how it is read. Public comment periods have a [separate page](http://127.0.0.1:4321/comment-periods/) and verified-source import workflow.
 
-The Astro website reads a versioned export from a Python/PostgreSQL ingestion worker. A visible Today marker separates earlier meetings, which open ten at a time, from upcoming dates. Topic and agency filters expose related agenda items on that same timeline. Each meeting shows its covered topics and counts, tags on collapsed agenda items, and multi-select topic filters. Meeting pages also include page-level citations, a direct link from each agenda item to its cited page in the official document, participation links, calendar downloads, and cancellations. The included source bundle has 19 verified meetings and 243 agenda items, spanning May through November 2026. Upcoming listings without posted agendas or confirmed start times preserve those missing details. Canceled meetings stay listed, greyed out. By default the timeline lists upcoming meetings with posted agendas. One button reveals the rest: confirmed meetings without an agenda yet, plus dashed placeholders for regular meetings predicted from each agency's usual schedule (for example, TTD's first Wednesday at 3 PM) before an agenda or notice exists. Any real record replaces the placeholder.
+The Astro website reads a versioned export from a Python/PostgreSQL ingestion worker. A visible Today marker separates earlier meetings, which open ten at a time, from upcoming dates. Topic and agency filters expose related agenda items on that same timeline. Each meeting shows its covered topics and counts, tags on collapsed agenda items, and multi-select topic filters. Meeting pages also include page-level citations, a direct link from each agenda item to its cited page in the official document, participation links, calendar downloads, and cancellations. Upcoming listings without posted agendas or confirmed start times preserve those missing details. Canceled meetings stay listed, greyed out. By default the timeline lists upcoming meetings with posted agendas. One button reveals the rest: confirmed meetings without an agenda yet, plus dashed placeholders for regular meetings predicted from each agency's usual schedule (for example, TTD's first Wednesday at 3 PM) before an agenda or notice exists. Any real record replaces the placeholder.
 
 Upcoming meetings can also show what is planned for their agenda before it is posted ([decision 0028](docs/decisions/0028-previews-from-notices-and-planning-calendars.md)): subjects read deterministically from the South Lake Tahoe and TTD agenda planning calendars, and meetings and presentations that a tracked public notice announces, each marked subject to change and linked to its source. Meetings hosted by an organization that is not a followed body, such as a co-hosted open house, appear under **Other** with their host named.
 
@@ -21,7 +21,7 @@ python3 scripts/project.py dev
 
 Open **http://127.0.0.1:4321/**. The server binds to loopback only. In a normal terminal, Ctrl-C stops the website. Astro may run in the background when started by a coding agent; use `npm --prefix apps/web run dev -- stop` to stop that server. The database uses a dedicated cluster in ignored `data/postgres/`, port **55432**, and does not modify other PostgreSQL installations. Stop it with `python3 scripts/project.py stop`.
 
-Setup installs locked dependencies, starts the dedicated database, initializes its schema, ingests the fixtures, and validates the public JSON export. It can be rerun without duplicate records. Fixture ingestion preserves operator edits, but reapplies the captured source state; use `refresh`, rather than `seed`, after editing or live capture.
+Setup installs locked dependencies, starts the dedicated database, initializes its schema, and, if `apps/web/src/data/public.json` is absent, downloads the export the production site publishes and validates it, so the website runs right away. The local database starts empty: meetings come only from the live pipeline ([decision 0033](docs/decisions/0033-production-data-only-from-live-pipeline.md)). `python3 scripts/project.py ingest` runs that pipeline against the local database (official sources, no publishing) and writes its export; then use `refresh` after operator edits.
 
 For Docker instead of a native PostgreSQL installation:
 
@@ -38,7 +38,8 @@ The `localhost` URL selects an existing database instead of starting the native 
 | --- | --- |
 | `python3 scripts/project.py test` | PostgreSQL tests, evidence validation, Astro checks, build, agenda/timeline interaction tests, calendar tests, and internal links |
 | `python3 scripts/project.py refresh` | Export current database state plus 90 days of expected meetings, and validate citations; the dev website reloads |
-| `python3 scripts/project.py build` | Refresh data and build static HTML in `apps/web/dist/` |
+| `python3 scripts/project.py ingest` | Run the scheduled pipeline against the local database: discover and capture from official sources, classify (Claude steps only with `ANTHROPIC_API_KEY`, within their budgets), export and validate; nothing is published. Extra arguments pass to `run-scheduled` |
+| `python3 scripts/project.py build` | Build static HTML in `apps/web/dist/` from the current export |
 | `python3 scripts/project.py status` | Inspect source state, processing failures, and invalid summaries |
 | `python3 scripts/project.py worker --help` | All ingestion and operator commands |
 | `python3 scripts/project.py worker reclassify --dry-run` | Preview changes from the current topic rules |
@@ -46,7 +47,6 @@ The `localhost` URL selects an existing database instead of starting the native 
 | `python3 scripts/project.py worker evaluate-topics` | Compare rule tags with Claude Haiku (read-only; a dry run with cost projection unless `ANTHROPIC_API_KEY` is set) |
 | `python3 scripts/project.py worker learn-schedules --dry-run` | Report each agency's regular meeting pattern, support, and exceptions from stored meetings |
 | `python3 scripts/project.py worker learn-schedules --write` | Store learned schedules (3+ matches, 60%+ match rate); never replaces configured ones |
-| `python3 scripts/project.py seed` | Reapply the original source fixtures; preserves human edits |
 | `python3 scripts/storage_report.py [--json]` | Read-only database size report: per-table bytes, page text, per-agency counts, and share of pages cited |
 
 Local operator edits are separate from generated facts. Corrections require an author and reason for the internal audit trail; a correction simply replaces the displayed summary text, and topic overrides and suppression are likewise internal steering. The site shows only the latest summary, with no revision history or attribution. After an edit, run `refresh`.
@@ -64,7 +64,7 @@ mkdir -p data
 python3 scripts/project.py worker discover truckee --limit 5 --out data/truckee-candidates.json
 ```
 
-See the [worker guide](workers/ingestion/README.md) for capture, document refresh, and correction commands, and the [operations guide](docs/operations.md) for backup, recovery, and failed-job procedures. Live access can be rate-limited or blocked; the reproducible fixture workflow works offline after dependencies are installed.
+See the [worker guide](workers/ingestion/README.md) for capture, document refresh, and correction commands, and the [operations guide](docs/operations.md) for backup, recovery, and failed-job procedures. Live access can be rate-limited or blocked; the tests work offline after dependencies are installed.
 
 ## Data and reliability
 

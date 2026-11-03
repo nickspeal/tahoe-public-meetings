@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import (ai_topics, alerts, backfill, coverage, evaluate_topics, item_summaries, notices, participation,
+from . import (ai_topics, alerts, backfill, coverage, evaluate_topics, hand_built, item_summaries, notices, participation,
                planning_calendars, previews, scheduled, staff_reports)
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
@@ -26,10 +26,6 @@ def _parser() -> argparse.ArgumentParser:
     p.add_argument("--database-url", default=os.getenv("DATABASE_URL"), help="PostgreSQL URL (or DATABASE_URL)")
     sub = p.add_subparsers(dest="command", required=True)
     sub.add_parser("init-db")
-    ingest = sub.add_parser("ingest-fixtures", help="Ingest representative source fixture JSON")
-    ingest.add_argument("path", nargs="?", default="tests/fixtures/meetings.json")
-    manifest = sub.add_parser("ingest-manifest", help="Ingest an independently captured JSON source bundle")
-    manifest.add_argument("path")
     one_offs = sub.add_parser("ingest-one-offs", help="Add/update configured workshops and other one-off notices")
     one_offs.add_argument("path", nargs="?", default="config/one-off-meetings.json")
     one_offs.add_argument("--dry-run", action="store_true")
@@ -40,7 +36,6 @@ def _parser() -> argparse.ArgumentParser:
     page.add_argument("--root", type=Path, default=Path("."), help="Repository checkout (default: the working directory)")
     page.add_argument("--check", action="store_true", help="Change nothing; exit 1 if the page is out of date")
     export = sub.add_parser("export")
-    export.add_argument("--mode", choices=["fixture", "live"], default="fixture")
     export.add_argument("--out", required=True)
     export.add_argument("--forecast-days", type=int, default=int(os.getenv("TAHOE_FORECAST_DAYS", DEFAULT_FORECAST_DAYS)),
                         help=f"Days of expected meetings to derive from agency schedules (0 disables; default {DEFAULT_FORECAST_DAYS} or TAHOE_FORECAST_DAYS)")
@@ -158,9 +153,9 @@ def _parser() -> argparse.ArgumentParser:
     summaries.add_argument("--max-cost", type=float, default=item_summaries.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
     summaries.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
                            help="USD; refuse to run once month-to-date AI spend reaches it")
-    scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: seed, discover, capture, classify, export, validate, publish")
+    scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: discover, capture, classify, export, validate, publish")
     scheduled_run.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."),
-                               help="Directory holding config/ and tests/fixtures/ (default: TAHOE_SOURCE_ROOT or the working directory)")
+                               help="Directory holding config/ (default: TAHOE_SOURCE_ROOT or the working directory)")
     scheduled_run.add_argument("--discovery-limit", type=int, default=scheduled.INDEX_LIMIT,
                                help="Rows read from each agency index before the window is applied (1..20)")
     scheduled_run.add_argument("--past-days", type=int, default=scheduled.PAST_DAYS, help="Capture discovered meetings this many days back")
@@ -209,7 +204,12 @@ def _parser() -> argparse.ArgumentParser:
     links.add_argument("--backfill", action="store_true", help="Read each YouTube channel's full upload list from its public playlist page (no API key) instead of the 15-video feed; for one-off runs, not the schedule")
     links.add_argument("--skip-feeds", action="store_true", help="Only draft minutes from stored agendas; no network requests")
     links.add_argument("--dry-run", action="store_true", help="Report matches without storing them")
-    publish = sub.add_parser("publish-export", help="Validate an export file, store it in public_exports, and call the deploy hook if set")
+    clean = sub.add_parser("clean-hand-built", help="Remove warnings and empty meetings left by the former hand-built "
+                           "records (decision 0033); dry run unless --apply")
+    clean.add_argument("--root", default=".", help="Repository checkout holding tests/fixtures/meetings.json and "
+                       "docs/research/verified-agency-meetings/ (default: the working directory)")
+    clean.add_argument("--apply", action="store_true", help="Write the changes (default: report only)")
+    publish = sub.add_parser("publish-export",help="Validate an export file, store it in public_exports, and call the deploy hook if set")
     publish.add_argument("--file", required=True)
     publish.add_argument("--min-meetings", type=int, default=1)
     publish.add_argument("--no-hook", action="store_true", help="Do not call VERCEL_DEPLOY_HOOK_URL")
@@ -243,7 +243,7 @@ def main(argv=None) -> int:
             return 0
     if args.command == "discover":
         if not followed_agencies()[args.agency].get("discovery"):
-            raise SystemExit(f"{args.agency}: no discovery source yet; use ingest-one-offs or ingest-manifest")
+            raise SystemExit(f"{args.agency}: no discovery source yet; add a discovery block to its registry entry")
         candidates = discover_agency(args.agency, followed_agencies()[args.agency], limit=args.limit)
         dest = Path(args.out)
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -321,17 +321,14 @@ def main(argv=None) -> int:
             result = ingest_bundle(conn, bundle, mode="fixture")
             print(json.dumps(result, indent=2))
             return 1 if result["failed"] else 0
-        elif args.command in {"ingest-fixtures", "ingest-manifest"}:
-            bundle = json.loads(Path(args.path).read_text())
-            result = ingest_bundle(conn, bundle, mode="fixture" if args.command == "ingest-fixtures" else "live")
-            print(json.dumps(result, indent=2))
-            return 1 if result["failed"] else 0
+        elif args.command == "clean-hand-built":
+            print(json.dumps(hand_built.clean_hand_built(conn, Path(args.root), dry_run=not args.apply), indent=2, default=str))
         elif args.command == "learn-schedules":
             return _learn_schedules(conn, args)
         elif args.command == "export":
             if not 0 <= args.forecast_days <= 366:
                 raise SystemExit("--forecast-days must be between 0 and 366")
-            output = export_public(conn, mode=args.mode, forecast_days=args.forecast_days)
+            output = export_public(conn, forecast_days=args.forecast_days)
             dest = Path(args.out)
             dest.parent.mkdir(parents=True, exist_ok=True)
             temporary = dest.with_name(dest.name + ".tmp")

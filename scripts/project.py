@@ -2,10 +2,12 @@
 """One entry point for local setup, ingestion, checks, and the public website."""
 from pathlib import Path
 import argparse
+import json
 import os
 import shutil
 import subprocess
 import sys
+import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "workers/ingestion"
@@ -14,6 +16,7 @@ PYTHON = WORKER / ".venv/bin/python"
 CLI = WORKER / ".venv/bin/tahoe-ingest"
 EXPORT = WEB / "src/data/public.json"
 LOCAL_URL = "postgresql://tahoe:tahoe-local@127.0.0.1:55432/tahoe"
+PUBLISHED_EXPORT = "https://tahoepublicmeetings.org/data/public-export.json"  # fetch-export.mjs FALLBACK_EXPORT_URL
 
 
 def environment():
@@ -47,10 +50,22 @@ def refresh():
     run(sys.executable, ROOT / "scripts/check_export.py")
 
 
+def published_export():
+    """Start the website from the export production publishes, unless one is already present."""
+    if EXPORT.exists():
+        return
+    print(f"Downloading the published export from {PUBLISHED_EXPORT}")
+    with urllib.request.urlopen(PUBLISHED_EXPORT, timeout=60) as response:
+        payload = json.load(response)
+    EXPORT.parent.mkdir(parents=True, exist_ok=True)
+    EXPORT.write_text(json.dumps(payload) + "\n")
+    run(sys.executable, ROOT / "scripts/check_export.py")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["setup", "seed", "refresh", "test", "check", "dev", "build", "stop", "status", "worker"],
-                        metavar="{setup,seed,refresh,test,dev,build,stop,status,worker}")
+    parser.add_argument("action", choices=["setup", "ingest", "refresh", "test", "check", "dev", "build", "stop", "status", "worker"],
+                        metavar="{setup,ingest,refresh,test,dev,build,stop,status,worker}")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.action == "setup":
@@ -62,13 +77,13 @@ def main():
         if environment()["DATABASE_URL"] == LOCAL_URL:
             run(sys.executable, ROOT / "scripts/local_db.py", "start")
         worker("init-db")
-        worker("ingest-fixtures")
-        refresh()
-        print("Ready. Start the website: python3 scripts/project.py dev")
-    elif args.action == "seed":
-        worker("init-db")
-        worker("ingest-fixtures")
-        refresh()
+        published_export()
+        print("Ready. Start the website: python3 scripts/project.py dev\n"
+              "Fill the local database from official sources: python3 scripts/project.py ingest")
+    elif args.action == "ingest":
+        # The production pipeline against the local database: live sources only, nothing published.
+        worker("run-scheduled", "--no-publish", "--out", EXPORT, *args.arguments)
+        run(sys.executable, ROOT / "scripts/check_export.py")
     elif args.action == "refresh":
         refresh()
     elif args.action in ("test", "check"):  # "check" is a hidden alias
@@ -82,7 +97,8 @@ def main():
             raise SystemExit("No source data exported. Run python3 scripts/project.py setup first.")
         run("npm", "run", "dev", cwd=WEB)
     elif args.action == "build":
-        refresh()
+        if not EXPORT.exists():
+            raise SystemExit("No export to build from. Run python3 scripts/project.py setup, ingest, or refresh first.")
         run("npm", "run", "build", cwd=WEB)
     elif args.action == "stop":
         run(sys.executable, ROOT / "scripts/local_db.py", "stop")

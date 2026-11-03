@@ -14,10 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils a
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-# Tracked source the pipeline ingests at runtime (no local database dumps).
+# Tracked configuration the pipeline reads at runtime; meetings come only from live sources (decision 0033).
 COPY config/ ./config/
 COPY packages/domain/ ./packages/domain/
-COPY tests/fixtures/meetings.json ./tests/fixtures/meetings.json
 COPY workers/ingestion/pyproject.toml workers/ingestion/README.md workers/ingestion/build_hook.py ./workers/ingestion/
 COPY workers/ingestion/tahoe_ingest ./workers/ingestion/tahoe_ingest
 # The build hook bundles the topic catalog, agency registry, duration model, and agenda layouts into the wheel.

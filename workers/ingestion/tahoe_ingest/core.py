@@ -381,8 +381,12 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                     WHERE d.document_version_id=%s AND d.page_number=p.n AND d.links IS DISTINCT FROM p.links::jsonb""",
                     (list(links), [json.dumps(v) for v in links.values()], version_id))
             continue  # The same file with all of its pages is already current.
+        # A stored version captured again with more of its pages takes the new capture's warnings,
+        # which describe the pages now stored ("Text retained for 3 of 383" would otherwise outlive them).
         conn.execute("""INSERT INTO document_versions(id,meeting_id,source_document_id,title,url,sha256,fetched_at,page_count,status,warnings,media_type)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'extracted',%s,%s) ON CONFLICT(id) DO NOTHING""",
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'extracted',%s,%s)
+            ON CONFLICT(id) DO UPDATE SET warnings=excluded.warnings
+            WHERE document_versions.warnings IS DISTINCT FROM excluded.warnings""",
             (version_id, meeting_id, doc_id, doc.get("title") or doc.get("kind") or "Official document", doc["url"], hash_value,
              datetime.fromisoformat(fetched_at.replace("Z", "+00:00")), page_count, json.dumps(warnings), doc.get("media_type", "application/pdf")))
         conn.execute("""INSERT INTO document_pages(document_version_id,page_number,text,links)
@@ -635,7 +639,7 @@ def public_agency(row, fallback_url: str) -> dict:
     return agency
 
 
-def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date | None = None) -> dict:
+def export_public(conn, *, mode="live", forecast_days: int = 0, today: date | None = None) -> dict:
     """Export stored records, plus derived forecasts when ``forecast_days`` > 0.
 
     The CLI export defaults to ``DEFAULT_FORECAST_DAYS``. Forecasts are never

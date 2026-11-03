@@ -23,7 +23,7 @@ Use the session scratchpad for `$SCRATCH`. Log lines are JSON with `severity`, `
 - **One-off or intermittent** (429, 5xx, timeouts, a single 403): not a candidate; leave it.
 - **Already covered** by an entry in `config/skipped-endpoints.json`: nothing to do.
 
-The failing URL may not be in the log line (discovery errors name the agency). Find it in the agency's resolved entry (`python3 scripts/project.py worker agencies` prints `discovery.indexUrl` and `sourceUrl`, including any an entry inherits through `extends` from `packages/domain/agencies.json`) or the `documents[].url` of the agency's candidates in `config/verified-agency-meetings-*.json`.
+The failing URL may not be in the log line (discovery errors name the agency). Find it in the agency's resolved entry (`python3 scripts/project.py worker agencies` prints `discovery.indexUrl` and `sourceUrl`, including any an entry inherits through `extends` from `packages/domain/agencies.json`) or the `documents[].url` of a candidate from `worker discover AGENCY --out FILE`.
 
 ## 2. Reproduce locally
 

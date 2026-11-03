@@ -5,6 +5,13 @@ have no active agenda items, or whose items await reprocessing after a source
 change, are parsed; ``force`` reparses every stored meeting of a parsed
 agency. Results go through the normal ingest path, so citations are
 validated against the stored pages and topic tags are generated as usual.
+
+Items keep citing the document they cite while it is current and still reads
+the same items (``parse_agenda``'s ``prefer``, as in capture), so a reparse never
+moves a meeting's items to another copy of the same agenda. Items read from an
+HTML agenda's markup cannot be read again from its stored text: a meeting whose
+items cite an HTML document is left as captured (reported under ``kept``) unless
+its items await reprocessing.
 """
 from __future__ import annotations
 
@@ -12,7 +19,7 @@ import json
 import re
 
 from .agenda import has_parser, parse_agenda
-from .core import _json, ingest_bundle, iso
+from .core import _json, cited_documents, ingest_bundle, iso
 
 STALE = re.compile(r"No parser exists|items require review|review required|review all agenda documents|await reprocessing|"
                    r"agenda text (?:is )?not (?:yet )?(?:captured|extracted)", re.I)
@@ -20,7 +27,7 @@ STALE = re.compile(r"No parser exists|items require review|review required|revie
 
 def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = None,
                      force: bool = False, dry_run: bool = False) -> dict:
-    report = {"parsed": [], "failed": [], "skipped": 0}
+    report = {"parsed": [], "failed": [], "skipped": 0, "kept": []}
     rows = conn.execute("""SELECT m.* ,
             (SELECT count(*) FROM agenda_items i WHERE i.meeting_id=m.id AND i.active) AS active_items
         FROM meetings m
@@ -35,11 +42,19 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
         if not has_parser(m["agency_id"]) or not (force or meeting or stuck or m["active_items"] == 0):
             report["skipped"] += 1
             continue
-        selected.append((m, warnings))
-    stored = _stored_documents(conn, [m["id"] for m, _ in selected])
-    for m, warnings in selected:
+        selected.append((m, warnings, stuck))
+    stored = _stored_documents(conn, [m["id"] for m, _, _ in selected])
+    cited = cited_documents(conn, meetings=[m["id"] for m, _, _ in selected]) if selected else {}
+    for m, warnings, stuck in selected:
         documents, pages = stored.get(m["id"], ([], []))
-        parsed = parse_agenda(m["agency_id"], documents, pages)
+        prefer = cited.get(m["id"], set())
+        if not stuck and any(d["id"] in prefer and d["media_type"] == "text/html" for d in documents):
+            # Capture reads these items from the page's markup (html_agenda); the stored text alone would give
+            # other items, or the PDF's, and the next capture would move them back. Items awaiting reprocessing
+            # are reparsed anyway: a settled meeting may never be captured again.
+            report["kept"].append({"meeting": m["id"], "reason": "items come from an HTML agenda; a capture rereads it"})
+            continue
+        parsed = parse_agenda(m["agency_id"], documents, pages, prefer=prefer)
         entry = {"meeting": m["id"], "items": len(parsed.items)} if parsed.complete else {"meeting": m["id"], "warning": parsed.warning}
         if parsed.complete and parsed.notes:
             entry["notes"] = list(parsed.notes)

@@ -320,7 +320,8 @@ def _discover_sources(conn, root: Path, run: Run, options: Options, discover, fe
                 report["linksUpdated"] = updated
             conn.commit()
             result = capture_candidates(conn, selected, max_documents=options.max_documents, fetch=fetch,
-                                        incremental=True, delay=options.delay, oversized=stored.oversized)
+                                        incremental=True, delay=options.delay, oversized=stored.oversized,
+                                        cited=stored.cited)
             report.update(captured=result["processed"], failed=result["failed"])
             if result["captureFailures"]:
                 report["documentFailures"] = len(result["captureFailures"])

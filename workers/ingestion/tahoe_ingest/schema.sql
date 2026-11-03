@@ -240,3 +240,8 @@ CREATE TABLE IF NOT EXISTS notice_extractions (
 );
 -- Earlier IDs of a comment period that moved (IDEA-018); the website redirects their pages.
 ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS previous_ids jsonb NOT NULL DEFAULT '[]'::jsonb;
+-- One-time data migrations init_db has applied (core.migrate_fingerprints: 'item-fingerprint-v2' carried every
+-- item and the rows derived from it to a source fingerprint without document version IDs).
+CREATE TABLE IF NOT EXISTS ingest_migrations (
+  name text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now()
+);

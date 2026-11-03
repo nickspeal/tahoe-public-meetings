@@ -76,6 +76,10 @@ def test_revision_regenerates_summary_and_preserves_editorial(db):
     meeting = revised["meetings"][0]
     meeting["documents"][0]["sha256"] = "a" * 64
     meeting["pages"][0]["text"] += "\nRevised agenda text."
+    first = min(meeting["agenda_items"], key=lambda i: i["order"])  # the item edited above
+    page = next(p for p in meeting["pages"] if p["page_number"] == first["source_pages"][0]["page_number"])
+    page["text"] = page["text"].replace(first["title"], first["title"] + " (revised)", 1)
+    first["title"] += " (revised)"
     assert ingest_bundle(db, revised)["failed"] == 0
     assert db.execute("SELECT count(*) AS n FROM document_versions").fetchone()["n"] == 2
     item = next(i for i in export_public(db)["meetings"][0]["items"] if i["id"] == item_id)
@@ -217,10 +221,21 @@ def test_summary_versions_append_only_on_real_source_change(db):
     before = db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"]
     assert ingest_bundle(db, original)["failed"] == 0
     assert db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"] == before
-    revised = copy.deepcopy(original)
-    revised["meetings"][0]["documents"][0]["sha256"] = "c" * 64
+    # The same text posted again as a new file is not a source change.
+    reposted = copy.deepcopy(original)
+    reposted["meetings"][0]["documents"][0]["sha256"] = "c" * 64
+    assert ingest_bundle(db, reposted)["failed"] == 0
+    assert db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"] == before
+    # A changed item title is, for that item only.
+    revised = copy.deepcopy(reposted)
+    meeting = revised["meetings"][0]
+    meeting["documents"][0]["sha256"] = "d" * 64
+    first = min(meeting["agenda_items"], key=lambda i: i["order"])
+    page = next(p for p in meeting["pages"] if p["page_number"] == first["source_pages"][0]["page_number"])
+    page["text"] = page["text"].replace(first["title"], first["title"] + " (revised)", 1)
+    first["title"] += " (revised)"
     assert ingest_bundle(db, revised)["failed"] == 0
-    assert db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"] == 2 * before
+    assert db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"] == before + 1
 
 
 def test_curated_topic_examples(db):

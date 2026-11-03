@@ -714,6 +714,12 @@ def scan_key(meeting: Meeting) -> str:
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
 
+def scan_keys(conn) -> dict[str, str]:
+    """The current ``scan_key`` of every meeting a rule maps (two queries), to carry scans that were current
+    across a fingerprint migration (``core.migrate_fingerprints``)."""
+    return {meeting.id: scan_key(meeting) for meeting in _load(conn, agency=None, meeting=None).values()}
+
+
 def _pending(conn, meetings: dict[str, Meeting], *, force: bool, today: date) -> list[Meeting]:
     scans = {r["meeting_id"]: r for r in conn.execute(
         """SELECT meeting_id,items_sha256,status,scanned_at < now() - make_interval(hours => %s) AS retry

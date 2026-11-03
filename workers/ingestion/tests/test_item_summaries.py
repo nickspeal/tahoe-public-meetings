@@ -335,10 +335,50 @@ def test_an_unchanged_agenda_reposted_as_a_new_pdf_keeps_its_summaries_without_a
     before = items(conn)
     assert before["9"]["summary"]["method"] == item_summaries.METHOD
 
-    # The agency posts the same agenda again as a new file: a new document version, so every item's fingerprint changes.
+    # The agency posts the same agenda again as a new file: a new document version with the same text, so no
+    # item changes. Citations, the agenda excerpt's included, and the summary's requested action follow the new file.
     reposted = slt_bundle()
     agenda = next(d for d in reposted["meetings"][0]["documents"] if d["id"] == "slt-agenda")
     agenda["sha256"] = "0" * 64
+    assert ingest_bundle(conn, reposted)["failed"] == 0
+    agenda_version = "slt:2339:slt-agenda:" + "0" * 16
+    after = items(conn)
+    assert {n: i["change"] for n, i in after.items()} == {n: i["change"] for n, i in before.items()}
+    assert {n: i["updatedAt"] for n, i in after.items()} == {n: i["updatedAt"] for n, i in before.items()}
+    assert after["9"]["citations"][0]["documentId"] == agenda_version
+    summary = after["9"]["summary"]
+    assert summary["method"] == item_summaries.METHOD and summary["text"] == before["9"]["summary"]["text"]
+    assert summary["citations"][0]["documentId"] == agenda_version
+    assert summary["citations"][1:] == before["9"]["summary"]["citations"][1:]
+    assert all(c["documentId"] == agenda_version for i in after.values() if i["summary"] and i["summary"]["method"] ==
+               "deterministic-source-excerpt-v1" for c in i["summary"]["citations"])
+    assert check_export(export_public(conn))[0] == []
+
+    def reposted_reader(url, **kwargs):
+        found = reader(url, **kwargs)
+        return {**found, "sha256": agenda["sha256"]} if url == agenda["url"] else found
+    # The new file is a new document, so the meeting is scanned again; nothing is summarized or rebound.
+    assert staff_reports.map_staff_reports(conn, reader=reposted_reader, delay=0, today=TODAY)["itemsMapped"] == 6
+    clients = {"claude-haiku-5-5": NoCallModel(), "claude-sonnet-5-5": NoCallModel()}
+    result = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
+    assert result["itemsPending"] == 0 and result["itemsRebound"] == 0 and result["costUsd"] == 0
+    assert items(conn)["9"]["summary"] == summary
+
+
+def test_a_new_fingerprint_with_the_same_model_input_keeps_its_summaries_without_a_request(conn, monkeypatch):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": StubModel("claude-haiku-5-5")}, today=TODAY)
+    before = items(conn)
+    assert before["9"]["summary"]["method"] == item_summaries.METHOD
+
+    # A new file whose items quote their titles differently (here, item 9 quotes one line of its title):
+    # every changed item gets a new fingerprint, but the model would be sent the same message.
+    reposted = slt_bundle()
+    agenda = next(d for d in reposted["meetings"][0]["documents"] if d["id"] == "slt-agenda")
+    agenda["sha256"] = "0" * 64
+    item = next(i for i in reposted["meetings"][0]["agenda_items"] if i["source_number"] == "9")
+    item["source_pages"][0]["quote"] = before["9"]["citations"][0]["quote"].split("\n")[0].strip()
+    assert item["source_pages"][0]["quote"] != before["9"]["citations"][0]["quote"]
     assert ingest_bundle(conn, reposted)["failed"] == 0
 
     def reposted_reader(url, **kwargs):
@@ -350,13 +390,13 @@ def test_an_unchanged_agenda_reposted_as_a_new_pdf_keeps_its_summaries_without_a
     assert items(conn)["9"]["summary"]["method"] != item_summaries.METHOD  # hidden until rebound
 
     dry = item_summaries.summarize_items(conn, dry_run=True, today=TODAY)
-    assert dry["itemsPending"] == 0 and dry["itemsRebound"] == 6
+    assert dry["itemsPending"] == 0 and dry["itemsRebound"] == 1
     assert items(conn)["9"]["summary"]["method"] != item_summaries.METHOD  # a dry run writes nothing
 
     clients = {"claude-haiku-5-5": NoCallModel(), "claude-sonnet-5-5": NoCallModel()}
     with statement_count(monkeypatch) as rebinding:
         result = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
-    assert result["itemsPending"] == 0 and result["itemsRebound"] == 6 and result["costUsd"] == 0
+    assert result["itemsPending"] == 0 and result["itemsRebound"] == 1 and result["costUsd"] == 0
     assert rebinding["n"] <= 6  # selection, one rebind statement, month-to-date spend: nothing per item
     after = items(conn)
     summary = after["9"]["summary"]

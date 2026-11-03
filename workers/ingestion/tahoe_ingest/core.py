@@ -59,6 +59,7 @@ def init_db(conn: psycopg.Connection) -> None:
               AS a(id text,name text,short_name text,official_url text,source_url text)
             ON CONFLICT(id) DO UPDATE SET name=excluded.name,short_name=excluded.short_name,
             official_url=excluded.official_url,source_url=excluded.source_url""", (json.dumps(agencies),))
+        migrate_fingerprints(conn)
         conn.execute(sql.SQL("COMMENT ON TABLE agencies IS {}").format(sql.Literal(version)))
 
 
@@ -101,6 +102,95 @@ def _hash_text(value) -> str:
 
 def _citation(version_id: str, page: int, quote: str) -> dict:
     return {"documentId": version_id, "page": page, "quote": quote}
+
+
+def cited_text(citations: list[dict]) -> list[dict]:
+    """What citations quote, without the document version they name: each page number and quote, in order."""
+    return [{"page": int(c["page"]), "quote": c["quote"]} for c in citations]
+
+
+def item_fingerprint(title: str, section, citations: list[dict]) -> str:
+    """An item's source fingerprint: its title, section, and the page and text each citation quotes.
+
+    The document version is left out, so an agenda posted again as a new file, or the same text cited from
+    another copy (a meeting's PDF and its HTML agenda), is not a change: nothing is marked revised, mapped,
+    or summarized again. Staff report mappings, attachment lists, and Claude results are keyed on it.
+    """
+    return _hash_text({"title": title, "section": section, "citations": cited_text(citations)})
+
+
+def legacy_fingerprint(title: str, section, citations: list[dict]) -> str:
+    """The fingerprint before November 2026, which also hashed each citation's document version ID.
+
+    Read only to carry rows stored under it over to ``item_fingerprint`` (``migrate_fingerprints`` and ingest)."""
+    return _hash_text({"title": title, "section": section, "citations": citations})
+
+
+# Every table that keys a derived result on the item's fingerprint, with the item ID column.
+FINGERPRINT_TABLES = ("summaries", "item_staff_reports", "item_attachments", "ai_item_summaries", "ai_topic_classifications")
+
+
+def rebind_fingerprints(conn, pairs: list[tuple[str, str, str]], *, items: bool = False) -> None:
+    """Move each (item ID, old, new) fingerprint's derived rows from old to new in one statement; with ``items``,
+    the items too. A row bound to another (older) fingerprint stays stale, as it was."""
+    if not pairs:
+        return
+    updates = [("agenda_items", "id")] if items else []
+    updates += [(table, "item_id") for table in FINGERPRINT_TABLES]
+    steps = sql.SQL(",").join(
+        sql.SQL("{name} AS (UPDATE {table} t SET source_fingerprint=p.new FROM p WHERE t.{key}=p.item_id AND t.source_fingerprint=p.old)")
+        .format(name=sql.Identifier(f"u{n}"), table=sql.Identifier(table), key=sql.Identifier(key))
+        for n, (table, key) in enumerate(updates))
+    conn.execute(sql.SQL("WITH p AS (SELECT * FROM jsonb_to_recordset(%s::jsonb) AS p(item_id text,old text,new text)),{} SELECT 1")
+                 .format(steps), (json.dumps([{"item_id": i, "old": o, "new": n} for i, o, n in pairs]),))
+
+
+def migrate_fingerprints(conn) -> int:
+    """Carry every item stored under ``legacy_fingerprint`` over to ``item_fingerprint`` once; returns the items moved.
+
+    Run by ``init_db`` in the schema's transaction. An item whose stored citations reproduce its stored fingerprint
+    takes the new one, and so do the rows derived from it, and each staff report scan that was current stays
+    current, so the deploy marks nothing revised, maps nothing, and summarizes nothing again. An item whose
+    citations failed validation (stored empty) cannot be recomputed here; ingest moves it when it next reads the
+    same citations (``_ingest_meeting``).
+    """
+    if not conn.execute("""INSERT INTO ingest_migrations(name) VALUES ('item-fingerprint-v2')
+            ON CONFLICT DO NOTHING RETURNING name""").fetchone():
+        return 0
+    pairs = []
+    for r in conn.execute("SELECT id,title,section,citations,source_fingerprint FROM agenda_items"):
+        citations = _json(r["citations"]) or []
+        new = item_fingerprint(r["title"], r["section"], citations)
+        if new != r["source_fingerprint"] and legacy_fingerprint(r["title"], r["section"], citations) == r["source_fingerprint"]:
+            pairs.append((r["id"], r["source_fingerprint"], new))
+    if not pairs:
+        return 0
+    from .staff_reports import scan_keys
+    before = scan_keys(conn)
+    rebind_fingerprints(conn, pairs, items=True)
+    after = scan_keys(conn)
+    moved = [{"meeting_id": m, "old": key, "new": after[m]} for m, key in before.items() if after.get(m) not in (None, key)]
+    if moved:
+        conn.execute("""UPDATE staff_report_scans s SET items_sha256=r.new
+            FROM jsonb_to_recordset(%s::jsonb) AS r(meeting_id text,old text,new text)
+            WHERE s.meeting_id=r.meeting_id AND s.items_sha256=r.old""", (json.dumps(moved),))
+    return len(pairs)
+
+
+def cited_documents(conn, *, agencies=None, meetings=None) -> dict[str, set[str]]:
+    """The current source documents each meeting's active items cite, in one query (by agency or by meeting).
+
+    Capture and reparse pass these to ``agenda.parse_agenda`` as ``prefer``, so items keep citing the copy they
+    cite while it is current and still reads the same items.
+    """
+    cited = {}
+    for r in conn.execute("""SELECT DISTINCT i.meeting_id,c.source_document_id FROM agenda_items i
+            JOIN meetings m ON m.id=i.meeting_id CROSS JOIN LATERAL jsonb_array_elements(i.citations) e
+            JOIN document_current c ON c.meeting_id=i.meeting_id AND c.version_id=e->>'documentId'
+            WHERE i.active AND (%s::text[] IS NULL OR m.agency_id=ANY(%s)) AND (%s::text[] IS NULL OR i.meeting_id=ANY(%s))""",
+            (agencies, agencies, meetings, meetings)):
+        cited.setdefault(r["meeting_id"], set()).add(r["source_document_id"])
+    return cited
 
 
 def one_per_url(docs: list[dict], cited: set[str]) -> list[dict]:
@@ -415,15 +505,25 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
     stored_items = {r["id"]: r for r in conn.execute("SELECT * FROM agenda_items WHERE meeting_id=%s", (meeting_id,))}
     page_texts = stored_page_texts(conn, [c for _, _, citations in incoming_items for c in citations])
     seen_items = set()
+    legacy = []  # (item ID, fingerprint stored under legacy_fingerprint, its item_fingerprint)
+    moves = []  # (item ID, stored citations, the same pages and quotes cited from other document versions)
     for item, source_key, citations in incoming_items:
         item_id = stable_id(meeting_id, source_key)
         # A repeated key sees the row its first occurrence just wrote.
         existing = (conn.execute("SELECT * FROM agenda_items WHERE id=%s", (item_id,)).fetchone()
                     if item_id in seen_items else stored_items.get(item_id))
         seen_items.add(item_id)
-        fingerprint = _hash_text({"title": item["title"], "section": item.get("section"), "citations": citations})
-        changed = (not existing or existing["source_fingerprint"] != fingerprint or
-                   existing["item_order"] != int(item["order"]) or not existing["active"])
+        fingerprint = item_fingerprint(item["title"], item.get("section"), citations)
+        stored_fingerprint = existing["source_fingerprint"] if existing else None
+        if existing and stored_fingerprint != fingerprint and \
+                stored_fingerprint == legacy_fingerprint(item["title"], item.get("section"), citations):
+            # Stored under the old formula from these same citations (migrate_fingerprints could not recompute
+            # it, or an older worker wrote it): the same item, whose derived rows move to the new fingerprint.
+            legacy.append((item_id, stored_fingerprint, fingerprint))
+            stored_fingerprint = fingerprint
+        refreshed = (not existing or stored_fingerprint != fingerprint or
+                     existing["item_order"] != int(item["order"]) or not existing["active"])
+        changed = refreshed
         changed_items |= changed
         item_change = "new" if not existing else "revised" if changed else existing["change"]
         try:
@@ -433,30 +533,34 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
         except ValueError as exc:
             valid_citations = []
             summary_status, summary_error = "validation_failed", str(exc)
-        if existing and valid_citations and _json(existing["citations"]) != valid_citations:
-            # Restore evidence after a document-only refresh invalidated this
-            # item's citations, even when its source fingerprint is unchanged.
-            changed = True
-            changed_items = True
-            item_change = "revised"
+        stored_citations = _json(existing["citations"]) if existing else []
+        if existing and valid_citations and stored_citations != valid_citations:
+            if stored_citations and cited_text(stored_citations) == cited_text(valid_citations):
+                # The same pages and quotes, cited from another version or copy of the agenda: not a change, but
+                # what cited the old version follows (_move_citations).
+                moves.append((item_id, stored_citations, valid_citations))
+            else:
+                # Restore evidence after a document-only refresh invalidated this
+                # item's citations, even when its source fingerprint is unchanged.
+                changed = True
+                changed_items = True
+                item_change = "revised"
         number = item.get("source_number") or ""
         # The whole text of a title the parser cut short. It is display text derived from the same rows as the
         # title, so it stays out of the fingerprint: adding it never re-maps, re-summarizes, or re-classifies an item.
         full_title = item.get("full_title") or None
         unchanged_row = (existing and not changed and existing["number"] == number and existing["title"] == item["title"]
-                         and existing["full_title"] == full_title
+                         and existing["full_title"] == full_title and existing["source_fingerprint"] == fingerprint
                          and existing["section"] == item.get("section") and existing["change"] == item_change
-                         and _json(existing["citations"]) == valid_citations)
+                         and stored_citations == valid_citations)
         if not unchanged_row:
             conn.execute("""INSERT INTO agenda_items(id,meeting_id,source_key,number,item_order,title,section,source_fingerprint,citations,change,full_title)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT(id) DO UPDATE SET number=excluded.number,item_order=excluded.item_order,title=excluded.title,
                 full_title=excluded.full_title,section=excluded.section,source_fingerprint=excluded.source_fingerprint,citations=excluded.citations,active=true,
-                change=excluded.change,updated_at=CASE WHEN agenda_items.source_fingerprint IS DISTINCT FROM excluded.source_fingerprint
-                  OR agenda_items.item_order IS DISTINCT FROM excluded.item_order OR NOT agenda_items.active
-                THEN clock_timestamp() ELSE agenda_items.updated_at END""",
+                change=excluded.change,updated_at=CASE WHEN %s THEN clock_timestamp() ELSE agenda_items.updated_at END""",
                 (item_id, meeting_id, source_key, number, int(item["order"]), item["title"], item.get("section"),
-                 fingerprint, json.dumps(valid_citations), item_change, full_title))
+                 fingerprint, json.dumps(valid_citations), item_change, full_title, refreshed))
         if is_placeholder(item):
             # No summary, topics, or citation check for a number the agenda skips (decision 0032).
             conn.execute("DELETE FROM summaries WHERE item_id=%s", (item_id,))
@@ -479,6 +583,10 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             changed_topics |= topic_set_changed and not changed
             if topic_set_changed and not changed:
                 conn.execute("UPDATE agenda_items SET updated_at=clock_timestamp() WHERE id=%s", (item_id,))
+    rebind_fingerprints(conn, legacy)
+    if moves:
+        document_of = {version: document for document, version in version_ids.items()}
+        _move_citations(conn, moves, lambda version, page: page_rows.get((document_of.get(version), page)))
     items_complete = row.get("items_complete", bool(row.get("documents")))
     withdrawn_count = 0
     if items_complete and any(r["active"] and r["id"] not in seen_items for r in stored_items.values()):
@@ -522,6 +630,46 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                 THEN 'never_checked' ELSE 'ok' END,error=NULL WHERE id=%s""", (aid, aid, aid))
     conn.execute("""INSERT INTO processing_runs(agency_id,meeting_id,stage,status,finished_at,detail)
         VALUES (%s,%s,'ingest','succeeded',now(),%s)""", (aid, meeting_id, json.dumps({"mode": mode, "revised_documents": sorted(revised_documents)})))
+
+
+def _move_citations(conn, moves: list[tuple[str, list, list]], page_text) -> None:
+    """Point what cited an unchanged item's old document versions at the ones it cites now (three statements at most).
+
+    ``moves`` holds (item ID, stored citations, current citations) with equal pages and quotes. The item's agenda
+    excerpt follows, and so does a Claude summary's citation of an old version (the requested action it leads
+    with) once its quote is on the same page of the new version (``page_text(version, page)``). A summary whose
+    citation cannot follow is unbound from the fingerprint, which hides it until ``item_summaries`` rebinds or
+    rewrites it, as after any agenda change; the export never cites a version it does not carry.
+    """
+    conn.execute("""UPDATE summaries s SET citations=r.new FROM jsonb_to_recordset(%s::jsonb) AS r(item_id text,old jsonb,new jsonb)
+        WHERE s.item_id=r.item_id AND s.citations=r.old""",
+                 (json.dumps([{"item_id": i, "old": old, "new": new} for i, old, new in moves]),))
+    versions = {}
+    for item_id, old, new in moves:
+        pairs = {(a["documentId"], b["documentId"]) for a, b in zip(old, new) if a["documentId"] != b["documentId"]}
+        sources = [a for a, _ in pairs]
+        # One old version now cited from two new ones cannot be followed.
+        versions[item_id] = dict(pairs) if len(sources) == len(set(sources)) else dict.fromkeys(sources)
+    updates, unbound = [], []
+    for r in conn.execute("SELECT item_id,citations FROM ai_item_summaries WHERE item_id=ANY(%s)", (list(versions),)):
+        mapping, followed = versions[r["item_id"]], []
+        for citation in _json(r["citations"]) or []:
+            if citation.get("documentId") in mapping:
+                version = mapping[citation["documentId"]]
+                text = page_text(version, int(citation["page"])) if version else None
+                if not text or not citation.get("quote") or citation["quote"] not in text:
+                    unbound.append(r["item_id"])
+                    break
+                citation = {**citation, "documentId": version}
+            followed.append(citation)
+        else:
+            if followed != (_json(r["citations"]) or []):
+                updates.append({"item_id": r["item_id"], "citations": followed})
+    if updates:
+        conn.execute("""UPDATE ai_item_summaries x SET citations=r.citations
+            FROM jsonb_to_recordset(%s::jsonb) AS r(item_id text,citations jsonb) WHERE x.item_id=r.item_id""", (json.dumps(updates),))
+    if unbound:
+        conn.execute("UPDATE ai_item_summaries SET source_fingerprint='moved:'||source_fingerprint WHERE item_id=ANY(%s)", (unbound,))
 
 
 def _page_links(page: dict) -> list[str]:

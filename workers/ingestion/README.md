@@ -77,6 +77,10 @@ layout:
    `--dry-run`, to re-parse stored text with no source fetch. By default it
    only touches meetings with no items or with items waiting to be
    reprocessed. `--force` reparses every stored meeting for that agency.
+   Items keep citing the copy of the agenda they cite while it is current and
+   reads the same items, as in capture (decision 0034); a meeting whose items
+   cite an HTML agenda is reported under `kept`, since only a capture can read
+   its markup again.
 
 Legistar agencies expose agenda PDFs through the public web API
 (`https://webapi.legistar.com/v1/CLIENT/events`); the meeting-detail pages

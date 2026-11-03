@@ -13,6 +13,10 @@ could be read are published with operator notes, and a number the
 agenda skips is listed as a placeholder (``outline.PLACEHOLDER_TITLE``) with no
 quote. When several agenda PDFs read differently, the agenda is preferred over
 the packet, then the copy with the most items.
+
+Which copy items cite is a function of the documents and the stored items alone
+(``parse_agenda``'s ``prefer``), never of the order a caller lists them in, so a
+capture, a reparse, and a backfill of the same meeting cite the same document.
 """
 from __future__ import annotations
 
@@ -23,6 +27,7 @@ from .agenda_custom import PARSERS, UNVALIDATED
 from .agenda_layouts import layouts
 from .catalog import agency_catalog
 from .outline import Layout, cover_matches, is_placeholder, parse_layout_notes
+from .source_discovery import _document_rank
 
 DIFFERING = "Multiple agenda PDFs contain differing item sequences"
 # A packet's copy of the agenda adds its page references: "(Pages 4-5)", "– pages 4 - 22".
@@ -77,7 +82,22 @@ def _parse_document(formats: tuple[Layout, ...], document_id: str, pages: list[d
     return _result([], False, warning), redesigned is not None
 
 
-def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> ParseResult:
+def document_order(documents: list[dict]) -> list[dict]:
+    """The order copies are tried in, whatever order they were listed in: the agenda (an HTML copy first), then the
+    packet, then minutes and other material (``source_discovery``'s ranking), then by document ID."""
+    return sorted(documents, key=lambda d: (_document_rank({"id": str(d["id"]), "title": d.get("title") or "",
+                                                            "url": d.get("url") or ""}), str(d["id"])))
+
+
+def parse_agenda(agency: str, documents: list[dict], pages: list[dict], *, prefer=()) -> ParseResult:
+    """Items from the meeting's documents (every one the caller has, in any order).
+
+    ``prefer`` names the source document IDs the meeting's stored items cite. Among copies that read the same
+    items, those keep their citations, so a capture after a reparse (or a reparse that sees a duplicate copy
+    a capture does not) never moves every item to another copy of the same agenda.
+    """
+    prefer = {str(d) for d in prefer}
+    documents = document_order(documents)
     config = agenda_config(agency)
     if not config.get("layouts"):
         return _result([], False, f"No parser exists for agency {agency}; review required.")
@@ -112,12 +132,15 @@ def parse_agenda(agency: str, documents: list[dict], pages: list[dict]) -> Parse
     if len(successes) == 1:
         return successes[0]
     if len(successes) > 1:
+        kept = next((k for k, source in enumerate(sources) if str(source["id"]) in prefer), 0)
         signatures = [_signature(result) for result in successes]
         if all(signature == signatures[0] for signature in signatures[1:]):
-            return successes[0]
-        # Prefer the agenda to the packet that reprints it, then the copy that has the most items.
+            return successes[kept]
+        # Prefer the agenda to the packet that reprints it, then the copy that has the most items, then the copy the
+        # stored items cite.
         best = min(range(len(successes)), key=lambda k: ("-agenda-packet" in str(sources[k]["id"]),
-                                                         -sum(not is_placeholder(i) for i in successes[k].items), k))
+                                                         -sum(not is_placeholder(i) for i in successes[k].items),
+                                                         str(sources[k]["id"]) not in prefer, k))
         chosen = successes[best]
         if all(_same_items(chosen, result) for result in successes):
             return chosen  # the copies differ only in page references, where a long title was cut, or placeholders

@@ -14,7 +14,7 @@ import urllib.parse
 from datetime import date, datetime, timezone
 
 from .agenda import ParseResult, parse_agenda
-from .core import ingest_bundle, record_failure, record_oversized, stable_id
+from .core import cited_documents, ingest_bundle, record_failure, record_oversized, stable_id
 from .source_discovery import discover_configured
 from .http import EndpointSkipped, SourceTooLarge
 from .records import apply_links, links_of, match_meeting, qualifiers
@@ -112,6 +112,7 @@ class StoredMeetings:
         self.oversized = frozenset(url for _, url in oversized)  # for `capture_candidates`, from the same snapshot
         for meeting_id, url in oversized:
             self.document_urls.setdefault(meeting_id, set()).add(url)
+        self.cited = cited_documents(conn)  # for `capture_candidates`: the documents stored items cite
         self.failed = {r["meeting_id"] for r in conn.execute(
             """SELECT DISTINCT meeting_id FROM processing_runs WHERE stage='capture' AND status='failed'
             AND meeting_id IS NOT NULL AND started_at > now() - make_interval(hours => %s)""", (failure_hours,))}
@@ -204,12 +205,14 @@ def _is_packet(document: dict) -> bool:
 
 
 def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, failure_records: list, delay: float,
-                 *, known_oversized: frozenset = frozenset(), oversized: list | None = None) -> dict:
+                 *, known_oversized: frozenset = frozenset(), oversized: list | None = None, prefer=()) -> dict:
     """One meeting's ingest row from its documents (every one listed, up to ``max_documents``).
 
-    Discovery's order is kept: the agenda first, then its packet, so items cite the
-    agenda and the first document is the one labeled as it. A listing over the cap is
-    logged; the documents read are stored, but items are not parsed from a partial set.
+    Discovery's order is kept: the agenda first, then its packet, so the first document is
+    the one labeled as it. Which copy items cite is ``parse_agenda``'s choice, the same a
+    reparse makes: ``prefer`` names the documents the stored items cite. A listing over
+    the cap is logged; the documents read are stored, but items are not parsed from a
+    partial set.
 
     A packet over the size or page limits (``SourceTooLarge``) beside another captured
     document is left out without a failure: the agenda still parses, and the URL is
@@ -272,7 +275,7 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
         failure_records.append((candidate["agency"], candidate["source_id"], reason))
     complete_document_set = not document_errors and not skipped and not truncated
     parsed = ParseResult(html_items, True) if html_items else (
-        parse_agenda(candidate["agency"], docs, pages) if docs and complete_document_set else None)
+        parse_agenda(candidate["agency"], docs, pages, prefer=prefer) if docs and complete_document_set else None)
     warnings = list(candidate.get("warnings", []))
     if document_errors:
         warnings.append("Some official documents could not be retrieved; the meeting notice is retained and document capture will need a retry.")
@@ -303,7 +306,8 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
 
 
 def capture_candidates(conn, candidates: list[dict], *, max_documents: int = MAX_DOCUMENTS, fetch=download_extract,
-                       incremental: bool = False, delay: float = 0.0, oversized: frozenset | None = None) -> dict:
+                       incremental: bool = False, delay: float = 0.0, oversized: frozenset | None = None,
+                       cited: dict | None = None) -> dict:
     """Download every document of each candidate (up to ``max_documents``) and ingest the meetings.
 
     With ``incremental`` each meeting is ingested and committed on its own, and
@@ -311,7 +315,9 @@ def capture_candidates(conn, candidates: list[dict], *, max_documents: int = MAX
     a remote database). Otherwise all meetings are ingested together at the end.
 
     Packets recorded as oversized are not downloaded again. Pass ``oversized`` (a
-    `StoredMeetings.oversized` snapshot) to skip the one query that loads them.
+    `StoredMeetings.oversized` snapshot) to skip the one query that loads them, and
+    ``cited`` (`StoredMeetings.cited`) to skip the one that reads which documents the
+    stored items cite.
     """
     rows, failures, failure_records, new_oversized = [], [], [], []
     known_oversized = oversized if oversized is not None else frozenset(url for _, url in oversized_urls(conn))
@@ -324,6 +330,8 @@ def capture_candidates(conn, candidates: list[dict], *, max_documents: int = MAX
         result["errors"].extend(outcome["errors"])
 
     candidates = [c for c in candidates if not c.get("records_only")]  # links for stored meetings, nothing to capture
+    if cited is None:
+        cited = cited_documents(conn, agencies=sorted({c["agency"] for c in candidates})) if candidates else {}
     for number, candidate in enumerate(candidates):
         if number and delay:
             time.sleep(delay)
@@ -333,7 +341,8 @@ def capture_candidates(conn, candidates: list[dict], *, max_documents: int = MAX
             conn.commit()
         try:
             row = _capture_row(candidate, max_documents, fetch, failures, failure_records, delay,
-                               known_oversized=known_oversized, oversized=new_oversized)
+                               known_oversized=known_oversized, oversized=new_oversized,
+                               prefer=cited.get(stable_id(candidate["agency"], candidate["source_id"]), ()))
         except Exception as exc:  # One bad source never stops the batch.
             failures.append(f"{candidate['agency']}:{candidate['source_id']}: {exc}")
             failure_records.append((candidate["agency"], candidate["source_id"], str(exc)))

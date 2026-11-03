@@ -10,7 +10,7 @@ const source = await readFile(resolve(root, 'src/lib/agenda-excerpt.ts'), 'utf8'
 const javascript = ts.transpileModule(source, {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
 }).outputText;
-const { itemDetail } = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`);
+const { itemDetail, itemDetails, itemTitle } = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`);
 
 const excerpt = (quote) => ({ status: 'published', method: 'deterministic-source-excerpt-v1', text: `Agenda excerpt: “${quote}”`,
   generatedAt: '', citations: [{ documentId: 'd', page: 1, quote }] });
@@ -50,4 +50,18 @@ test('unpublished summaries are hidden and other summary methods are labeled as 
   assert.equal(itemDetail({ title: 'x', summary: null }), null);
   assert.deepEqual(itemDetail({ title: 'x', summary: { ...excerpt('x'), method: 'claude-staff-report-v1', text: 'Staff recommend approval.' } }),
     { label: 'Summary', text: 'Staff recommend approval.' });
+});
+
+test('a title the parser cut short ends with an ellipsis and its whole text is shown', () => {
+  // El Dorado County, item 20 of November 2026: the agenda's title runs past the layout's eight-line limit.
+  const title = 'Department of Transportation recommending the Board approve the First Amendment, with the following: 1) Extend the performance period by two (2) years through November 5,';
+  const fullTitle = `${title} 2028; and 2) Increase the not-to-exceed amount by $500,000.`;
+  const summary = excerpt('Department of Transportation recommending the Board approve the First');
+  assert.equal(itemTitle({ title, fullTitle }), `${title.slice(0, -1)}…`);
+  assert.equal(itemTitle({ title }), title);
+  assert.deepEqual(itemDetails({ title, fullTitle, summary }), [{ label: 'From the agenda', text: fullTitle }]);
+  assert.deepEqual(itemDetails({ title, summary }), []);
+  const staff = { status: 'published', method: 'claude-staff-report-v1', text: 'The amendment funds design.', generatedAt: '', citations: [] };
+  assert.deepEqual(itemDetails({ title, fullTitle, summary: staff }),
+    [{ label: 'From the agenda', text: fullTitle }, { label: 'Summary', text: 'The amendment funds design.' }]);
 });

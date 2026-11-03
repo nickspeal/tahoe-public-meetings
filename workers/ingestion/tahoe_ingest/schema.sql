@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS agenda_items (
 );
 ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT true;
 ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS classifier_version text;
+-- The item's whole agenda text when the parser's title limit cut the title; outside source_fingerprint.
+ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS full_title text;
 CREATE TABLE IF NOT EXISTS summaries (
   item_id text PRIMARY KEY REFERENCES agenda_items(id), text text NOT NULL,
   status text NOT NULL, method text NOT NULL, human_reviewed boolean NOT NULL DEFAULT false,

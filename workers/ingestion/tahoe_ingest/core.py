@@ -436,19 +436,23 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
             changed_items = True
             item_change = "revised"
         number = item.get("source_number") or ""
+        # The whole text of a title the parser cut short. It is display text derived from the same rows as the
+        # title, so it stays out of the fingerprint: adding it never re-maps, re-summarizes, or re-classifies an item.
+        full_title = item.get("full_title") or None
         unchanged_row = (existing and not changed and existing["number"] == number and existing["title"] == item["title"]
+                         and existing["full_title"] == full_title
                          and existing["section"] == item.get("section") and existing["change"] == item_change
                          and _json(existing["citations"]) == valid_citations)
         if not unchanged_row:
-            conn.execute("""INSERT INTO agenda_items(id,meeting_id,source_key,number,item_order,title,section,source_fingerprint,citations,change)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            conn.execute("""INSERT INTO agenda_items(id,meeting_id,source_key,number,item_order,title,section,source_fingerprint,citations,change,full_title)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT(id) DO UPDATE SET number=excluded.number,item_order=excluded.item_order,title=excluded.title,
-                section=excluded.section,source_fingerprint=excluded.source_fingerprint,citations=excluded.citations,active=true,
+                full_title=excluded.full_title,section=excluded.section,source_fingerprint=excluded.source_fingerprint,citations=excluded.citations,active=true,
                 change=excluded.change,updated_at=CASE WHEN agenda_items.source_fingerprint IS DISTINCT FROM excluded.source_fingerprint
                   OR agenda_items.item_order IS DISTINCT FROM excluded.item_order OR NOT agenda_items.active
                 THEN clock_timestamp() ELSE agenda_items.updated_at END""",
                 (item_id, meeting_id, source_key, number, int(item["order"]), item["title"], item.get("section"),
-                 fingerprint, json.dumps(valid_citations), item_change))
+                 fingerprint, json.dumps(valid_citations), item_change, full_title))
         if is_placeholder(item):
             # No summary, topics, or citation check for a number the agenda skips (decision 0032).
             conn.execute("DELETE FROM summaries WHERE item_id=%s", (item_id,))
@@ -727,6 +731,8 @@ def export_public(conn, *, mode="fixture", forecast_days: int = 0, today: date |
             items.append({"id": i["id"], "number": i["number"], "order": i["item_order"], "title": i["title"],
                 "section": i["section"], "topics": sorted(expand_topics(topics)), "summary": summary, "citations": _json(i["citations"]),
                 "change": i["change"], "updatedAt": iso(i["updated_at"]), "suppressed": bool(i["suppressed"])})
+            if i["full_title"]:
+                items[-1]["fullTitle"] = i["full_title"]  # present only when the title is cut short
             if staff_report := supporting.report(i["id"], summary, iso):
                 items[-1]["staffReport"] = staff_report
             if attachments := supporting.attachments(i["id"]):

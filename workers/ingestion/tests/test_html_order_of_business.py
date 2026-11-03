@@ -34,6 +34,11 @@ def test_meeting_page_gives_every_part_and_numbered_item_with_exact_quotes():
     assert by_number["I.a"]["title"].startswith("CITY OF PACIFICA (PARTY) Consider approval for a limited term Emergency")
     assert by_number["58"]["section"] == "Regular Calendar 58-64"
     assert all(len(i["title"]) <= oob.MAX_TITLE + 40 for i in items)
+    # A title cut at MAX_TITLE keeps the whole description, up to its CEQA note, beside it.
+    cut = [i for i in items if i.get("full_title")]
+    assert cut and all(len(i["full_title"]) > len(i["title"]) and "CEQA Consideration" not in i["full_title"] for i in cut)
+    assert all(i["full_title"].startswith(i["title"].removesuffix(" (Removed from the agenda 10/19/2026)")) for i in cut)
+    assert not any(i.get("full_title") for i in items if len(i["title"]) < oob.MAX_TITLE - 40)
 
 
 def test_capture_stores_the_page_text_and_its_items(monkeypatch):

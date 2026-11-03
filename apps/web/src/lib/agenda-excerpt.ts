@@ -10,6 +10,23 @@ const LABEL_ROW = /^[ \t]*(?:[A-Z]|\d{1,3})(?:[ \t]{3,}\d{1,3})?[ \t]*\n/gm;
 
 const words = (text: string) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
 
+/** An item's title as shown: one the agenda parser cut short ends with an ellipsis. */
+export function itemTitle(item: Pick<AgendaItem, 'title' | 'fullTitle'>): string {
+  return item.fullTitle ? `${item.title.replace(/[\s,;:–—-]+$/, '')}…` : item.title;
+}
+
+/**
+ * Blocks to show inside an expanded agenda item: the whole agenda text when the title was cut
+ * short, then the summary (`itemDetail`). The excerpt is left out beside the whole text, which
+ * already contains it.
+ */
+export function itemDetails(item: Pick<AgendaItem, 'title' | 'fullTitle' | 'summary'>): { label: string; text: string }[] {
+  const detail = itemDetail(item);
+  if (!item.fullTitle) return detail ? [detail] : [];
+  const full = { label: 'From the agenda', text: item.fullTitle };
+  return detail && item.summary?.method !== EXCERPT_METHOD ? [full, detail] : [full];
+}
+
 /**
  * Text to show inside an expanded agenda item, or null when it would only repeat the title.
  *

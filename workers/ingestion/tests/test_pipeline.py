@@ -451,6 +451,30 @@ def test_date_only_meeting_is_exported_and_date_move_is_a_real_revision(db):
     assert moved["updatedAt"] > first["updatedAt"]
 
 
+def test_a_cut_title_keeps_its_full_text_without_changing_the_fingerprint(db):
+    bundle = one_meeting("ttd")
+    assert ingest_bundle(db, bundle)["failed"] == 0
+    item = bundle["meetings"][0]["agenda_items"][2]
+    item_id = f"ttd:7110:{item['source_number']}"
+    before = db.execute("SELECT source_fingerprint,updated_at,change FROM agenda_items WHERE id=%s", (item_id,)).fetchone()
+    versions = db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"]
+    exported = next(i for m in export_public(db)["meetings"] for i in m["items"] if i["id"] == item_id)
+    assert "fullTitle" not in exported
+    # A parser that now reads the rest of a cut title stores it beside the unchanged title.
+    item["full_title"] = item["title"] + " and the rest of the agenda text."
+    assert ingest_bundle(db, bundle)["failed"] == 0
+    after = db.execute("SELECT source_fingerprint,updated_at,change,full_title FROM agenda_items WHERE id=%s", (item_id,)).fetchone()
+    assert after["full_title"] == item["full_title"]
+    assert (after["source_fingerprint"], after["updated_at"], after["change"]) == (
+        before["source_fingerprint"], before["updated_at"], before["change"])
+    assert db.execute("SELECT count(*) AS n FROM summary_versions").fetchone()["n"] == versions
+    exported = next(i for m in export_public(db)["meetings"] for i in m["items"] if i["id"] == item_id)
+    assert exported["fullTitle"] == item["full_title"] and exported["title"] == item["title"]
+    del item["full_title"]
+    assert ingest_bundle(db, bundle)["failed"] == 0
+    assert db.execute("SELECT full_title FROM agenda_items WHERE id=%s", (item_id,)).fetchone()["full_title"] is None
+
+
 def test_partial_date_only_capture_does_not_keep_stale_start_time(db):
     original = one_meeting("ttd")
     assert ingest_bundle(db, original)["failed"] == 0

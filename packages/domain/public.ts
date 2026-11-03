@@ -9,6 +9,11 @@ export interface AgendaItem {
   number: string;
   order: number;
   title: string;
+  /**
+   * The item's whole agenda text, present only when the agenda parser cut `title` short
+   * (a line or character limit). `title` is then the start of this text.
+   */
+  fullTitle?: string;
   section: string | null;
   topics: string[];
   summary: { text: string; status: 'published' | 'validation_failed' | 'pending'; method: string; generatedAt: string; citations: Citation[] } | null;

@@ -49,6 +49,7 @@ ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 
 PLACEHOLDER_TITLE = "Not Found In Agenda"
 # SQL condition (on agenda_items AS i) that leaves placeholders out of classification, summaries, and staff reports.
 NOT_PLACEHOLDER_SQL = f"NOT (i.title = '{PLACEHOLDER_TITLE}' AND i.citations = '[]'::jsonb)"
+MAX_FULL_TITLE_LINES = 40  # rows read past max_title_lines for an item's full text
 LENIENT_GAP = 3  # the most consecutive missing labels bridged when the strict outline fails
 ZERO_WIDTH = re.compile("[​‌‍﻿]")
 CONNECTOR = re.compile(r"(?:[,;(&/\-–—]|\b(?:and|or|of|the|for|to|in|on|at|with|by|from|a|an|as|its|their|regarding|between))\s*$", re.I)
@@ -166,6 +167,7 @@ class Entry:
     heading: str | None = None
     hidden: bool = False
     placeholder: bool = False  # a number the agenda skips (PLACEHOLDER_TITLE)
+    full_title: str | None = None  # the whole title when max_title_lines cut it short
 
 
 class Invalid(Exception):
@@ -348,8 +350,13 @@ class Parser:
         return section_name(_cleanup(self.layout, text if self.headings.search(text) else _without_note(text)))
 
     # -- titles -------------------------------------------------------------
-    def title(self, index: int, column: int, clip: int | None, top: bool = True) -> tuple[str, str, int]:
-        """Title text, exact quote, and the last row index used."""
+    def title(self, index: int, column: int, clip: int | None, top: bool = True) -> tuple[str, str, int, str | None]:
+        """Title text, exact quote, the last row index used, and the full text when ``max_title_lines`` cut the title.
+
+        Rows past ``max_title_lines`` that the same rules would have joined to the title are read
+        (up to ``MAX_FULL_TITLE_LINES``) only for the full text; they do not change the title, its
+        quote, or the rows the title consumes.
+        """
         layout = self.layout
         first = self.rows[index]
         gapped = False
@@ -366,26 +373,28 @@ class Parser:
 
         parts = [segment(first.clean, column)]
         used = [index]
+        overflow: list[str] = []  # rows past max_title_lines that would have continued the title
+        read = index  # the last row read, title or overflow
         title_end = re.compile(layout.title_end) if layout.title_end else None
         previous = parts[0]
         j = index
         while j + 1 < len(self.rows):
             j += 1
-            if len(used) >= layout.max_title_lines or layout.wrap == "none":
+            if layout.wrap == "none" or len(used) + len(overflow) >= layout.max_title_lines + MAX_FULL_TITLE_LINES:
                 break
             if title_end and title_end.search(previous):
                 break
             row = self.rows[j]
             turned = False
-            if (row.page != first.page or row.blank) and self.rows[used[-1]].page == first.page \
+            if (row.page != first.page or row.blank) and self.rows[read].page == first.page \
                     and clip is None and not layout.column_gap:
                 # A title that ends its page may carry on at the top of the next one.
                 following = self.next_page_row(j, first.page)
-                if following is not None and continues_on_next_page(" ".join(parts), self.rows[following].clean):
+                if following is not None and continues_on_next_page(" ".join(parts + overflow), self.rows[following].clean):
                     j, row, turned = following, self.rows[following], True
             text = (row.clean[:clip] if clip else row.clean).rstrip()
             stripped = text.strip()
-            if (row.page != self.rows[used[-1]].page and not turned) or not stripped or self.is_marker(row):
+            if (row.page != self.rows[read].page and not turned) or not stripped or self.is_marker(row):
                 break
             if self.end.search(stripped) or (self.stop and self.stop.search(stripped)):
                 break
@@ -400,7 +409,7 @@ class Parser:
                 break  # (stored page text loses the indentation of a page's first line)
             if _caps(previous) and not _caps(stripped):
                 break  # an ALL-CAPS heading followed by its description
-            joined = " ".join(parts)
+            joined = " ".join(parts + overflow)
             open_paren = joined.count("(") > joined.count(")")
             if layout.wrap == "lowercase" and not (re.match(r"^[a-z0-9\[“\"'$]", stripped) or CONNECTOR.search(previous)
                                                     or open_paren or (_caps(previous) and _caps(stripped))):
@@ -408,10 +417,15 @@ class Parser:
             stripped = segment(row.clean, 0) if layout.column_gap else stripped
             if not stripped:
                 break
-            parts.append(stripped)
-            used.append(j)
+            if len(used) >= layout.max_title_lines:
+                overflow.append(stripped)
+            else:
+                parts.append(stripped)
+                used.append(j)
+            read = j
             previous = stripped
         title = _cleanup(layout, " ".join(parts), top)
+        full = _cleanup(layout, " ".join(parts + overflow), top) if overflow else None
         quoted = [k for k in used if self.rows[k].page == first.page]
         modified = clip is not None or gapped or any(self.rows[k].trimmed for k in quoted)
         if modified or len(quoted) == 1:
@@ -421,7 +435,7 @@ class Parser:
             last = self.rows[quoted[-1]]
             offset = first.raw.index(parts[0]) if parts[0] in first.raw else column
             quote = first.source[first.start + offset:last.start + len(last.raw)].strip()
-        return title, quote[:300], used[-1]
+        return title, quote[:300], used[-1], (full if full and full != title else None)
 
     def next_page_row(self, index: int, page: int) -> int | None:
         """The first text row after ``page`` when only blank rows (or skipped furniture) remain on it from ``index``."""
@@ -516,7 +530,7 @@ class Parser:
                     if title_row is None or self.rows[title_row].page != row.page or self.is_marker(self.rows[title_row]):
                         raise Invalid(f"{layout.label} item {match.group('v')} has no title; review required.")
                     column = self.rows[title_row].indent
-                title, quote, last = self.title(title_row, column, clip, top=level_index == 0)
+                title, quote, last, full = self.title(title_row, column, clip, top=level_index == 0)
                 consumed_until = last
                 if re.match(r"^(?:\d{1,2}|[A-Za-z]|[IVX]{1,5})\.\s", match.group("t")):
                     raise Invalid(f"{layout.label} item {match.group('v')} contains a second item number; review required.")
@@ -525,7 +539,7 @@ class Parser:
                 stack = stack[:level_index]
                 parent = stack[-1] if stack else None
                 entry = Entry(level_index, value_of(levels[level_index].kind, match.group("v")), match.group("v"),
-                              title, row.page, quote, parent, heading=heading)
+                              title, row.page, quote, parent, heading=heading, full_title=full)
                 siblings = parent.children if parent else roots
                 if levels[level_index].kind == "free":
                     skipped = self.free_gap(siblings, level_index, match.group("v"))
@@ -709,8 +723,8 @@ class Parser:
                     if children:
                         break
                     continue
-                title, quote, _ = self.title(idx, match.start("t"), clip, top=False)
-                children.append(Entry(parent.level + 1, value, match.group("v"), title, row.page, quote, parent))
+                title, quote, _, full = self.title(idx, match.start("t"), clip, top=False)
+                children.append(Entry(parent.level + 1, value, match.group("v"), title, row.page, quote, parent, full_title=full))
             if parent is not None:
                 if not children:
                     raise Invalid(f"{self.layout.label} appendix items were not found; review required.")
@@ -746,16 +760,16 @@ class Parser:
             stripped = row.clean.strip()
             match = self.patterns[0].match(row.clean)
             if match and match.group("v") in listed:
-                _, _, consumed = self.title(idx, match.start("t"), None)
+                _, _, consumed, _ = self.title(idx, match.start("t"), None)
             elif match:
                 value = value_of(level.kind, match.group("v"))
                 if not expected <= value <= expected + LENIENT_GAP or not match.group("t").strip():
                     if not any("addendum numbering" in note for note in self.notes):
                         self.notes.append(f"{self.layout.label} addendum numbering is not sequential near “{stripped[:60]}”; review required.")
                     continue
-                title, quote, consumed = self.title(idx, match.start("t"), None)
+                title, quote, consumed, full = self.title(idx, match.start("t"), None)
                 self.fill_gap(added, 0, tuple(range(expected, value)), None, row.page, heading, stripped)
-                added.append(Entry(0, value, match.group("v"), title, row.page, quote, None, heading=heading))
+                added.append(Entry(0, value, match.group("v"), title, row.page, quote, None, heading=heading, full_title=full))
                 expected = value + 1
             elif self.is_heading(stripped):
                 heading = self.heading_name(stripped)
@@ -802,6 +816,8 @@ def flatten(layout: Layout, document_id: str, roots: list[Entry]) -> list[dict]:
                       "source_pages": [{"document_id": document_id, "page_number": entry.page, "quote": entry.quote}]})
         if entry.placeholder:
             items[-1]["placeholder"] = True
+        if entry.full_title:
+            items[-1]["full_title"] = entry.full_title
 
     for root in roots:
         visit(root, root.heading)

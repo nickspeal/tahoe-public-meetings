@@ -258,3 +258,19 @@ def test_lahontan_board_titles_end_at_the_description_dash():
     result = parse_agenda("lahontan-board", [{"id": "doc"}], tampered)
     assert result.complete and any(i["title"] == "Not Found In Agenda" and i["source_number"] == "9" for i in result.items)
     assert any("skips item 9" in note for note in result.notes)
+
+
+def test_a_title_cut_at_the_line_limit_keeps_its_full_text():
+    # El Dorado County, September 29, 2026: item 11's recommendation runs past the layout's eight title lines.
+    fixture, pages = _fixture("el-dorado-supervisors--2026-09-29")
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], pages)
+    by_number = {i["source_number"]: i for i in result.items}
+    cut = by_number["11"]
+    assert cut["title"].endswith("with a term expiration of September 29, 2028;")
+    assert cut["full_title"].startswith(cut["title"])
+    assert cut["full_title"].endswith("4) Reappoint Christine Noonan, General Manager/Owner Delfino Farms, "
+                                      "with a term expiration of September 29, 2028.")
+    assert "FUNDING" not in cut["full_title"]  # the funding line after the blank row is not the title
+    # A title within the limit has no full text, and the quote (the source fingerprint's evidence) is unchanged.
+    assert all("full_title" not in i for i in result.items if i["title"].endswith((".", ")")) and len(i["title"]) < 200)
+    assert len(cut["source_pages"][0]["quote"]) <= 300

@@ -85,8 +85,9 @@ def _bounded(text: str) -> str:
     return cut.rstrip(" ,;:")
 
 
-def _item_title(cell: Node) -> tuple[str, str]:
-    """(title, passage) of an item cell: the party and the description up to its CEQA note, and the whole cell."""
+def _item_title(cell: Node) -> tuple[str, str, str | None]:
+    """(title, passage, full title) of an item cell: the party and the description up to its CEQA note, the
+    whole cell, and that description in full when ``MAX_TITLE`` cut the title (else None)."""
     passage = flat(cell)
     # Public comment letters are listed under the description; they are not part of it.
     lists = " ".join(flat(ul) for ul in cell.find("ul"))
@@ -94,10 +95,12 @@ def _item_title(cell: Node) -> tuple[str, str]:
         passage = passage[: -len(lists)].rstrip()
     first = re.split(r"\.\s+CEQA Consideration\b", passage, maxsplit=1)[0].rstrip(".")
     title = _bounded(first)
+    full = first if title != first else None
     removed = re.search(r"\b(Removed from the agenda(?: on)? \d{1,2}/\d{1,2}/\d{4})", passage)
     if removed:
         title = _bounded(title) + f" ({removed[1]})"
-    return title, passage
+        full = full and f"{full} ({removed[1]})"
+    return title, passage, full
 
 
 def agenda_rows(markup: str, base: str = "") -> list[dict]:
@@ -139,18 +142,23 @@ def agenda_rows(markup: str, base: str = "") -> list[dict]:
             label = flat(cells[0])
             if not re.fullmatch(r"\d{1,3}", label):
                 continue  # the "Item / Summary" header row
-            title, passage = _item_title(cells[1])
+            title, passage, full = _item_title(cells[1])
             rows.append({"number": label, "title": title, "passage": passage, "section": part["title"],
                          "pdfs": _pdf_links(cells[1], base), "kind": "item"})
+            if full:
+                rows[-1]["full_title"] = full
         elif node.tag == "p" and part and (found := LETTER.match(flat(node))):
             # A lettered item: "(a) Conditional Emergency Action …", then the paragraph naming it.
             named = following.get(id(node))
             if named is not None and named.tag == "p" and flat(named) and not LETTER.match(flat(named)):
-                title, passage = _item_title(named)
+                title, passage, full = _item_title(named)
             else:
                 named, title, passage = node, _bounded(found["title"]), flat(node)
+                full = found["title"] if title != found["title"] else None
             rows.append({"number": f"{part['number']}.{found['label']}", "title": title, "passage": passage,
                          "section": part["title"], "pdfs": _pdf_links(named, base), "kind": "sub"})
+            if full:
+                rows[-1]["full_title"] = full
     return rows
 
 
@@ -201,4 +209,6 @@ def parse(markup: str, text: str) -> tuple[list[dict], bool]:
             return [], False
         items.append({"source_number": row["number"], "order": len(items) + 1, "section": row["section"],
                       "title": row["title"], "source_pages": [{"document_id": "__html__", "page_number": 1, "quote": quote}]})
+        if row.get("full_title"):
+            items[-1]["full_title"] = row["full_title"]
     return items, True

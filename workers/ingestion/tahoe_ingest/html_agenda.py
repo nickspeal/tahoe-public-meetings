@@ -11,6 +11,11 @@ def _quote(source, title):
     return found.group() if found else None
 
 
+def _full(whole, title):
+    # The whole heading when the 280-character bound cut it (the title itself is unchanged).
+    return whole if whole!=title and len(whole)>len(title) else None
+
+
 def parse_html_agenda(markup, text):
     tree=document(markup)
     if html_order_of_business.recognizes(tree):
@@ -25,9 +30,10 @@ def parse_html_agenda(markup, text):
                 match=re.match(r'^(\d+)\.\s*(.+)',node.text())
                 if not match:continue
                 number,title=match.groups();top.append(int(number))
-                title=title.split(' : ',1)[0].strip()[:280]
+                whole=title.split(' : ',1)[0].strip()
+                title=whole[:280]
                 section=title
-                entries.append((number,title,section))
+                entries.append((number,title,section,_full(whole,title)))
                 if title.lower().startswith('adjournment'):break
             elif node.tag=='num' and re.fullmatch(r'\d+\.\d+',node.text()):
                 # The first span after this number is the title, before the
@@ -36,7 +42,7 @@ def parse_html_agenda(markup, text):
                 parent=next((p for p in tree.find('p') if node in list(p.find('num'))),None)
                 if not parent:continue
                 title=next((n.text() for n in parent.children if isinstance(n,Node) and n.tag=='span'),None)
-                if title:entries.append((node.text(),title[:280],section))
+                if title:entries.append((node.text(),title[:280],section,_full(title,title[:280])))
     else:
         # Granicus marks each number in td.numberspace, separate from its title.
         for tr in tree.find('tr'):
@@ -53,15 +59,17 @@ def parse_html_agenda(markup, text):
                 if not top:return [],False
                 number=f'{top[-1]}.{number}'
             # Long procedural descriptions stay bounded to their own row.
+            whole=title.strip()
             title=title[:280].strip()
-            entries.append((number,title,section))
+            entries.append((number,title,section,_full(whole,title)))
             if title.lower().startswith('adjournment'):break
     if not entries or not top or top!=list(range(1,len(top)+1)) or not entries[-1][1].lower().startswith('adjournment'):
         return [],False
     items=[]
-    for number,title,section in entries:
+    for number,title,section,full in entries:
         quote=_quote(text,title)
         if not quote:return [],False
         items.append({'source_number':number,'order':len(items)+1,'section':section,
                       'title':title,'source_pages':[{'document_id':'__html__','page_number':1,'quote':quote}]})
+        if full:items[-1]['full_title']=full
     return items,True

@@ -21,6 +21,15 @@ The maintainer can open the official archive and PDFs in a browser. This worker 
 
 Retest 2026-10-20: after the fetcher's User-Agent was changed to identify the project URL, one request to `https://www.placer.ca.gov/` still returned HTTP 403, so the User-Agent text is not the cause here.
 
+Retest 2026-11-03: one request to `https://www.placer.ca.gov/` returned HTTP 403 whose body is a Cloudflare "Attention Required" block page. Alternatives checked the same day, one request each, to replace the blocked host after the hand-built records were retired (decision 0033):
+
+- `placer.legistar.com` answers, but its calendar holds only 1997 to July 2015 ("Agenda Info 1997 - July 2015"); the Legistar web API for the `placer` client returns HTTP 500.
+- No Granicus (`placer.granicus.com`) or CivicClerk (`placerca`) tenant exists.
+- The county's GovDelivery bulletins attach some agenda PDFs on `content.govdelivery.com`, which answers, but the account publishes no bulletin archive or topic feed (`/accounts/CAPLACER/bulletins` and topic `feed.rss` return 404), so there is no index to discover them from.
+- Recordings already arrive from the county's YouTube channel (`config/meeting-records.json`).
+
+So the three bodies have no live meeting source; their coverage notes say so.
+
 ## Current behavior
 
 The whole `www.placer.ca.gov` host is listed in [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json), so scheduled and backfill runs make no requests to it until the entry is removed.

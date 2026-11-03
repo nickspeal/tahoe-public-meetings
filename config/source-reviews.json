@@ -296,7 +296,8 @@
         "decision": "keep statewide source",
         "resolvedAt": "2026-10-20",
         "note": "Keep California State Parks statewide, including the existing commission sources; the maintainer approved occasional Tahoe-related items within the statewide scope."
-      }
+      },
+      "implementation": "Since 2026-11-03: dated-sections discovery reads both commission pages (the OHMVR page as indexUrl, the State Park and Recreation Commission page under pages), one accordion panel per meeting, keeping the ohmvr- and sprc- source IDs. All four October 20 records (Feb 26, Mar 5, Jun 17, Aug 6) were rediscovered with the same agenda PDFs and 9:00 starts, plus locations; the existing layouts parsed all four agendas."
     },
     {
       "id": "SR-012",
@@ -318,7 +319,8 @@
         "decision": "keep statewide source",
         "resolvedAt": "2026-10-20",
         "note": "Keep Nevada State Parks statewide; the maintainer approved occasional Tahoe-related items within the statewide scope."
-      }
+      },
+      "implementation": "Checked 2026-11-03: no live discovery. The hearing notice page now returns 404, and the Division holds no regular meetings; workshops and hearings appear only as news posts (a form-filtered category with no feed, dated by publication). The source URL now points to the news page."
     },
     {
       "id": "SR-013",
@@ -798,7 +800,8 @@
         "decision": "keep; agenda check deferred until ordinary posting window",
         "resolvedAt": "2026-10-20",
         "note": "Keep CTC Board. Official page remains the source; future agenda publication is a routine deferred check, not a blocked source."
-      }
+      },
+      "implementation": "Since 2026-11-03: dated-page-links discovery reads the board meetings page's \"Conservancy Meetings 2026\" list; each linked date is the meeting's HTML agenda page, read by the ctc-board layout, and the unlinked December 10 date is a notice. All three October 20 records (Mar 19, Jun 18, Sep 17) were rediscovered, with 9:30 starts from the agenda headings and 13 to 17 items each."
     },
     {
       "id": "SR-030",

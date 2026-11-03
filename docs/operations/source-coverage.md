@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **47 entries**. **40 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **31** have live discovery, **3** are blocked by a skipped endpoint, and **6** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **47 entries**. **40 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **33** have live discovery, **3** are blocked by a skipped endpoint, and **4** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -20,6 +20,8 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | Registry ID | Type | Index | Body filter | Agenda layouts |
 | --- | --- | --- | --- | --- |
 | `ivgid` | `civicclerk` | [ivgid.portal.civicclerk.com](https://ivgid.portal.civicclerk.com/) | `Trustees` | `ivgid-board` |
+| `ctc` | `dated-page-links` | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) | every row | `ctc-board` |
+| `california-state-parks` | `dated-sections` | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) | `Commission Meeting` | `ohmvr-commission`, `state-park-commission` |
 | `california-fish-game` | `dated-table` | [fgc.ca.gov](https://fgc.ca.gov/Meetings/2026) | `Commission\|Committee` | `fish-game-commission` |
 | `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | `lahontan-board` |
 | `ndep` | `dated-table` | [ndep.nv.gov](https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/) | `.` | `ndep-board` |
@@ -65,6 +67,8 @@ Notes on particular sources:
 - `ndep`: Board for Financing Water Projects meetings in a dated table (two-digit years). Dates are listed before agendas; placeholders more than 120 days ahead are ignored.
 - `truckee-tahoe-airport`: a dated table plus the "next meeting" block, each linking to a per-meeting file list from which the agenda is read.
 - `lahontan-board`, `california-fish-game`: annual dated tables (`indexUrlTemplate` with `{year}`).
+- `ctc`: the Tahoe Conservancy's board meetings page lists the year's meetings under "Conservancy Meetings 2026", each date linking the meeting's own page, which is the HTML agenda (items read by the `ctc-board` layout; the start time comes from the agenda heading). The next meeting is listed as a bare date before its page exists ("December 10, 2026"), which becomes a notice. The meeting pages are WordPress pages with no feed, and the site's REST API requires a login, so the index page is the source. The Board meets "as needed, four to six times a year", so the learned quarterly schedule was removed: it forecast the third Thursday (December 17) while the Conservancy lists December 10. Staff recommendations are on a separate "meeting documents" page per meeting; no rule reads it yet.
+- `california-state-parks`: two statewide commission pages in the same State Parks layout, one accordion panel per meeting. The Off-Highway Motor Vehicle Recreation Commission (`indexUrl`) and the State Park and Recreation Commission (`pages`) keep the `ohmvr-` and `sprc-` source IDs of the earlier records. Within a panel, the "Commission Meeting" line's "Date:", "Time:", "Location:", and "Address:" lines give the meeting (not the tour or workshop on the neighbouring day), and the "Meeting Agenda" link is its document. A panel appears only once a meeting's details are posted, so the schedule's later dates ("November 18 and 19") are not shown until then.
 
 Item parsing is separate from discovery. An entry without agenda layouts (`—` above) keeps its meetings' text and official links, without itemized, topic-tagged agenda items ([agenda layouts](../../config/README.md#agenda-layouts)).
 
@@ -76,13 +80,13 @@ These sources refuse automated requests. The project does not evade bot protecti
 - `https://www.placer.ca.gov/` (HTTP 403 since 2026-10-20; [SOURCE-001](../issues/SOURCE-001-placer-downloads.md)): Every request, including the home page, returns HTTP 403 to this worker. Cause not established; see SOURCE-001. Affects `placer-supervisors` (source page), `placer-planning` (source page), `placer-tahoe-design-review` (discovery index and source page).
 <!-- /generated: blocked -->
 
-The Placer County cause is not established: Python and curl with normal TLS get the same result, and DocAccess or automated-request filtering is a hypothesis only. The official `rss.aspx` index also returns 403, so no feed is configured. Before the skip, the Tahoe Basin Design Review Committee's Agenda Center archive listed notices, so its stored meetings keep their dates and times.
+The Placer County cause is not established: Python and curl with normal TLS get the same result, and DocAccess or automated-request filtering is a hypothesis only. On November 3, 2026 the 403 body was a Cloudflare "Attention Required" page, and no alternative public index was found (see SOURCE-001). The official `rss.aspx` index also returns 403, so no feed is configured. Before the skip, the Tahoe Basin Design Review Committee's Agenda Center archive listed notices, so its stored meetings keep their dates and times.
 
 Behavior while blocked: the meeting notice stays published with its official link, a failed document does not discard the notice, and the meeting page says the agenda is on the agency website instead of claiming it has not been posted. A skipped index is reported as `skipped` in the run summary, not as a failure. The public export gives a blocked entry `status: "blocked"` with the skip reason, so the website's coverage page says the source is blocked instead of showing its last good check.
 
 `placer-transportation` is not part of the Placer County site. It is published by the agency itself at `pctpa.net`, which is not blocked, and it has live discovery.
 
-**Update on `ctc` and `state-lands`.** These were listed as blocked (SOURCE-002). On October 20, 2026, after the fetcher began identifying itself as `TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)` instead of `(+local research prototype)`, one request each to the Tahoe Conservancy and State Lands meeting pages returned real pages (HTTP 200), not the Cloudflare block page. A User-Agent rule is a plausible explanation, but it is a hypothesis. `www.placer.ca.gov` still returned 403 with the new identification. State Lands has had live discovery since November 2, 2026 (see the notes above); `ctc` is still snapshot-only.
+**Update on `ctc` and `state-lands`.** These were listed as blocked (SOURCE-002). On October 20, 2026, after the fetcher began identifying itself as `TahoePublicMeetings/0.1 (+https://tahoepublicmeetings.org)` instead of `(+local research prototype)`, one request each to the Tahoe Conservancy and State Lands meeting pages returned real pages (HTTP 200), not the Cloudflare block page. A User-Agent rule is a plausible explanation, but it is a hypothesis. `www.placer.ca.gov` still returned 403 with the new identification. State Lands has had live discovery since November 2, 2026, and `ctc` since November 3, 2026 (see the notes above).
 
 ## No live discovery, not blocked
 
@@ -92,18 +96,16 @@ These have no live discovery, so no new meetings arrive for them. Meetings store
 | Registry ID | Name | Records | Official page |
 | --- | --- | --- | --- |
 | `ltbmu` | LTBMU — Main office | comment periods only | [www.fs.usda.gov](https://www.fs.usda.gov/r05/laketahoebasin/newsroom) |
-| `ctc` | CTC — Board | meetings | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) |
 | `usfws` | USFWS | comment periods and meetings | [www.fws.gov](https://www.fws.gov/office/reno-fish-and-wildlife/news) |
-| `california-state-parks` | California State Parks | meetings | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) |
-| `nevada-state-parks` | Nevada State Parks | meetings | [parks.nv.gov](https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks) |
+| `nevada-state-parks` | Nevada State Parks | meetings | [parks.nv.gov](https://parks.nv.gov/news) |
 | `tahoe-usfs` | Tahoe USFS | comment periods only | [www.fs.usda.gov](https://www.fs.usda.gov/r05/tahoe/newsroom) |
 <!-- /generated: no-discovery -->
 
 Why there is no discovery:
 
-- `ctc`: `tahoe.ca.gov` board meeting posts. Fetchable since the User-Agent change (see above). Not yet built: needs a post index or feed and agenda layouts ([SOURCE-002](../issues/SOURCE-002-cloudflare-blocked-agendas.md)).
-- `california-state-parks`: per-commission pages, `ohv.parks.ca.gov` (Off-Highway Motor Vehicle Recreation Commission) and `parks.ca.gov` (State Park and Recreation Commission). Statewide commissions. Each page is a free-form accordion or file list whose headings and file names change per meeting ("Commission Meeting: August 6 and 7", "Meeting Agenda"). No dated index exists in the registry, and no existing discovery type fits two different sites with irregular layout. Only an occasional Tahoe item. Recommendation: keep the snapshot, or move to one-off meetings. The maintainer decides.
-- `nevada-state-parks`: one public-hearing notice (`parks.nv.gov`). A single regulation hearing, not a recurring meeting index. Keep as a one-off.
+- `nevada-state-parks`: the Division holds no regular public meetings. Its only record was one statewide regulation hearing (October 28, 2026, Carson City), whose notice page now answers 404. Workshops and hearings appear as posts in the "Public Comment Workshops" category of the [news page](https://parks.nv.gov/news), which is filtered by a form post and has no feed, and the posts carry a publication date rather than a meeting date, so no discovery type reads them. Checked November 3, 2026. Recommendation: keep following for occasional hearings (the coverage note says they are not collected), or stop following; the maintainer decides.
+
+`ctc` and `california-state-parks` gained live discovery on November 3, 2026 (see the notes above); their earlier records were the October 20 snapshots.
 
 ### Comment-period-only: `ltbmu`, `tahoe-usfs`, `usfws`
 
@@ -151,7 +153,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `placer-planning` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-supervisors` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-tahoe-design-review` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
-| `ctc` | published, not attached yet | Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to. |
+| `ctc` | published, not attached yet | Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

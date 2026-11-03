@@ -16,8 +16,8 @@ For manual capture candidates, see the per-source URLs in the JSON and the [TCPU
 | SR-008 | Disable CalEPA because the registry entry is too broad. | `follow: false`. |
 | SR-009 | Keep USFWS and public-comment-period discovery. | [Reno Fish and Wildlife Office news](https://www.fws.gov/office/reno-fish-and-wildlife/news); no current active Tahoe comment deadline or meeting verified. |
 | SR-010 | Disable USACE. | `follow: false`. |
-| SR-011 | Keep California State Parks statewide for occasional Tahoe-relevant meetings. | Existing OHMVR and State Park and Recreation Commission records remain distinct. |
-| SR-012 | Keep Nevada State Parks statewide for occasional Tahoe-relevant meetings. | Existing statewide hearing remains in coverage. |
+| SR-011 | Keep California State Parks statewide for occasional Tahoe-relevant meetings. | Both commission pages have live discovery (`dated-sections`, November 3, 2026); OHMVR and State Park and Recreation Commission meetings keep distinct `ohmvr-` and `sprc-` IDs. |
+| SR-012 | Keep Nevada State Parks statewide for occasional Tahoe-relevant meetings. | No live discovery: no regular meetings, and hearings appear only as news posts (checked November 3, 2026); the hearing notice page now returns 404. |
 | SR-013 | Keep Placer Board of Supervisors; defer blocked agenda ingestion. | Several official PDFs returned HTTP 403. The maintainer accepted retry later; links and issue are retained. |
 | SR-014 | Keep Placer Planning Commission; defer blocked agenda ingestion. | Several official PDFs returned HTTP 403. The maintainer accepted retry later; links and issue are retained. |
 | SR-015 | Keep Washoe Planning Commission; source corrected. | [Official Legistar department](https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC); Oct 6 18:00, meeting 1442809/GUID B11883AA-5CA7-4FAF-ACA1-ABC69C5C7608; its official six-page agenda is ingested. |
@@ -34,7 +34,7 @@ For manual capture candidates, see the per-source URLs in the JSON and the [TCPU
 | SR-026 | Keep Douglas Planning Commission; ordinary agenda check deferred until posting window. | Official Granicus source remains available; no blocked-source claim. |
 | SR-027 | Keep El Dorado Board of Supervisors; ordinary agenda check deferred until posting window. | Official Legistar source remains available; no blocked-source claim. |
 | SR-028 | Keep Washoe Board of Commissioners; ordinary agenda check deferred until posting window. | Official county source remains available; no blocked-source claim. |
-| SR-029 | Keep CTC Board; ordinary agenda check deferred until posting window. | Official board page remains available; no blocked-source claim. |
+| SR-029 | Keep CTC Board; ordinary agenda check deferred until posting window. | Live discovery from the official board page (`dated-page-links`) and items from each meeting's HTML agenda (`ctc-board`), November 3, 2026. |
 | SR-030 | Keep California State Lands Commission; ordinary agenda check deferred until posting window. | Official meetings page remains available; no blocked-source claim. |
 | SR-031 | Keep Town of Truckee; use dedicated agenda archive. | [Official agenda archive](https://townoftruckee.gov/304/Meeting-Agendas-Packets-Minutes) links Municode and Laserfiche; Sep22 agenda HTML verifies the Town Council meeting at 17:00; 26 cited HTML headings are ingested under the existing meeting ID; provenance is in the [source manifest](../research/verified-agency-meetings/verified-agency-meetings-2026-10-20-tnttma-trcd-douglas-truckee.json). |
 | SR-032 | Keep Lahontan Board; access recovered. | Native curl with normal TLS verification captured three agendas and 35 cited headings; annual-table discovery checks new postings. |

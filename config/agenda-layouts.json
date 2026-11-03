@@ -1,6 +1,21 @@
 {
   "description": "Agenda layouts (decision 0015): how each agenda format numbers its items, keyed by format name. Agencies name the layouts their agendas use in packages/domain/agencies.json (agenda.layouts). See config/README.md for the keys and workers/ingestion/tahoe_ingest/agenda_layouts.py for the named levels (\"NUM\"), shared patterns (\"@CAPS_HEADING\"), and parsers they refer to.",
   "layouts": {
+    "ctc-board": {
+      "label": "California Tahoe Conservancy Board agenda",
+      "cover": [
+        "MEETING OF THE CALIFORNIA TAHOE CONSERVANCY BOARD"
+      ],
+      "coverPages": 1,
+      "levels": [
+        "NUM",
+        "LOWER"
+      ],
+      "firstPages": 1,
+      "start": "^MEETING OF THE CALIFORNIA TAHOE CONSERVANCY BOARD$",
+      "wrap": "none",
+      "maxTitleLines": 1
+    },
     "douglas-county-board": {
       "label": "Douglas County Board of Commissioners agenda",
       "cover": ["Douglas County", "Board of County", "(?i)agenda"],

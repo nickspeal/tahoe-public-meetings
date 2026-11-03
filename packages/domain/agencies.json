@@ -1195,36 +1195,21 @@
     "follow": true,
     "officialUrl": "https://tahoe.ca.gov/",
     "sourceUrl": "https://tahoe.ca.gov/board-meetings-agendas/",
-    "coverageNote": "Only meeting notices; agendas and staff reports aren't collected yet.",
+    "coverageNote": "Staff recommendations are on a separate page for each meeting and aren't linked to agenda items yet.",
+    "discovery": {
+      "type": "dated-page-links",
+      "indexUrl": "https://tahoe.ca.gov/board-meetings-agendas/",
+      "headingPattern": "^Conservancy Meetings \\d{4}$",
+      "title": "California Tahoe Conservancy Board Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "ctc-board"
+      ]
+    },
     "staffReports": {
       "published": true,
-      "note": "Per-item staff reports exist, but its HTML agendas have no parsing adapter yet, so there are no items to attach them to."
-    },
-    "schedule": {
-      "source": "learned",
-      "rules": [
-        {
-          "ordinal": 3,
-          "weekday": "thursday",
-          "months": [
-            3,
-            6,
-            9,
-            12
-          ],
-          "time": "09:30",
-          "timezone": "America/Los_Angeles",
-          "label": "California Tahoe Conservancy Board Meeting"
-        }
-      ],
-      "confidence": 1.0,
-      "learnedFrom": {
-        "meetings": 3,
-        "matched": 3,
-        "firstDate": "2026-03-19",
-        "lastDate": "2026-09-17",
-        "learnedOn": "2026-10-20"
-      }
+      "note": "Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet."
     },
     "legacy": {
       "sourceFile": "agencies-to-follow.csv",
@@ -1578,11 +1563,27 @@
     "follow": true,
     "officialUrl": "https://www.parks.ca.gov/",
     "sourceUrl": "https://ohv.parks.ca.gov/?page_id=27160",
-    "coverageNote": "One-time snapshots; not refreshed automatically.",
+    "coverageNote": "Two statewide commissions that meet in the Tahoe area only occasionally. A meeting appears once its commission's page lists its date; no expected dates are shown.",
     "participation": {
       "watchUrl": "https://cal-span.org",
       "sourceUrl": "https://www.parks.ca.gov/pages/29247/files/SPRC%20March%20Meeting%20Agenda.pdf",
       "checkedOn": "2026-11-02"
+    },
+    "discovery": {
+      "type": "dated-sections",
+      "indexUrl": "https://ohv.parks.ca.gov/?page_id=27160",
+      "bodyPattern": "Commission Meeting",
+      "title": "California Off-Highway Motor Vehicle Recreation Commission Meeting",
+      "idPrefix": "ohmvr-",
+      "documentPattern": "(?:OHMVR Commission )?Meeting Agenda",
+      "pages": [
+        {
+          "indexUrl": "https://www.parks.ca.gov/?page_id=31042",
+          "title": "California State Park and Recreation Commission Meeting",
+          "idPrefix": "sprc-",
+          "documentPattern": "Meeting Agenda"
+        }
+      ]
     },
     "agenda": {
       "layouts": [
@@ -1617,8 +1618,8 @@
     ],
     "follow": true,
     "officialUrl": "https://parks.nv.gov/",
-    "sourceUrl": "https://parks.nv.gov/news/public-hearing-regulations-of-nevada-state-parks",
-    "coverageNote": "One-time snapshots; not refreshed automatically.",
+    "sourceUrl": "https://parks.nv.gov/news",
+    "coverageNote": "Holds no regular public meetings. Occasional regulation workshops and hearings are announced as news posts and are not collected automatically.",
     "agenda": {
       "layouts": [
         "nevada-state-parks"

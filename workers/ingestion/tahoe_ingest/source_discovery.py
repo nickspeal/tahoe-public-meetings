@@ -39,7 +39,9 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'municode':set(),
        'granicus-row-ids':set(),
        'wordpress-meetings':{'documentIdPrefix'},
-       'meeting-post-feed':{'title','scheduleUrl'}}
+       'meeting-post-feed':{'title','scheduleUrl'},
+       'dated-page-links':{'title','headingPattern'},
+       'dated-sections':{'title','idPrefix','documentPattern','pages'}}
 # Rows of these types state no meeting date, so a scheduled run cannot window them before
 # reading, and each costs a page fetch: it bounds them by count instead.
 UNDATED_TYPES=frozenset({'wordpress-meetings'})
@@ -56,7 +58,7 @@ def validate_discovery(agency):
         raise ValueError(f'invalid source configuration: {aid}')
     if unknown:=set(config)-keys-{'type','indexUrl','bodyPattern'}:
         raise ValueError(f'invalid source configuration: {aid}: {config["type"]} does not read {", ".join(sorted(unknown))}')
-    for key in ('bodyPattern','documentPattern','datePattern','filesLabel'):
+    for key in ('bodyPattern','documentPattern','datePattern','filesLabel','headingPattern'):
         re.compile(config.get(key,'.'),re.I)
     sections=config.get('sectionTitles',[])
     if not isinstance(sections,list) or any(not isinstance(r,dict) or set(r)!={'headingPattern','title','idSuffix'}
@@ -66,6 +68,9 @@ def validate_discovery(agency):
         re.compile(rule['headingPattern'],re.I)
     if 'scheduleUrl' in config and not str(config['scheduleUrl']).startswith('https://'):
         raise ValueError(f'invalid source configuration: {aid}: scheduleUrl must be https')
+    if 'pages' in config:
+        from .page_discovery import validate_section_pages
+        validate_section_pages(aid,config['pages'])
     if config['type']=='municode' and not _municode_client(config):
         raise ValueError(f'invalid source configuration: {aid}: a Municode indexUrl names its clientCode')
 
@@ -230,6 +235,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind=='granicus-row-ids':return granicus_row_ids(agency,config,limit=limit,fetch=fetch)
     if kind=='municode':return municode(agency,config,limit)
     if kind=='meeting-post-feed':return meeting_post_feed(agency,config,limit,fetch)
+    if kind in {'dated-page-links','dated-sections'}:
+        from . import page_discovery  # imports this module's helpers
+        return getattr(page_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
     url=config.get('indexUrlTemplate',config['indexUrl']).replace('{year}',str(datetime.now(ZoneInfo('America/Los_Angeles')).year))
     markup=fetch(url)
     body=re.compile(config.get('bodyPattern','.'),re.I)

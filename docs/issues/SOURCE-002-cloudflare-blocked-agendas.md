@@ -3,6 +3,8 @@
 Status: partly resolved 2026-10-20. Found while filling agenda-less meetings. After the fetcher began identifying itself with the project URL instead of "local research prototype", one request each to the Tahoe Conservancy and State Lands meeting pages returned the real page (HTTP 200) instead of the block page. Cause is a hypothesis (a User-Agent rule); the block may return. Adapters and agenda layouts for both were still to be written.
 
 Update 2026-11-02: State Lands is resolved. Its WordPress Meeting category feed (`https://www.slc.ca.gov/category/meeting/feed/`), the meetings page, and the meeting pages answered HTTP 200 to the project's fetcher; discovery reads the feed and items come from each meeting page ([source coverage](../operations/source-coverage.md)). Its staff reports and archive are on `slcprdwordpressstorage.blob.core.windows.net`, which the build sandbox could not reach (its own egress rule, not an agency block), so they were not checked. The Tahoe Conservancy (`ctc`) remains snapshot-only.
+
+Update 2026-11-03: the Tahoe Conservancy is resolved too. Its board meetings page and meeting pages answered HTTP 200 to the project's fetcher; the `dated-page-links` discovery type reads the page's dated list, and the `ctc-board` layout reads items from each meeting page ([source coverage](../operations/source-coverage.md)).
 Related: [SOURCE-001](SOURCE-001-placer-downloads.md), [decision 0015](../decisions/0015-deterministic-agenda-layouts.md)
 
 ## Affected registry entries

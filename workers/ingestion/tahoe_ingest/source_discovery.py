@@ -291,6 +291,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
         for n,suffix in suffixes.items():
             if days.count(days[n])>1:rows[n]['source_id']+='-'+suffix
     elif kind=='legistar':
+        where=legistar_location_column(tree)
         for tr in tree.find('tr'):
             if any(tr.find('tr')):continue
             text=tr.text()
@@ -307,6 +308,8 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             # (legistar_links), because department pages link minutes before they are final.
             video=re.search(r"Video\.aspx\?[^'\"\s]*ID1=\d+[^'\"\s]*",' '.join(' '.join(a.attrs.values()) for a in tr.find('a')))
             if video:row['recording_url']=urllib.parse.urljoin(url,video[0])
+            cells=[n for n in tr.children if getattr(n,'tag',None)=='td']
+            if where is not None and where<len(cells):row['location']=legistar_location(cell_lines(cells[where]))
             rows.append(row)
     elif kind=='granicus':
         for tr in tree.find('tr'):
@@ -763,6 +766,50 @@ def civicclerk_range(agency, config, since, until, *, fetch=fetch_text, max_page
     return found,earliest
 
 
+def cell_lines(node):
+    """A table cell's text as its lines: a <br> or a line break in the markup ends a line."""
+    lines=['']
+    def walk(n):
+        for child in n.children:
+            if isinstance(child,str):
+                parts=child.split('\n');lines[-1]+=parts[0];lines.extend(parts[1:])
+            elif child.tag=='br':lines.append('')
+            elif child.tag not in ('script','style','noscript'):walk(child)
+    walk(node)
+    return lines
+
+
+def legistar_location_column(tree):
+    """Index of the "Location" column of a Legistar calendar grid, or None."""
+    for tr in tree.find('tr'):
+        heads=[' '.join(n.text().split()).lower() for n in tr.children if getattr(n,'tag',None)=='th']
+        if 'location' in heads:return heads.index('location')
+    return None
+
+
+# Lines of a Legistar location that are not a place: join links, Zoom meeting IDs and passcodes,
+# "OR Live Streamed" or "Virtual: Zoom", a cancellation, or a heading ending in a colon.
+_NOT_A_PLACE=re.compile(r'https?://|www\.|\b(?:meeting\s*id|passcode|password|webinar\s*id)\b|^(?:or\s+)?(?:live\s*stream(?:ed|ing)?|virtual|zoom|teleconference|online|remote)\b'
+                        r'|\bcancel(?:l?ed|lation|ation)\b|:$',re.I)
+
+
+def legistar_location(lines):
+    """Where a Legistar meeting is held, from its listing's location lines; None when no line names a place.
+
+    The clerk's free-text field holds a venue ("1001 East Ninth Street, Building A Lobby, ...") or address
+    lines, but also Zoom links, meeting IDs, and notes ("OR Live Streamed", "CANCELLED MEETING NOTICE").
+    Lines of one venue are joined with commas; venues (after a blank line, or bulleted) with semicolons.
+    """
+    venues=[[]]
+    for line in lines:
+        line=' '.join(line.split())
+        bullet=line[:1] in ('•','·','*','-')
+        line=line.lstrip('•·*- ').rstrip(',').strip()
+        if (not line or bullet) and venues[-1]:venues.append([])
+        if line and not _NOT_A_PLACE.search(line):venues[-1].append(line)
+    return '; '.join(', '.join(v) for v in venues if v) or None
+
+
 def legistar_event_rows(agency, config, client, events):
     """One candidate per Legistar web API event, with its agenda file, minutes, and video."""
     rows=[]
@@ -775,6 +822,7 @@ def legistar_event_rows(agency, config, client, events):
         url=event.get('EventInSiteURL') or config['indexUrl']
         text=' '.join(str(event.get(k) or '') for k in ('EventTime','EventComment','EventAgendaStatusName'))
         row=candidate(agency,str(event['EventId']),config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,url,docs,text)
+        row['location']=legistar_location((event.get('EventLocation') or '').splitlines())
         rows.append({**row,**event_links(client,event)})
     return rows
 

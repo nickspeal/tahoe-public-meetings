@@ -41,6 +41,7 @@ EST_OUTPUT_TOKENS = 600  # JSON fields plus low-effort thinking
 LEADING_PAGES = 3
 MAX_INPUT_CHARS = 24_000  # about 6K tokens per meeting
 LOOKBACK_DAYS = 14  # past meetings need no joining details; undated meetings are always included
+INTERLEAVED_WORDS = 6  # other-column words allowed between a location's words (see _location)
 FIELDS = ("location", "remoteUrl", "watchUrl", "phone", "commentUrl", "commentEmail", "instructions", "instructionsQuote", "deadline")
 NOT_AGENDA = re.compile(r"minutes|synopsis|supplement|staff report|attachment|presentation|notice of decision", re.I)
 # A link that joins one Zoom or Microsoft Teams meeting, not a vendor's help or download page.
@@ -126,6 +127,11 @@ def _location(value: str, source_loose: str) -> tuple[str | None, str | None]:
     padded, starts = f" {source_loose} ", []
     for part in filter(None, (loose(p) for p in re.split(r"[,|;\n]", value))):
         found = [m.start() for m in re.finditer(re.escape(f" {part} "), padded)]
+        if not found:
+            # A two-column heading interleaves the venue with the other column ("Building A" /
+            # "Daniel Lazzareschi - Chair" / "Lobby, ..."): the part's words in order, a few words apart.
+            gap = r"(?: \S+){0,%d} " % INTERLEAVED_WORDS
+            found = [m.start() for m in re.finditer("(?= " + gap.join(map(re.escape, part.split())) + " )", padded)]
         if not found:
             return None, f"'{part}' not found in the agenda text"
         starts.append(found)

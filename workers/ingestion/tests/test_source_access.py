@@ -203,6 +203,28 @@ def test_county_legistar_departments_are_scoped_and_keep_cancellations():
     assert [(r['source_id'],r['status']) for r in wa]==[('1347923','canceled'),('1347922','unknown')]
 
 
+def test_legistar_location_keeps_the_place_and_drops_links_ids_and_notes():
+    from tahoe_ingest.source_discovery import legistar_location
+    # EventLocation values the Washoe and El Dorado web APIs returned on 2026-11-03.
+    assert legistar_location('1001 East Ninth Street, Building A Lobby, Washoe County Chambers, Reno, Nevada 89512'.splitlines())==\
+        '1001 East Ninth Street, Building A Lobby, Washoe County Chambers, Reno, Nevada 89512'
+    assert legistar_location('Downtown Reno Library\r\n301 S. Center St\r\nReno, NV 89501'.splitlines())=='Downtown Reno Library, 301 S. Center St, Reno, NV 89501'
+    for remote in ('https://edcgov-us.zoom.us/j/89741780356','Meeting ID: 841 9698 5750\r\nhttps://edcgov-us.zoom.us/j/84196985750',
+                   'Virtual: Zoom','CANCELLED MEETING NOTICE','',None):
+        assert legistar_location((remote or '').splitlines()) is None
+    assert legistar_location('Meeting Locations (in person and connected via tele/video-conferencing):\r\n• 330 Fair Lane, Bldg. A, Placerville, CA\r\n'
+                             '• Mental Health Office, 1900 Lake Tahoe Blvd., Suite 103, South Lake Tahoe, CA'.splitlines())==\
+        '330 Fair Lane, Bldg. A, Placerville, CA; Mental Health Office, 1900 Lake Tahoe Blvd., Suite 103, South Lake Tahoe, CA'
+
+
+def test_legistar_department_rows_read_the_location_column():
+    # 10/20's cell is "https://edcgov-us.zoom.us/j/...<br><em>330 Fair Lane, Building A Placerville, CA\nOR Live Streamed</em>".
+    ed=discover_configured('el-dorado-supervisors',_live_config('el-dorado-supervisors'),fetch=lambda _:_fixture('el-dorado-board-of-supervisors.html'))
+    assert ed[0]['location']=='330 Fair Lane, Building A Placerville, CA'
+    wa=discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),fetch=lambda _:_fixture('washoe-board-of-county-commissioners.html'))
+    assert [r['location'] for r in wa]==[None,None]  # blank, and "CANCELLED"
+
+
 def test_legistar_department_page_lists_only_this_month_so_the_web_api_adds_upcoming_meetings(monkeypatch):
     # On 2026-11-03 the Washoe department page (default filter "This Month") listed only November
     # meetings, none viewable yet, so discovery found nothing: no meeting, and no minutes or video
@@ -226,11 +248,13 @@ def test_legistar_department_page_lists_only_this_month_so_the_web_api_adds_upco
     [video]=[r for r in found if r.get('records_only')]
     assert (video['date'],video['recording_url'])==('2026-10-13','https://washoe-nv.legistar.com/Video.aspx?Mode=Granicus&ID1=5106&Mode2=Video')
     # Once the 11/10 agenda posts it is listed, from the API, before the page shows the meeting.
-    events[0].update(EventAgendaStatusName='Final',EventAgendaFile='https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/11/1812_A.pdf')
+    events[0].update(EventAgendaStatusName='Final',EventAgendaFile='https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/11/1812_A.pdf',
+                     EventLocation='Washoe County Administration Complex\r\nCommission Chambers, Building A')
     [meeting]=[r for r in discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),fetch=fetch) if not r.get('records_only')]
     assert (meeting['source_id'],meeting['date'],meeting['start_time'],meeting['status'])==('1812','2026-11-10','10:00','unknown')
     assert meeting['title']=='Washoe County Board of County Commissioners Meeting' and meeting['official_url']==base.format(1812)
     assert [d['url'] for d in meeting['documents']]==['https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/11/1812_A.pdf']
+    assert meeting['location']=='Washoe County Administration Complex, Commission Chambers, Building A'
     # On 2026-10-21 the page (October only, 10/27 not yet viewable) gave two rows; posted agendas
     # for 10/27 and next month's 11/10 are added from the API, while the page's own rows keep their IDs.
     monkeypatch.setattr(source_discovery,'_today',lambda:date(2026,10,21))

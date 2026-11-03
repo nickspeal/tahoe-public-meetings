@@ -396,6 +396,11 @@ def test_stored_meetings_apply_links_for_settled_and_records_only_candidates(db)
     assert snapshot.apply_links(candidates, coverage_start=date(2026, 1, 1)) == 0
     row = db.execute("SELECT minutes_url,recording_url FROM meetings WHERE id='ttd:7144'").fetchone()
     assert row == {"minutes_url": "https://tahoetransportation.org/m.pdf", "recording_url": "https://www.youtube.com/watch?v=2J7EcPKNfw8"}
+    # A venue the listing gives (a Legistar location field) reaches a meeting that is not captured again.
+    venue = {**candidates[0], "location": "1001 East Ninth Street, Reno, Nevada 89512"}
+    assert snapshot.apply_links([venue], coverage_start=date(2026, 1, 1)) == 1
+    assert snapshot.apply_links([venue, {**venue, "location": None}], coverage_start=date(2026, 1, 1)) == 0
+    assert db.execute("SELECT location FROM meetings WHERE id='ttd:7144'").fetchone()["location"] == venue["location"]
 
 
 def test_a_url_stored_under_two_document_ids_is_exported_once():

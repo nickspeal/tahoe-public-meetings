@@ -101,7 +101,7 @@ class StoredMeetings:
         self.conn = conn
         self.meetings = {r["id"]: r for r in conn.execute(
             """SELECT id,agency_id,source_id,title,official_url,local_date,status,quarantine_reason,
-            minutes_url,minutes_status,minutes_note,recording_url FROM meetings""")}
+            minutes_url,minutes_status,minutes_note,recording_url,location FROM meetings""")}
         self.by_source = {(r["agency_id"], r["source_id"]): r for r in self.meetings.values()}
         self.aliases = {(r["agency_id"], r["alias"]): r["meeting_id"] for r in conn.execute(
             "SELECT agency_id,alias,meeting_id FROM meeting_source_aliases")}
@@ -143,6 +143,7 @@ class StoredMeetings:
             if (candidate.get("date") or "") < coverage_start.isoformat():
                 continue
             moved = not candidate.get("records_only") and self._upgrade_official_url(candidate)
+            moved = (not candidate.get("records_only") and self._apply_location(candidate)) or moved
             if not links:
                 updated += moved
                 continue
@@ -169,6 +170,20 @@ class StoredMeetings:
             return False
         self.conn.execute("UPDATE meetings SET official_url=%s,updated_at=clock_timestamp() WHERE id=%s", (url, meeting["id"]))
         meeting["official_url"] = url
+        return True
+
+    def _apply_location(self, candidate: dict) -> bool:
+        """Store the venue a listing gives (a Legistar location field) on a meeting that is not captured again.
+
+        Capture takes the listing's location; a settled meeting is never captured again, so a venue
+        the listing gives or corrects later is applied here. A listing without one changes nothing.
+        """
+        location = candidate.get("location")
+        meeting = self.meetings.get(stable_id(candidate["agency"], self.identity(candidate)))
+        if not location or not meeting or meeting["location"] == location:
+            return False
+        self.conn.execute("UPDATE meetings SET location=%s,updated_at=clock_timestamp() WHERE id=%s", (location, meeting["id"]))
+        meeting["location"] = location
         return True
 
     def local_date(self, meeting_id: str):

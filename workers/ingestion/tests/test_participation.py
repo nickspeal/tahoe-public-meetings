@@ -61,6 +61,18 @@ def test_validation_rejects_values_not_in_the_source(field, value):
     assert field not in kept and rejected[0]["field"] == field
 
 
+def test_a_location_interleaved_with_a_two_column_heading_is_kept():
+    # Washoe County Planning Commission, 2026-11-04: the venue is the right column beside the member list.
+    source = """Members                                1001 East Ninth Street, Building A
+Daniel Lazzareschi - Chair                Lobby, Washoe County Chambers,
+Linda Kennedy - Vice Chair                            Reno, Nevada 89512"""
+    value = "1001 East Ninth Street, Building A Lobby, Washoe County Chambers, Reno, Nevada 89512"
+    kept, rejected = participation.validate(reply(location=value), source)
+    assert kept["location"] == value and not rejected
+    kept, rejected = participation.validate(reply(location="1001 East Ninth Street, Building A Annex"), source)
+    assert "location" not in kept and rejected[0]["field"] == "location"
+
+
 def test_instructions_need_a_quote_and_only_source_numbers():
     kept, rejected = participation.validate(reply(instructions="Email edc.cob@edcgov.us."), SOURCE)
     assert "instructions" not in kept and rejected[0]["reason"] == "no supporting quote in the agenda text"

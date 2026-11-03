@@ -123,6 +123,11 @@ def test_every_followed_source_names_a_known_type():
     ({"discovery": {"type": "wordpress-meetings", "indexUrl": TTD_FEED, "horizonDays": 30}}, "does not read horizonDays"),
     ({"discovery": {"type": "municode", "indexUrl": "https://meetings.municode.com/MeetingsPage/index"}}, "clientCode"),
     ({"discovery": {"type": "trpa", "indexUrl": "https://example.gov/", "documentPattern": "("}}, "unterminated"),
+    ({"discovery": {"type": "link-index", "indexUrl": "https://example.gov/", "sectionTitles": []}}, "does not read sectionTitles"),
+    ({"discovery": {"type": "dated-table", "indexUrl": "https://example.gov/", "sectionTitles": [{"headingPattern": "Workshop", "title": "Workshop"}]}},
+     "headingPattern, title, and idSuffix"),
+    ({"discovery": {"type": "dated-table", "indexUrl": "https://example.gov/",
+                    "sectionTitles": [{"headingPattern": "(", "title": "Workshop", "idSuffix": "workshop"}]}}, "unterminated"),
 ])
 def test_discovery_blocks_are_checked_against_their_type(entry, message):
     with pytest.raises(Exception, match=message):
@@ -134,6 +139,8 @@ def test_valid_discovery_blocks_and_entries_without_one_pass():
     validate_discovery({"id": "example", "discovery": wordpress(RTCPC, documentIdPrefix="ttd")})
     validate_discovery({"id": "example", "discovery": {"type": "dated-table", "indexUrl": "https://example.gov/2026",
                                                        "indexUrlTemplate": "https://example.gov/{year}", "horizonDays": 120}})
+    validate_discovery({"id": "example", "discovery": {"type": "dated-table", "indexUrl": "https://example.gov/2026",
+                                                       "sectionTitles": [{"headingPattern": "Workshop", "title": "Workshop", "idSuffix": "workshop"}]}})
 
 
 def _flaky(monkeypatch, failures):

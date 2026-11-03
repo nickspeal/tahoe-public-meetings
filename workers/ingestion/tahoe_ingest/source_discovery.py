@@ -30,7 +30,7 @@ _PAGE = {'indexUrlTemplate','horizonDays'}
 TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'link-index':{'title','idPrefix','qualifySpecial','minutesLinks'}|_PAGE,
        'trpa':{'idPrefix','documentPattern'}|_PAGE,
-       'dated-table':{'title','datePattern'}|_PAGE,
+       'dated-table':{'title','datePattern','sectionTitles'}|_PAGE,
        'legistar':{'title','legistarClient'}|_PAGE,
        'granicus':{'title','titlePrefix'}|_PAGE,
        'meeting-files':{'title','filesLabel'}|_PAGE,
@@ -58,6 +58,12 @@ def validate_discovery(agency):
         raise ValueError(f'invalid source configuration: {aid}: {config["type"]} does not read {", ".join(sorted(unknown))}')
     for key in ('bodyPattern','documentPattern','datePattern','filesLabel'):
         re.compile(config.get(key,'.'),re.I)
+    sections=config.get('sectionTitles',[])
+    if not isinstance(sections,list) or any(not isinstance(r,dict) or set(r)!={'headingPattern','title','idSuffix'}
+            or not all(isinstance(v,str) and v.strip() for v in r.values()) for r in sections):
+        raise ValueError(f'invalid source configuration: {aid}: sectionTitles are objects of headingPattern, title, and idSuffix')
+    for rule in sections:
+        re.compile(rule['headingPattern'],re.I)
     if 'scheduleUrl' in config and not str(config['scheduleUrl']).startswith('https://'):
         raise ValueError(f'invalid source configuration: {aid}: scheduleUrl must be https')
     if config['type']=='municode' and not _municode_client(config):
@@ -195,6 +201,26 @@ def candidate(agency, sid, title, day, url, docs, text=''):
             'warnings':[]}
 
 
+def table_sections(tree):
+    """Each table row's section: the last text that precedes its table on the page, outside any table.
+
+    Official pages put a heading or a bare paragraph ("Board Workshop") above a second table
+    of a different kind of meeting. Keyed by the row node's id() because nodes are not hashable.
+    """
+    sections,last=({},[''])
+    def walk(node):
+        for child in node.children:
+            if isinstance(child,str):
+                if child.strip():last[0]=' '.join(child.split())
+            elif child.tag=='table':
+                for tr in child.find('tr'):sections[id(tr)]=last[0]
+            elif child.tag in ('script','style','noscript'):continue
+            elif any(child.find('table')):walk(child)
+            elif text:=child.text():last[0]=text
+    walk(tree)
+    return sections
+
+
 def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     """The newest candidates (at most ``limit``) from one agency's `discovery` block."""
     # limit=None lists every row the index shows (used by the backfill's date-range discovery).
@@ -224,6 +250,8 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
         # These official annual indexes put dates in column one, sometimes
         # without a year or as a multi-day range. Use its first day only.
         year=re.search(r'(?<!\d)(20\d{2})(?!\d)',url)
+        sections=table_sections(tree) if config.get('sectionTitles') else {}
+        suffixes={}  # rows of a titled section, by the ID suffix that keeps them apart from a same-day row elsewhere
         for tr in tree.find('tr'):
             if any(tr.find('tr')):continue
             cells=[n for n in tr.children if getattr(n,'tag',None)=='td']
@@ -245,8 +273,11 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
                 target=urllib.parse.urljoin(url,a.attrs.get('href',''))
                 docs.extend(documents_in(f'<a href="{html.escape(target,quote=True)}">Agenda (PDF)</a>',url,agency))
             name=next((n.text() for cell in cells[1:] for n in cell.find('strong') if body.search(n.text())),None)
-            title=name or config.get('title') or agency.replace('-',' ').title()+' Meeting'
+            # Optional: a table under a matching heading (for example "Board Workshop") is another kind of meeting.
+            section=next((r for r in config.get('sectionTitles',[]) if re.search(r['headingPattern'],sections.get(id(tr),''),re.I)),None)
+            title=name or (section and section['title']) or config.get('title') or agency.replace('-',' ').title()+' Meeting'
             row=candidate(agency,day,title,day,url,docs,date_text)
+            if section and not name:suffixes[len(rows)]=section['idSuffix']
             for a in tr.find('a'):
                 label,target=a.text(),urllib.parse.urljoin(url,a.attrs.get('href',''))
                 if re.fullmatch(r'(?:Draft\s+)?Minutes(?:\s*\(PDF\))?',label,re.I):row.update(listing_minutes(target,label))
@@ -254,6 +285,11 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             if re.search(r'\d\s*[-–]\s*\d',date_text):
                 row['warnings'].append('Multi-day meeting: the date shown is the first day; check the official agenda for subsequent sessions.')
             rows.append(row)
+        # A titled section's row keeps the plain date ID (so a stored meeting is retitled, not duplicated)
+        # unless another section holds a meeting on the same date; then it takes its suffix.
+        days=[r['source_id'] for r in rows]
+        for n,suffix in suffixes.items():
+            if days.count(days[n])>1:rows[n]['source_id']+='-'+suffix
     elif kind=='legistar':
         for tr in tree.find('tr'):
             if any(tr.find('tr')):continue

@@ -238,6 +238,40 @@ def test_ndep_table_reads_two_digit_years_and_the_second_table_of_abbreviated_da
     assert rows[0]['documents']==[]  # dated before the agenda is posted
 
 
+def test_ndep_workshop_table_is_titled_a_workshop_but_keeps_the_date_id(monkeypatch):
+    from datetime import datetime as real
+    from tahoe_ingest import source_discovery
+    class Clock(real):
+        @classmethod
+        def now(cls,tz=None):return real(2026,10,20,12,tzinfo=tz)
+    monkeypatch.setattr(source_discovery,'datetime',Clock)
+    rows=discover_configured('ndep',_live_config('ndep'),limit=None,fetch=lambda _:_fixture('ndep-board-meetings.html'))
+    by_id={r['source_id']:r['title'] for r in rows}
+    meeting,workshop='Nevada Board for Financing Water Projects Meeting','Nevada Board for Financing Water Projects Workshop'
+    # The ID is still the date, so a stored "Meeting" for November 4 is retitled by the next run, not duplicated.
+    assert by_id['2026-11-04']==workshop and by_id['2026-05-05']==workshop and by_id['2026-01-07']==workshop
+    assert by_id['2026-12-02']==by_id['2026-05-20']==meeting
+    assert by_id['2022-12-06']==meeting  # "Archived Board Meetings" is not a workshop heading
+    assert '2027-05-05' not in by_id  # still beyond the horizon
+    assert [d['url'] for r in rows if r['source_id']=='2026-05-05' for d in r['documents']]==[
+        'https://ndep.nv.gov/uploads/water-financing-bwfp-agendas-docs/Priority_List_Workshop_agenda_May_2026.pdf']
+
+
+def test_section_titles_give_same_day_rows_of_another_section_their_own_id():
+    markup='''<h3>Meetings</h3><table><tr><td>January 24, 2024</td><td><a href="a.pdf">Agenda</a></td></tr>
+      <tr><td>February 7, 2024</td><td><a href="b.pdf">Agenda</a></td></tr></table>
+      <div><p>Workshops</p></div><table><tr><td>January 24, 2024</td><td><a href="w.pdf">Agenda</a></td></tr>
+      <tr><td>March 6, 2024</td><td><a href="x.pdf">Agenda</a></td></tr></table>'''
+    cfg={'type':'dated-table','indexUrl':'https://example.gov/meetings','title':'Board Meeting',
+         'sectionTitles':[{'headingPattern':'workshops?$','title':'Board Workshop','idSuffix':'workshop'}]}
+    rows=discover_configured('example',cfg,limit=None,fetch=lambda _:markup)
+    assert {r['source_id']:r['title'] for r in rows}=={
+        '2024-01-24':'Board Meeting','2024-02-07':'Board Meeting',
+        '2024-01-24-workshop':'Board Workshop','2024-03-06':'Board Workshop'}
+    plain={k:v for k,v in cfg.items() if k!='sectionTitles'}  # without the option nothing changes
+    assert {r['title'] for r in discover_configured('example',plain,limit=None,fetch=lambda _:markup)}=={'Board Meeting'}
+
+
 def test_airport_meeting_files_pages_supply_the_agenda_and_special_label():
     pages={'/administration/board/meetings':_fixture('truckee-tahoe-airport-board-meetings.html'),
            '/board_meetings/417/attachments':_fixture('truckee-tahoe-airport-meeting-417-files.html')}

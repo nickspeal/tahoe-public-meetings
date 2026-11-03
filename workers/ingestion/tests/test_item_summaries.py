@@ -283,6 +283,21 @@ def test_a_failing_later_sentence_is_left_out_of_the_published_summary(conn):
     assert errors == []
 
 
+def test_a_sentence_cited_to_the_wrong_page_is_published_with_the_page_it_is_on(conn):
+    staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
+    # A page that was not provided, and a source that is not the sentence trimmed: the report's own passage is cited.
+    answer = [{"page": 7, "source": "The City issued a Request for Proposals.", "sentence": BACKGROUND["9"]}]
+    haiku = ScriptedModel("claude-haiku-5-5", [answer])
+    result = item_summaries.summarize_items(conn, clients={"claude-haiku-5-5": haiku}, today=TODAY)
+    assert result["published"] == {"claude-haiku-5-5": 1} and len(haiku.users) == 1
+    summary = items(conn)["9"]["summary"]
+    assert summary["text"].endswith(BACKGROUND["9"])
+    citation = summary["citations"][1]
+    assert citation["page"] == 1 and " ".join(citation["quote"].split()).rstrip(".") == BACKGROUND["9"].rstrip(".")
+    errors, _ = check_export(export_public(conn))
+    assert errors == []
+
+
 def test_pending_items_say_why(conn):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     assert item_summaries.summarize_items(conn, dry_run=True, today=TODAY)["itemsPendingByReason"] == {"new": 6}

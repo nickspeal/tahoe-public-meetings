@@ -10,7 +10,10 @@ the staff report verbatim as much as possible, changing it only to shorten it.
 human approval): each cited passage must be found on its page (read in reading
 order, ``reading_view``), and each sentence must be the passage with words deleted,
 allowing only a grammatical "the", "a", "an", or "and" to be inserted. Numbers must
-come from the passage, and a deleted negation fails the sentence. When the first
+be kept whole, a deleted negation fails the sentence unless it was set off from the
+kept words, and no cut inside a sentence may remove who recommends it or a
+condition. A sentence that is a valid trim of a passage other than the one cited
+is cited to that passage instead. When the first
 sentence fails, nothing is published and the item keeps its agenda text; a later
 sentence that fails is left out of the summary. A rejected answer is retried with
 the rejected sentence, its source, the page text near it, and how to fix it.
@@ -51,7 +54,8 @@ METHOD = "claude-staff-report-v1"
 # found on another page or passage than cited, and no inner cut of "recommends", "if", "unless", and the like.
 VALIDATOR_VERSION = 3
 CHAIN = (("claude-haiku-5-5", "low"), ("claude-sonnet-5-5", "medium"))
-# Haiku gets a second try with the validator's objection; Sonnet costs about 20 times more, so one try.
+# Haiku gets a second try with the validator's objection; Sonnet costs about 20 times more, so one try. The second
+# Haiku try rescues nearly every faithful first answer that failed; a third rescued none of those measured (decision 0024).
 ATTEMPTS = {"claude-haiku-5-5": 2, "claude-sonnet-5-5": 1}
 PURPOSE = "staff-report-summary"
 MAX_TOKENS = 4096

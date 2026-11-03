@@ -94,7 +94,8 @@ their own staff reports with one rule module per publishing format
 and TRPA attachments; `summarize-items` adds one to three sentences that Claude selects
 and trims from the report, each published only when it is the cited passage with
 words deleted (`item_summaries.validate`; the first must pass, a later failing
-sentence is left out). Model and validator read the pages in reading order
+sentence is left out; numbers stay whole, and a sentence that trims a passage other
+than the one cited is cited to that passage). Model and validator read the pages in reading order
 (`reading_view.py`: form side labels moved out of sentences, attested hyphenations
 joined); citations quote the stored page text. A rejected answer is retried with the
 reason, and kept in its `ai_usage.error` after `reply:`. Use `--dry-run` for

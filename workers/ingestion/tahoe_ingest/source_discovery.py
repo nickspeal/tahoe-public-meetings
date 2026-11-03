@@ -410,7 +410,8 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
         for row in result:
             row['documents']=meeting_files(agency,row,fetch)
     if kind=='legistar':
-        extras.extend(legistar_links(config,result,fetch,agency))
+        result,more=legistar_api_rows(agency,config,result,limit,fetch)
+        extras.extend(more)
     return result+extras
 
 
@@ -488,21 +489,47 @@ def event_links(client, event):
     return links
 
 
-def legistar_links(config, rows, fetch, agency=None):
-    """Add web API minutes and video to department-page rows, matched by date; a failing API adds nothing.
+def _today():
+    return datetime.now(ZoneInfo('America/Los_Angeles')).date()
+
+
+# How far ahead scheduled discovery asks the Legistar web API for meetings whose agenda has posted.
+LEGISTAR_AHEAD_DAYS=120
+
+
+def legistar_api_rows(agency, config, rows, limit, fetch):
+    """Department-page rows completed from the public web API: (rows, records-only entries).
+
+    A department page lists only the current calendar month (its default "This Month" filter),
+    so a meeting early next month whose agenda has already posted is missing until the 1st, and
+    in a month whose meetings are not yet public the page lists none. Upcoming events with a posted
+    agenda on dates the page does not show are added as API rows (their source ID is the EventId;
+    capture bridges it to a same-date stored meeting). Minutes and video come from the same read.
+    A failing API leaves the page rows unchanged.
+    """
+    today=_today()
+    days=[date.fromisoformat(r['date']) for r in rows if r.get('date')]
+    ahead=today+timedelta(days=config.get('horizonDays',LEGISTAR_AHEAD_DAYS))
+    try:
+        client,events=legistar_events(config,min(days+[today])-timedelta(days=400),max(days+[ahead]),fetch=fetch)
+    except Exception:  # The department page alone still gives meetings and video.
+        return rows,[]
+    shown={r.get('date') for r in rows}
+    upcoming=[r for r in legistar_event_rows(agency,config,client,events)
+              if today.isoformat()<=r['date']<=ahead.isoformat() and r['date'] not in shown and r['documents']]
+    if upcoming:
+        rows=sorted(rows+upcoming,key=lambda r:r['date'] or '',reverse=True)[:limit]
+    return rows,legistar_links(client,events,rows,agency)
+
+
+def legistar_links(client, events, rows, agency=None):
+    """Add web API minutes and video to department-page rows, matched by date. Returns records-only entries.
 
     The department page lists only its newest rows, and a video or minutes file is often attached to an
-    event long after the meeting. So the API is read back 400 days from the newest row, and an event with
-    links but no page row becomes a records-only entry that scheduled runs apply to the stored meeting
-    of that date (the way minutes links on a later index are applied). Returns those entries.
+    event long after the meeting. So the API is read back 400 days, and an event with links but no page
+    row becomes a records-only entry that scheduled runs apply to the stored meeting of that date (the
+    way minutes links on a later index are applied).
     """
-    days=sorted(r['date'] for r in rows if r.get('date'))
-    if not days:return []
-    until=date.fromisoformat(days[-1])
-    try:
-        client,events=legistar_events(config,until-timedelta(days=400),until,fetch=fetch)
-    except Exception:  # The department page alone still gives meetings and video.
-        return []
     by_day={}
     for event in events:
         by_day.setdefault((event.get('EventDate') or '')[:10],[]).append(event)
@@ -738,13 +765,8 @@ def civicclerk_range(agency, config, since, until, *, fetch=fetch_text, max_page
     return found,earliest
 
 
-def legistar_range(agency, config, since, until, *, fetch=fetch_text, page_size=1000, max_pages=10):
-    """Legistar events dated since..until from the public web API, filtered by body name.
-
-    Source IDs are the API's EventId, which differs from the MeetingDetail ID on
-    department pages; capture's source_identity bridges a same-date stored meeting.
-    """
-    client,events=legistar_events(config,since,until,fetch=fetch,page_size=page_size,max_pages=max_pages)
+def legistar_event_rows(agency, config, client, events):
+    """One candidate per Legistar web API event, with its agenda file, minutes, and video."""
     rows=[]
     for event in events:
         day=(event.get('EventDate') or '')[:10]
@@ -756,7 +778,17 @@ def legistar_range(agency, config, since, until, *, fetch=fetch_text, page_size=
         text=' '.join(str(event.get(k) or '') for k in ('EventTime','EventComment','EventAgendaStatusName'))
         row=candidate(agency,str(event['EventId']),config.get('title') or agency.replace('-', ' ').title()+' Meeting',day,url,docs,text)
         rows.append({**row,**event_links(client,event)})
-    return sorted(rows,key=lambda r:r['date'],reverse=True)
+    return rows
+
+
+def legistar_range(agency, config, since, until, *, fetch=fetch_text, page_size=1000, max_pages=10):
+    """Legistar events dated since..until from the public web API, filtered by body name.
+
+    Source IDs are the API's EventId, which differs from the MeetingDetail ID on
+    department pages; capture's source_identity bridges a same-date stored meeting.
+    """
+    client,events=legistar_events(config,since,until,fetch=fetch,page_size=page_size,max_pages=max_pages)
+    return sorted(legistar_event_rows(agency,config,client,events),key=lambda r:r['date'],reverse=True)
 
 
 def discover_configured_range(agency, config, *, since, until, fetch=fetch_text, municode_json=None):

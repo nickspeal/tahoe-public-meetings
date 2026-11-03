@@ -203,6 +203,44 @@ def test_county_legistar_departments_are_scoped_and_keep_cancellations():
     assert [(r['source_id'],r['status']) for r in wa]==[('1347923','canceled'),('1347922','unknown')]
 
 
+def test_legistar_department_page_lists_only_this_month_so_the_web_api_adds_upcoming_meetings(monkeypatch):
+    # On 2026-11-03 the Washoe department page (default filter "This Month") listed only November
+    # meetings, none viewable yet, so discovery found nothing: no meeting, and no minutes or video
+    # for October's meetings either.
+    from tahoe_ingest import source_discovery
+    from datetime import date
+    monkeypatch.setattr(source_discovery,'_today',lambda:date(2026,11,3))
+    page=_fixture('washoe-board-of-county-commissioners-2026-11-03.html')
+    base='https://washoe-nv.legistar.com/MeetingDetail.aspx?LEGID={}&GID=601&G=84249440-C071-40A3-8231-F8E59BEF9FE7'
+    def event(eid,day,status,agenda=True,media=None,comment=None):
+        return {'EventId':eid,'EventBodyName':'Board of County Commissioners','EventDate':day+'T00:00:00','EventTime':'10:00 AM',
+                'EventComment':comment,'EventAgendaStatusName':status,'EventMedia':media,'EventInSiteURL':base.format(eid),
+                'EventAgendaFile':f'https://washoe-nv.legistar1.com/washoe-nv/meetings/{day[:4]}/{int(day[5:7])}/{eid}_A_Board_of_County_Commissioners_Agenda.pdf' if agenda else None}
+    events=[event(1812,'2026-11-10','Closed',agenda=False),  # not public yet: no agenda file, so not listed
+            event(1811,'2026-10-27','Final'),event(1810,'2026-10-20','Final',comment='CANCELLED'),
+            event(1809,'2026-10-13','Final',media=5106),
+            {**event(2033,'2026-10-06','Final'),'EventBodyName':'Board of Fire Commissioners'}]
+    fetch=lambda url:json.dumps(events) if url.startswith('https://webapi.legistar.com/v1/washoe-nv/events') else page
+    found=discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),fetch=fetch)
+    assert [r for r in found if not r.get('records_only')]==[]  # no November agenda has posted
+    [video]=[r for r in found if r.get('records_only')]
+    assert (video['date'],video['recording_url'])==('2026-10-13','https://washoe-nv.legistar.com/Video.aspx?Mode=Granicus&ID1=5106&Mode2=Video')
+    # Once the 11/10 agenda posts it is listed, from the API, before the page shows the meeting.
+    events[0].update(EventAgendaStatusName='Final',EventAgendaFile='https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/11/1812_A.pdf')
+    [meeting]=[r for r in discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),fetch=fetch) if not r.get('records_only')]
+    assert (meeting['source_id'],meeting['date'],meeting['start_time'],meeting['status'])==('1812','2026-11-10','10:00','unknown')
+    assert meeting['title']=='Washoe County Board of County Commissioners Meeting' and meeting['official_url']==base.format(1812)
+    assert [d['url'] for d in meeting['documents']]==['https://washoe-nv.legistar1.com/washoe-nv/meetings/2026/11/1812_A.pdf']
+    # On 2026-10-21 the page (October only, 10/27 not yet viewable) gave two rows; posted agendas
+    # for 10/27 and next month's 11/10 are added from the API, while the page's own rows keep their IDs.
+    monkeypatch.setattr(source_discovery,'_today',lambda:date(2026,10,21))
+    october=_fixture('washoe-board-of-county-commissioners.html')
+    rows=discover_configured('washoe-commissioners',_live_config('washoe-commissioners'),
+                             fetch=lambda url:json.dumps(events) if 'webapi' in url else october)
+    assert [(r['source_id'],r['date']) for r in rows if not r.get('records_only')]==[
+        ('1812','2026-11-10'),('1811','2026-10-27'),('1347923','2026-10-20'),('1347922','2026-10-13')]
+
+
 def test_wordpress_feed_keeps_special_meeting_apart_from_the_regular_meeting_on_the_same_day():
     feed=_fixture('ntpud-meetings-feed.xml')
     agenda='<a href="https://ntpud.org/wp-content/uploads/2026/10/agenda.pdf">Agenda</a>'

@@ -46,7 +46,10 @@ METHOD = "claude-staff-report-v1"
 # (a prompt change would send every item again). Stored on each result; results from before it existed count as 1.
 # 2 (2026-11-02): reading view, every occurrence of a passage, passages opening with "$" or "(", list markers and
 # bullets, dropped earlier sentences, negations limited to the kept sentence, later failing sentences left out.
-VALIDATOR_VERSION = 2
+# 3 (2026-11-03): fewest-cuts alignment, set-off negations, whole numbers (stricter), printed-word counts, headings
+# with a dash, a source's own list marker, sources extended to their sentence's start, a parenthetical cut, sentences
+# found on another page or passage than cited, and no inner cut of "recommends", "if", "unless", and the like.
+VALIDATOR_VERSION = 3
 CHAIN = (("claude-haiku-5-5", "low"), ("claude-sonnet-5-5", "medium"))
 # Haiku gets a second try with the validator's objection; Sonnet costs about 20 times more, so one try.
 ATTEMPTS = {"claude-haiku-5-5": 2, "claude-sonnet-5-5": 1}
@@ -105,8 +108,37 @@ class Rejected(ValueError):
 
 
 def _tokens(text: str) -> list[tuple[str, int, int]]:
-    """Words with their character offsets in ``text`` itself (callers clean page text first)."""
-    return [(m.group().casefold(), m.start(), m.end()) for m in re.finditer(r"[^\W_]+", text)]
+    """Words with their character offsets in ``text`` itself (callers clean page text first).
+
+    Digits and letters are separate tokens, so "2027secured" (a lost space) is two words and each digit group
+    of "$1,267,300" is its own token; ``_numbers`` keeps such groups together.
+    """
+    return [(m.group().casefold(), m.start(), m.end()) for m in re.finditer(r"\d+|[^\W\d_]+", text)]
+
+
+def _word_count(text: str) -> int:
+    """Printed words: "$1,267,300" and "2026-2031" are one word each."""
+    return sum(1 for word in text.split() if re.search(r"[^\W_]", word))
+
+
+def _printed_words(text: str, tokens: list[tuple[str, int, int]], first: int, stop: int) -> int:
+    """Printed words covered by ``tokens[first:stop]``."""
+    return len(text[tokens[first][1]:tokens[stop - 1][2]].split()) if first < stop else 0
+
+
+def _numbers(text: str, tokens: list[tuple[str, int, int]]) -> list[list[int]]:
+    """Token indexes of each printed number with more than one digit group: "$1,267,300", "3.25", "2026-2031"."""
+    groups, current = [], []
+    for index, (token, start, _) in enumerate(tokens):
+        if token.isdigit() and current and re.fullmatch(r"[.,/:–-]", text[tokens[current[-1]][2]:start]):
+            current.append(index)
+            continue
+        if len(current) > 1:
+            groups.append(current)
+        current = [index] if token.isdigit() else []
+    if len(current) > 1:
+        groups.append(current)
+    return groups
 
 
 # Characters that open a passage before its first word: "$900 collected", "(1) Approve", "“Make the Best Better”".
@@ -116,6 +148,8 @@ OPENERS = "$(\"“‘'[#"
 # (a period after "F." mid-line is more often an initial).
 _MARKER_END = re.compile(r"(?:(?:^|\s)(?:\(?(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})\)|[•●▪■◦‣∙])"
                          r"|(?:^|\n)[ \t]*(?:[o*–—-]|(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})\.))$")
+# A list marker at the very start of a cited source: "d. Approve the Project".
+_LEADING_MARKER = re.compile(r"\(?(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})[.)]\s+(?=[A-Z])")
 # Abbreviations whose period does not end a sentence: "Amendment No. 3", "Mr. Smith", "approx. 40".
 # A single letter is an initial ("Edward F. Ricketts"), except as a list marker after a sentence ("work. A. The")
 # or as the name of an attachment, exhibit, or the like ("included as Attachment C. Both").
@@ -123,6 +157,7 @@ _ABBREVIATION = re.compile(r"(?:^|[\s(])(?:no|nos|mr|mrs|ms|dr|st|vs|approx|ca|e
 _INITIAL = re.compile(r"(?:^|[\s(])([A-Za-z]+\s+)?[A-Za-z]\.$")
 _NAMED_LETTER = {"attachment", "exhibit", "appendix", "section", "item", "table", "figure", "phase", "option",
                  "alternative", "schedule", "part", "unit", "zone", "area", "tier", "plan", "lot", "parcel"}
+_SENTENCE_END = re.compile(r"[.?!][\"”’)]?(?=\s|$)")
 
 
 def _passage_start(text: str, start: int) -> int:
@@ -133,12 +168,14 @@ def _passage_start(text: str, start: int) -> int:
 
 
 def _starts_sentence(text: str, start: int) -> bool:
-    """Whether a sentence of ``text`` may start at ``start``: after a sentence's end, a heading's colon, a list
-    marker or bullet, or at a line that starts with a capital letter, a digit, or an opening mark."""
+    """Whether a sentence of ``text`` may start at ``start``: after a sentence's end, a heading's colon or dash, a
+    list marker or bullet, or at a line that starts with a capital letter, a digit, or an opening mark."""
     start = _passage_start(text, start)
     before = text[:start]
     if not before.strip():
         return True
+    if re.search(r"(?:[^\W_]|\d[.,])\Z", before):
+        return False  # inside a word or number: "00" of "$2,304,924.00" does not follow a sentence's period
     stripped = before.rstrip()
     first = text[start:start + 1]
     if stripped[-1] in ":;" or _MARKER_END.search(stripped):
@@ -150,34 +187,94 @@ def _starts_sentence(text: str, start: int) -> bool:
         if initial and (initial.group(1) or "").strip().casefold() not in _NAMED_LETTER:
             return False
         return not first.islower() and not _ABBREVIATION.search(stripped)
-    return "\n" in before[len(stripped):] and (first.isupper() or first.isdigit() or first in OPENERS)
+    if "\n" in before[len(stripped):]:
+        return first.isupper() or first.isdigit() or first in OPENERS
+    return _after_heading_dash(text, start)
+
+
+def _after_heading_dash(text: str, start: int) -> bool:
+    """A sentence after a short or capitalized heading and a dash at the start of its line:
+    "Net Income – For the two months ended ...", "PUBLIC HEARING - The Recorder-Clerk's Office ..."."""
+    line_start = text.rfind("\n", 0, start) + 1
+    heading = text[line_start:start]
+    if not text[start:start + 1].isupper() or not re.search(r"\S\s+[–—-]\s+$", heading):
+        return False
+    if len(heading.split()) > 3 and heading.upper() != heading:
+        return False
+    previous = text[:line_start].rstrip(" \t")
+    return not previous.strip() or previous.endswith("\n") or previous.rstrip()[-1] in ".:;!?"
+
+
+def _source_starts(text: str, start: int) -> bool:
+    """Whether a cited source may begin at ``start``: where a sentence starts, or at the list marker of one
+    ("d. Approve the Project"), when that marker follows a sentence's end or starts a line."""
+    if _starts_sentence(text, start):
+        return True
+    if not _LEADING_MARKER.match(text, start):
+        return False
+    before = text[:start].rstrip()
+    return not before or before[-1] in ".:;!?" or "\n" in text[len(before):start]
+
+
+def _clear_start(text: str, start: int) -> bool:
+    """A sentence start that does not rest on a line break alone (the layout can put any word first on a line),
+    for passages the validator finds itself."""
+    if not _starts_sentence(text, start):
+        return False
+    before = text[:_passage_start(text, start)]
+    stripped = before.rstrip()
+    if not stripped or "\n\n" in before[len(stripped):]:
+        return True
+    return bool(re.search(r"[.?!:;][\"”’)]?$", stripped) or _MARKER_END.search(stripped))
+
+
+def _sentence_start_before(text: str, start: int, *, within: int, clear: bool = False) -> int | None:
+    """Where the sentence containing ``start`` starts, at most ``within`` words back, or None."""
+    tokens = _tokens(text[:start])
+    starts = _clear_start if clear else _starts_sentence
+    for index in range(len(tokens) - 1, max(-1, len(tokens) - 1 - within), -1):
+        if starts(text, tokens[index][1]):
+            return tokens[index][1]
+    return 0 if len(tokens) <= within else None
+
+
+def _sentence_end_after(text: str, end: int) -> int:
+    """Where the sentence containing ``end`` ends: the next period, question, or exclamation mark followed by a
+    sentence's start, or the end of the page."""
+    found = _SENTENCE_END.search(text, max(0, end - 1))
+    while found:
+        rest = text[found.end():]
+        if _starts_sentence(text, found.end() + len(rest) - len(rest.lstrip())):
+            return found.end()
+        found = _SENTENCE_END.search(text, found.end())
+    return len(text)
 
 
 def _spans(source: str, text: str) -> list[tuple[int, int]]:
     """Character spans of ``source`` in ``text``, comparing words only (case, punctuation, and line breaks ignored).
 
     Every exact occurrence is returned, so a recommended motion that repeats the item's title is found where it
-    starts a sentence. A copy with a stray word or two still finds its one passage, but a span is always the
-    page's own text, which is what the sentence is checked against.
+    starts a sentence. A copy with a stray word or two still finds its passages (each run of matching words is
+    tried as the anchor), but a span is always the page's own text, which is what the sentence is checked against.
     """
     wanted = [t for t, _, _ in _tokens(source)]
     page = _tokens(text)
     words = [t for t, _, _ in page]
     n = len(wanted)
+    if not n:
+        return []
     exact = [(page[s][1], page[s + n - 1][2]) for s in range(len(words) - n + 1) if words[s:s + n] == wanted]
     if exact:
         return exact
     blocks = [b for b in SequenceMatcher(None, words, wanted, autojunk=False).get_matching_blocks() if b.size]
-    if not blocks:
-        return []
-    # The longest run anchors the passage; keep the runs that line up with it.
-    anchor = max(blocks, key=lambda b: b.size)
-    aligned = [b for b in blocks if abs((b.a - b.b) - (anchor.a - anchor.b)) <= 2]
-    matched = sum(b.size for b in aligned)
-    first, last = min(b.a for b in aligned), max(b.a + b.size for b in aligned) - 1
-    if matched < 0.9 * n or last - first + 1 > n + 3:
-        return []
-    return [(page[first][1], page[last][2])]
+    found = []
+    for anchor in sorted(blocks, key=lambda b: -b.size):
+        aligned = [b for b in blocks if abs((b.a - b.b) - (anchor.a - anchor.b)) <= 6]
+        first, last = min(b.a for b in aligned), max(b.a + b.size for b in aligned)
+        extra = _printed_words(text, page, first, last) - _word_count(source)
+        if sum(b.size for b in aligned) >= 0.9 * n and extra <= 3 and (page[first][1], page[last - 1][2]) not in found:
+            found.append((page[first][1], page[last - 1][2]))
+    return found
 
 
 def _nearest(source: str, text: str) -> str:
@@ -204,22 +301,69 @@ def _sentence_ids(passage: str, tokens: list[tuple[str, int, int]]) -> list[int]
 
 
 def _alignment(sentence: list[str], passage: list[str]) -> list[tuple[int, int]]:
-    """Longest common subsequence of two word lists, as (sentence index, passage index) pairs."""
+    """Which passage word each kept sentence word is, as (sentence index, passage index) pairs.
+
+    As many words as possible are matched, then with as few cuts inside the passage as possible (skipping the
+    passage's start and end is free). A plain longest common subsequence could match an early "the" in the
+    wrong clause and report cuts the sentence never made.
+    """
     rows, cols = len(sentence), len(passage)
-    table = [[0] * (cols + 1) for _ in range(rows + 1)]
+    match, before, after, gap = 1000, 0, 1, 2  # a match outweighs any number of cuts; the states of the walk
+    # best[i][j][state]: the score of aligning sentence[i:] with passage[j:]; how[...] the move that achieves it.
+    best = [[[0] * 3 for _ in range(cols + 1)] for _ in range(rows + 1)]
+    how = [[[""] * 3 for _ in range(cols + 1)] for _ in range(rows + 1)]
     for i in range(rows - 1, -1, -1):
-        for j in range(cols - 1, -1, -1):
-            table[i][j] = table[i + 1][j + 1] + 1 if sentence[i] == passage[j] else max(table[i + 1][j], table[i][j + 1])
-    pairs, i, j = [], 0, 0
-    while i < rows and j < cols:
-        if sentence[i] == passage[j]:
+        for j in range(cols, -1, -1):
+            for state in (before, after, gap):
+                # In order of preference when scores tie: match, skip a passage word, keep a word not in the passage.
+                options = []
+                if j < cols and sentence[i] == passage[j]:
+                    options.append((best[i + 1][j + 1][after] + match, "match"))
+                if j < cols:
+                    options.append((best[i][j + 1][before if state == before else gap] - (state == after), "skip"))
+                options.append((best[i + 1][j][state], "keep-glue"))
+                best[i][j][state], how[i][j][state] = max(options, key=lambda option: option[0])
+    pairs, i, j, state = [], 0, 0, before
+    while i < rows:
+        move = how[i][j][state]
+        if move == "match":
             pairs.append((i, j))
-            i, j = i + 1, j + 1
-        elif table[i + 1][j] >= table[i][j + 1]:
-            i += 1
+            i, j, state = i + 1, j + 1, after
+        elif move == "skip":
+            j, state = j + 1, before if state == before else gap
         else:
-            j += 1
+            i += 1
     return pairs
+
+
+# Words an inner cut may not remove: they say who recommends or proposes it, or make it conditional or uncertain.
+CUT_GUARD = {"recommends", "recommend", "recommended", "recommending", "requests", "requested", "proposes", "proposed",
+             "if", "unless", "should", "may", "might", "would", "could"}
+# Negations that make the whole statement conditional or exclude part of it: never cut, wherever they are.
+STRICT_NEGATIONS = {"unless", "except", "neither", "nor"}
+
+
+def _set_off(passage: str, tokens: list[tuple[str, int, int]], negation: int, used: list[int]) -> bool:
+    """Whether a dropped negation belongs to a phrase the kept words do not depend on.
+
+    After the kept words: a trailing clause set off by punctuation or starting with "with", "including", "and",
+    "or", or "but" ("Approve the amendment, with no change to the term"). Inside them: a bracketed aside
+    ("$63,875.00 [no County match] for personnel"), or a contrast set off by commas or dashes that starts with
+    the negation ("approval, not denial, of the permit"). A negation before the kept words, or one that makes
+    the statement conditional ("unless", "except"), never is.
+    """
+    first, last = min(used), max(used)
+    if negation < first or tokens[negation][0] in STRICT_NEGATIONS:
+        return False
+    if negation > last:
+        between = passage[tokens[last][2]:tokens[negation][1]]
+        follows = tokens[last + 1][0] if last + 1 < len(tokens) else ""
+        return bool(re.search(r"[,;:(\[—–]", between)) or follows in {"with", "including", "and", "or", "but"}
+    left = passage[tokens[max(u for u in used if u < negation)][2]:tokens[negation][1]]
+    right = passage[tokens[negation][2]:tokens[min(u for u in used if u > negation)][1]]
+    if re.search(r"[(\[]", left) and re.search(r"[)\]]", right):
+        return True
+    return bool(re.search(r"[,—–]\s*$", left)) and bool(re.search(r"[,—–]", right))
 
 
 def _problem(sentence: str, passage: str) -> tuple[str, str] | None:
@@ -227,8 +371,9 @@ def _problem(sentence: str, passage: str) -> tuple[str, str] | None:
     said = [t for t, _, _ in _tokens(sentence)]
     tokens = _tokens(passage)
     source = [t for t, _, _ in tokens]
-    if not MIN_SENTENCE_WORDS <= len(said) <= MAX_SENTENCE_WORDS:
-        return "length", f"sentence has {len(said)} words (allowed {MIN_SENTENCE_WORDS}-{MAX_SENTENCE_WORDS})"
+    count = _word_count(sentence)
+    if not MIN_SENTENCE_WORDS <= count <= MAX_SENTENCE_WORDS:
+        return "length", f"sentence has {count} words (allowed {MIN_SENTENCE_WORDS}-{MAX_SENTENCE_WORDS})"
     pairs = _alignment(said, source)
     kept = {i for i, _ in pairs}
     added = [said[i] for i in range(len(said)) if i not in kept]
@@ -246,18 +391,35 @@ def _problem(sentence: str, passage: str) -> tuple[str, str] | None:
         opening = passage[:_passage_start(passage, start)].rstrip()
         if not opening.endswith(",") and not _starts_sentence(passage, start):
             return "opening", "starts in the middle of the passage's sentence"
-    cuts = [b - a - 1 for a, b in zip(used, used[1:]) if b - a > 1]
+    # A number is kept whole or not at all: "$1,267,300" never becomes "$1,300", nor "3.25%" "3%".
+    kept_words = set(used)
+    for number in _numbers(passage, tokens):
+        if kept_words & set(number) and not set(number) <= kept_words:
+            return "number", "keeps only part of a number"
+    # Cuts inside the sentence: never of who recommends or proposes it, or of a condition; one bracketed aside
+    # ("Agreement (Amendment No. 3)") is not counted against the limit on cuts.
+    cuts = []
+    for a, b in zip(used, used[1:]):
+        if b - a == 1:
+            continue
+        if {t for t, _, _ in tokens[a + 1:b]} & CUT_GUARD:
+            return "cut-guard", "cuts out who recommends or proposes it, or a condition"
+        if re.fullmatch(r"[,;]?\s*[(\[][^()\[\]]*[)\]]\s*[,;]?", passage[tokens[a][2]:tokens[b][1]].strip()):
+            continue
+        cuts.append(_printed_words(passage, tokens, a + 1, b))
     if len(cuts) > MAX_INNER_CUTS or any(cut > MAX_INNER_CUT_WORDS for cut in cuts):
         return "cuts", f"cuts too much from the middle of the passage ({len(cuts)} cuts, longest {max(cuts)} words)"
-    # A negation within or next to the kept words must be kept, within the kept words' own sentences:
-    # "No action is required." after the kept sentence, or "Project No. 0184", is not a negation of it.
+    # A negation within or next to the kept words must be kept, within the kept words' own sentences ("No action
+    # is required." after the kept sentence, or "Project No. 0184", is not a negation of it), unless it belongs
+    # to a phrase set off from them (``_set_off``).
     ids = _sentence_ids(passage, tokens)
     own = range(ids[min(used)], ids[max(used)] + 1)
-    for j in set(range(min(used) - 3, max(used) + 4)) - set(used):
+    for j in sorted(set(range(min(used) - 3, max(used) + 4)) - kept_words):
         if 0 <= j < len(source) and source[j] in NEGATIONS and ids[j] in own:
             if source[j] == "no" and re.match(r"\.\s*\d", passage[tokens[j][2]:]):
                 continue
-            return "negation", "drops a negation from the cited passage"
+            if not _set_off(passage, tokens, j, used):
+                return "negation", "drops a negation from the cited passage"
     return None
 
 
@@ -267,38 +429,105 @@ def check_sentence(sentence: str, passage: str) -> str | None:
     return found[1] if found else None
 
 
-def _check_entry(number: int, entry: dict, views: dict) -> tuple[str, dict, int]:
-    """One sentence: its published text, its citation (the page's own text), and its word count; or Rejected."""
-    sentence = " ".join(str(entry.get("sentence", "")).split())
+# A rejection the cited source alone may have caused: the sentence is then looked for on every page (``_locate``).
+# A sentence that is too long, adds too many words, keeps part of a number, or drops a negation is not.
+_LOCATABLE = {"page", "short-source", "long-source", "not-found", "mid-page", "opening", "adds", "unrelated", "cuts", "cut-guard"}
+MAX_LOCATED_WORDS = 250
+
+
+def _locate(sentence: str, views: dict, page: int | None) -> tuple[int, int, int] | None:
+    """A passage on any page (the cited page first) that ``sentence`` is a valid trim of, as (page, start, end).
+
+    The model often trims a real sentence of the report but cites the wrong page, copies its source imperfectly,
+    or gives a neighbouring sentence. The passage is the report's whole sentence around the sentence's first words,
+    starting at a clear sentence start, so the same rules apply as to a cited passage.
+    """
+    said = [t for t, _, _ in _tokens(sentence)]
+    if len(said) < 3:
+        return None
+    order = sorted(views, key=lambda n: n != page)
+    for number in order:
+        text = views[number].text
+        tokens = _tokens(text)
+        for index, (word, start, _) in enumerate(tokens):
+            if word not in said[:3]:
+                continue
+            begin = start if _clear_start(text, start) else _sentence_start_before(text, start, within=40, clear=True)
+            if begin is None:
+                continue
+            begin = _passage_start(text, begin)
+            end = _sentence_end_after(text, tokens[min(len(tokens) - 1, index + len(said) - 1)][2])
+            passage = text[begin:end]
+            if _word_count(passage) > MAX_LOCATED_WORDS or _problem(sentence, passage):
+                continue
+            # Cite from the latest clear sentence start before the first kept word, so the quote is that sentence.
+            passage_tokens = _tokens(passage)
+            first = min(j for _, j in _alignment(said, [t for t, _, _ in passage_tokens]))
+            for t in range(first, 0, -1):
+                position = begin + passage_tokens[t][1]
+                if _clear_start(text, position):
+                    trimmed = _passage_start(text, position)
+                    if _problem(sentence, text[trimmed:end]) is None:
+                        begin = trimmed
+                    break
+            return number, begin, end
+    return None
+
+
+def _check_cited(number: int, entry: dict, sentence: str, views: dict) -> tuple[int, int, int]:
+    """The cited passage that ``sentence`` is a valid trim of, as (page, start, end); or Rejected."""
     page = entry.get("page")
     if page not in views:
         raise Rejected(number, "page", f"cites page {page}, which was not provided", entry=entry)
     source = str(entry.get("source", ""))
-    count = len(_tokens(source))
+    count = _word_count(source)
     if count < MIN_SENTENCE_WORDS:
         raise Rejected(number, "short-source", f"its source has {count} words (at least {MIN_SENTENCE_WORDS})", entry=entry)
     if count > MAX_SOURCE_WORDS:
         raise Rejected(number, "long-source", f"its source has {count} words (at most {MAX_SOURCE_WORDS})", entry=entry)
-    view = views[page]
-    spans = _spans(source, view.text)
+    text = views[page].text
+    spans = _spans(source, text)
     if not spans:
-        raise Rejected(number, "not-found", f"cited passage is not on page {page}", entry=entry, near=_nearest(source, view.text))
-    starting = [span for span in spans if _starts_sentence(view.text, span[0])]
+        raise Rejected(number, "not-found", f"cited passage is not on page {page}", entry=entry, near=_nearest(source, text))
+    starting = [span for span in spans if _source_starts(text, span[0])]
+    if not starting:  # a source copied from mid-sentence: check the sentence against the report's whole sentence
+        for start, end in spans:
+            begin = _sentence_start_before(text, start, within=60)
+            if begin is not None:
+                starting = [(begin, end)]
+                break
     if not starting:
         start = spans[0][0]
         raise Rejected(number, "mid-page", f"the cited passage starts in the middle of a sentence on page {page}",
-                       entry=entry, near=view.text[max(0, start - 160):start + 60])
+                       entry=entry, near=text[max(0, start - 160):start + 60])
     start, end = starting[0]
-    start = _passage_start(view.text, start)
-    passage = view.text[start:end]
-    found = _problem(sentence, passage)
+    start = _passage_start(text, start)
+    found = _problem(sentence, text[start:end])
     if found:
-        raise Rejected(number, found[0], found[1], entry=entry, near=passage, show_sentence=True)
+        raise Rejected(number, found[0], found[1], entry=entry, near=text[start:end], show_sentence=True)
+    return page, start, end
+
+
+def _check_entry(number: int, entry: dict, views: dict) -> tuple[str, dict, int]:
+    """One sentence: its published text, its citation (the page's own text), and its word count; or Rejected.
+
+    When the cited source is what failed, a passage on any page that the sentence is a valid trim of is cited
+    instead (``_locate``); the citation then quotes that passage, never the model's source.
+    """
+    sentence = " ".join(str(entry.get("sentence", "")).split())
+    try:
+        page, start, end = _check_cited(number, entry, sentence, views)
+    except Rejected as rejected:
+        located = _locate(sentence, views, entry.get("page")) if rejected.kind in _LOCATABLE else None
+        if located is None:
+            raise
+        page, start, end = located
     if not re.search(r"[.!?][\"”’)]?$", sentence):
         sentence += "."
+    view = views[page]
     first, last = view.span(start, end)
     citation = {"page": page, "quote": view.source[first:last]}
-    return sentence[0].upper() + sentence[1:], citation, len(_tokens(sentence))
+    return sentence[0].upper() + sentence[1:], citation, _word_count(sentence)
 
 
 def page_views(pages: dict[int, str]) -> dict[int, View]:
@@ -606,6 +835,10 @@ FIXES = {
              "words. A sentence that stops early is fine."),
     "negation": ("Keep \"not\", \"no\", \"without\", \"unless\", and similar words with the words around them, or end "
                  "the sentence before the clause that contains them."),
+    "number": ("Copy every number whole, as printed: never shorten \"$1,267,300\" to \"$1,300\", \"3.25%\" to \"3%\", or "
+               "\"2026-2031\" to \"2026\"."),
+    "cut-guard": ("Keep who recommends, requests, or proposes the action, and any \"if\", \"unless\", \"should\", \"may\", "
+                  "or \"would\", with the words around them; end the sentence earlier instead of cutting them out."),
     "adds": "Use only words that are in `source`; the only words you may add are \"the\", \"a\", \"an\", and \"and\".",
     "glue": "Add at most one \"the\", \"a\", \"an\", or \"and\" for every ten words.",
     "length": ("Each sentence has 5 to 45 words: end a long one earlier, or instead of a short label choose a passage "
@@ -637,7 +870,7 @@ def retry_message(rejected: Rejected | None, problem: str) -> str:
     return "\n".join(lines)
 
 
-_SENTENCE_KINDS = {"length", "adds", "glue", "unrelated", "opening", "cuts", "negation"}
+_SENTENCE_KINDS = {"length", "adds", "glue", "unrelated", "opening", "cuts", "negation", "number", "cut-guard"}
 
 
 def _repeats(sentence: str, action: str) -> bool:

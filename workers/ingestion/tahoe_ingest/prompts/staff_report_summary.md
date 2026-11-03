@@ -13,6 +13,8 @@ Some recommendations are only a few words of procedure: "Receive and file", "Rec
 - Each sentence starts where a sentence of the report starts, so it reads as a whole sentence. You may drop whole sentences before it, an opening clause up to its comma or colon ("If these plans are selected, the program..." may become "The program..."), a heading label ("RECOMMENDATION:"), or a list marker ("3)"); never start partway through a sentence.
 - Shorten a long sentence by ending it early, which is always allowed. Cut from its middle only a few short phrases: at most three cuts, each of at most twelve words.
 - Never change a number, dollar amount, date, name, or place. Never delete "not", "no", "without", "unless", or any other word whose removal would change the meaning; if a clause with such a word is in the way, end the sentence before that clause.
+- Keep the report's own subject, verb, and form: never turn "It is recommended that the Board approve" into "The Board is recommended to approve" or "Staff recommends", never add "would", and never correct the report's spelling or grammar. Keep a leading "That" or "BE IT RESOLVED, that" when the report's sentence starts with it.
+- Never build a sentence from table cells, column headings, or form labels; choose a sentence the report prints as prose.
 - Do not add interpretation, characterization, opinion, or context that is not in the report. Do not describe the report itself ("The staff report says...") or the meeting.
 - Each sentence has 5 to 35 words; the whole summary is at most 90 words.
 - Skip boilerplate: letterheads, dates and addresses, "Responsible Staff Member", "Reviewed and Approved By", attachment lists, page footers, and contact information.

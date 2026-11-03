@@ -53,6 +53,7 @@ PRICING = {
     "claude-haiku-5-5": {"input": 0.10, "output": 0.50, "long_input": 0.50, "long_output": 2.50,
                          "long_context_over": 100_000},
     "claude-sonnet-5-5": {"input": 2.00, "output": 10.00},
+    "claude-opus-5-5": {"input": 4.00, "output": 20.00},
 }
 CACHE_WRITE_MULTIPLIER = 1.25  # 5-minute TTL
 CACHE_READ_MULTIPLIER = 0.10

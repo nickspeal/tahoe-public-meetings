@@ -255,10 +255,148 @@ def test_unsupported_sentences_fail(bad, reason):
 
 def test_sentence_must_come_from_the_cited_page():
     with pytest.raises(ValueError, match="not on page 2"):
-        item_summaries.validate([sentence("The City received 23 proposals.", "The City issued a Request for Proposals and received 23 proposals.", page=2)],
+        item_summaries.validate([sentence("The City received 24 proposals.", "The City issued a Request for Proposals and received 24 proposals.", page=2)],
                                 {1: PAGE, 2: "Fiscal Impact: None."}, "doc")
     with pytest.raises(ValueError, match="not provided"):
-        item_summaries.validate([sentence("The City received 23 proposals.", "received 23 proposals", page=7)], {1: PAGE}, "doc")
+        item_summaries.validate([sentence("The City received 24 proposals.", "received 24 proposals", page=7)], {1: PAGE}, "doc")
+
+
+@pytest.mark.parametrize("cited_page,source", [
+    (2, "The City issued a Request for Proposals and received 23 proposals."),  # the wrong page
+    (7, "The City issued a Request for Proposals and received 23 proposals."),  # a page that was not provided
+    (1, "The proposed agreement amount is within the approved project budget of $100,000.00."),  # the wrong passage
+    (1, "Proposals and received 23 proposals."),  # too short, and starting mid-sentence
+])
+def test_a_sentence_the_report_prints_is_cited_where_it_is(cited_page, source):
+    pages = {1: PAGE, 2: "Fiscal Impact: None."}
+    text, citations = item_summaries.validate([sentence("The City received 23 proposals.", source, page=cited_page)], pages, "doc")
+    assert text == "The City received 23 proposals."
+    # The citation is the report's own sentence that was trimmed, never the model's source.
+    assert citations[0]["page"] == 1
+    assert " ".join(citations[0]["quote"].split()).rstrip(".") == "The City issued a Request for Proposals and received 23 proposals"
+
+
+def test_a_sentence_that_is_not_a_trim_of_any_passage_is_not_located():
+    with pytest.raises(item_summaries.Rejected) as rejected:
+        item_summaries.validate([sentence("The City received many proposals.", "The City issued a Request for Proposals and received 23 proposals.")],
+                                {1: PAGE}, "doc")
+    assert rejected.value.kind == "adds"
+    # A dropped negation is not looked for elsewhere: the cited passage shows what was dropped.
+    with pytest.raises(item_summaries.Rejected) as rejected:
+        item_summaries.validate([sentence("The project will require additional staff.", "The project will not require additional staff.")],
+                                {1: PAGE, 2: "The project will require additional staff for the new pool."}, "doc")
+    assert rejected.value.kind == "negation"
+
+
+# Hand-written trims: each unfaithful one keeps only the report's words, in order, yet says something it does not.
+UNFAITHFUL = [
+    ("The City will pay $1,300 for the work.", "The City will pay $1,267,300 for the work."),
+    ("The fee is 3% of the total project cost.", "The fee is 3.25% of the total project cost."),
+    ("Staff recommends approval of the 12 new units.", "Staff recommends approval of the 12.5 new units."),
+    ("The term runs through 2026 for the new contract.", "The term runs through 2026-2031 for the new contract."),
+    ("The term runs through 2026 for the new contract.", "The term runs through 2026–2031 for the new contract."),
+    ("The City will pay the fee for the work.", "The City will not, under this agreement, pay the fee for the work."),
+    ("The Board approved the plan for the trail.", "The Board has not approved the plan for the trail."),
+    ("The project will proceed as planned this year.", "The project will proceed as planned this year unless the State objects."),
+    ("The grant requires a county match of funds.", "The grant requires no county match of funds."),
+    ("Staff recommends the Board approve the contract.", "Staff does not recommend the Board approve the contract."),
+    ("The road will be closed during construction.", "The road will be closed during construction except for emergency vehicles."),
+    ("Phase 2 will rehabilitate two sewer pump stations.", "The Satellite Pump Station Project – Phase 2 will rehabilitate two sewer pump stations."),
+    ("The County will fund the project from reserves.", "The County will fund the project, which was not budgeted, from reserves."),
+    # Cut out of the middle: who recommends it, or the condition it depends on.
+    ("Staff will return with a contract in May.", "Staff, as the Committee recommends, will return with a contract in May."),
+    ("The County would pay $50,000 toward the trail.", "The County would, if the grant is awarded, pay $50,000 toward the trail."),
+    ("The Board may close the road in winter.", "The Board may, unless the State objects, close the road in winter."),
+    ("This funding will be utilized to improve child passenger safety.",
+     "This funding, if accepted by the Board, will be utilized to improve child passenger safety."),
+]
+# Faithful trims the validator once refused.
+FAITHFUL = [
+    ("Staff recommends approval of the permit.", "Staff recommends approval, not denial, of the permit."),
+    ("Approve the amendment to add a contract administrator.",
+     "Approve the amendment to add a contract administrator, with no change to the term or compensation."),
+    ("Accept grant funding in the amount of $63,875.00 for personnel expenses.",
+     "Accept grant funding in the amount of $63,875.00 [no County match] for personnel expenses."),
+    ("The Finance Department submits periodic reports to the City Council.",
+     "In accordance with the City's Financial Policies, the Finance Department submits periodic reports to the City Council."),
+    ("The Board authorizes the General Manager to amend the existing Agreement with AEC for design services.",
+     "The Board authorizes the General Manager to amend (Amendment No. 3) the existing Agreement (Agreement) with AEC (Auerbach) for design (Phase 5) services."),
+    ("Roll change requests for the 2026/2027 secured tax rolls.", "Roll change requests for the 2026/2027secured tax rolls."),
+    # A trailing clause set off from the kept words.
+    ("Grant funds will be used to carry out enforcement related to traffic violations in our community.",
+     "Grant funds will be used to carry out enforcement related to traffic violations in our community including, but not limited to, DUI enforcement."),
+    ("It is recommended that the Board accept a fiscal year 2027 Victims of Crime Act (VOCA) grant award.",
+     "It is recommended that the Board accept a fiscal year 2027 Victims of Crime Act (VOCA) grant award [amount not to exceed $25,641.00]."),
+    # An early "the" no longer anchors the sentence in the wrong clause.
+    ("The Board approves the purchase of the two trucks for the road crew.",
+     "The Board approves the purchase of the two trucks for the road crew, the lowest bid received."),
+]
+
+
+@pytest.mark.parametrize("trimmed,passage", UNFAITHFUL)
+def test_unfaithful_trims_fail(trimmed, passage):
+    assert item_summaries.check_sentence(trimmed, passage) is not None
+    with pytest.raises(item_summaries.Rejected):
+        item_summaries.validate([sentence(trimmed, passage)], {1: passage}, "doc")
+
+
+@pytest.mark.parametrize("trimmed,passage", FAITHFUL)
+def test_faithful_trims_pass(trimmed, passage):
+    assert item_summaries.check_sentence(trimmed, passage) is None
+    text, citations = item_summaries.validate([sentence(trimmed, passage)], {1: passage}, "doc")
+    assert text == trimmed and " ".join(citations[0]["quote"].split()) in " ".join(passage.split())
+
+
+def test_a_shortened_number_says_so_and_the_retry_explains_it():
+    with pytest.raises(item_summaries.Rejected) as rejected:
+        item_summaries.validate([sentence("The City will pay $1,300 for the work.", "The City will pay $1,267,300 for the work.")],
+                                {1: "The City will pay $1,267,300 for the work."}, "doc")
+    assert rejected.value.kind == "number"
+    assert "never shorten" in item_summaries.retry_message(rejected.value, str(rejected.value))
+
+
+def test_numbers_and_lengths_count_printed_words():
+    # "26-7306-6574-RA (10392)" is two printed words, not five: this 45-word motion is within the limit.
+    motion = ("Approve and authorize the Chair to sign the first amendment to Cooperative Service Agreement 26-7306-6574-RA (10392) "
+              "with the U.S. Department of Agriculture Animal and Plant Health Inspection Service, to add a contract administrator, "
+              "with no change to the term or compensation of the agreement.")
+    text, _ = item_summaries.validate([sentence(motion, motion)], {1: motion}, "doc")
+    assert text == motion
+
+
+@pytest.mark.parametrize("page,source,trimmed", [
+    # A source that begins with its own list marker.
+    ("Recommendations:\nc. Adopt the resolution.\nd. Approve the Project as described and evaluated in the IS/MND, subject to mitigation.",
+     "d. Approve the Project as described and evaluated in the IS/MND, subject to mitigation.",
+     "Approve the Project as described and evaluated in the IS/MND, subject to mitigation."),
+    # A heading followed by a dash.
+    ("HEARING - Recorder-Clerk’s Office recommending the Board conduct a public hearing to adopt Ordinance 5272.",
+     "Recorder-Clerk’s Office recommending the Board conduct a public hearing to adopt Ordinance 5272.",
+     "Recorder-Clerk’s Office recommending the Board conduct a public hearing to adopt Ordinance 5272."),
+    ("Net Income – For the two months ending August 31, 2026, the District reported net income of $1,138,642.",
+     "For the two months ending August 31, 2026, the District reported net income of $1,138,642.",
+     "For the two months ending August 31, 2026, the District reported net income of $1,138,642."),
+    # A source copied from mid-sentence is checked against the report's whole sentence (here, after its opening clause).
+    ("Consistent with the District’s 5-year Capital Improvement Plan, the Satellite Pump Station Project – Phase 2 will "
+     "rehabilitate two sewer pump stations.",
+     "the Satellite Pump Station Project – Phase 2 will rehabilitate two sewer pump stations.",
+     "The Satellite Pump Station Project – Phase 2 will rehabilitate two sewer pump stations."),
+    # A footnote marker starts a sentence; the digits after a decimal point do not.
+    ("Animal Services*\n\n*Note that County Code 55.800(14) provides for a time limit of one year.",
+     "Note that County Code 55.800(14) provides for a time limit of one year.",
+     "Note that County Code 55.800(14) provides for a time limit of one year."),
+])
+def test_sources_start_at_markers_headings_and_their_sentences_start(page, source, trimmed):
+    text, citations = item_summaries.validate([sentence(trimmed, source)], {1: page}, "doc")
+    assert text == trimmed
+    assert " ".join(citations[0]["quote"].split()) in " ".join(page.split())
+
+
+def test_a_sentence_does_not_start_inside_a_number():
+    page = "The total contract amount is $2,304,924.00 for the full term of the agreement with the contractor."
+    with pytest.raises(ValueError, match="middle"):
+        item_summaries.validate([sentence("00 for the full term of the agreement with the contractor.",
+                                          "00 for the full term of the agreement with the contractor.")], {1: page}, "doc")
 
 
 def test_dropping_a_trailing_negation_fails():
@@ -297,7 +435,7 @@ def test_short_and_long_sources_say_so():
         item_summaries.validate([sentence("Receive and file.", "Receive and file.")], {1: "Recommendation: Receive and file."}, "doc")
     assert short.value.kind == "short-source"
     with pytest.raises(item_summaries.Rejected, match="source has 200 words"):
-        item_summaries.validate([sentence("The City received 23 proposals.", "word " * 200)], {1: PAGE}, "doc")
+        item_summaries.validate([sentence("The City received 24 proposals.", "word " * 200)], {1: PAGE}, "doc")
 
 
 @pytest.mark.parametrize("page,source", [
@@ -341,7 +479,7 @@ def test_whole_earlier_sentences_may_be_dropped_but_not_part_of_one():
     page = "Pass a Motion to execute Amendment No. 3 to the Agreement with Lumos for the bridge project."
     with pytest.raises(ValueError, match="middle of the passage"):
         item_summaries.validate([sentence("3 to the Agreement with Lumos for the bridge project.", page)], {1: page}, "doc")
-    with pytest.raises(ValueError, match="middle of a sentence"):
+    with pytest.raises(ValueError, match="middle of (a|the passage.s) sentence"):
         item_summaries.validate([sentence("3 to the Agreement with Lumos for the bridge project.",
                                           "3 to the Agreement with Lumos for the bridge project.")], {1: page}, "doc")
 
@@ -356,7 +494,7 @@ def test_lettered_attachments_and_list_markers_end_sentences_but_initials_do_not
     if starts:
         item_summaries.validate([sentence(source, source)], {1: page}, "doc")
     else:
-        with pytest.raises(ValueError, match="middle of a sentence"):
+        with pytest.raises(ValueError, match="middle of (a|the passage.s) sentence"):
             item_summaries.validate([sentence(source, source)], {1: page}, "doc")
 
 
@@ -483,7 +621,7 @@ def test_sentences_start_where_the_reports_sentences_start():
     page = ("Staff recommends approval. The resolution would abandon\napproximately 1,438 square feet of the easterly portion.\n\n"
             "If these plans are selected, the program is expected to cost approximately $393,513 annually.")
     # A fragment lifted from the middle of a sentence fails, even though every word is the report's.
-    with pytest.raises(ValueError, match="middle of a sentence"):
+    with pytest.raises(ValueError, match="middle of (a|the passage.s) sentence"):
         item_summaries.validate([sentence("Approximately 1,438 square feet of the easterly portion.",
                                           "approximately 1,438 square feet of the easterly portion.")], {1: page}, "doc")
     with pytest.raises(ValueError, match="middle of the passage"):

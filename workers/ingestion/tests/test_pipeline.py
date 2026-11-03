@@ -712,8 +712,9 @@ def test_export_and_reclassify_queries_do_not_grow_with_the_archive(db, monkeypa
         reclassify_topics(db)
     assert len(payload["meetings"]) > 1 and sum(len(m["items"]) for m in payload["meetings"]) > 10
     assert sum(len(m.get("previews", [])) for m in payload["meetings"]) == 5
-    # 13: staff reports and their summaries (IDEA-013, IDEA-016); 14: current previews, one query (IDEA-018).
-    assert large_export["n"] == small_export["n"] <= 14
+    # 13: staff reports and their summaries (IDEA-013, IDEA-016); 14: current previews, one query (IDEA-018);
+    # 15: short headlines for long titles and their operator overrides (decision 0035).
+    assert large_export["n"] == small_export["n"] <= 15
     assert large_reclassify["n"] == small_reclassify["n"] <= 3
 
 

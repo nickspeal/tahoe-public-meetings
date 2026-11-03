@@ -16,7 +16,7 @@ from .comment_periods import ingest_comment_periods
 from .catalog import agency_catalog_path, followed_agencies
 from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
-from . import (ai_topics, alerts, backfill, coverage, evaluate_topics, hand_built, item_summaries, notices, participation,
+from . import (ai_topics, alerts, backfill, coverage, evaluate_topics, hand_built, item_summaries, notices, participation, short_titles,
                planning_calendars, previews, scheduled, staff_reports)
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
@@ -153,6 +153,25 @@ def _parser() -> argparse.ArgumentParser:
     summaries.add_argument("--max-cost", type=float, default=item_summaries.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
     summaries.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
                            help="USD; refuse to run once month-to-date AI spend reaches it")
+    shorts = sub.add_parser("shorten-titles", help="Write short headlines for long agenda titles with Claude (Haiku, then Sonnet); "
+                            "decision 0035; the full title remains the fallback")
+    shorts.add_argument("--agency", help="Only this agency ID")
+    shorts.add_argument("--meeting", help="Only this meeting ID")
+    shorts.add_argument("--max-items", type=int, help="Shorten at most this many pending titles")
+    shorts.add_argument("--force", action="store_true", help="Shorten again even when the agenda text and prompt are unchanged")
+    shorts.add_argument("--dry-run", action="store_true", help="Report pending titles and estimated cost; no API calls")
+    shorts.add_argument("--max-cost", type=float, default=short_titles.DEFAULT_MAX_RUN_COST, help="USD limit for this run")
+    shorts.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET,
+                        help="USD; refuse to run once month-to-date AI spend reaches it")
+    short_override = sub.add_parser("short-title", help="Suppress or replace an item's short headline (decision 0035); "
+                                    "applies wherever the same agenda text appears")
+    short_override.add_argument("item_id")
+    choice = short_override.add_mutually_exclusive_group(required=True)
+    choice.add_argument("--text", help="Show this headline instead")
+    choice.add_argument("--suppress", action="store_true", help="Show no short headline; the item's own title stays")
+    choice.add_argument("--clear", action="store_true", help="Remove the override; Claude's headline (if any) returns")
+    short_override.add_argument("--reason", default="", help="Required with --text or --suppress")
+    short_override.add_argument("--author", default="", help="Required with --text or --suppress")
     scheduled_run = sub.add_parser("run-scheduled", help="Full scheduled pipeline: discover, capture, classify, export, validate, publish")
     scheduled_run.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."),
                                help="Directory holding config/ (default: TAHOE_SOURCE_ROOT or the working directory)")
@@ -169,6 +188,8 @@ def _parser() -> argparse.ArgumentParser:
     scheduled_run.add_argument("--monthly-budget", type=float, default=ai_topics.DEFAULT_MONTHLY_BUDGET, help="USD month-to-date AI budget")
     scheduled_run.add_argument("--summary-max-cost", type=float, default=item_summaries.DEFAULT_MAX_RUN_COST,
                                help="USD limit for staff report summaries this run")
+    scheduled_run.add_argument("--short-title-max-cost", type=float, default=short_titles.DEFAULT_MAX_RUN_COST,
+                               help="USD limit for short headlines of long titles this run (0 turns the step off; decision 0035)")
     scheduled_run.add_argument("--staff-report-meetings", type=int, default=staff_reports.DEFAULT_MAX_MEETINGS,
                                help="Meetings scanned for staff reports this run (0 disables)")
     scheduled_run.add_argument("--max-calendars", type=int, default=planning_calendars.DEFAULT_MAX_CALENDARS,
@@ -300,6 +321,14 @@ def main(argv=None) -> int:
                 conn, agency=args.agency, meeting=args.meeting, max_items=args.max_items, force=args.force,
                 dry_run=args.dry_run, max_cost=args.max_cost, monthly_budget=args.monthly_budget), indent=2))
             return 0
+        if args.command == "shorten-titles":
+            init_db(conn)
+            report = short_titles.shorten_titles(
+                conn, agency=args.agency, meeting=args.meeting, max_items=args.max_items, force=args.force,
+                dry_run=args.dry_run, max_cost=args.max_cost, monthly_budget=args.monthly_budget)
+            report.pop("latencySeconds", None)
+            print(json.dumps(report, indent=2))
+            return 0
         if args.command == "run-scheduled":
             return _run_scheduled(conn, args)
         if args.command == "publish-export":
@@ -377,6 +406,12 @@ def main(argv=None) -> int:
             edit_item(conn, args.item_id, correction=(args.text, args.reason, args.author))
         elif args.command == "suppress":
             edit_item(conn, args.item_id, suppressed=not args.off)
+        elif args.command == "short-title":
+            try:
+                print(json.dumps(short_titles.set_override(conn, args.item_id, text=args.text, suppress=args.suppress,
+                                                           clear=args.clear, reason=args.reason, author=args.author)))
+            except ValueError as exc:
+                raise SystemExit(str(exc))
         elif args.command == "tag":
             edit_item(conn, args.item_id, topic=(args.topic_id, not args.exclude, args.author))
         elif args.command == "refresh-document":
@@ -421,7 +456,8 @@ def _run_scheduled(conn, args) -> int:
         root=args.root, discovery_limit=args.discovery_limit, past_days=args.past_days, future_days=args.future_days,
         max_documents=args.max_documents, delay=args.delay, forecast_days=args.forecast_days,
         min_meetings=args.min_meetings, max_cost=args.max_cost, monthly_budget=args.monthly_budget,
-        summary_max_cost=args.summary_max_cost, staff_report_meetings=args.staff_report_meetings,
+        summary_max_cost=args.summary_max_cost, short_title_max_cost=args.short_title_max_cost,
+        staff_report_meetings=args.staff_report_meetings,
         max_calendars=args.max_calendars, claude_time_budget=args.claude_time_budget, out=args.out,
         skip_discovery=args.skip_discovery, publish=not args.no_publish)
     summary = scheduled.run_scheduled(conn, options, fetch=lambda url: download_extract(url))

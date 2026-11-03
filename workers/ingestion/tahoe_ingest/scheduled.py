@@ -18,18 +18,20 @@ stops the run, but an invalid export is never published:
 13. staff-reports      link items to their own staff reports (agencies whose staffReports names a rule); a few meetings per run
 14. planning-calendars new agenda planning calendars (agencies with planningCalendar) become previews; new calendars only
 15. classify-subjects  Claude tags for new preview subjects; same guards as 11
-16. summarize-items    Claude selects summary sentences from those reports; its own per-run cost limit
-17. export             public JSON (mode "live")
-18. validate           the same checks as scripts/check_export.py, plus a minimum size
-19. store              insert into public_exports, keep the latest 5
-20. deploy-hook        POST to VERCEL_DEPLOY_HOOK_URL when set
+16. short-titles       Claude headlines for long agenda titles (decision 0035); its own per-run cost limit, before
+                       summaries so a summary backlog that reaches the time budget does not starve it
+17. summarize-items    Claude selects summary sentences from those reports; its own per-run cost limit
+18. export             public JSON (mode "live")
+19. validate           the same checks as scripts/check_export.py, plus a minimum size
+20. store              insert into public_exports, keep the latest 5
+21. deploy-hook        POST to VERCEL_DEPLOY_HOOK_URL when set
 
-Only 17-20 failing makes the run fail. Meetings come only from live discovery (and the
+Only 18-21 failing makes the run fail. Meetings come only from live discovery (and the
 backfill, which shares its capture path); no hand-built meeting record is loaded
 (decision 0033).
 
 A time budget (`--claude-time-budget`, 45 minutes from the run's start by default)
-keeps 17-20 inside the Cloud Run task timeout: steps 3, 11-16 check it before each
+keeps 18-21 inside the Cloud Run task timeout: steps 3, 11-17 check it before each
 new meeting, item, batch, or download, stop cleanly once it has passed (work done
 so far stays committed), and report `stoppedEarly` and `timeBudgetReached`. The
 run summary then lists those steps under `timeBudgetSteps`, and the run is degraded.
@@ -49,7 +51,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import ai_topics, item_summaries, notices, participation, planning_calendars, previews, records, staff_reports
+from . import ai_topics, item_summaries, notices, participation, planning_calendars, previews, records, short_titles, staff_reports
 from .capture import MAX_DOCUMENTS, StoredMeetings, capture_candidates, capture_documents, discover_agency
 from .http import EndpointSkipped, skipped_endpoint
 from .catalog import followed_agencies
@@ -93,7 +95,7 @@ class Options:
                  recapture_past_days=RECAPTURE_PAST_DAYS, max_captures_per_agency=MAX_CAPTURES_PER_AGENCY,
                  coverage_start=COVERAGE_START, max_documents=MAX_DOCUMENTS, delay=1.0, forecast_days=None, min_meetings=1,
                  max_cost=ai_topics.DEFAULT_MAX_RUN_COST, monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET,
-                 summary_max_cost=item_summaries.DEFAULT_MAX_RUN_COST,
+                 summary_max_cost=item_summaries.DEFAULT_MAX_RUN_COST, short_title_max_cost=short_titles.DEFAULT_MAX_RUN_COST,
                  staff_report_meetings=staff_reports.DEFAULT_MAX_MEETINGS,
                  max_calendars=planning_calendars.DEFAULT_MAX_CALENDARS,
                  claude_time_budget=DEFAULT_CLAUDE_TIME_BUDGET, deadline=None,
@@ -113,6 +115,7 @@ class Options:
         self.max_cost = max_cost
         self.monthly_budget = monthly_budget
         self.summary_max_cost = summary_max_cost
+        self.short_title_max_cost = short_title_max_cost  # 0 turns the short-titles step off
         self.staff_report_meetings = staff_report_meetings
         self.max_calendars = max_calendars
         self.claude_time_budget = claude_time_budget
@@ -443,6 +446,22 @@ def summarize_items(conn, options: Options, today: date, deadline: float | None 
     return ("degraded" if report.get("stoppedEarly") else "ok"), report
 
 
+def shorten_titles(conn, options: Options, today: date, deadline: float | None = None):
+    if options.short_title_max_cost <= 0:
+        return "skipped", {"reason": "off (--short-title-max-cost 0)"}
+    if not ai_topics.has_credentials():
+        return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); full titles stay in place"}
+    try:
+        report = short_titles.shorten_titles(conn, max_cost=options.short_title_max_cost,
+                                             monthly_budget=options.monthly_budget, today=today, deadline=deadline)
+    except SystemExit as exc:  # Budget and fatal-API guards stop headlines, not publication.
+        conn.rollback()
+        return "degraded", {"stopped": _short(exc)}
+    report.pop("dryRun", None)
+    report.pop("latencySeconds", None)
+    return ("degraded" if report.get("stoppedEarly") else "ok"), report
+
+
 def classify(conn, options: Options, deadline: float | None = None):
     if not ai_topics.has_credentials():
         return "skipped", {"reason": "no Claude credentials (API key or workload identity federation); rule tags stay in place"}
@@ -587,6 +606,7 @@ def run_scheduled(conn, options: Options, *, discover=discover_agency, fetch=dow
         run.step("staff-reports", lambda: map_staff_reports(conn, options, read_pdf, today, deadline))
         run.step("planning-calendars", lambda: read_planning_calendars(conn, options, run, read_pdf, today, deadline))
         run.step("classify-subjects", lambda: classify_subjects(conn, options, deadline))
+        run.step("short-titles", lambda: shorten_titles(conn, options, today, deadline))  # bounded: $0.05, about 6 minutes
         run.step("summarize-items", lambda: summarize_items(conn, options, today, deadline))
         # Export, validate, store, and the deploy hook run whatever the time budget: they are never budgeted.
 
@@ -636,7 +656,7 @@ def _summary(run: Run, started_at: datetime, payload, published: dict) -> dict:
     stopped = time_budget_steps(run.steps)
     message = f"run-scheduled {status}" + (f"; time budget reached in {', '.join(stopped)}" if stopped else "")
     ai_steps = [s.get("detail", {}) for s in run.steps if s["name"] in ("classify-topics", "participation", "summarize-items",
-                                                                        "notices", "classify-subjects")]
+                                                                        "notices", "classify-subjects", "short-titles")]
     counts = {}
     if payload is not None:
         meetings = payload["meetings"]

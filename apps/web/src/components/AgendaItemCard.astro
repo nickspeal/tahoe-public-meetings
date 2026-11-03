@@ -2,6 +2,7 @@
 import type { AgendaItem, Meeting } from '../../../../packages/domain/public';
 import { itemSourceLink, staffReportLink, timeCertainLabel, topicName } from '../lib/data';
 import { itemDetails, itemTitle } from '../lib/agenda-excerpt';
+import { SHORTENED_NOTE, detailsWithFullText, itemHeadline } from '../lib/short-title';
 import { sameHeading } from '../lib/agenda-sections';
 import { clickEvent } from '../lib/analytics';
 import { isPlaceholderItem } from '../lib/routine-items';
@@ -14,8 +15,9 @@ const sourceLinks = [
   ...(sourceLink ? [{ ...sourceLink, event: clickEvent('outbound-agenda', page, meeting.agencyId) }] : []),
   ...(reportLink ? [{ ...reportLink, event: clickEvent('outbound-staff-report', page, meeting.agencyId) }] : []),
 ];
-const details = itemDetails(item);
-const title = itemTitle(item);
+// A short headline, when there is one, replaces a long title; the expanded item keeps the agenda's whole text.
+const headline = itemHeadline(item, itemTitle(item));
+const details = detailsWithFullText(item, itemDetails(item));
 // The staff report already has its own card; list only the other attachments.
 const withoutFragment = (url: string) => url.split('#')[0];
 const attachments = (item.attachments ?? []).filter((file) => !reportLink || withoutFragment(file.url) !== withoutFragment(reportLink.href));
@@ -25,7 +27,7 @@ const sectionName = !nested && item.section && !sameHeading(item.title, item.sec
 // A number the agenda skips: a muted line, left out of the topic filter's item counts.
 const placeholder = isPlaceholderItem(item);
 ---
-{placeholder ? <div class="agenda-item agenda-item-missing" id={`item-${item.id}`} data-item-id={item.id}><span class="agenda-order">{item.number && <span>{item.number}</span>}</span><p>{item.title}</p></div> : <details class="agenda-item" id={`item-${item.id}`} data-agenda-item data-item-id={item.id} data-topic-ids={JSON.stringify(orderedTopics)}><summary class="agenda-accordion-summary"><span class="agenda-order">{item.number && <span>{item.number}</span>}</span><div class="agenda-heading"><div class="agenda-item-title"><Heading>{title}</Heading></div>{item.timeCertain && <span class="time-certain-badge" title={item.timeCertain.quote}>◷ {timeCertainLabel(item)}</span>}{sectionName && <span class="agenda-section-name">{sectionName}</span>}{orderedTopics.length > 0 && <div class="agenda-summary-topics" aria-label="Agenda item topics">{orderedTopics.map((topicId) => <span class="tag">{topicName(topicId)}</span>)}</div>}</div><span class="agenda-disclosure" aria-hidden="true"></span></summary><div class="agenda-item-content">
+{placeholder ? <div class="agenda-item agenda-item-missing" id={`item-${item.id}`} data-item-id={item.id}><span class="agenda-order">{item.number && <span>{item.number}</span>}</span><p>{item.title}</p></div> : <details class="agenda-item" id={`item-${item.id}`} data-agenda-item data-item-id={item.id} data-topic-ids={JSON.stringify(orderedTopics)}><summary class="agenda-accordion-summary"><span class="agenda-order">{item.number && <span>{item.number}</span>}</span><div class="agenda-heading"><div class="agenda-item-title"><Heading>{headline.text}{headline.shortened && <> <span class="short-title-mark" title={SHORTENED_NOTE}>Shortened</span></>}</Heading></div>{item.timeCertain && <span class="time-certain-badge" title={item.timeCertain.quote}>◷ {timeCertainLabel(item)}</span>}{sectionName && <span class="agenda-section-name">{sectionName}</span>}{orderedTopics.length > 0 && <div class="agenda-summary-topics" aria-label="Agenda item topics">{orderedTopics.map((topicId) => <span class="tag">{topicName(topicId)}</span>)}</div>}</div><span class="agenda-disclosure" aria-hidden="true"></span></summary><div class="agenda-item-content">
   {item.timeCertain && <p class="time-certain-source"><strong>{timeCertainLabel(item)}.</strong> The agenda says: <q>{item.timeCertain.quote}</q>{item.timeCertain.page && ` (page ${item.timeCertain.page})`}</p>}
   {details.map((detail) => <div class="summary-block"><div class="summary-label"><span>{detail.label}</span></div><p>{detail.text}</p></div>)}
   {sourceLinks.length > 0 ? <div class="agenda-source-links">{sourceLinks.map((link) => <a class="agenda-source-link source-document" href={link.href} target="_blank" rel="noopener noreferrer" {...link.event}><span class="document-icon" aria-hidden="true">↗</span><span><strong>{link.label}</strong><small>{link.detail}</small></span></a>)}</div> : <p class="agenda-source-missing">See the official documents below.</p>}

@@ -99,9 +99,11 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     steps = {s["name"]: s for s in summary["steps"]}
     assert list(steps) == ["init-db", "comment-periods", "notices", "one-offs", "discover",
                            "quarantine", "reparse", "reclassify", "meeting-records", "draft-minutes", "classify-topics", "participation",
-                           "staff-reports", "planning-calendars", "classify-subjects", "summarize-items", "export", "validate",
-                           "store", "deploy-hook"]
+                           "staff-reports", "planning-calendars", "classify-subjects", "short-titles", "summarize-items", "export",
+                           "validate", "store", "deploy-hook"]
     assert steps["notices"]["status"] == "skipped" and steps["classify-subjects"]["status"] == "skipped"
+    # On by default ($0.05 per run, decision 0035), skipped here only for want of Claude credentials.
+    assert steps["short-titles"]["status"] == "skipped" and "credentials" in steps["short-titles"]["detail"]["reason"]
     # Source failures degrade the run but never stop publication.
     assert summary["status"] == "degraded" and summary["exportId"]
     assert steps["classify-topics"]["status"] == "skipped" and steps["summarize-items"]["status"] == "skipped"

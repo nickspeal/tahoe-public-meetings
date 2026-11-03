@@ -101,6 +101,20 @@ joined); citations quote the stored page text. A rejected answer is retried with
 reason, and kept in its `ai_usage.error` after `reply:`. Use `--dry-run` for
 pending items and cost; `--meeting ID` to try one meeting. Claude topic classification (decision 0011) runs in `classify-topics`, which the scheduled pipeline calls when Claude credentials are available: `ANTHROPIC_API_KEY` locally, or workload identity federation on Cloud Run (see the [deployment runbook](../../docs/operations/deployment.md)).
 
+Short titles ([decision 0035](../../docs/decisions/0035-short-titles-for-long-agenda-items.md)):
+`shorten-titles [--dry-run] [--agency ID] [--meeting ID] [--max-cost USD]` has Claude (Haiku, then Sonnet) write a
+headline of 6 to 14 words for each item whose whole agenda text (`full_title`, else the title) is over 200
+characters. `short_titles.validate` publishes a headline only when every word is a word of that text (or a simple
+inflection of one, or a connecting word), every number is printed in it, and a "deny", "not", "repeal", or similar
+word governing something the headline names is kept. Results are cached in `ai_short_titles` by a hash of the text,
+so a re-posted agenda or a standing item at the next meeting costs nothing, and the export adds `shortTitle` to the
+item. `run-scheduled` runs it as `short-titles` within `--short-title-max-cost` ($0.05 per run by default, about
+180 titles; 0 turns it off). `short-title ITEM_ID --suppress --reason ... --author ...` hides a bad headline (the
+item's own title, with its ellipsis and whole text, returns), `--text "..."` replaces it, and `--clear` removes the
+override. An override is stored in `editorial.short_title` with the hash of the agenda text it was made for, so it
+applies wherever that text appears (as the headline does), is left behind when the title is revised, and keeps that
+text from being sent to Claude. Only the shown headline is exported.
+
 Previews (IDEA-018) are subjects an official source says are planned for a
 future meeting before its agenda is posted. `extract-notices [--dry-run]
 [--force]` has Claude (Haiku, then Sonnet) read each tracked comment period
@@ -157,7 +171,7 @@ does not rewrite source PDFs, extracted text, or summary versions.
 
 Operator edits: `correct ITEM_ID --text ... --reason ... --author ...`,
 `tag ITEM_ID biking --author ...`, `tag ITEM_ID biking --exclude --author ...`,
-and `suppress ITEM_ID`.
+`suppress ITEM_ID`, and `short-title ITEM_ID --suppress|--text ...|--clear` (above).
 These local commands have no remote write endpoint. They are internal steering;
 the public export carries only the latest summary text.
 
@@ -192,12 +206,12 @@ See the [configuration guide](../../config/README.md). Shared topic rules and ag
 6. `quarantine`, 7. `reparse`, 8. `reclassify`.
 9. `meeting-records`: YouTube feeds and the Truckee Laserfiche minutes folder from `config/meeting-records.json`, matched to stored meetings (skipped with `--skip-discovery`). 10. `draft-minutes`: draft minutes found through "Approval of minutes" items in later agendas. See [decision 0025](../../docs/decisions/0025-minutes-and-recording-links.md).
 11. `classify-topics` (only with Claude credentials, within `--max-cost`/`--monthly-budget`), 12. `participation` (same guards).
-13. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and attachment links (`map-staff-reports`; one rule per agency, decision 0026). 14. `planning-calendars`: new agenda planning calendars become previews and planned meetings (`read-planning-calendars`; IDEA-018); at most `--max-calendars` (4) downloads, and only calendars newer than the stored one. A calendar that fails validation is named in `failures`. 15. `classify-subjects`: Claude tags for new preview subjects (same guards as `classify-topics`). 16. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
-17. `export` (mode `live`), 18. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 19. `store` in `public_exports` (latest 5 kept), 20. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
+13. `staff-reports`: up to `--staff-report-meetings` (6) meetings are scanned for item staff reports and attachment links (`map-staff-reports`; one rule per agency, decision 0026). 14. `planning-calendars`: new agenda planning calendars become previews and planned meetings (`read-planning-calendars`; IDEA-018); at most `--max-calendars` (4) downloads, and only calendars newer than the stored one. A calendar that fails validation is named in `failures`. 15. `classify-subjects`: Claude tags for new preview subjects (same guards as `classify-topics`). 16. `short-titles`: Claude headlines for agenda items with more than 200 characters of agenda text (`shorten-titles`, decision 0035), within `--short-title-max-cost` ($0.05; 0 turns it off) and the monthly budget; before summaries, so a summary backlog that reaches the time budget does not starve it. 17. `summarize-items`: Claude staff report summaries within `--summary-max-cost` ($0.50) and the monthly budget (decision 0024).
+18. `export` (mode `live`), 19. `validate` (the `scripts/check_export.py` checks, ported to `tahoe_ingest/export_check.py`, plus `--min-meetings 1`), 20. `store` in `public_exports` (latest 5 kept), 21. POST to `VERCEL_DEPLOY_HOOK_URL` if set (30-second timeout; the URL never appears in output).
 
-A failure in steps 2–16 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
+A failure in steps 2–17 is recorded (`processing_runs`, agency status, the summary's `failures`) and the run continues with status `degraded`. The command exits non-zero only when export, validation, storage, or the deploy hook fails; an invalid export is never stored. stdout gets one JSON summary line (`severity`, per-step status and timings, counts, failures, `aiCostUsd`, `peakMemory`); progress lines go to stderr as JSON. A PostgreSQL advisory lock skips a run that overlaps another. `publish-export --file PATH` validates and stores an existing export file (`--no-hook` skips the deploy).
 
-`--claude-time-budget SECONDS` (default 2700, 45 minutes from the run's start; 0 disables it) keeps steps 17–20 inside the job's 60-minute timeout. Once it has passed, steps 3, 11, 12, 15, and 16 send no new Claude request, 14 starts no new download, and 13 is skipped. Each checks before its next meeting, notice, subject batch, item, or calendar, never mid-request, keeps what it finished, and reports `stoppedEarly` ("time budget reached; remaining … on the next run"), `timeBudgetReached`, and what it deferred. Such a step is `degraded`; the summary adds `timeBudgetSeconds`, `timeBudgetReached`, and `timeBudgetSteps`, and an ntfy alert names the stopped steps and the run's length. See [Time budget](../../docs/operations/deployment.md#time-budget).
+`--claude-time-budget SECONDS` (default 2700, 45 minutes from the run's start; 0 disables it) keeps steps 18–21 inside the job's 60-minute timeout. Once it has passed, steps 3, 11, 12, 15, 16, and 17 send no new Claude request, 14 starts no new download, and 13 is skipped. Each checks before its next meeting, notice, subject batch, item, or calendar, never mid-request, keeps what it finished, and reports `stoppedEarly` ("time budget reached; remaining … on the next run"), `timeBudgetReached`, and what it deferred. Such a step is `degraded`; the summary adds `timeBudgetSeconds`, `timeBudgetReached`, and `timeBudgetSteps`, and an ntfy alert names the stopped steps and the run's length. See [Time budget](../../docs/operations/deployment.md#time-budget).
 
 ### Meeting warnings
 

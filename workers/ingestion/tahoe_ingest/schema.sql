@@ -245,3 +245,15 @@ ALTER TABLE comment_periods ADD COLUMN IF NOT EXISTS previous_ids jsonb NOT NULL
 CREATE TABLE IF NOT EXISTS ingest_migrations (
   name text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now()
 );
+-- Short headlines for long agenda titles (tahoe_ingest.short_titles; decision 0035). Keyed by the hash of
+-- the agenda text a headline was written from, so the same text at another meeting or in a re-posted agenda reuses
+-- it; the export looks headlines up by that hash. Failed and skipped attempts are kept so the text is not sent again.
+CREATE TABLE IF NOT EXISTS ai_short_titles (
+  source_sha256 text PRIMARY KEY, prompt_sha256 text NOT NULL, model text NOT NULL,
+  status text NOT NULL CHECK(status IN ('published','validation_failed','skipped')),
+  text text NOT NULL DEFAULT '', error text, validator_version integer NOT NULL DEFAULT 1,
+  generated_at timestamptz NOT NULL DEFAULT now()
+);
+-- The operator's override of a short headline (short_titles.set_override): {"text": null (suppressed) or the
+-- replacement, "sourceSha256": the agenda text it was made for, "reason", "author", "updatedAt"}.
+ALTER TABLE editorial ADD COLUMN IF NOT EXISTS short_title jsonb;

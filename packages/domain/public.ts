@@ -14,6 +14,13 @@ export interface AgendaItem {
    * (a line or character limit). `title` is then the start of this text.
    */
   fullTitle?: string;
+  /**
+   * A short headline for a long item (whole agenda text over 200 characters), written by Claude from the
+   * agenda's own words and validated against them, or the operator's replacement (decision 0035). Shown in place
+   * of the title, marked as shortened; `title` and `fullTitle` keep the agenda's text. Absent when the operator
+   * suppressed the headline.
+   */
+  shortTitle?: string;
   section: string | null;
   topics: string[];
   summary: { text: string; status: 'published' | 'validation_failed' | 'pending'; method: string; generatedAt: string; citations: Citation[] } | null;

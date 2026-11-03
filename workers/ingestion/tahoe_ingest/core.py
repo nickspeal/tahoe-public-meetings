@@ -843,6 +843,8 @@ def export_public(conn, *, mode="live", forecast_days: int = 0, today: date | No
     from .item_summaries import Supporting
     from .requested_actions import for_meeting as requested_actions
     from . import previews as preview_store
+    from .short_titles import Headlines
+    headlines = Headlines(conn)  # short headlines for long titles, by agenda text hash (decision 0035; operator overrides applied)
     supporting = Supporting(conn)  # each item's staff report, its summary, and its attachments (IDEA-013, IDEA-016)
     current_previews = preview_store.current_previews(conn)  # one query (IDEA-018 R8)
     local_today = today or stamp.astimezone(ZoneInfo(PACIFIC)).date()
@@ -885,6 +887,8 @@ def export_public(conn, *, mode="live", forecast_days: int = 0, today: date | No
                 "change": i["change"], "updatedAt": iso(i["updated_at"]), "suppressed": bool(i["suppressed"])})
             if i["full_title"]:
                 items[-1]["fullTitle"] = i["full_title"]  # present only when the title is cut short
+            if short_title := headlines.for_item(i["title"], i["full_title"]):
+                items[-1]["shortTitle"] = short_title  # a validated headline for a long title; the whole text stays in title/fullTitle
             if staff_report := supporting.report(i["id"], summary, iso):
                 items[-1]["staffReport"] = staff_report
             if attachments := supporting.attachments(i["id"]):

@@ -243,6 +243,8 @@ button, a, select, summary { touch-action: manipulation; }
 .agenda-item-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .agenda-item-title h3, .agenda-item-title h4 { margin: 0; color: var(--heading); font-size: 19px; line-height: 1.32; font-weight: 700; letter-spacing: -.01em; overflow-wrap: anywhere; }
 .agenda-section-name { display: block; margin-top: 6px; color: var(--subtle); font-size: 14px; }
+/* A short headline in place of a long agenda title (decision 0035): a quiet mark, the full text in the expanded item. */
+.short-title-mark { display: inline-block; margin-left: 4px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 0; vertical-align: 2px; cursor: help; white-space: nowrap; }
 .time-certain-badge { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 6px; background: var(--pill); color: var(--heading); font-size: 13px; font-weight: 700; white-space: nowrap; }
 .time-certain-source { margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--field); border-radius: 8px; background: var(--note-bg); color: var(--ink); font-size: 14px; }
 .time-certain-source strong { color: var(--accent); }

@@ -1,6 +1,6 @@
 # 0036: YouTube Data API fallback for failing feeds
 
-Status: proposed default, not yet accepted by the maintainer.
+Status: accepted by the maintainer on 2026-11-04.
 Date: 2026-11-04
 Related decisions: 0025, 0020
 

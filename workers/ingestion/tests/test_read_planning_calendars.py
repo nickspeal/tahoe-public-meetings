@@ -336,6 +336,7 @@ def test_force_reads_a_stored_packet_calendar_again_after_a_format_fix(db, monke
         planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
     payload, meetings = export(db, today)
     assert "ttd-rtcpc:planned-2026-11-02" not in meetings
+    payload["generatedAt"] = f"{today.isoformat()}T19:00:00Z"  # validate against the test's day, not the wall clock
     assert validate_export(payload)[0] == []
 
 

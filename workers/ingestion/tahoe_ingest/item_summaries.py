@@ -1,7 +1,7 @@
 """Agenda item summaries selected from each item's own staff report, with Claude (IDEA-016).
 
 For every item with a verified staff report (``staff_reports``), the first pages of
-the report go to Haiku 5.5 (Sonnet 5.5 as fallback, as in ``ai_topics``), which
+the report go to Haiku 5.5 (Opus 5.5 as the final fallback, decision 0024), which
 returns one to three sentences, each trimmed from one passage of the report and
 citing its page. The maintainer's rule (decision 0024) is that a summary repeats
 the staff report verbatim as much as possible, changing it only to shorten it.
@@ -53,10 +53,11 @@ METHOD = "claude-staff-report-v1"
 # with a dash, a source's own list marker, sources extended to their sentence's start, a parenthetical cut, sentences
 # found on another page or passage than cited, and no inner cut of "recommends", "if", "unless", and the like.
 VALIDATOR_VERSION = 3
-CHAIN = (("claude-haiku-5-5", "low"), ("claude-sonnet-5-5", "medium"))
-# Haiku gets a second try with the validator's objection; Sonnet costs about 20 times more, so one try. The second
-# Haiku try rescues nearly every faithful first answer that failed; a third rescued none of those measured (decision 0024).
-ATTEMPTS = {"claude-haiku-5-5": 2, "claude-sonnet-5-5": 1}
+CHAIN = (("claude-haiku-5-5", "low"), ("claude-opus-5-5", "low"))
+# Haiku gets a second try with the validator's objection; Opus at low effort costs about 20 times more a call, so one
+# try. The second Haiku try rescues nearly every faithful first answer that failed, so Opus is reached by about 0.2% of
+# items; on those it rescued 6 of 6, Sonnet 3 of 6 (decision 0024).
+ATTEMPTS = {"claude-haiku-5-5": 2, "claude-opus-5-5": 1}
 PURPOSE = "staff-report-summary"
 MAX_TOKENS = 4096
 EST_OUTPUT_TOKENS = 800  # sentences, their source passages, and low-effort thinking

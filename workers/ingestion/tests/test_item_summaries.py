@@ -207,11 +207,11 @@ def test_a_replaced_staff_report_falls_back_to_the_excerpt(conn):
 def test_paraphrases_never_publish_and_are_not_retried_every_run(conn):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     before = items(conn)
-    haiku, sonnet = StubModel("claude-haiku-5-5", paraphrase=True), StubModel("claude-sonnet-5-5", paraphrase=True)
-    clients = {"claude-haiku-5-5": haiku, "claude-sonnet-5-5": sonnet}
+    haiku, opus = StubModel("claude-haiku-5-5", paraphrase=True), StubModel("claude-opus-5-5", paraphrase=True)
+    clients = {"claude-haiku-5-5": haiku, "claude-opus-5-5": opus}
     result = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     assert result["validationFailed"] == 2 and not result["published"]
-    assert haiku.calls == 2 * 2 + 4 and sonnet.calls == 2  # Haiku twice per failing item, Sonnet once; the rest skip
+    assert haiku.calls == 2 * 2 + 4 and opus.calls == 2  # Haiku twice per failing item, Opus once; the rest skip
     assert items(conn)["9"]["summary"] == before["9"]["summary"]
     failed = conn.execute("SELECT status,error FROM ai_item_summaries WHERE item_id='slt:2339:9'").fetchone()
     assert failed["status"] == "validation_failed" and "adds words" in failed["error"]
@@ -221,7 +221,7 @@ def test_paraphrases_never_publish_and_are_not_retried_every_run(conn):
 def test_a_new_validator_retries_only_the_items_that_failed_validation(conn, monkeypatch):
     staff_reports.map_staff_reports(conn, reader=reader, delay=0, today=TODAY)
     clients = {"claude-haiku-5-5": StubModel("claude-haiku-5-5", paraphrase=True),
-               "claude-sonnet-5-5": StubModel("claude-sonnet-5-5", paraphrase=True)}
+               "claude-opus-5-5": StubModel("claude-opus-5-5", paraphrase=True)}
     item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     failed = {r["item_id"] for r in conn.execute("SELECT item_id FROM ai_item_summaries WHERE status='validation_failed'")}
     current = item_summaries.VALIDATOR_VERSION
@@ -374,7 +374,7 @@ def test_an_unchanged_agenda_reposted_as_a_new_pdf_keeps_its_summaries_without_a
         return {**found, "sha256": agenda["sha256"]} if url == agenda["url"] else found
     # The new file is a new document, so the meeting is scanned again; nothing is summarized or rebound.
     assert staff_reports.map_staff_reports(conn, reader=reposted_reader, delay=0, today=TODAY)["itemsMapped"] == 6
-    clients = {"claude-haiku-5-5": NoCallModel(), "claude-sonnet-5-5": NoCallModel()}
+    clients = {"claude-haiku-5-5": NoCallModel(), "claude-opus-5-5": NoCallModel()}
     result = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     assert result["itemsPending"] == 0 and result["itemsRebound"] == 0 and result["costUsd"] == 0
     assert items(conn)["9"]["summary"] == summary
@@ -408,7 +408,7 @@ def test_a_new_fingerprint_with_the_same_model_input_keeps_its_summaries_without
     assert dry["itemsPending"] == 0 and dry["itemsRebound"] == 1
     assert items(conn)["9"]["summary"]["method"] != item_summaries.METHOD  # a dry run writes nothing
 
-    clients = {"claude-haiku-5-5": NoCallModel(), "claude-sonnet-5-5": NoCallModel()}
+    clients = {"claude-haiku-5-5": NoCallModel(), "claude-opus-5-5": NoCallModel()}
     with statement_count(monkeypatch) as rebinding:
         result = item_summaries.summarize_items(conn, clients=clients, today=TODAY)
     assert result["itemsPending"] == 0 and result["itemsRebound"] == 1 and result["costUsd"] == 0

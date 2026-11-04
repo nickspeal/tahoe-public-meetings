@@ -556,7 +556,8 @@ def _scratch_dir():
 
 
 def meeting_records(conn, root: Path, run: Run, today: date, *, fetch_text=None, fetch_json=None):
-    report = records.update_meeting_records(conn, root, today=today, fetch_text=fetch_text, fetch_json=fetch_json)
+    report = records.update_meeting_records(conn, root, today=today, fetch_text=fetch_text, fetch_json=fetch_json,
+                                            fallback_key=records.youtube_api_key())
     if not report["youtubeBodies"] and not report["laserficheBodies"]:
         return "skipped", {"reason": f"{records.CONFIG} not present"}
     for error in report["errors"]:

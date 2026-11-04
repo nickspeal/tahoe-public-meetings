@@ -518,6 +518,44 @@ def test_update_meeting_records_backfill_replaces_the_feed(tmp_path, monkeypatch
     assert report["errors"] == [] and report["byAgency"]["washoe-commissioners"]["matched"] == 1
 
 
+def test_a_failing_feed_falls_back_to_one_data_api_page(tmp_path, monkeypatch):
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "meeting-records.json").write_text(json.dumps({"youtube": [
+        {"agency": "slt", "channelId": "UC3LYne8Ih-kTPLnnuyJW9SQ", "include": "\\bcity council\\b"},
+        {"agency": "slt-planning", "channelId": "UC3LYne8Ih-kTPLnnuyJW9SQ", "include": "\\bplanning commission\\b"}]}))
+    monkeypatch.setattr(records, "stored_for_records", lambda conn, agencies, today: {
+        "slt": [stored("slt:2339", date(2026, 10, 6), "10 06 2026 City Council")]})
+
+    def feed_404(url):
+        raise OSError("HTTP Error 404: Not Found")
+    requested = []
+
+    def api(url):
+        requested.append(dict(p.split("=", 1) for p in url.split("?", 1)[1].split("&")))
+        return json.dumps({"nextPageToken": "B", "items": [{"snippet": {
+            "title": "City Council | October 6, 2026", "publishedAt": "2026-10-06T16:00:00Z", "resourceId": {"videoId": "2J7EcPKNfw8"}}}]})
+    report = records.update_meeting_records(None, tmp_path, today=date(2026, 11, 3), fetch_text=feed_404,
+                                            fallback_key="secret-key", fetch_api=api, dry_run=True)
+    assert report["errors"] == [] and report["byAgency"]["slt"]["matched"] == 1
+    assert [q["playlistId"] for q in requested] == ["UU3LYne8Ih-kTPLnnuyJW9SQ"]  # one page, one unit, shared channel read once
+    assert report["apiFallbacks"] == ["slt: https://www.youtube.com/feeds/videos.xml?channel_id=UC3LYne8Ih-kTPLnnuyJW9SQ: "
+                                      "OSError: HTTP Error 404: Not Found"]
+
+    # A working feed spends no quota; with both failing the error names both and never the key.
+    ok = records.update_meeting_records(None, tmp_path, today=date(2026, 11, 3), fetch_text=lambda url: FEED,
+                                        fallback_key="secret-key", fetch_api=lambda url: pytest.fail("API read"), dry_run=True)
+    assert ok["errors"] == [] and ok["apiFallbacks"] == []
+
+    def api_down(url):
+        raise OSError(f"request to {url} failed")
+    both = records.update_meeting_records(None, tmp_path, today=date(2026, 11, 3), fetch_text=feed_404,
+                                          fallback_key="secret-key", fetch_api=api_down, dry_run=True)
+    assert len(both["errors"]) == 1 and "HTTP Error 404" in both["errors"][0] and "Data API fallback" in both["errors"][0]
+    assert "secret-key" not in both["errors"][0]
+    # Without a key the feed failure is reported as before.
+    assert len(records.update_meeting_records(None, tmp_path, today=date(2026, 11, 3), fetch_text=feed_404, dry_run=True)["errors"]) == 1
+
+
 def test_legistar_api_links_for_meetings_missing_from_the_department_page_become_records_only_entries():
     config = {"type": "legistar", "indexUrl": "https://eldorado.legistar.com/DepartmentDetail.aspx?ID=4415", "bodyPattern": "Planning Commission"}
     events = [{"EventId": 5313, "EventBodyName": "Planning Commission", "EventDate": "2026-10-22T00:00:00", "EventMedia": 2690},

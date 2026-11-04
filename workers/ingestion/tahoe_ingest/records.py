@@ -489,20 +489,23 @@ def stored_for_records(conn, agencies: list[str], *, today: date) -> dict[str, l
 
 def update_meeting_records(conn, root: Path | str = ".", *, today: date, fetch_text=None, fetch_json=None,
                            api_key: str | None = None, since: date | None = None, backfill: bool = False,
-                           fetch_page=None, post_json=None, dry_run: bool = False) -> dict:
+                           fetch_page=None, post_json=None, fallback_key: str | None = None, fetch_api=None,
+                           dry_run: bool = False) -> dict:
     """Match configured YouTube and Laserfiche records to stored meetings and store better links.
 
     Feeds are read once each even when several bodies share a channel. With
     ``api_key`` and ``since`` the YouTube Data API replaces the 15-video feed
     (a one-time backfill). With ``backfill`` and no key, each channel's uploads come from the public playlist
-    page instead (``page_videos``). One failing feed never stops the others.
+    page instead (``page_videos``). With ``fallback_key``, a feed that fails is read instead from the newest
+    page of the Data API (one quota unit) and listed under ``apiFallbacks``, not ``errors``: YouTube's feed
+    endpoint returns 404 for every channel for hours at a time. One failing feed never stops the others.
     """
     from .discovery import fetch_text as default_fetch
     fetch_text = fetch_text or (lambda url: default_fetch(url, max_bytes=FEED_BYTES))
     config = load_config(root)
     entries = config.get("youtube", []) + config.get("laserfiche", [])
     report = {"youtubeBodies": len(config.get("youtube", [])), "laserficheBodies": len(config.get("laserfiche", [])),
-              "matched": 0, "updated": 0, "errors": [], "byAgency": {}}
+              "matched": 0, "updated": 0, "errors": [], "apiFallbacks": [], "byAgency": {}}
     if not entries:
         return report
     meetings = stored_for_records(conn, sorted({e["agency"] for e in entries}), today=today)
@@ -517,7 +520,7 @@ def update_meeting_records(conn, root: Path | str = ".", *, today: date, fetch_t
                 elif backfill:
                     feeds[key] = page_videos(entry, fetch_page=fetch_page, post_json=post_json)
                 else:
-                    feeds[key] = parse_feed(fetch_text(feed_url(entry)))
+                    feeds[key] = _feed_or_api(entry, fetch_text, fallback_key, fetch_api, report)
             except Exception as exc:
                 feeds[key] = exc
                 report["errors"].append(f"{entry['agency']}: {feed_url(entry)}: {type(exc).__name__}: {str(exc)[:200]}")
@@ -534,6 +537,22 @@ def update_meeting_records(conn, root: Path | str = ".", *, today: date, fetch_t
         _store(conn, report, entry["agency"], meetings,
                {mid: {"minutes_url": url, "minutes_status": "approved"} for mid, url in found.items()}, dry_run)
     return report
+
+
+def _feed_or_api(entry: dict, fetch_text, fallback_key: str | None, fetch_api, report: dict) -> list[dict]:
+    """The feed's videos or, when the feed fails and a key is set, the newest 50 from the Data API."""
+    try:
+        return parse_feed(fetch_text(feed_url(entry)))
+    except Exception as exc:
+        if not fallback_key:
+            raise
+        feed_error = f"{type(exc).__name__}: {str(exc)[:120]}"
+    try:
+        videos = api_videos(entry, fallback_key, since=COVERAGE_START, fetch=fetch_api, max_pages=1)
+    except Exception as exc:  # api_videos keeps the key out of its message
+        raise RuntimeError(f"feed {feed_error}; Data API fallback {type(exc).__name__}: {exc}") from None
+    report["apiFallbacks"].append(f"{entry['agency']}: {feed_url(entry)}: {feed_error}")
+    return videos
 
 
 def _store(conn, report: dict, agency: str, meetings: dict, found: dict[str, dict], dry_run: bool) -> None:

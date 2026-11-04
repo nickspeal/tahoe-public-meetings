@@ -502,7 +502,8 @@ def _meeting_records(conn, args) -> int:
         if args.since and not key:
             raise SystemExit("--since reads the YouTube Data API: set YOUTUBE_API_KEY")
         report["feeds"] = records.update_meeting_records(conn, args.root, today=today, api_key=key if args.since else None,
-                                                         since=args.since, backfill=args.backfill, dry_run=args.dry_run)
+                                                         since=args.since, backfill=args.backfill, fallback_key=key,
+                                                         dry_run=args.dry_run)
     report["draftMinutes"] = link_draft_minutes(conn, since=scheduled.COVERAGE_START, dry_run=args.dry_run)
     if args.dry_run:
         conn.rollback()

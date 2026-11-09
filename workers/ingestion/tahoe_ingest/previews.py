@@ -42,7 +42,6 @@ from .topics import classify
 
 KINDS = ("notice", "planning-calendar")
 PLANNED_PREFIX = "planned-"
-PLANNED_WARNING = "Subject to change."
 PURPOSE = "subject-classification"
 CHAIN = ai_topics.CHAIN
 ATTEMPTS_PER_MODEL = ai_topics.ATTEMPTS_PER_MODEL
@@ -327,7 +326,8 @@ def _create_planned(conn, source: PreviewSource, rows: list, *, today: date) -> 
                "source_meeting_url": agencies[agency_id].get("officialUrl") or agencies[agency_id].get("sourceUrl") or source.url,
                "status": "scheduled", "participation": {"instructions": _first(block, "remote_quote"), "url": None,
                                                         "remoteUrl": None, "deadline": None},
-               "warnings": [PLANNED_WARNING], "items_complete": False, "documents_complete": False}
+               # No stored caveat: the website says "Subject to change" for every meeting the export marks `planned`.
+               "warnings": [], "items_complete": False, "documents_complete": False}
         if _first(block, "start_time"):
             row["start_time"] = _first(block, "start_time")
         bundle.append(row)

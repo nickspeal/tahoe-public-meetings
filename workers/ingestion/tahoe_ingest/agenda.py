@@ -148,7 +148,21 @@ def parse_agenda(agency: str, documents: list[dict], pages: list[dict], *, prefe
         return replace(chosen, notes=chosen.notes + (f"{DIFFERING}; items are taken from “{name}”; review required.",))
     if failures:
         return _result([], False, failures[0].warning)
-    return _result([], False, f"No complete {agency.upper()} agenda recognized in downloaded documents; review required.")
+    read = [d for d in documents if d["id"] in {p["document_id"] for p in pages}]
+    if read and not any(is_agenda_document(d) for d in read):
+        # Only minutes, a supplement, or a cancellation notice: no failure to report (availability is derived).
+        return ParseResult([], False, None)
+    name = next((a.get("name") for a in agency_catalog() if a["id"] == agency), None) or agency
+    return _result([], False, f"No complete {name} agenda recognized in downloaded documents; review required.")
+
+
+# A document whose title or ID names it as something other than the agenda or a packet that reprints it.
+NOT_AGENDA = re.compile(r"minutes|synopsis|supplement|notice[\s_-]+of[\s_-]+cancell?ation|not the full agenda", re.I)
+
+
+def is_agenda_document(document: dict) -> bool:
+    """Whether a captured document may be the meeting's agenda (or a packet that reprints it)."""
+    return not NOT_AGENDA.search(f"{document.get('title') or ''} {document['id']}")
 
 
 def _signature(result: ParseResult) -> tuple:

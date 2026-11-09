@@ -298,6 +298,17 @@ The image built from the commit that wires IDEA-018 runs three more steps; no ne
 
 After deploying, check one run's summary line: `planning-calendars.detail.calendarsRead`, `rejected`, and `notices.detail.eventsRejected`.
 
+## Retired meeting warnings (one-time)
+
+[Decision 0038](../decisions/0038-warnings-name-known-issues.md) stops writing blanket caveats, but settled meetings are never captured again, so the stored copies stay until removed. After the image with that decision is deployed and one scheduled run has finished (its `reparse` step clears the stale "await reprocessing" notes it can), run the cleanup from a checkout of the same commit against the production database, dry run first:
+
+```sh
+DATABASE_URL=... tahoe-ingest clean-retired-warnings            # report only: summary.meetings and summary.removed by text
+DATABASE_URL=... tahoe-ingest clean-retired-warnings --apply    # one read and one write; idempotent
+```
+
+The next scheduled run's export publishes the result. A second dry run should report `"meetings": 0`.
+
 ## Claude credentials: workload identity federation
 
 The job calls the Anthropic API without an API key. Its Google service account (`tahoe-ingest-job@<project>.iam.gserviceaccount.com`) fetches a Google ID token from the Cloud Run metadata server (audience `https://api.anthropic.com`, `format=full`) and the Anthropic SDK exchanges it for a short-lived token on every refresh.

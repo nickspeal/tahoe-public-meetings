@@ -1,0 +1,172 @@
+{
+ "agency": "tcpud",
+ "source": "https://tahoecitypud.granicus.com/AgendaViewer.php?view_id=2&clip_id=1748",
+ "note": "Special Board meeting agenda page (fetched 2026-11-09). Granicus leaves a blockquote unclosed after F.4, so the page prints section G (unbolded, nested in F.4) before F.5 and prints the bold G heading twice after it. Items reviewed against the AgendaViewer page: F.1-F.5, then G.1-G.6 once.",
+ "expected": [
+  [
+   "A",
+   null,
+   "CALL TO ORDER – PLEDGE OF ALLEGIANCE"
+  ],
+  [
+   "B",
+   null,
+   "APPROVAL OF AGENDA – ACTION"
+  ],
+  [
+   "C",
+   null,
+   "PUBLIC COMMENT"
+  ],
+  [
+   "D.1",
+   "Consent Calendar",
+   "Minutes"
+  ],
+  [
+   "D.2",
+   "Consent Calendar",
+   "Finance"
+  ],
+  [
+   "D.3",
+   "Consent Calendar",
+   "Designation of Real Property Negotiators for Price & Terms for Tahoe City Golf Course 094-020-008"
+  ],
+  [
+   "D.4",
+   "Consent Calendar",
+   "Adopt Resolution No. 26-27 Delegating Authority to the General Manager to Allow, Reject, or Settle Liability Claims"
+  ],
+  [
+   "D.5",
+   "Consent Calendar",
+   "Award Construction Contract for the Lake Forest Boat Ramp Maintenance Dredging Project"
+  ],
+  [
+   "D.6",
+   "Consent Calendar",
+   "Approve Amendment No. 2 to the Professional Services Agreement with Auerbach Engineering Corporation for Construction Support Services for the Lake Forest Boat Ramp Maintenance Dredging Project"
+  ],
+  [
+   "D.7",
+   "Consent Calendar",
+   "Approve Amendment No. 3 to the Professional Services Agreement with Auerbach Engineering Corporation for the Madden Creek Water System Improvement Project - Phase 5"
+  ],
+  [
+   "D.8",
+   "Consent Calendar",
+   "Approve Pay Estimate No. 3 for the Tahoe Cedars Water System Reconstruction Project, Phase 1"
+  ],
+  [
+   "D.9",
+   "Consent Calendar",
+   "Approve Pay Estimate No. 6 for Dianne Feinstein West Shore Tahoe Trail Rehabilitation Project"
+  ],
+  [
+   "D.10",
+   "Consent Calendar",
+   "Approve Pay Estimate No. 2 for the CA SR89 Meeks Bay Bridge Sewer Relocation Project"
+  ],
+  [
+   "D.11",
+   "Consent Calendar",
+   "Approve Pay Estimate No. 5 for the Madden Creek Water System Improvement Project, Phase 4"
+  ],
+  [
+   "D.12",
+   "Consent Calendar",
+   "Approve the 2027 Salary Ranges as Required by California Code of Regulations Section 570.5"
+  ],
+  [
+   "E.1",
+   "Public Hearing",
+   "Public Hearing of Vacancies, Recruitments, and Retention Efforts – AB 2561"
+  ],
+  [
+   "F.1",
+   "Action Items / General Business – Discussion And Possible Action",
+   "Adopt Resolution No. 26-28, Declaring an Emergency Action to Repair Damaged Pavement Resulting from a Water Main Break at the Intersection of Lagoon Road and Sacramento Avenue, and Authorizing the District to Dispense with Competitive Bidding for the Associated Water Main Replacement."
+  ],
+  [
+   "F.2",
+   "Action Items / General Business – Discussion And Possible Action",
+   "Tahoe City Golf Course and Winter Sports Park Clubhouse and Site Improvements Master Planning Presentation"
+  ],
+  [
+   "F.3",
+   "Action Items / General Business – Discussion And Possible Action",
+   "2027 Budget - Draft Department Operating Budget Discussion and Presentation"
+  ],
+  [
+   "F.4",
+   "Action Items / General Business – Discussion And Possible Action",
+   "2027 Budget - Draft Five-Year Fleet and Equipment Capital Plan"
+  ],
+  [
+   "F.5",
+   "Action Items / General Business – Discussion And Possible Action",
+   "2027-2031 - Draft Capital Improvement Plan"
+  ],
+  [
+   "G.1",
+   "Department Reports And Updates",
+   "Governance & Administrative Services Department Report"
+  ],
+  [
+   "G.2",
+   "Department Reports And Updates",
+   "Utilities Department Report"
+  ],
+  [
+   "G.3",
+   "Department Reports And Updates",
+   "Engineering Department Report"
+  ],
+  [
+   "G.4",
+   "Department Reports And Updates",
+   "Parks and Recreation Department Report"
+  ],
+  [
+   "G.5",
+   "Department Reports And Updates",
+   "General Manager’s Report"
+  ],
+  [
+   "G.6",
+   "Department Reports And Updates",
+   "Additional Verbal Reports – T-TSA, Board Member Reports on Meetings on Behalf of TCPUD"
+  ],
+  [
+   "H",
+   null,
+   "CORRESPONDENCE"
+  ],
+  [
+   "I.1",
+   "Director’s Forum",
+   "Director’s Comments and Correspondence"
+  ],
+  [
+   "J.1",
+   "Meeting Review And Staff Direction",
+   "Staff will Review Board Action and Direction Given at this Meeting"
+  ],
+  [
+   "K.1",
+   "Closed Session",
+   "CONFERENCE WITH REAL PROPERTY NEGOTIATORS - Pursuant to Government Code Section 54956.8 Property: APN 094-020-008, Tahoe City Golf Course, District Negotiators: as identified above in Item D3; Negotiating Parties: Kila Tahoe, LLC ; Under Negotiation: Price and Terms"
+  ],
+  [
+   "L",
+   null,
+   "CLOSED SESSION REPORT"
+  ],
+  [
+   "M",
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
+}

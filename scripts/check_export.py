@@ -93,7 +93,7 @@ def check(data):
             url(doc.get("url"), f"{doc['id']}.url")
             require(bool(re.fullmatch(r"[0-9a-f]{64}", doc.get("sha256", ""))), f"{doc['id']}: invalid hash")
             timestamp(doc.get("fetchedAt"), f"{doc['id']}.fetchedAt")
-            require(doc.get("mediaType", "application/pdf") in ("application/pdf", "text/html", "text/plain"), f"{doc['id']}: unsupported source format")
+            require(doc.get("mediaType", "application/pdf") in ("application/pdf", "text/html", "text/plain", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"), f"{doc['id']}: unsupported source format")
             pages = doc.get("pages", [])
             require(len({p["number"] for p in pages}) == len(pages), f"{doc['id']}: duplicate page")
             require(all(0 < p["number"] <= doc["pageCount"] for p in pages), f"{doc['id']}: invalid page bounds")

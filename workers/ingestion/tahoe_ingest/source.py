@@ -1,4 +1,4 @@
-"""Bounded official-document retrieval and temporary PDF extraction."""
+"""Bounded official-document retrieval and temporary PDF, Word (.docx), HTML, and text extraction."""
 from __future__ import annotations
 
 import re
@@ -18,6 +18,7 @@ class TooManyPages(SourceTooLarge):
 
 from .html_source import html_text
 from .html_agenda import parse_html_agenda
+from .docx_source import extract_docx, is_docx
 
 
 def download_extract(url: str, *, max_bytes: int = MAX_PDF_BYTES) -> dict:
@@ -25,16 +26,19 @@ def download_extract(url: str, *, max_bytes: int = MAX_PDF_BYTES) -> dict:
     if parsed.scheme != "https" or not parsed.hostname:
         raise ValueError("source URL must be HTTPS")
     # The body streams to a scratch file (removed on return or error), so a large PDF is never held in memory whole.
-    with download(url, max_bytes=max_bytes, accept="application/pdf, text/html;q=0.9, text/plain;q=0.8") as fetched:
+    accept = "application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document;q=0.9, text/html;q=0.9, text/plain;q=0.8"
+    with download(url, max_bytes=max_bytes, accept=accept) as fetched:
         head, content_type = fetched.head(), fetched.content_type
         if head.startswith(b"%PDF-"):
             return _extract_pdf(fetched)
+        if is_docx(head, content_type):
+            return {**extract_docx(fetched.path.read_bytes()), "sha256": fetched.sha256, "bytes": fetched.size}
         if "html" in content_type.lower() or head.lstrip().lower().startswith((b"<!doctype html", b"<html")):
             media_type = "text/html"
         elif "text/plain" in content_type.lower():
             media_type = "text/plain"
         else:
-            raise ValueError(f"source is not a supported PDF, HTML, or plain text document: {content_type}")
+            raise ValueError(f"source is not a supported PDF, Word (.docx), HTML, or plain text document: {content_type}")
         raw = fetched.path.read_bytes()  # pages and plain text are small, and bounded by max_bytes
     decoded = raw.decode("utf-8-sig", "replace")
     from .board_portal_discovery import portal_agenda  # a portal meeting page whose script draws the agenda (Simbli)

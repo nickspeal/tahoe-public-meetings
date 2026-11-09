@@ -72,8 +72,8 @@ export interface PublicDocument {
   url: string;
   sha256: string;
   fetchedAt: string;
-  /** HTML/text documents use numbered source sections, not PDF pages. */
-  mediaType?: "application/pdf" | "text/html" | "text/plain";
+  /** HTML, text, and Word documents use numbered source sections, not PDF pages. */
+  mediaType?: "application/pdf" | "text/html" | "text/plain" | "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
   pageCount: number;
   status: string;
   warnings: string[];

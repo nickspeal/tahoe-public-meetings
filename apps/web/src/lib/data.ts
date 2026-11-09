@@ -234,6 +234,7 @@ export function agendaSourceNote(meeting: Pick<Meeting, 'warnings'>) {
 
 export function residentWarning(value: string) {
   if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
+  if (/Word document text retained/i.test(value)) return 'This source is a Word document; citations refer to source sections rather than PDF pages.';
   // Parser and discovery outcomes are explained by the agenda section itself (see agendaAvailability).
   if (/No parser exists|review required|agenda items require (?:source )?review|No complete .* agenda recognized/i.test(value)) return '';
   // Shown briefly in the agenda history card instead (see agendaSourceNote).

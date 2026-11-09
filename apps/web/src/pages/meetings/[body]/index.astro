@@ -2,6 +2,7 @@
 import SiteLayout from '../../../layouts/SiteLayout.astro';
 import MeetingCard from '../../../components/MeetingCard.astro';
 import { clickEvent } from '../../../lib/analytics';
+import { bodyJsonLd } from '../../../lib/structured-data';
 import { bodyHubs, formatDate, meetingDateLabel, meetingHref, type BodyHub } from '../../../lib/data';
 // One page per public body, at the slug its meetings live under: the page people searching for the body should find.
 export function getStaticPaths() { return bodyHubs().map((hub) => ({ params: { body: hub.slug }, props: { hub } })); }
@@ -13,8 +14,9 @@ const description = next
   ? `Next ${hub.name} meeting: ${nextWhen}. Agendas, schedules, minutes and recordings.`
   : `${hub.name} meeting agendas, schedules, minutes and recordings.`;
 const schedule = hub.scheduleBasis ? hub.scheduleBasis.replace(/^Usually\b/, 'usually') : null;
+const jsonLd = bodyJsonLd({ name: hub.name, url: new URL(hub.href, Astro.site).href, officialUrl: hub.officialUrl ?? undefined, homeUrl: new URL('/', Astro.site).href });
 ---
-<SiteLayout title={`${hub.name} meetings`} description={description}>
+<SiteLayout title={`${hub.name} meetings`} description={description} jsonLd={jsonLd}>
   <section class="page-hero compact"><div class="section-wrap"><p class="eyebrow">Public body</p><h1>{hub.name} meetings</h1>
     <p class="page-intro">{next ? <>The next meeting is <a href={meetingHref(next)}>{nextWhen}</a>{next.location && <>, at {next.location}</>}.{next.planned && ' It is planned and subject to change.'}</> : 'No upcoming meeting is listed yet.'}{schedule && <> Regular schedule: {schedule}.</>}</p>
     {hub.officialUrl && <p class="page-intro"><a href={hub.officialUrl} target="_blank" rel="noopener noreferrer" {...clickEvent('outbound-agency', Astro.url.pathname, hub.agencyId)}>Official website ↗</a></p>}

@@ -2097,6 +2097,10 @@
     "id": "ltusd",
     "name": "LTUSD — Board of Education",
     "shortName": "LTUSD",
+    "page": {
+      "slug": "lake-tahoe-unified-school-district-board",
+      "name": "Lake Tahoe Unified School District Board of Education"
+    },
     "aliases": [
       "Lake Tahoe Unified School District",
       "Lake Tahoe Unified",
@@ -2166,6 +2170,10 @@
     "id": "tdva",
     "name": "Tahoe Douglas Visitors Authority — Board of Directors",
     "shortName": "TDVA",
+    "page": {
+      "slug": "tahoe-douglas-visitors-authority-board",
+      "name": "Tahoe Douglas Visitors Authority Board"
+    },
     "aliases": [
       "Tahoe Douglas Visitors Authority",
       "TDVA Board of Directors"
@@ -2208,6 +2216,10 @@
     "id": "tbec-stakeholders",
     "name": "Tahoe Blue Event Center — Stakeholder Meeting",
     "shortName": "TBEC Stakeholders",
+    "page": {
+      "slug": "tahoe-blue-event-center-stakeholder-meeting",
+      "name": "Tahoe Blue Event Center Stakeholder Meeting"
+    },
     "aliases": [
       "Tahoe Blue Event Center",
       "TBEC",
@@ -2253,6 +2265,10 @@
     "id": "ltva",
     "name": "Lake Tahoe Visitors Authority — Board of Directors",
     "shortName": "LTVA",
+    "page": {
+      "slug": "lake-tahoe-visitors-authority-board",
+      "name": "Lake Tahoe Visitors Authority Board"
+    },
     "aliases": [
       "Lake Tahoe Visitors Authority",
       "Visit Lake Tahoe",
@@ -2308,6 +2324,10 @@
     "id": "ltva-msc",
     "name": "Lake Tahoe Visitors Authority — Marketing Services Committee",
     "shortName": "LTVA",
+    "page": {
+      "slug": "lake-tahoe-visitors-authority-marketing-services-committee",
+      "name": "Lake Tahoe Visitors Authority Marketing Services Committee"
+    },
     "aliases": [
       "Lake Tahoe Visitors Authority",
       "Visit Lake Tahoe",
@@ -2333,6 +2353,10 @@
     "id": "slttid",
     "name": "South Lake Tahoe Tourism Improvement District — Board of Directors",
     "shortName": "SLTTID",
+    "page": {
+      "slug": "south-lake-tahoe-tourism-improvement-district-board",
+      "name": "South Lake Tahoe Tourism Improvement District Board"
+    },
     "aliases": [
       "South Lake Tahoe Tourism Improvement District",
       "Tourism Improvement District",

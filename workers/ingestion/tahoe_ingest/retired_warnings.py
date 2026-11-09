@@ -3,9 +3,11 @@
 A meeting's warnings are rewritten only when a capture or reparse touches it, and
 settled past meetings are never captured again, so a caveat the pipeline has
 stopped writing stays in the public export for good. ``clean-retired-warnings``
-removes them: every exact string in ``RETIRED``, and the "await reprocessing"
-note from meetings that have no active agenda item (nothing awaits it). Other
-warnings, and the order of those kept, are left as stored.
+removes them: every exact string in ``RETIRED``, from the meeting's warnings or
+its review notes (where ``core.migrate_review_notes`` moved the operator notes
+among them, decision 0041), and the "still need to be refreshed" warning from
+meetings that have no active agenda item (nothing awaits it). Other warnings and
+notes, and the order of those kept, are left as stored.
 
 It is a dry run unless ``apply`` is set; running it again changes nothing.
 Reading is one SQL statement and applying is one more (the hosted database
@@ -36,18 +38,21 @@ RETIRED = (
 
 
 def plan(conn) -> list[dict]:
-    """Each affected meeting: the warnings removed and the ones kept."""
-    rows = conn.execute("""SELECT m.id, m.warnings,
+    """Each affected meeting: the strings removed, and the warnings and review notes kept."""
+    rows = conn.execute("""SELECT m.id, m.warnings, m.review_notes,
             EXISTS (SELECT 1 FROM agenda_items i WHERE i.meeting_id = m.id AND i.active) AS has_items
         FROM meetings m
-        WHERE m.warnings ?| %s::text[] OR m.warnings ? %s
-        ORDER BY m.id""", (list(RETIRED), REPROCESSING_WARNING)).fetchall()
+        WHERE m.warnings ?| %s::text[] OR m.review_notes ?| %s::text[] OR m.warnings ? %s
+        ORDER BY m.id""", (list(RETIRED), list(RETIRED), REPROCESSING_WARNING)).fetchall()
     changes = []
     for row in rows:
-        warnings = row["warnings"] or []
+        warnings, notes = row["warnings"] or [], row["review_notes"] or []
         removed = [w for w in warnings if w in RETIRED or (w == REPROCESSING_WARNING and not row["has_items"])]
-        if removed:
-            changes.append({"meeting": row["id"], "remove": removed, "keep": [w for w in warnings if w not in removed]})
+        removed_notes = [n for n in notes if n in RETIRED]
+        if removed or removed_notes:
+            changes.append({"meeting": row["id"], "remove": removed + removed_notes,
+                            "keep": [w for w in warnings if w not in removed],
+                            "keepReviewNotes": [n for n in notes if n not in removed_notes]})
     return changes
 
 
@@ -55,9 +60,10 @@ def clean_retired_warnings(conn, *, dry_run: bool = True) -> dict:
     changes = plan(conn)
     if changes and not dry_run:
         with conn.transaction():
-            conn.execute("""UPDATE meetings m SET warnings = s.warnings::jsonb
-                FROM unnest(%s::text[], %s::text[]) AS s(id, warnings) WHERE m.id = s.id""",
-                         ([c["meeting"] for c in changes], [json.dumps(c["keep"]) for c in changes]))
+            conn.execute("""UPDATE meetings m SET warnings = s.warnings::jsonb, review_notes = s.notes::jsonb
+                FROM unnest(%s::text[], %s::text[], %s::text[]) AS s(id, warnings, notes) WHERE m.id = s.id""",
+                         ([c["meeting"] for c in changes], [json.dumps(c["keep"]) for c in changes],
+                          [json.dumps(c["keepReviewNotes"]) for c in changes]))
     removed: dict[str, int] = {}
     for change in changes:
         for warning in change["remove"]:

@@ -31,7 +31,18 @@ from .outline import NOT_PLACEHOLDER_SQL, is_placeholder
 TOPICS = public_topics()
 AGENCIES = followed_agencies()
 # Added when a source change voids the summaries of published items that a partial capture did not reparse.
-REPROCESSING_WARNING = "A source PDF changed; affected agenda items await reprocessing."
+# Meeting warnings are shown to residents as stored (decision 0041), so this is the resident's wording.
+REPROCESSING_WARNING = "Source documents changed; some agenda details still need to be refreshed."
+# The operator's wording stored before decision 0041; ``migrate_review_notes`` rewrites it once.
+LEGACY_REPROCESSING_WARNING = "A source PDF changed; affected agenda items await reprocessing."
+# Before decision 0041 parser and operator notes shared ``meetings.warnings`` with resident warnings, and the website
+# hid most of them by pattern (apps/web/src/lib/data.ts). ``migrate_review_notes`` moves stored strings that match
+# into ``meetings.review_notes`` once; new notes are written there explicitly. This also catches two parse failures
+# the website showed ("… items require review."), and the planned meetings' caveat that they may change, which the
+# website derives from the export's ``planned`` flag.
+LEGACY_REVIEW_NOTE = re.compile(r"No parser exists|review required|require (?:source )?review|review all agenda documents|"
+                                r"No complete .* agenda recognized|differing item sequences|"
+                                r"^Check the notice for changes\.$|^Subject to change\.$", re.I)
 
 
 def connect(url: str) -> psycopg.Connection:
@@ -62,6 +73,7 @@ def init_db(conn: psycopg.Connection) -> None:
             ON CONFLICT(id) DO UPDATE SET name=excluded.name,short_name=excluded.short_name,
             official_url=excluded.official_url,source_url=excluded.source_url""", (json.dumps(agencies),))
         migrate_fingerprints(conn)
+        migrate_review_notes(conn)
         conn.execute(sql.SQL("COMMENT ON TABLE agencies IS {}").format(sql.Literal(version)))
 
 
@@ -177,6 +189,36 @@ def migrate_fingerprints(conn) -> int:
             FROM jsonb_to_recordset(%s::jsonb) AS r(meeting_id text,old text,new text)
             WHERE s.meeting_id=r.meeting_id AND s.items_sha256=r.old""", (json.dumps(moved),))
     return len(pairs)
+
+
+def split_legacy_warnings(warnings: list[str]) -> tuple[list[str], list[str]]:
+    """Stored warnings from before decision 0041, as (resident warnings, review notes)."""
+    warnings = [REPROCESSING_WARNING if w == LEGACY_REPROCESSING_WARNING else w for w in warnings]
+    return [w for w in warnings if not LEGACY_REVIEW_NOTE.search(w)], [w for w in warnings if LEGACY_REVIEW_NOTE.search(w)]
+
+
+def migrate_review_notes(conn) -> int:
+    """Move parser and operator notes stored among a meeting's warnings to ``review_notes`` once (decision 0041).
+
+    Run by ``init_db`` in the schema's transaction: one read of the meetings that have warnings and one write of
+    those that change. Notes join any already in ``review_notes``; the old "await reprocessing" text takes the
+    resident wording. ``updated_at`` is left alone: nothing the source says changed. Returns the meetings changed.
+    """
+    if not conn.execute("""INSERT INTO ingest_migrations(name) VALUES ('meeting-review-notes-v1')
+            ON CONFLICT DO NOTHING RETURNING name""").fetchone():
+        return 0
+    changes = []
+    for r in conn.execute("SELECT id,warnings,review_notes FROM meetings WHERE warnings <> '[]'::jsonb ORDER BY id"):
+        stored = _json(r["warnings"]) or []
+        warnings, notes = split_legacy_warnings(stored)
+        if warnings != stored:
+            existing = _json(r["review_notes"]) or []
+            changes.append((r["id"], json.dumps(warnings), json.dumps(existing + [n for n in notes if n not in existing])))
+    if changes:
+        conn.execute("""UPDATE meetings m SET warnings=s.warnings::jsonb, review_notes=s.notes::jsonb
+            FROM unnest(%s::text[], %s::text[], %s::text[]) AS s(id, warnings, notes) WHERE m.id=s.id""",
+                     ([c[0] for c in changes], [c[1] for c in changes], [c[2] for c in changes]))
+    return len(changes)
 
 
 def cited_documents(conn, *, agencies=None, meetings=None) -> dict[str, set[str]]:
@@ -391,17 +433,20 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
         raise ValueError(f"meetings under {aid} need a host")
     # A capture without a link never removes one; see tahoe_ingest.records for precedence.
     links = merged_links(dict(old) if old else {}, links_of(row))
+    # Warnings are shown to residents as written; review notes (parser outcomes for the operator) are not (decision 0041).
+    # Like warnings, a row's review notes replace the stored ones.
     meeting_warnings = list(row.get("warnings", []))
     if row.get("source_warning"):
         meeting_warnings.append(row["source_warning"])
-    conn.execute("""INSERT INTO meetings(id,agency_id,source_id,title,starts_at,local_date,timezone,status,location,official_url,participation,minutes_url,minutes_status,minutes_note,recording_url,last_checked_at,change,warnings,host)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    review_notes = list(dict.fromkeys(row.get("review_notes", [])))
+    conn.execute("""INSERT INTO meetings(id,agency_id,source_id,title,starts_at,local_date,timezone,status,location,official_url,participation,minutes_url,minutes_status,minutes_note,recording_url,last_checked_at,change,warnings,review_notes,host)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT(id) DO UPDATE SET title=excluded.title, starts_at=excluded.starts_at, local_date=excluded.local_date, timezone=excluded.timezone,
         status=excluded.status, location=excluded.location, official_url=excluded.official_url,
         participation=excluded.participation, minutes_url=excluded.minutes_url, minutes_status=excluded.minutes_status,
         minutes_note=excluded.minutes_note, recording_url=excluded.recording_url,
         last_checked_at=GREATEST(excluded.last_checked_at,meetings.last_checked_at), change=excluded.change, warnings=excluded.warnings,
-        host=excluded.host,
+        review_notes=excluded.review_notes, host=excluded.host,
         updated_at=CASE WHEN meetings.title IS DISTINCT FROM excluded.title OR meetings.starts_at IS DISTINCT FROM excluded.starts_at
           OR meetings.local_date IS DISTINCT FROM excluded.local_date
           OR meetings.status IS DISTINCT FROM excluded.status OR meetings.participation IS DISTINCT FROM excluded.participation
@@ -413,7 +458,7 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
         (meeting_id, aid, source_id, row["title"], start, local_date, zone_name, status,
          location, row.get("source_meeting_url") or row.get("official_url") or (old["official_url"] if old else None), json.dumps(participation),
          links["minutes_url"], links["minutes_status"], links["minutes_note"], links["recording_url"],
-         checked_at, change, json.dumps(meeting_warnings), host))
+         checked_at, change, json.dumps(meeting_warnings), json.dumps(review_notes), host))
 
     if "topics" in row:
         supplied_topics = row["topics"]
@@ -920,7 +965,7 @@ def export_public(conn, *, mode="live", forecast_days: int = 0, today: date | No
             "minutesUrl": m["minutes_url"], "minutesStatus": (m["minutes_status"] or "approved") if m["minutes_url"] else None,
             "minutesNote": m["minutes_note"] if m["minutes_url"] else None,
             "recordingUrl": m["recording_url"], "lastCheckedAt": iso(m["last_checked_at"]),
-            "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": warnings, "documents": docs, "items": items,
+            "updatedAt": iso(m["updated_at"]), "change": m["change"], "warnings": warnings, "reviewNotes": _json(m["review_notes"]) or [], "documents": docs, "items": items,
             "history": history_by_meeting.get(m["id"], []),
             "duration": meeting_duration(m, [{"title": i["title"], "section": i["section"]} for i in items])})
         if preview_store.is_planned(m) and not agenda_posted(meetings[-1]):

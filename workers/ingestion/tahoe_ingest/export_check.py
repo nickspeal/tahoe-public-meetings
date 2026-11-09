@@ -93,6 +93,11 @@ def check(data):
             url((meeting.get("participation") or {}).get(key), f"{mid}.participation.{key}", nullable=True)
         require(set(meeting.get("topics", [])) <= topics, f"{mid}: unknown meeting topic")
         require("short-term-rentals" not in meeting.get("topics", []) or "housing" in meeting["topics"], f"{mid}: STR must include housing")
+        # Warnings are shown to residents as written; review notes are the operator's parse outcomes (decision 0041).
+        for key in ("warnings", "reviewNotes"):
+            values = meeting.get(key, [])
+            require(isinstance(values, list) and all(isinstance(v, str) and v.strip() for v in values),
+                    f"{mid}: {key} must be a list of non-empty text")
         docs = {d["id"]: d for d in meeting.get("documents", [])}
         require(len(docs) == len(meeting.get("documents", [])), f"{mid}: duplicate document IDs")
         for doc in docs.values():
@@ -210,8 +215,9 @@ def check_kinds(data):
         forecasts.append((meeting, day))
         info = meeting.get("forecast") or {}
         require(mid == f"forecast:{meeting.get('agencyId')}:{meeting.get('date')}", f"{mid}: forecast ID must be forecast:<agency>:<date>")
-        require(not meeting.get("documents") and not meeting.get("items") and not meeting.get("topics"),
-                f"{mid}: forecasts carry no documents, agenda items, or topics")
+        require(not meeting.get("documents") and not meeting.get("items") and not meeting.get("topics")
+                and not meeting.get("reviewNotes"),
+                f"{mid}: forecasts carry no documents, agenda items, topics, or review notes")
         require(meeting.get("status") == "scheduled", f"{mid}: forecast needs scheduled status")
         require(bool(meeting.get("date")), f"{mid}: forecast needs an expected date")
         require(bool(info.get("ruleLabel")) and bool(info.get("basis")) and info.get("source") in ("learned", "configured"),

@@ -19,6 +19,9 @@ ALTER TABLE meetings ADD COLUMN IF NOT EXISTS duration_source text;
 -- later meeting's agenda, where they are ("Item 6.1 on the September 8, 2026 agenda").
 ALTER TABLE meetings ADD COLUMN IF NOT EXISTS minutes_status text CHECK(minutes_status IS NULL OR minutes_status IN ('approved','draft'));
 ALTER TABLE meetings ADD COLUMN IF NOT EXISTS minutes_note text;
+-- Parser and capture outcomes for the operator ("… review required"), kept apart from `warnings`, which residents
+-- see as written (decision 0041). core.migrate_review_notes moved the notes stored among warnings before then.
+ALTER TABLE meetings ADD COLUMN IF NOT EXISTS review_notes jsonb NOT NULL DEFAULT '[]'::jsonb;
 CREATE TABLE IF NOT EXISTS document_versions (
   id text PRIMARY KEY, meeting_id text NOT NULL REFERENCES meetings(id), source_document_id text NOT NULL,
   title text NOT NULL, url text NOT NULL, sha256 text NOT NULL,

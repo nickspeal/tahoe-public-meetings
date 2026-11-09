@@ -369,8 +369,8 @@ def test_a_listing_over_the_safety_cap_is_logged_and_not_parsed(db, capsys):
     assert len(fetched) == capture.MAX_DOCUMENTS
     line = json.loads(capsys.readouterr().err.strip().splitlines()[-1])
     assert line["severity"] == "WARNING" and line["documentsListed"] == capture.MAX_DOCUMENTS + 1
-    warnings = db.execute("SELECT warnings FROM meetings WHERE id='slt-planning:many'").fetchone()["warnings"]
-    assert any(f"more than the {capture.MAX_DOCUMENTS} capture reads" in w for w in warnings)
+    notes = db.execute("SELECT review_notes FROM meetings WHERE id='slt-planning:many'").fetchone()["review_notes"]
+    assert any(f"more than the {capture.MAX_DOCUMENTS} capture reads" in n for n in notes)
     assert db.execute("SELECT count(*) AS n FROM agenda_items WHERE meeting_id='slt-planning:many'").fetchone()["n"] == 0
 
 

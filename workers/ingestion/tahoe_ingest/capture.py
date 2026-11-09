@@ -276,23 +276,24 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
     complete_document_set = not document_errors and not skipped and not truncated
     parsed = ParseResult(html_items, True) if html_items else (
         parse_agenda(candidate["agency"], docs, pages, prefer=prefer) if docs and complete_document_set else None)
+    # Warnings are shown to residents as written; parse outcomes are review notes for the operator (decision 0041).
     warnings = list(candidate.get("warnings", []))
+    review_notes = []
     if document_errors:
         warnings.append("Some official documents could not be retrieved; the meeting notice is retained and document capture will need a retry.")
     if skipped:
         warnings.append("Official documents at this source are not retrieved automatically; read them at the official link.")
     if parsed and parsed.complete:
-        warnings = [w for w in warnings if "agenda items require" not in w.lower()]
-        warnings.extend(parsed.notes)  # irregular numbering published for review (decision 0032)
+        review_notes.extend(parsed.notes)  # irregular numbering published for review (decision 0032)
     elif candidate.get("status") == "canceled":
         pass  # A cancellation notice is not expected to parse; its items, if any parse, are still stored above.
     elif parsed and not parsed.warning:
         pass  # No captured document is an agenda (minutes, a supplement): availability is derived, nothing to review.
     elif parsed or docs:
-        warnings.append(parsed.warning if parsed else
-                        f"The listing links {listed} documents, more than the {max_documents} capture reads; "
-                        "agenda items require review." if truncated else
-                        "Not every listed document was captured; agenda items require review.")
+        review_notes.append(parsed.warning if parsed else
+                            f"The listing links {listed} documents, more than the {max_documents} capture reads; "
+                            "agenda items require review." if truncated else
+                            "Not every listed document was captured; agenda items require review.")
     # With no document at all nothing is stored: the export derives "no agenda yet" from the empty document list.
     day = candidate.get("date")
     if not day and (found := agenda_date(candidate["title"], [
@@ -303,7 +304,7 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
             "source_meeting_url": candidate["official_url"], "status": candidate.get("status", "unknown"),
             "date": day, "start_time": candidate.get("start_time"),
             "timezone": "America/Los_Angeles", "location": candidate.get("location"),
-            "warnings": warnings, "partial_logistics": True,
+            "warnings": warnings, "review_notes": review_notes, "partial_logistics": True,
             "documents": docs, "documents_complete": bool(candidate.get("documents_complete")) and complete_document_set and not omitted,
             "pages": pages, "agenda_items": parsed.items if parsed and parsed.complete else [],
             "items_complete": bool(parsed and parsed.complete), **links_of(candidate)}

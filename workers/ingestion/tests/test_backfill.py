@@ -379,7 +379,7 @@ def test_recapture_unparsed_selects_only_meetings_a_capture_can_give_items(db, m
     assert fetched == [PRC_PAGE.format("clip-1727")] and done["byAgency"][PRC]["captured"] == 1
     assert active_items(db, f"{PRC}:clip-1727") == ["1", "2", "3"]
     assert not any("review required" in w for w in
-                   db.execute("SELECT warnings FROM meetings WHERE id=%s", (f"{PRC}:clip-1727",)).fetchone()["warnings"])
+                   db.execute("SELECT review_notes FROM meetings WHERE id=%s", (f"{PRC}:clip-1727",)).fetchone()["review_notes"])
 
     # With items and no review note the meeting is settled again: a rerun selects nothing.
     again = backfill.backfill(db, options(agencies=agencies, dry_run=True, recapture_unparsed=True),
@@ -387,7 +387,7 @@ def test_recapture_unparsed_selects_only_meetings_a_capture_can_give_items(db, m
     assert again["byAgency"][PRC]["recapture"] == 0 and again["totals"]["recapture"] == 0
 
     # Items published with a review note (irregular numbering, decision 0032) qualify again.
-    db.execute("UPDATE meetings SET warnings=%s WHERE id=%s",
+    db.execute("UPDATE meetings SET review_notes=%s WHERE id=%s",
                (json.dumps(["Agenda numbering is not sequential near “5.”; review required."]), f"{PRC}:clip-1727"))
     db.commit()
     assert backfill.unparsed_meetings(db, [PRC]) == {f"{PRC}:clip-1727": True}

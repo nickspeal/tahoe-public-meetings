@@ -309,6 +309,10 @@ DATABASE_URL=... tahoe-ingest clean-retired-warnings --apply    # one read and o
 
 The next scheduled run's export publishes the result. A second dry run should report `"meetings": 0`.
 
+## Review notes apart from warnings (decision 0041)
+
+[Decision 0041](../decisions/0041-review-notes-apart-from-warnings.md) adds `meetings.review_notes`. Nothing needs to be run by hand: the first scheduled run of the new image applies the schema (`init-db`) and moves the review notes stored among warnings once, in two statements. The website reads exports with or without `reviewNotes`, so the website and the worker image can be deployed in either order. After that run, the published `/data/public-export.json` should show `reviewNotes` on every confirmed meeting and no "review required" text in any `warnings`. If `clean-retired-warnings` has not been run yet, run it after this change; it looks in both columns.
+
 ## Claude credentials: workload identity federation
 
 The job calls the Anthropic API without an API key. Its Google service account (`tahoe-ingest-job@<project>.iam.gserviceaccount.com`) fetches a Google ID token from the Cloud Run metadata server (audience `https://api.anthropic.com`, `format=full`) and the Anthropic SDK exchanges it for a short-lived token on every refresh.

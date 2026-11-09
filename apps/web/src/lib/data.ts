@@ -173,8 +173,6 @@ export function agendaSourceNote(meeting: Pick<Meeting, 'warnings'>) {
 }
 
 export function residentWarning(value: string) {
-  if (/playback timestamps/i.test(value)) return 'A recording start time may differ from the scheduled meeting time; check the official agenda.';
-  if (/CivicClerk.*wall.clock/i.test(value)) return 'The scheduled start time has not been verified; check the official agenda.';
   if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
   // Parser and discovery outcomes are explained by the agenda section itself (see agendaAvailability).
   if (/No parser exists|review required|agenda items require (?:source )?review|No complete .* agenda recognized/i.test(value)) return '';

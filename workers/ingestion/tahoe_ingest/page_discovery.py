@@ -25,12 +25,11 @@ from html.parser import HTMLParser
 from zoneinfo import ZoneInfo
 
 from .html_dom import document
-from .source_discovery import _MONTH, candidate, date_in, time_in
+from .source_discovery import _MONTH, candidate, date_in, multi_day_note, time_in
 
 _WEEKDAY = r'(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,?\s+)?'
 # "June 18, 2026", "Thursday, June 18, 2026", "March 19 and 20, 2026", "March 19-20, 2026".
-_DATE_ONLY = re.compile(rf'^{_WEEKDAY}({_MONTH})\s+(\d{{1,2}})(\s*(?:and|&|-|–|through)\s*\d{{1,2}})?,?\s+(20\d{{2}})$', re.I)
-_MULTI_DAY = 'Multi-day meeting: the date shown is the first day; check the official agenda for subsequent sessions.'
+_DATE_ONLY = re.compile(rf'^{_WEEKDAY}({_MONTH})\s+(\d{{1,2}})(?:\s*(?:and|&|-|–|through)\s*(\d{{1,2}}))?,?\s+(20\d{{2}})$', re.I)
 _HEADINGS = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
 
 
@@ -66,7 +65,7 @@ def dated_page_links(agency, config, limit, fetch):
         else:
             continue
         if found[3]:
-            row['warnings'].append(_MULTI_DAY)
+            multi_day_note(row, found[3])  # "Meets March 19–20, 2026."
         rows.append(row)
     unique = {}
     for row in rows:

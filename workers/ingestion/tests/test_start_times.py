@@ -120,11 +120,37 @@ def test_agenda_time_replaces_a_planned_meetings_calendar_time():
     meeting = {"title": "11 03 2026 City Council", "local_date": date(2026, 11, 3), "timezone": "America/Los_Angeles",
                "starts_at": calendar_start}
     docs = [doc("Agenda", SLT_NOV_3)]
-    assert exported_start(meeting, docs, [], planned=True)[0] == agenda_start
-    # A start stored from a listing stays; a meeting stored without one gets the agenda's.
-    assert exported_start(meeting, docs, [], planned=False)[0] == calendar_start
-    start, warnings = exported_start({**meeting, "starts_at": None}, docs,
-                                     ["Confirm the scheduled start in the agenda."], planned=False)
+    assert exported_start(meeting, docs, [])[0] == agenda_start
+    # A meeting stored without a start gets the agenda's.
+    start, warnings = exported_start({**meeting, "starts_at": None}, docs, ["Confirm the scheduled start in the agenda."])
     assert start == agenda_start and warnings == []
-    # With no agenda time, the planned start stands.
-    assert exported_start(meeting, [], [], planned=True)[0] == calendar_start
+    # With no agenda time, the stored start stands.
+    assert exported_start(meeting, [], [])[0] == calendar_start
+
+
+# tcpud:1190's revised agenda (Granicus HTML text). The upcoming row said 4:00 p.m., and that start stayed stored
+# because the past meeting's archive row states no time.
+TCPUD_NOV_4 = ("TAHOE CITY PUBLIC UTILITY DISTRICT\nSpecial Meeting of the Board of Directors\n"
+               "A\xa0\xa0\xa0G\xa0\xa0\xa0E\xa0\xa0\xa0N\xa0\xa0\xa0D\xa0\xa0\xa0A\n"
+               "To access online viewing of board meetings:\nhttp://www.tahoecitypud.com/general/agenda.shtml\n"
+               "Instructions for Public Participation:\nMembers of the public may attend the Zoom teleconference.\n"
+               "DATE: Wednesday, November 4, 2026\nTIME: 03:45\np.m.\nPLACE:\nTCPUD Administration Building\n")
+
+
+def test_agenda_time_wins_over_a_stored_listing_time_and_retired_caveats_are_dropped():
+    from datetime import datetime, timezone
+
+    from tahoe_ingest.core import exported_start
+
+    listed = datetime(2026, 11, 5, 0, 0, tzinfo=timezone.utc)  # 4:00 p.m. Pacific, from the upcoming row
+    meeting = {"title": "Board of Directors Meeting - Budget Workshop", "local_date": date(2026, 11, 4),
+               "timezone": "America/Los_Angeles", "starts_at": listed}
+    stored = ["Archive playback timestamps are not used as scheduled start times; see the official agenda.",
+              "Confirm the scheduled start in the agenda; CivicClerk wall-clock timestamps are not treated as UTC instants.",
+              "Meets November 4–5, 2026."]
+    start, warnings = exported_start(meeting, [doc("Agenda", TCPUD_NOV_4)], stored)
+    assert start == datetime(2026, 11, 4, 23, 45, tzinfo=timezone.utc)  # 3:45 p.m. Pacific
+    assert warnings == ["Meets November 4–5, 2026."]
+    # No agenda time: the stored start stays, and the retired caveats still go.
+    start, warnings = exported_start(meeting, [], stored)
+    assert start == listed and warnings == ["Meets November 4–5, 2026."]

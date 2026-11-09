@@ -58,7 +58,7 @@ def test_dated_links_open_agenda_pages_and_an_unlinked_date_is_a_notice(monkeypa
     assert september["documents"] == [{"id": "ctc-agenda-html", "title": "Official agenda (HTML)",
                                        "url": september["official_url"]}]
     assert september["start_time"] is None  # read from the agenda heading at export
-    assert march["warnings"] == ["Multi-day meeting: the date shown is the first day; check the official agenda for subsequent sessions."]
+    assert march["warnings"] == ["Meets March 19–20, 2026."]
     # The archive link and the procedures PDF on the same page are not meetings.
     assert all(r["date"].startswith("2026") for r in rows)
 

@@ -83,6 +83,8 @@ INDEX_LIMIT = 20                   # Rows requested from each index (discovery's
 UNDATED_INDEX_LIMIT = 6            # Rows of UNDATED_TYPES (WordPress posts) each cost a page fetch, so they stay bounded by count.
 PAST_DAYS = 60                     # Look-back for newly linked documents on past meetings (minutes, revised packets).
 FUTURE_DAYS = 120                  # Horizon for posted notices; covers the 90-day forecast.
+# source_discovery.YEAR_PAGE_PAST_DAYS and YEAR_PAGE_FUTURE_DAYS repeat these two to decide when a yearly index's
+# neighbouring year is read; a test keeps them equal.
 RECAPTURE_PAST_DAYS = 7            # Past meetings this recent are re-downloaded every run (same-URL corrections, cancellations).
 MAX_CAPTURES_PER_AGENCY = 10       # Meetings captured per agency per run, nearest to today first.
 # Seconds from the run's start after which Claude steps, staff reports, and planning calendars start no new

@@ -110,6 +110,7 @@ def test_granicus_future_and_recordings_do_not_confuse_scheduled_and_playback_ti
     cfg={'type':'granicus','indexUrl':'https://example.gov/ViewPublisher.php','bodyPattern':'Board of Directors'}
     rows=discover_configured('tcpud',cfg,fetch=lambda _:markup)
     assert [(r['source_id'],r['start_time']) for r in rows]==[('1187','08:30'),('1735',None)]
+    assert rows[1]['warnings']==[]  # the start comes from storage or the agenda; nothing for a resident to check
 
 
 def test_rolling_agenda_filename_and_civicclerk_file_ids_are_discovered():
@@ -120,8 +121,11 @@ def test_rolling_agenda_filename_and_civicclerk_file_ids_are_discovered():
     cfg={'type':'civicclerk','indexUrl':'https://ivgid.portal.civicclerk.com','bodyPattern':'Trustees'}
     data={'items':[{'id':746,'eventName':'Board of Trustees','eventDate':'2026-10-14T16:00:00Z','publishedFiles':[{'type':'Agenda','fileId':2864}]}]}
     rows=discover_configured('ivgid',cfg,fetch=lambda _:json.dumps(data))
-    assert rows[0]['start_time'] is None  # Agenda must confirm wall-clock time.
+    # The "Z" is not an offset: 16:00 is the 4:00 p.m. local start the agenda prints (decision 0037).
+    assert rows[0]['start_time']=='16:00' and rows[0]['warnings']==[]
     assert 'fileId=2864' in rows[0]['documents'][0]['url']
+    data['items'][0]['eventDate']='2026-10-14T00:00:00Z'  # midnight: no time entered
+    assert discover_configured('ivgid',cfg,fetch=lambda _:json.dumps(data))[0]['start_time'] is None
 
 
 def test_headerless_html_is_still_detected_and_cited_as_html(monkeypatch):
@@ -147,6 +151,7 @@ def test_annual_tables_keep_dates_cancellations_and_agendas_scoped_to_rows():
     rows=discover_configured('lahontan-board',cfg,fetch=lambda _:markup)
     assert [(r['date'],r['status']) for r in rows]==[('2026-11-04','canceled'),('2026-10-01','unknown')]
     assert len(rows[1]['documents'])==1 and rows[1]['documents'][0]['url'].endswith('agenda_eng.pdf')
+    assert rows[0]['warnings']==[]  # a canceled meeting's span is not worth a note
     markup='''<table><tr><td>October 13-16, 2026 Tuesday 9:00 a.m. Wednesday 8:30 a.m.</td>
       <td><a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=247178&amp;inline">Agenda (PDF)</a>
       <a href="https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=1">How to Join the Meeting (PDF)</a></td></tr>
@@ -156,7 +161,57 @@ def test_annual_tables_keep_dates_cancellations_and_agendas_scoped_to_rows():
     assert rows[0]['title']=='Marine Resources Committee' and rows[0]['documents']==[]
     assert rows[1]['date']=='2026-10-13' and rows[1]['start_time']=='09:00'
     assert len(rows[1]['documents'])==1 and '247178' in rows[1]['documents'][0]['url']
-    assert 'Multi-day' in rows[1]['warnings'][0]
+    assert rows[1]['warnings']==['Meets October 13–16, 2026.'] and rows[0]['warnings']==[]
+
+
+def test_multi_day_note_states_the_span():
+    from tahoe_ingest.source_discovery import multi_day_note
+    def note(day,last,status='unknown'):
+        row={'date':day,'status':status,'warnings':[]}
+        multi_day_note(row,last)
+        return row['warnings']
+    assert note('2026-10-13','14')==['Meets October 13–14, 2026.']
+    assert note('2026-09-30','1')==['Meets September 30 – October 1, 2026.']
+    assert note('2026-12-31','1')==['Meets December 31, 2026 – January 1, 2027.']
+    assert note('2026-10-13','14','canceled')==[]
+    assert note('2026-02-27','31')==[] and note('2026-10-13','13')==[]  # no such day; not a range
+
+
+def test_yearly_index_reads_the_neighbouring_year_inside_the_window(monkeypatch):
+    from datetime import date
+    from tahoe_ingest import source_discovery
+    pages={'https://fgc.ca.gov/Meetings/2026':'''<table>
+        <tr><td>October 13-14, 2026 Tuesday, 9:00 a.m.</td><td></td></tr>
+        <tr><td>December 15-16, 2026 Tuesday and Wednesday</td><td></td></tr></table>''',
+           'https://fgc.ca.gov/Meetings/2027':'''<table>
+        <tr><td>January 13, 2027 Wednesday</td><td></td></tr>
+        <tr><td>February 10-11, 2027 Wednesday and Thursday</td><td></td></tr>
+        <tr><td>June 9-10, 2027 Wednesday and Thursday</td><td></td></tr></table>'''}
+    requested=[]
+    def fetch(url):
+        requested.append(url)
+        if url not in pages:raise OSError('HTTP Error 404: Not Found')
+        return pages[url]
+    cfg={'type':'dated-table','indexUrl':'https://fgc.ca.gov/Meetings/2026','indexUrlTemplate':'https://fgc.ca.gov/Meetings/{year}',
+         'bodyPattern':'Commission','title':'Fish and Game Commission'}
+    monkeypatch.setattr(source_discovery,'_local_today',lambda:date(2026,11,9))
+    rows=discover_configured('california-fish-game',cfg,limit=20,fetch=fetch)
+    assert requested==['https://fgc.ca.gov/Meetings/2026','https://fgc.ca.gov/Meetings/2027']
+    # Next year's rows up to the 120-day horizon (March 9) only.
+    assert [r['date'] for r in rows]==['2027-02-10','2027-01-13','2026-12-15','2026-10-13']
+    assert rows[0]['warnings']==['Meets February 10–11, 2027.']
+    requested.clear()
+    monkeypatch.setattr(source_discovery,'_local_today',lambda:date(2026,6,1))
+    assert len(discover_configured('california-fish-game',cfg,limit=20,fetch=fetch))==2
+    assert requested==['https://fgc.ca.gov/Meetings/2026']
+    # In January, December's meetings come from last year's page; next year's missing page is skipped.
+    requested.clear()
+    monkeypatch.setattr(source_discovery,'_local_today',lambda:date(2027,1,20))
+    rows=discover_configured('california-fish-game',cfg,limit=20,fetch=fetch)
+    assert requested==['https://fgc.ca.gov/Meetings/2027','https://fgc.ca.gov/Meetings/2026']
+    assert [r['date'] for r in rows]==['2027-06-09','2027-02-10','2027-01-13','2026-12-15']
+    from tahoe_ingest import scheduled
+    assert (source_discovery.YEAR_PAGE_PAST_DAYS,source_discovery.YEAR_PAGE_FUTURE_DAYS)==(scheduled.PAST_DAYS,scheduled.FUTURE_DAYS)
 
 
 def _live_config(agency):

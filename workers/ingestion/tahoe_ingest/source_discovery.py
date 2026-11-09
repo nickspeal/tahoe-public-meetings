@@ -206,6 +206,27 @@ def candidate(agency, sid, title, day, url, docs, text=''):
             'warnings':[]}
 
 
+def multi_day_note(row, last_day):
+    """Add the meeting's span ("Meets October 13–14, 2026.") to a row listed as a day range ("October 13-14").
+
+    ``last_day`` is the day of the month the range ends on; a smaller number than the first day's is in the next
+    month. A canceled meeting gets no note, and neither does a range that names no real day.
+    """
+    if row.get('status')=='canceled' or not row.get('date'):return
+    first=date.fromisoformat(row['date'])
+    try:
+        last=first.replace(day=int(last_day)) if int(last_day)>first.day else \
+            (first.replace(day=1)+timedelta(days=32)).replace(day=int(last_day))
+    except ValueError:
+        return
+    if last<=first or (last-first).days>14:return
+    def shown(day, year=True):return f"{day:%B} {day.day}"+(f", {day.year}" if year else '')
+    if (first.year,first.month)==(last.year,last.month):span=f"{shown(first,False)}–{last.day}, {last.year}"
+    elif first.year==last.year:span=f"{shown(first,False)} – {shown(last)}"
+    else:span=f"{shown(first)} – {shown(last)}"
+    row['warnings'].append(f'Meets {span}.')
+
+
 def table_sections(tree):
     """Each table row's section: the last text that precedes its table on the page, outside any table.
 
@@ -226,6 +247,42 @@ def table_sections(tree):
     return sections
 
 
+# The scheduled run's window (scheduled.PAST_DAYS and FUTURE_DAYS). A yearly index of the neighbouring
+# year is read while the window reaches into that year.
+YEAR_PAGE_PAST_DAYS=60
+YEAR_PAGE_FUTURE_DAYS=120
+
+
+def _local_today():
+    return datetime.now(ZoneInfo('America/Los_Angeles')).date()
+
+
+def yearly_pages(agency, config, limit, fetch):
+    """Rows from this year's index (`indexUrlTemplate` with `{year}`), and the neighbouring year's inside the window.
+
+    From early September, the 120-day horizon reaches January, so next year's page is read too (Fish and Game lists
+    its January and February meetings there); until the end of February, the 60-day look-back reaches December, so
+    last year's page is. Only a neighbouring page's rows inside the window are kept, so a full year of future rows
+    never crowds out this year's. A neighbouring page that is not published yet is skipped; this year's must load.
+    """
+    today=_local_today()
+    early,late=(today-timedelta(days=YEAR_PAGE_PAST_DAYS)).isoformat(),(today+timedelta(days=YEAR_PAGE_FUTURE_DAYS)).isoformat()
+    def page(year):
+        return discover_configured(agency,{**config,'indexUrlTemplate':config['indexUrlTemplate'].replace('{year}',str(year))},
+                                   limit=None,fetch=fetch)
+    rows=page(today.year)
+    for year in sorted({int(early[:4]),int(late[:4])}-{today.year}):
+        try:
+            found=page(year)
+        except (OSError,RuntimeError,ValueError):  # not posted yet (HTTP 404), or skipped
+            continue
+        rows+=[r for r in found if r.get('date') and early<=r['date']<=late]
+    unique={}
+    for row in rows:
+        unique.setdefault(row['source_id'],row)
+    return sorted(unique.values(),key=lambda r:r.get('date') or '',reverse=True)[:limit]
+
+
 def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     """The newest candidates (at most ``limit``) from one agency's `discovery` block."""
     # limit=None lists every row the index shows (used by the backfill's date-range discovery).
@@ -238,7 +295,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind in {'dated-page-links','dated-sections'}:
         from . import page_discovery  # imports this module's helpers
         return getattr(page_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
-    url=config.get('indexUrlTemplate',config['indexUrl']).replace('{year}',str(datetime.now(ZoneInfo('America/Los_Angeles')).year))
+    if '{year}' in config.get('indexUrlTemplate',''):
+        return yearly_pages(agency,config,limit,fetch)
+    url=config.get('indexUrlTemplate',config['indexUrl'])
     markup=fetch(url)
     body=re.compile(config.get('bodyPattern','.'),re.I)
     if kind=='civicclerk':
@@ -256,7 +315,8 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     rows,extras=[],[]
     if kind=='dated-table':
         # These official annual indexes put dates in column one, sometimes
-        # without a year or as a multi-day range. Use its first day only.
+        # without a year or as a multi-day range ("October 13-14"). The first
+        # day is the meeting's date, and a note states the whole span.
         year=re.search(r'(?<!\d)(20\d{2})(?!\d)',url)
         sections=table_sections(tree) if config.get('sectionTitles') else {}
         suffixes={}  # rows of a titled section, by the ID suffix that keeps them apart from a same-day row elsewhere
@@ -290,8 +350,8 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
                 label,target=a.text(),urllib.parse.urljoin(url,a.attrs.get('href',''))
                 if re.fullmatch(r'(?:Draft\s+)?Minutes(?:\s*\(PDF\))?',label,re.I):row.update(listing_minutes(target,label))
                 elif re.search(r'\bvideo\b',label,re.I) and (recording:=recording_link(target)):row['recording_url']=recording
-            if re.search(r'\d\s*[-–]\s*\d',date_text):
-                row['warnings'].append('Multi-day meeting: the date shown is the first day; check the official agenda for subsequent sessions.')
+            if span:=re.search(r'[A-Za-z]\.?\s+\d{1,2}\s*[-–]\s*(\d{1,2})(?![\d:])',date_text):
+                multi_day_note(row,span[1])
             rows.append(row)
         # A titled section's row keeps the plain date ID (so a stored meeting is retitled, not duplicated)
         # unless another section holds a meeting on the same date; then it takes its suffix.
@@ -339,8 +399,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             row=candidate(agency,sid,title,day,agenda,docs,text)
             row.update(granicus_links(links,' '.join(' '.join(a.attrs.values()) for a in tr.find('a'))+' '+text,url))
             if re.search(r'\d{2}h\s+\d{2}m',text) or any('MediaPlayer.php' in ' '.join(a.attrs.values()) for a in tr.find('a')):
+                # An archive row's time is when the recording starts, not the scheduled start. The meeting keeps
+                # the time stored from its upcoming row, and the agenda's printed time wins at export.
                 row['start_time']=None
-                row['warnings'].append('Archive playback timestamps are not used as scheduled start times; see the official agenda.')
             rows.append(row)
     elif kind in {'civicplus','link-index','trpa'}:
         # Each linked agenda is its own dated record. Body selection must be
@@ -595,7 +656,11 @@ def civicclerk(agency, config, markup, limit, fetch):
         if minutes:
             row.update(listing_minutes(api+f"/Meetings/GetMeetingFileStream(fileId={minutes[-1]['fileId']},plainText=false)",minutes[-1].get('name') or ''))
         if event.get('hasMedia'):row['recording_url']=portal.rstrip('/')+f'/event/{eid}/media'
-        row['warnings']=['Confirm the scheduled start in the agenda; CivicClerk wall-clock timestamps are not treated as UTC instants.']
+        # The API writes the local wall-clock time with a "Z" ("2026-10-14T16:00:00Z" is 4:00 p.m. in Incline
+        # Village, as the agenda says), so the digits are read as local time and the "Z" is ignored. Midnight means
+        # no time was entered. A different time printed on the agenda still wins at export (decision 0037).
+        clock=re.match(r'\d{4}-\d{2}-\d{2}T(\d{2}:\d{2})',raw)
+        if clock and clock[1]!='00:00':row['start_time']=clock[1]
         rows.append(row)
     return sorted(rows,key=lambda r:r['date'],reverse=True)[:limit]
 

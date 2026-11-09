@@ -80,7 +80,10 @@ layout:
    Items keep citing the copy of the agenda they cite while it is current and
    reads the same items, as in capture (decision 0034); a meeting whose items
    cite an HTML agenda is reported under `kept`, since only a capture can read
-   its markup again.
+   its markup again. A failed reparse rewrites the meeting's parse warnings
+   whenever they differ from what is stored, so a stale "await reprocessing"
+   note does not stick; a meeting of an agency with no layout loses only that
+   note (reported under `cleared`).
 
 Legistar agencies expose agenda PDFs through the public web API
 (`https://webapi.legistar.com/v1/CLIENT/events`); the meeting-detail pages
@@ -215,11 +218,15 @@ A failure in steps 2–17 is recorded (`processing_runs`, agency status, the sum
 
 ### Meeting warnings
 
-A stored warning names a known issue with what was captured (a document that could not be retrieved or read, an agenda the parser could not verify, a start time not confirmed). Agenda availability is state, not a warning: an upcoming meeting with no captured document is shown as "Agenda not posted yet" from its empty document list (`agendaAvailability` in the website), and the agency's last check comes from the run.
+A stored warning names a known, specific issue with what was captured (a document that could not be retrieved or read, an agenda the parser could not verify, a start time not confirmed); there are no blanket "check the source" caveats ([decision 0037](../../docs/decisions/0037-warnings-name-known-issues.md)). Agenda availability is state, not a warning: an upcoming meeting with no captured document is shown as "Agenda not posted yet" from its empty document list (`agendaAvailability` in the website), and the agency's last check comes from the run. Likewise "Subject to change" on a planned meeting comes from the export's `planned` flag, not a stored warning.
+
+No parse failure is recorded for a canceled meeting (its notice is not expected to parse; items are still stored if it does) or when no captured document is an agenda (only minutes, a supplement, or a cancellation notice, judged by title and ID; `agenda.is_agenda_document`). "A source PDF changed; affected agenda items await reprocessing." is added only when a source change voided the summary of at least one published item, and only once.
 
 Discovery capture owns a meeting's warning list. Each capture writes the whole list from the listing row and that download (`capture._capture_row`), so a warning from an earlier capture, a planned-meeting preview, or a former hand-built record does not outlive the next capture. Between captures, live steps may add what they find (a revised source PDF awaiting reprocessing, an event withdrawn from a revised notice), and `reparse` drops the parser warnings it supersedes; the next capture replaces those too. One-off meetings (from `config/one-off-meetings.json` or a notice) and planned meetings (from a planning calendar) carry the warnings their own step writes on each run, until a capture takes over a planned meeting. A document version captured again with more of its pages takes the new capture's warnings.
 
 `clean-hand-built [--apply]` is the one-time cleanup of what the former hand-built records (`tests/fixtures/meetings.json` and the dated lists now in `docs/research/verified-agency-meetings/`) left in a database: their warnings, the document warnings the bundle wrote, and meetings that exist only because of them and hold no source content. It is a dry run unless `--apply` is given, reads in one statement, and running it again changes nothing. Run it from a repository checkout; see `tahoe_ingest/hand_built.py` for the rules.
+
+`clean-retired-warnings [--apply]` is the one-time removal of stored meeting warnings no code writes any more (`retired_warnings.RETIRED`: the former "No agenda PDF is linked" note, "Check the notice for changes.", the two "… require source review." discovery caveats, and the planned meetings' "Subject to change."), plus the "await reprocessing" note on meetings with no active item. Settled meetings are never captured again, so without it they keep these for good. It is a dry run unless `--apply` is given, reads in one statement and writes in one more, leaves `updated_at` alone, and running it again changes nothing.
 
 ### History backfill
 

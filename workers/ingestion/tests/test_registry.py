@@ -88,7 +88,8 @@ def test_unknown_registry_keys_and_bad_inherited_blocks_stop_the_load(registry):
     with pytest.raises(ValueError, match="typo: unknown registry keys staffReport"):
         agency_catalog()
     # A child is validated as resolved: a parameter its parent's rule does not take is an error.
-    registry([*entries, {"id": "x", "name": "X", "extends": "ttd", "follow": True, "staffReports": {"packetName": "X"}}])
+    registry([*entries, {"id": "x", "name": "X", "extends": "ttd", "follow": True, "page": {"slug": "x", "name": "X"},
+                         "staffReports": {"packetName": "X"}}])
     with pytest.raises(ValueError, match="ttd-packet takes no packetName"):
         agency_catalog()
 
@@ -113,7 +114,7 @@ def test_sibling_bodies_share_their_parents_formats():
     agencies = {a["id"]: a for a in agency_catalog()}
     raw = {e["id"]: e for e in raw_registry()}
     rtcpc, board = agencies["ttd-rtcpc"], agencies["ttd"]
-    assert set(raw["ttd-rtcpc"]) <= {"id", "name", "aliases", "extends", "follow", "coverageNote", "discovery", "staffReports"}
+    assert set(raw["ttd-rtcpc"]) <= {"id", "name", "page", "aliases", "extends", "follow", "coverageNote", "discovery", "staffReports"}
     assert {k: rtcpc[k] for k in ("shortName", "officialUrl", "agenda", "topicHints")} == \
         {k: board[k] for k in ("shortName", "officialUrl", "agenda", "topicHints")}
     assert rtcpc["discovery"]["indexUrl"] == board["discovery"]["indexUrl"] and rtcpc["discovery"]["documentIdPrefix"] == "ttd"
@@ -153,6 +154,7 @@ def test_a_new_sibling_body_needs_only_its_registry_entry(registry, monkeypatch)
     and topic hints all come from configuration, with no code change."""
     registry([*raw_registry(), {
         "id": "ttd-fpc", "name": "TTD — Finance and Personnel Committee", "aliases": ["FPC"], "extends": "ttd", "follow": True,
+        "page": {"slug": "tahoe-transportation-district-finance-and-personnel-committee", "name": "Tahoe Transportation District Finance and Personnel Committee"},
         "discovery": {"bodyPattern": "Finance and Personnel Committee"}, "staffReports": {"footer": "(?:FPC\\s+)?AGENDA ITEM"}}])
     fpc = next(a for a in agency_catalog() if a["id"] == "ttd-fpc")
 
@@ -189,3 +191,18 @@ def test_a_new_sibling_body_needs_only_its_registry_entry(registry, monkeypatch)
     # Topic hints carry over; the board's meeting length and schedule do not.
     assert topics.classify("ttd-fpc", "Fleet replacement plan", [])["transit"]["rule"] == "ttd-fleet"
     assert "schedule" not in fpc and durations.agency_settings("ttd-fpc")["mode"] == "estimated"
+
+
+@pytest.mark.parametrize("page", [None, {}, {"slug": "Bad Slug", "name": "X"}, {"slug": "x", "name": " "}, {"slug": "x", "name": "X", "extra": 1}])
+def test_a_followed_body_needs_a_valid_page(registry, page):
+    entry = {"id": "x", "name": "X", "shortName": "X", "follow": True}
+    registry([*raw_registry(), entry if page is None else {**entry, "page": page}])
+    with pytest.raises(ValueError, match="x: a followed body needs a page|invalid page: x"):
+        agency_catalog()
+
+
+def test_page_slugs_are_unique(registry):
+    registry([*raw_registry(), {"id": "x", "name": "X", "shortName": "X", "follow": False,
+                                "page": {"slug": "south-lake-tahoe-city-council", "name": "X"}}])
+    with pytest.raises(ValueError, match="duplicate agency page slugs"):
+        agency_catalog()

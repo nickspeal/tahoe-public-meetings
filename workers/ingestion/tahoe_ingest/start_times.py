@@ -6,7 +6,7 @@ time: "Wednesday, October 28, 2026 ... 9:15 a.m. TRPA Governing Board Meeting",
 at export time, like time-certain items, so no schema change or reparse is
 needed and a revised agenda updates the time. The agenda's time wins over a
 stored start: one a listing gave before the agenda was revised, and one a
-planning calendar gave a planned meeting (``core.exported_start``, decision 0037).
+planning calendar gave a planned meeting (``core.exported_start``, decision 0038).
 
 A time counts only when it is printed close to the meeting's own date on the
 first page of an agenda document. That keeps out office hours, comment

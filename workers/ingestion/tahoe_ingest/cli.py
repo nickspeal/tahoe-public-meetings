@@ -235,7 +235,7 @@ def _parser() -> argparse.ArgumentParser:
                        "docs/research/verified-agency-meetings/ (default: the working directory)")
     clean.add_argument("--apply", action="store_true", help="Write the changes (default: report only)")
     retired = sub.add_parser("clean-retired-warnings", help="Remove stored meeting warnings no code writes any more "
-                             "(decision 0038); dry run unless --apply")
+                             "(decision 0039); dry run unless --apply")
     retired.add_argument("--apply", action="store_true", help="Write the changes (default: report only)")
     publish = sub.add_parser("publish-export",help="Validate an export file, store it in public_exports, and call the deploy hook if set")
     publish.add_argument("--file", required=True)

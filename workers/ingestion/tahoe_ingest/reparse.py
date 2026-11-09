@@ -69,7 +69,7 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
             report["kept"].append({"meeting": m["id"], "reason": "items come from an HTML agenda; a capture rereads it"})
             continue
         parsed = parse_agenda(m["agency_id"], documents, pages, prefer=prefer)
-        # A canceled meeting's notice is not expected to parse; a failure there is no issue to report (decision 0038).
+        # A canceled meeting's notice is not expected to parse; a failure there is no issue to report (decision 0039).
         failure = parsed.warning if m["status"] != "canceled" else None
         entry = {"meeting": m["id"], "items": len(parsed.items)} if parsed.complete else {"meeting": m["id"], "warning": failure}
         if parsed.complete and parsed.notes:

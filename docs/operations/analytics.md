@@ -71,7 +71,7 @@ Visit `https://tahoepublicmeetings.org/#toggle-goatcounter` once in each browser
 | Question | Where to look |
 | --- | --- |
 | How many people visit? | Total pageviews and visits over time. A visit is one browser within an eight-hour window, so a weekly figure is a sum of those windows, not of people |
-| Which pages matter? | Top pages table. Meeting pages appear as `/meetings/<id>/`, topic pages by their own paths |
+| Which pages matter? | Top pages table. Meeting pages appear as `/meetings/<body>/<date>/` (body pages as `/meetings/<body>/`), topic pages by their own paths |
 | What do people filter by? | Events named `filter-agency-` and `filter-topic-` |
 | Do people follow through to official documents? | `outbound-` events against meeting-page visits |
 | Do people use the calendar and feedback features? | `calendar-` and `feedback-` events |

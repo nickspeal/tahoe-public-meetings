@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
 import { dataLib } from './helpers/load-data.mjs';
+import { meetingFile } from './helpers/meeting-paths.mjs';
 
 // IDEA-018: previews from notices and planning calendars, one-off meetings from notices, planned meetings.
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -129,7 +130,6 @@ test('the timeline shows the first three planned subjects, and lists the matchin
 });
 
 // Against the built site, when the export carries IDEA-018 records.
-const routeId = (id) => encodeURIComponent(id).replaceAll('%3A', ':');
 const builtToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 const upcoming = (record) => (record.date ?? record.startsAt?.slice(0, 10) ?? '') > builtToday;
 const stored = publicData.meetings.filter((record) => record.kind !== 'forecast');
@@ -146,7 +146,7 @@ async function openPage(file, route) {
   return dom;
 }
 const rowFor = (document, id) => [...document.querySelectorAll('[data-meeting-row]')].find((row) => row.dataset.meetingId === id);
-const pageFor = async (record) => new JSDOM(await readFile(resolve(root, 'dist', 'meetings', routeId(record.id), 'index.html'), 'utf8')).window.document;
+const pageFor = async (record) => new JSDOM(await readFile(await meetingFile(record), 'utf8')).window.document;
 
 test('upcoming meetings with previews show by default with the pill and are not counted as awaiting', { skip: skip(withPreviews, 'upcoming meeting with previews') }, async () => {
   const dom = await openPage('index.html', '/');

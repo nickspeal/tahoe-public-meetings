@@ -1,5 +1,7 @@
 import type { AgendaItem, Meeting, MeetingPreview, PublicCommentPeriod, PublicData } from '../../../../packages/domain/public';
 import topicCatalog from '../../../../packages/domain/topics.json';
+import agencyCatalog from '../../../../packages/domain/agencies.json';
+import { agencyPages, meetingPaths, type AgencyEntry } from './meeting-paths';
 import { meetingCardTitle } from './meeting-title';
 import { isRoutineItem } from './routine-items';
 import { citationHref } from './source-links';
@@ -90,11 +92,69 @@ export function meetingDateLabel(meeting: Meeting, options: Intl.DateTimeFormatO
   return formatDate(date, options);
 }
 
+/** Each followed body's public page (slug and searchable name) from agencies.json, by agency ID. */
+export const bodyPages = agencyPages(agencyCatalog as AgencyEntry[]);
+
+/** Built once for every stored meeting, so a missing agency page or a shared path fails the build. */
+const meetingPathById = meetingPaths(meetings, bodyPages);
+
+/** A stored meeting's permanent page path (see meeting-paths.ts). Forecasts have no page. */
 export function meetingHref(meeting: Meeting) {
-  // Astro's static route params use the literal colon. Encoding it into %3A
-  // creates a path that the dev/preview server does not resolve consistently.
-  const encodedId = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
-  return `/meetings/${encodedId}/`;
+  const path = meetingPathById.get(meeting.id);
+  if (!path) throw new Error(`Meeting ${meeting.id} has no page`);
+  return path;
+}
+
+/** A body page's path; none for a host-per-record entry (Other), which is not a body and has no page. */
+export function bodyHref(agencyId: string) {
+  const page = bodyPages.get(agencyId);
+  return page && !page.perRecordHost ? `/meetings/${page.slug}/` : null;
+}
+
+/** The body holding a stored meeting, as its body page names it; null under Other, whose meetings name their own host. */
+export function meetingBody(meeting: Meeting) {
+  const page = bodyPages.get(meeting.agencyId);
+  const href = bodyHref(meeting.agencyId);
+  if (!page || !href) return null;
+  return { name: page.name, href, officialUrl: bodyOfficialUrl(meeting.agencyId) };
+}
+
+/** The body's own website: the export's (with `extends` applied), else the registry entry's. */
+export function bodyOfficialUrl(agencyId: string) {
+  const raw = (agencyCatalog as { id: string; officialUrl?: string }[]).find((entry) => entry.id === agencyId);
+  return agencies.find((agency) => agency.id === agencyId)?.officialUrl || raw?.officialUrl || null;
+}
+
+export type BodyHub = {
+  agencyId: string; slug: string; name: string; href: string; officialUrl: string | null;
+  /** Today's and later meetings (undated ones last), soonest first; then earlier ones, newest first. */
+  upcoming: Meeting[]; past: Meeting[];
+  /** The first upcoming meeting that is not canceled. */
+  next: Meeting | null;
+  /** The export's plain-language schedule, e.g. "Usually the first Wednesday at 3:00 PM", when the body's forecasts carry one. */
+  scheduleBasis: string | null;
+};
+
+/**
+ * A page for each followed body with stored meetings, alphabetical by page name. Host-per-record entries (Other)
+ * are not bodies and get none. Upcoming and past are split at build time; the site rebuilds on a schedule.
+ */
+export function bodyHubs(now = new Date()): BodyHub[] {
+  const today = pacificDay(now);
+  const day = (meeting: Meeting) => { const value = meetingDateValue(meeting); return value ? localDateKey(value) : null; };
+  const start = (meeting: Meeting) => meeting.startsAt ?? '';
+  return [...bodyPages].filter(([, page]) => !page.perRecordHost).flatMap(([agencyId, page]) => {
+    const own = meetings.filter((meeting) => meeting.agencyId === agencyId);
+    if (!own.length) return [];
+    const upcoming = own.filter((meeting) => { const key = day(meeting); return !key || key >= today; })
+      .sort((a, b) => (day(a) ?? '9999').localeCompare(day(b) ?? '9999') || start(a).localeCompare(start(b)) || a.id.localeCompare(b.id));
+    const past = own.filter((meeting) => { const key = day(meeting); return key && key < today; })
+      .sort((a, b) => day(b)!.localeCompare(day(a)!) || start(b).localeCompare(start(a)) || a.id.localeCompare(b.id));
+    const next = upcoming.find((meeting) => day(meeting) && meeting.status !== 'canceled' && meeting.change !== 'canceled') ?? null;
+    const officialUrl = bodyOfficialUrl(agencyId);
+    const scheduleBasis = forecastMeetings.find((meeting) => meeting.agencyId === agencyId && meeting.forecast?.basis)?.forecast?.basis ?? null;
+    return [{ agencyId, slug: page.slug, name: page.name, href: `/meetings/${page.slug}/`, officialUrl, upcoming, past, next, scheduleBasis }];
+  }).sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function commentPeriodHref(period: PublicCommentPeriod) {

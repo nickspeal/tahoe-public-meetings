@@ -1,4 +1,4 @@
-"""One-time removal of stored meeting warnings that no code writes any more (decision 0038).
+"""One-time removal of stored meeting warnings that no code writes any more (decision 0039).
 
 A meeting's warnings are rewritten only when a capture or reparse touches it, and
 settled past meetings are never captured again, so a caveat the pipeline has
@@ -29,7 +29,7 @@ RETIRED = (
     "Publisher row date/time and agenda items require source review.",
     # Planned meetings; the website derives "Subject to change" from the export's `planned` flag.
     "Subject to change.",
-    # Start-time caveats retired by decision 0037; the export already drops them (core.RETIRED_START_WARNINGS).
+    # Start-time caveats retired by decision 0038; the export already drops them (core.RETIRED_START_WARNINGS).
     "Archive playback timestamps are not used as scheduled start times; see the official agenda.",
     "Confirm the scheduled start in the agenda; CivicClerk wall-clock timestamps are not treated as UTC instants.",
 )

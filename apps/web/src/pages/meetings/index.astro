@@ -1,7 +1,12 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
-import MeetingTimeline from '../../components/MeetingTimeline.astro';
+import { bodyHubs, meetingDateLabel } from '../../lib/data';
+// The meeting timeline lives on the home page; this is the directory of body pages under /meetings/.
+const hubs = bodyHubs();
 ---
-<SiteLayout title="Meetings" description="Public meeting schedules, agendas, and records from Tahoe-area agencies.">
-  <MeetingTimeline />
+<SiteLayout title="Public bodies" description="Tahoe-area councils, boards, and commissions with their upcoming meetings, agendas, minutes, and recordings.">
+  <section class="page-hero compact"><div class="section-wrap"><p class="eyebrow">Meetings</p><h1>Public bodies</h1><p class="page-intro">Each Tahoe-area council, board, and commission listed here, with its next meeting. Open one for its upcoming and past meetings.</p></div></section>
+  <section class="section-wrap content-section">
+    <section class="agency-coverage"><ul>{hubs.map((hub) => <li><div><h3><a href={hub.href}>{hub.name}</a></h3><p>{hub.next ? `Next meeting: ${meetingDateLabel(hub.next, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}` : hub.scheduleBasis ? `No upcoming meeting listed · ${hub.scheduleBasis}` : 'No upcoming meeting listed'}</p></div></li>)}</ul></section>
+  </section>
 </SiteLayout>

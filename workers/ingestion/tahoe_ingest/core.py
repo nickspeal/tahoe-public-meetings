@@ -948,7 +948,7 @@ AGENDA_DOCUMENT = re.compile(r"agenda|packet", re.I)
 SUPPLEMENT = re.compile(r"supplement", re.I)
 
 
-# Start-time caveats discovery stored before decision 0037; they describe no known problem, so they are never exported.
+# Start-time caveats discovery stored before decision 0038; they describe no known problem, so they are never exported.
 RETIRED_START_WARNINGS = ("Archive playback timestamps are not used as scheduled start times",
                           "Confirm the scheduled start in the agenda")
 
@@ -956,7 +956,7 @@ RETIRED_START_WARNINGS = ("Archive playback timestamps are not used as scheduled
 def exported_start(m: dict, docs: list[dict], warnings: list[str]) -> tuple:
     """The start time to publish, and the warnings without retired start-time caveats.
 
-    A start time printed on the agenda's first page wins over the stored one (decision 0037). It fills in a meeting
+    A start time printed on the agenda's first page wins over the stored one (decision 0038). It fills in a meeting
     stored without one; it replaces the time a listing gave when a revised agenda moved it (a TCPUD board meeting
     listed at 4:00 p.m. whose revised agenda says 3:45 p.m.), since a past meeting's archive row states no time and
     the upcoming row's time stays stored; and it replaces the stored start of a planned meeting, which came from a

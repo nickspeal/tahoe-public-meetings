@@ -1,4 +1,4 @@
-# 0037: The agenda's start time wins, and CivicClerk times are local
+# 0038: The agenda's start time wins, and CivicClerk times are local
 
 Status: accepted (maintainer approval of the meeting-warnings review, 2026-11-09)
 Date: 2026-11-09

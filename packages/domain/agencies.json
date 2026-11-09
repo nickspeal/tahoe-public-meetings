@@ -3,6 +3,10 @@
     "id": "ttd",
     "name": "Tahoe Transportation District",
     "shortName": "TTD",
+    "page": {
+      "slug": "tahoe-transportation-district-board",
+      "name": "Tahoe Transportation District Board"
+    },
     "follow": true,
     "officialUrl": "https://tahoetransportation.org/",
     "sourceUrl": "https://tahoetransportation.org/meetings-and-agendas/",
@@ -85,6 +89,10 @@
   {
     "id": "ttd-rtcpc",
     "name": "TTD — Regional Transit and Capital Programs Committee",
+    "page": {
+      "slug": "tahoe-transportation-district-transit-capital-programs-committee",
+      "name": "Tahoe Transportation District Regional Transit and Capital Programs Committee"
+    },
     "aliases": [
       "Tahoe Transportation District",
       "RTCPC",
@@ -105,6 +113,10 @@
     "id": "slt",
     "name": "City of South Lake Tahoe",
     "shortName": "South Lake Tahoe",
+    "page": {
+      "slug": "south-lake-tahoe-city-council",
+      "name": "South Lake Tahoe City Council"
+    },
     "aliases": [
       "SLT",
       "South Lake Tahoe City Council",
@@ -160,6 +172,10 @@
     "id": "slt-planning",
     "name": "South Lake Tahoe — Planning Commission",
     "shortName": "South Lake Tahoe",
+    "page": {
+      "slug": "south-lake-tahoe-planning-commission",
+      "name": "South Lake Tahoe Planning Commission"
+    },
     "aliases": [
       "SLT",
       "City of South Lake Tahoe"
@@ -217,6 +233,10 @@
   {
     "id": "trpa-advisory",
     "name": "TRPA — Advisory Planning Committee",
+    "page": {
+      "slug": "trpa-advisory-planning-commission",
+      "name": "TRPA Advisory Planning Commission"
+    },
     "aliases": [
       "Tahoe Regional Planning Agency",
       "APC"
@@ -252,6 +272,10 @@
     "id": "trpa-governing",
     "name": "TRPA — Governing Board",
     "shortName": "TRPA",
+    "page": {
+      "slug": "trpa-governing-board",
+      "name": "TRPA Governing Board"
+    },
     "aliases": [
       "Tahoe Regional Planning Agency"
     ],
@@ -308,6 +332,10 @@
     "id": "douglas-commissioners",
     "name": "Douglas County — Board of Commissioners",
     "shortName": "Douglas County",
+    "page": {
+      "slug": "douglas-county-board-of-commissioners",
+      "name": "Douglas County Board of Commissioners"
+    },
     "aliases": [
       "Douglas County, Nevada",
       "DCNV",
@@ -375,6 +403,10 @@
   {
     "id": "douglas-planning",
     "name": "Douglas County — Planning Commission",
+    "page": {
+      "slug": "douglas-county-planning-commission",
+      "name": "Douglas County Planning Commission"
+    },
     "aliases": [
       "Douglas County, Nevada",
       "DCNV"
@@ -447,6 +479,10 @@
     "id": "douglas-transportation",
     "name": "Douglas County — Regional Transportation Commission",
     "shortName": "Douglas County",
+    "page": {
+      "slug": "douglas-county-regional-transportation-commission",
+      "name": "Douglas County Regional Transportation Commission"
+    },
     "aliases": [
       "Douglas County, Nevada",
       "DCNV",
@@ -485,6 +521,10 @@
     "id": "el-dorado-supervisors",
     "name": "El Dorado County — Board of Supervisors",
     "shortName": "El Dorado County",
+    "page": {
+      "slug": "el-dorado-county-board-of-supervisors",
+      "name": "El Dorado County Board of Supervisors"
+    },
     "aliases": [
       "EDC",
       "BOS"
@@ -532,6 +572,10 @@
     "id": "el-dorado-planning",
     "name": "El Dorado County — Planning Commission",
     "shortName": "El Dorado County",
+    "page": {
+      "slug": "el-dorado-county-planning-commission",
+      "name": "El Dorado County Planning Commission"
+    },
     "aliases": [
       "EDC"
     ],
@@ -598,6 +642,10 @@
     "id": "washoe-commissioners",
     "name": "Washoe County — Board of Commissioners",
     "shortName": "Washoe County",
+    "page": {
+      "slug": "washoe-county-board-of-commissioners",
+      "name": "Washoe County Board of Commissioners"
+    },
     "aliases": [
       "Washoe County Commission",
       "Board of County Commissioners",
@@ -641,6 +689,10 @@
     "id": "washoe-planning",
     "name": "Washoe County — Planning Commission",
     "shortName": "Washoe County",
+    "page": {
+      "slug": "washoe-county-planning-commission",
+      "name": "Washoe County Planning Commission"
+    },
     "follow": true,
     "officialUrl": "https://www.washoecounty.gov/csd/planning_and_development/board_commission/planning_commission/index.php",
     "sourceUrl": "https://washoe-nv.legistar.com/DepartmentDetail.aspx?ID=54400&GUID=37861DCF-5BF7-4D16-BE71-F860591E1ADC",
@@ -697,6 +749,10 @@
     "id": "placer-supervisors",
     "name": "Placer County — Board of Supervisors",
     "shortName": "Placer County",
+    "page": {
+      "slug": "placer-county-board-of-supervisors",
+      "name": "Placer County Board of Supervisors"
+    },
     "aliases": [
       "BOS"
     ],
@@ -729,6 +785,10 @@
     "id": "placer-planning",
     "name": "Placer County — Planning Commission",
     "shortName": "Placer County",
+    "page": {
+      "slug": "placer-county-planning-commission",
+      "name": "Placer County Planning Commission"
+    },
     "follow": true,
     "officialUrl": "https://www.placer.ca.gov/2403/Planning-Commission",
     "sourceUrl": "https://www.placer.ca.gov/10617/_2026",
@@ -758,6 +818,10 @@
     "id": "placer-transportation",
     "name": "Placer County — Transportation Planning Agency",
     "shortName": "Placer County",
+    "page": {
+      "slug": "placer-county-transportation-planning-agency",
+      "name": "Placer County Transportation Planning Agency"
+    },
     "aliases": [
       "Placer County Transportation Planning Agency",
       "PCTPA"
@@ -817,6 +881,10 @@
     "id": "placer-tahoe-design-review",
     "name": "Placer County — Design Review Committee - Tahoe Basin",
     "shortName": "Placer County",
+    "page": {
+      "slug": "placer-county-tahoe-basin-design-review-committee",
+      "name": "Placer County Tahoe Basin Design Review Committee"
+    },
     "aliases": [
       "Tahoe Basin Design Review Committee"
     ],
@@ -849,6 +917,10 @@
     "id": "south-shore-tma",
     "name": "South Shore Transportation Management Association — Board",
     "shortName": "South Shore TMA",
+    "page": {
+      "slug": "south-shore-transportation-management-association",
+      "name": "South Shore Transportation Management Association Board"
+    },
     "aliases": [
       "South Shore Transportation Management Association",
       "SS-TMA"
@@ -909,6 +981,10 @@
     "id": "truckee-north-shore-tma",
     "name": "Truckee North Tahoe Transportation Management Association",
     "shortName": "TNTTMA",
+    "page": {
+      "slug": "truckee-north-tahoe-transportation-management-association",
+      "name": "Truckee North Tahoe Transportation Management Association"
+    },
     "aliases": [
       "Truckee North Tahoe TMA",
       "TNT/TMA",
@@ -951,6 +1027,10 @@
     "id": "ntpud",
     "name": "NTPUD — Board",
     "shortName": "NTPUD",
+    "page": {
+      "slug": "north-tahoe-public-utility-district-board",
+      "name": "North Tahoe Public Utility District Board"
+    },
     "aliases": [
       "North Tahoe Public Utility District",
       "North Tahoe PUD"
@@ -990,6 +1070,10 @@
     "id": "tcpud",
     "name": "TCPUD — Board",
     "shortName": "TCPUD",
+    "page": {
+      "slug": "tahoe-city-public-utility-district-board",
+      "name": "Tahoe City Public Utility District Board"
+    },
     "aliases": [
       "Tahoe City Public Utility District",
       "Tahoe City PUD"
@@ -1027,6 +1111,10 @@
     "id": "ivgid",
     "name": "IVGID — Board",
     "shortName": "IVGID",
+    "page": {
+      "slug": "incline-village-gid-board-of-trustees",
+      "name": "Incline Village GID Board of Trustees"
+    },
     "aliases": [
       "Incline Village General Improvement District",
       "Incline Village"
@@ -1087,6 +1175,10 @@
     "id": "lahontan-board",
     "name": "Lahontan — Board",
     "shortName": "Lahontan",
+    "page": {
+      "slug": "lahontan-regional-water-quality-control-board",
+      "name": "Lahontan Regional Water Quality Control Board"
+    },
     "aliases": [
       "Lahontan Regional Water Quality Control Board",
       "Lahontan Water Board",
@@ -1160,6 +1252,10 @@
     "id": "ltbmu",
     "name": "LTBMU — Main office",
     "shortName": "LTBMU",
+    "page": {
+      "slug": "lake-tahoe-basin-management-unit",
+      "name": "Lake Tahoe Basin Management Unit"
+    },
     "aliases": [
       "Lake Tahoe Basin Management Unit",
       "US Forest Service",
@@ -1188,6 +1284,10 @@
     "id": "ctc",
     "name": "CTC — Board",
     "shortName": "CTC",
+    "page": {
+      "slug": "california-tahoe-conservancy-board",
+      "name": "California Tahoe Conservancy Board"
+    },
     "aliases": [
       "California Tahoe Conservancy",
       "Tahoe Conservancy"
@@ -1228,6 +1328,10 @@
     "id": "trcd",
     "name": "TRCD — Board",
     "shortName": "TRCD",
+    "page": {
+      "slug": "tahoe-resource-conservation-district-board",
+      "name": "Tahoe Resource Conservation District Board"
+    },
     "aliases": [
       "Tahoe Resource Conservation District",
       "Tahoe RCD"
@@ -1280,6 +1384,10 @@
     "id": "ntcd",
     "name": "NTCD — Board",
     "shortName": "NTCD",
+    "page": {
+      "slug": "nevada-tahoe-conservation-district-board",
+      "name": "Nevada Tahoe Conservation District Board"
+    },
     "aliases": [
       "Nevada Tahoe Conservation District"
     ],
@@ -1318,6 +1426,10 @@
     "id": "ndep",
     "name": "Nevada Board for Financing Water Projects",
     "shortName": "NDEP",
+    "page": {
+      "slug": "nevada-board-for-financing-water-projects",
+      "name": "Nevada Board for Financing Water Projects"
+    },
     "aliases": [
       "Nevada Division of Environmental Protection"
     ],
@@ -1365,6 +1477,10 @@
     "id": "state-lands",
     "name": "California State Lands Commission",
     "shortName": "State Lands Commissions",
+    "page": {
+      "slug": "california-state-lands-commission",
+      "name": "California State Lands Commission"
+    },
     "aliases": [
       "State Lands Commission",
       "CSLC",
@@ -1447,6 +1563,10 @@
     "id": "usfws",
     "name": "USFWS",
     "shortName": "USFWS",
+    "page": {
+      "slug": "us-fish-and-wildlife-service",
+      "name": "US Fish and Wildlife Service"
+    },
     "aliases": [
       "US Fish and Wildlife Service",
       "Fish and Wildlife"
@@ -1495,6 +1615,10 @@
     "id": "stpud",
     "name": "STPUD — Board",
     "shortName": "STPUD",
+    "page": {
+      "slug": "south-tahoe-public-utility-district-board",
+      "name": "South Tahoe Public Utility District Board"
+    },
     "aliases": [
       "South Tahoe Public Utility District",
       "South Tahoe PUD"
@@ -1556,6 +1680,10 @@
     "id": "california-state-parks",
     "name": "California State Parks",
     "shortName": "California State Parks",
+    "page": {
+      "slug": "california-state-parks",
+      "name": "California State Parks"
+    },
     "aliases": [
       "CA State Parks",
       "California Department of Parks and Recreation"
@@ -1612,6 +1740,10 @@
     "id": "nevada-state-parks",
     "name": "Nevada State Parks",
     "shortName": "Nevada State Parks",
+    "page": {
+      "slug": "nevada-state-parks",
+      "name": "Nevada State Parks"
+    },
     "aliases": [
       "NV State Parks",
       "Nevada Division of State Parks"
@@ -1646,6 +1778,10 @@
     "id": "tahoe-usfs",
     "name": "Tahoe USFS",
     "shortName": "Tahoe USFS",
+    "page": {
+      "slug": "us-forest-service-tahoe",
+      "name": "US Forest Service, Lake Tahoe"
+    },
     "aliases": [
       "US Forest Service",
       "Forest Service"
@@ -1673,6 +1809,10 @@
     "id": "california-fish-game",
     "name": "California Fish and Game — Commission and Committees",
     "shortName": "California Fish and Game",
+    "page": {
+      "slug": "california-fish-and-game-commission",
+      "name": "California Fish and Game Commission"
+    },
     "aliases": [
       "Fish and Game Commission",
       "CA Fish and Game",
@@ -1714,6 +1854,10 @@
     "id": "truckee-tahoe-airport",
     "name": "Truckee Tahoe Airport",
     "shortName": "Truckee Tahoe Airport",
+    "page": {
+      "slug": "truckee-tahoe-airport-district-board",
+      "name": "Truckee Tahoe Airport District Board"
+    },
     "aliases": [
       "Truckee Tahoe Airport District",
       "TTAD"
@@ -1751,6 +1895,10 @@
     "id": "truckee",
     "name": "Town of Truckee",
     "shortName": "Truckee",
+    "page": {
+      "slug": "truckee-town-council",
+      "name": "Truckee Town Council"
+    },
     "aliases": [
       "Truckee Town Council",
       "Town Council"
@@ -1815,6 +1963,10 @@
     "id": "slt-parks-recreation-commission",
     "name": "City of South Lake Tahoe — Parks and Recreation Commission",
     "shortName": "South Lake Tahoe",
+    "page": {
+      "slug": "south-lake-tahoe-parks-and-recreation-commission",
+      "name": "South Lake Tahoe Parks and Recreation Commission"
+    },
     "aliases": [
       "SLT",
       "Parks and Rec"
@@ -1854,6 +2006,10 @@
     "id": "slt-transit-jpa",
     "name": "South Tahoe Transit Joint Powers Authority",
     "shortName": "South Tahoe Transit JPA",
+    "page": {
+      "slug": "south-tahoe-transit-joint-powers-authority",
+      "name": "South Tahoe Transit Joint Powers Authority"
+    },
     "aliases": [
       "STTJPA",
       "Transit JPA",
@@ -1903,6 +2059,10 @@
     "id": "tcpud-parks-recreation-committee",
     "name": "TCPUD — Parks and Recreation Committee",
     "shortName": "TCPUD",
+    "page": {
+      "slug": "tahoe-city-public-utility-district-parks-and-recreation-committee",
+      "name": "Tahoe City Public Utility District Parks and Recreation Committee"
+    },
     "aliases": [
       "Tahoe City Public Utility District",
       "Tahoe City PUD",
@@ -1937,6 +2097,10 @@
     "id": "other",
     "name": "Other",
     "shortName": "Other",
+    "page": {
+      "slug": "other-agencies",
+      "name": "Other Tahoe-area agencies"
+    },
     "aliases": [],
     "follow": true,
     "meetingHost": "per-record",

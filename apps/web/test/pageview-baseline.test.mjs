@@ -33,7 +33,7 @@ test('the baseline target needs both an https site URL and a token', () => {
 });
 
 test('only plain site paths are accepted', () => {
-  assert.equal(parsePath('/meetings/slt:2026-11-03/'), '/meetings/slt:2026-11-03/');
+  assert.equal(parsePath('/meetings/south-lake-tahoe-city-council/2026-11-03/'), '/meetings/south-lake-tahoe-city-council/2026-11-03/');
   assert.equal(parsePath('/topics/housing/'), '/topics/housing/');
   assert.equal(parsePath('/'), '/');
   for (const bad of ['', 'meetings', '//evil.example', '/?topic=housing', '/#x', '/a b', '/a"b', '/<script>', '/' + 'x'.repeat(200), 42, null]) {
@@ -44,14 +44,14 @@ test('only plain site paths are accepted', () => {
 test('a page view is forwarded to the baseline site without sessions or addresses', async () => {
   const { calls, fetchImpl } = fakeGoatCounter();
   const handle = createBaselineHandler({ env, fetchImpl, log: silent });
-  const response = await handle(beacon('/meetings/trpa:2026-11-05/', { 'X-Forwarded-For': '203.0.113.9' }));
+  const response = await handle(beacon('/meetings/trpa-governing-board/2026-11-05/', { 'X-Forwarded-For': '203.0.113.9' }));
   assert.equal(response.status, 204);
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, 'https://example-baseline.goatcounter.com/api/v0/count');
   assert.equal(calls[0].init.headers.Authorization, 'Bearer secret-token');
   const [hit] = calls[0].body.hits;
   assert.equal(calls[0].body.no_sessions, true);
-  assert.equal(hit.path, '/meetings/trpa:2026-11-05/');
+  assert.equal(hit.path, '/meetings/trpa-governing-board/2026-11-05/');
   assert.equal(hit.user_agent, 'Mozilla/5.0 (test)');
   assert.match(hit.session, /^[0-9a-f]{32}$/, 'the visit key is an opaque hash');
   assert.ok(!JSON.stringify(calls[0].body).includes('203.0.113.9'), 'the client address is never forwarded');

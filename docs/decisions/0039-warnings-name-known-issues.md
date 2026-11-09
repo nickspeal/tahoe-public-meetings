@@ -1,4 +1,4 @@
-# 0038: Meeting warnings name a known, specific issue
+# 0039: Meeting warnings name a known, specific issue
 
 Status: accepted by the maintainer on 2026-11-09 (the principle and the listed changes); the "not an agenda" title rule and the retired-warning list are proposed defaults.
 Date: 2026-11-09

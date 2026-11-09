@@ -658,7 +658,7 @@ def civicclerk(agency, config, markup, limit, fetch):
         if event.get('hasMedia'):row['recording_url']=portal.rstrip('/')+f'/event/{eid}/media'
         # The API writes the local wall-clock time with a "Z" ("2026-10-14T16:00:00Z" is 4:00 p.m. in Incline
         # Village, as the agenda says), so the digits are read as local time and the "Z" is ignored. Midnight means
-        # no time was entered. A different time printed on the agenda still wins at export (decision 0037).
+        # no time was entered. A different time printed on the agenda still wins at export (decision 0038).
         clock=re.match(r'\d{4}-\d{2}-\d{2}T(\d{2}:\d{2})',raw)
         if clock and clock[1]!='00:00':row['start_time']=clock[1]
         rows.append(row)

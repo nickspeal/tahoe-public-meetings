@@ -121,7 +121,7 @@ def test_rolling_agenda_filename_and_civicclerk_file_ids_are_discovered():
     cfg={'type':'civicclerk','indexUrl':'https://ivgid.portal.civicclerk.com','bodyPattern':'Trustees'}
     data={'items':[{'id':746,'eventName':'Board of Trustees','eventDate':'2026-10-14T16:00:00Z','publishedFiles':[{'type':'Agenda','fileId':2864}]}]}
     rows=discover_configured('ivgid',cfg,fetch=lambda _:json.dumps(data))
-    # The "Z" is not an offset: 16:00 is the 4:00 p.m. local start the agenda prints (decision 0037).
+    # The "Z" is not an offset: 16:00 is the 4:00 p.m. local start the agenda prints (decision 0038).
     assert rows[0]['start_time']=='16:00' and rows[0]['warnings']==[]
     assert 'fileId=2864' in rows[0]['documents'][0]['url']
     data['items'][0]['eventDate']='2026-10-14T00:00:00Z'  # midnight: no time entered

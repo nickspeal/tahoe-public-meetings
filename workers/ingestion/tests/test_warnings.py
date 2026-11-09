@@ -1,4 +1,4 @@
-"""Meeting warnings name a known, specific issue (decision 0038).
+"""Meeting warnings name a known, specific issue (decision 0039).
 
 A changed source document on a meeting with nothing to reprocess adds no warning; reparse rewrites a stale
 "await reprocessing" note even when the parse failure itself is unchanged; a canceled meeting, or documents

@@ -99,6 +99,15 @@
       "titleCleanup": [["\\s+–(?:\\s.*)?$", ""], ["^(Closed Session)\\s*\\d$", "\\1"], ["(?<=\\b[A-Z])- (?=[A-Z])", "-"]],
       "endItem": false
     },
+    "ltva-board": {
+      "label": "LTVA Board agenda",
+      "cover": ["Board of Directors Meeting", "VisitLakeTahoe\\.com"],
+      "coverPages": 1,
+      "levels": ["NUM", {"level": "LOWER", "item": true}],
+      "firstPages": 3,
+      "start": "^(?:UPDATED |REVISED )?AGENDA\\b",
+      "stop": ["^CLOSED SESSION", "^This is an opportunity"]
+    },
     "ndep-board": {
       "label": "Nevada Division of Environmental Protection board agenda",
       "cover": ["STATE OF NEVADA", "AGENDA"],
@@ -208,6 +217,28 @@
       "stop": "^(?:Requested Action|Responsible Staff|\\S.*\\.(?:docx?|pdf)$)",
       "maxTitleLines": 2
     },
+    "slttid-board": {
+      "label": "SLTTID Board agenda",
+      "cover": ["South Lake Tahoe Tourism Improvement District", "Board of Directors Meeting"],
+      "coverPages": 1,
+      "levels": ["UPPER", {"level": "LOWER_ROMAN", "item": true}],
+      "firstPages": 2,
+      "indentTolerance": 12,
+      "headings": "^AGENDA$",
+      "sectionRestart": true
+    },
+    "slttid-special": {
+      "label": "SLTTID special meeting agenda",
+      "cover": ["South Lake Tahoe Tourism Improvement District", "Special Board of Directors Meeting"],
+      "coverPages": 1,
+      "levels": ["UPPER"],
+      "firstPages": 2,
+      "indentTolerance": 12,
+      "headings": "^AGENDA$",
+      "sectionRestart": true,
+      "headingItems": "^\\d{1,2}\\. ",
+      "titleCleanup": [["^\\d{1,2}\\.\\s+", ""]]
+    },
     "south-shore-tma-board": {
       "label": "South Shore TMA agenda",
       "cover": ["Board of Directors Agenda"],
@@ -253,6 +284,14 @@
       "maxTitleLines": 4,
       "titleCleanup": ["@PAREN_DESCRIPTION"]
     },
+    "tbec-stakeholder": {
+      "label": "Tahoe Blue Event Center stakeholder agenda",
+      "cover": ["TAHOE BLUE EVENT CENTER", "STAKEHOLDER AGENDA"],
+      "coverPages": 1,
+      "levels": ["UPPER"],
+      "firstPages": 1,
+      "start": "^Stakeholder Composition"
+    },
     "tcpud-board": {
       "label": "TCPUD Board agenda",
       "cover": ["TAHOE CITY PUBLIC UTILITY DISTRICT", "Board of Directors"],
@@ -260,6 +299,15 @@
       "firstPages": 2,
       "wrap": "none",
       "capsLead": true
+    },
+    "tdva-board": {
+      "label": "TDVA Board agenda",
+      "cover": ["Board of Directors Meeting", "tahoedouglasva\\.org"],
+      "coverPages": 1,
+      "levels": ["NUM", {"level": "LOWER", "item": true}],
+      "firstPages": 3,
+      "start": "^(?:UPDATED |REVISED )?AGENDA\\b",
+      "stop": ["^CLOSED SESSION", "^This is an opportunity"]
     },
     "tnt-tma-board": {
       "label": "TNT/TMA Board agenda",

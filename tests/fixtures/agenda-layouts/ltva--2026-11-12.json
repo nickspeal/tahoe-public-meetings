@@ -1,0 +1,132 @@
+{
+  "agency": "ltva",
+  "source": "https://ltva.org/wp-content/uploads/2026/11/11_LTVA-Agenda-November-12-2026.pdf",
+  "note": "LTVA Board agenda (PDF linked from the LTVA events API): numbered items with lettered sub-items, which become items in their parent's section",
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "Board of Directors Meeting\n                            In-person and Virtual Attendance Options\n                  Thursday, November 12, 2026, at 3:00 p.m.\n                       Tahoe Blue Event Center, Turquoise Room\n                                      75 US-50, Stateline, Nevada\n\n                                      Public Attendance Options:\n1. Attend the meeting in person at the address indicated above.\n2. To view this meeting on Zoom, visit\nhttps://us02web.zoom.us/j/86972874483?pwd=5QDLwdkaUDuDboA0nBRekT5ZLb8KHA.1\nor visit\nhttp://zoom.us/join and enter the Webinar ID: 869 7287 4483 Need Password ID: 045349\n3. To listen to this Zoom meeting, dial 1-669-900-6833 and enter the Webinar ID when prompted.\n\n                                                  AGENDA\n    1. Call to Order\n    2. Silent Roll Call\n    3. Introduction of Guests and Staff (sign-in)\n    4. Public Comment on Non-Agenda items - Limit three (3) minutes per person. No action may\n       be taken.\n\n    5. Approval of Agenda\n    6. Possible Action: Election of Officers – Carol Chaplin\n           a. LTVA Board Chair\n           b. LTVA Board Treasurer\n    7. Approval of Minutes: October 8, 2026\n    8. Possible Action: July 2026 Financial Statements – Katharine Nastasia\n    9. Possible Action: August 2026 Financial Statements – Katharine Nastasia\n    10. Events Update – Stuart Maas\n           a. Possible Action: Event Funding Recommendation $75,000 - PRO Skijor 2027\n              Championship Finals – Cierra Ritchie of Caesars Entertainment; Greg Lipstone &\n              Brian Gardner of PRO Skijor\n\n                                         VisitLakeTahoe.com\n                          PO Box 5878 | 75 US-50 | Stateline, NV 89449 | (775) 588-5900"
+    },
+    {
+      "page_number": 2,
+      "text": "b. Possible Action: Support for Battle of the Sports – International Endurance\n           Competition & Television Production - Clive Grinaker of Battle of the Sports\n           Events; Todd Jackson, of Big Blue Adventures\n\n 11. Possible Action: January – June 2027 Media Plan – Noble Studios\n 12. Possible Action: Winter Creative – Noble Studios\n 13. Possible Action: Data and KPIs Working Group – Carol Chaplin\n 14. Possible Action: Lodging Industry Survey – Carol Chaplin\n        a. All Lodging Results\n        b. Small/Mid-Size Lodging Properties Results\n 15. Updates by Staff\n 16. Recommendations for Future Agenda Items\n 17. Updates by Board Members\n\n    This is an opportunity for Board members to present updates on meetings they have\n    attended, legislative matters, or other items that are relevant to the mission of the Lake\n    Tahoe Visitors Authority. There will be no action taken on these items other than to\n    possibly request that items be placed on future agendas or to direct staff to further\n    investigate the matter.\n\n 18. Public Comment - Limit three (3) minutes per person. No action may be taken.\n 19. Next Meeting: Thursday, December 10, 2026, at 3:00 p.m., Turquoise Room\n 20. Adjournment\n\n\nNOTE: We are pleased to make accommodations for members of the public who are differently\nabled. Please notify in writing at PO Box 5878, Stateline, NV 89449 or call (775) 589-2052 prior to\nthe meeting. In accordance with Nevada Revised Statute Chapter 241, this agenda closes three\ndays prior to the meeting day and was posted on www.LTVA.org and the NV State posting website\nat www.notice.nv.gov. Notice of this meeting was emailed and/or faxed for posting to the following\nlocations: Douglas County Library – Minden Branch, 1625 Library Lane, Minden, NV; City of South\nLake Tahoe, CA City Offices, 1901 Lisa Maloff Way, South Lake Tahoe, CA; El Dorado County Library\n– South Lake Tahoe Branch, 1000 Rufus Allen Blvd, South Lake Tahoe, CA; Kahle Community Center,\n236 Kingsbury Grade Rd, Stateline, NV.\n\n\n\n\n                                   VisitLakeTahoe.com\n                    PO Box 5878 | 75 US-50 | Stateline, NV 89449 | (775) 588-5900"
+    }
+  ],
+  "expected": [
+    [
+      "1",
+      null,
+      "Call to Order"
+    ],
+    [
+      "2",
+      null,
+      "Silent Roll Call"
+    ],
+    [
+      "3",
+      null,
+      "Introduction of Guests and Staff (sign-in)"
+    ],
+    [
+      "4",
+      null,
+      "Public Comment on Non-Agenda items - Limit three (3) minutes per person. No action may be taken."
+    ],
+    [
+      "5",
+      null,
+      "Approval of Agenda"
+    ],
+    [
+      "6.a",
+      "Possible Action: Election of Officers – Carol Chaplin",
+      "LTVA Board Chair"
+    ],
+    [
+      "6.b",
+      "Possible Action: Election of Officers – Carol Chaplin",
+      "LTVA Board Treasurer"
+    ],
+    [
+      "7",
+      null,
+      "Approval of Minutes: October 8, 2026"
+    ],
+    [
+      "8",
+      null,
+      "Possible Action: July 2026 Financial Statements – Katharine Nastasia"
+    ],
+    [
+      "9",
+      null,
+      "Possible Action: August 2026 Financial Statements – Katharine Nastasia"
+    ],
+    [
+      "10.a",
+      "Events Update – Stuart Maas",
+      "Possible Action: Event Funding Recommendation $75,000 - PRO Skijor 2027 Championship Finals – Cierra Ritchie of Caesars Entertainment; Greg Lipstone & Brian Gardner of PRO Skijor"
+    ],
+    [
+      "10.b",
+      "Events Update – Stuart Maas",
+      "Possible Action: Support for Battle of the Sports – International Endurance Competition & Television Production - Clive Grinaker of Battle of the Sports Events; Todd Jackson, of Big Blue Adventures"
+    ],
+    [
+      "11",
+      null,
+      "Possible Action: January – June 2027 Media Plan – Noble Studios"
+    ],
+    [
+      "12",
+      null,
+      "Possible Action: Winter Creative – Noble Studios"
+    ],
+    [
+      "13",
+      null,
+      "Possible Action: Data and KPIs Working Group – Carol Chaplin"
+    ],
+    [
+      "14.a",
+      "Possible Action: Lodging Industry Survey – Carol Chaplin",
+      "All Lodging Results"
+    ],
+    [
+      "14.b",
+      "Possible Action: Lodging Industry Survey – Carol Chaplin",
+      "Small/Mid-Size Lodging Properties Results"
+    ],
+    [
+      "15",
+      null,
+      "Updates by Staff"
+    ],
+    [
+      "16",
+      null,
+      "Recommendations for Future Agenda Items"
+    ],
+    [
+      "17",
+      null,
+      "Updates by Board Members"
+    ],
+    [
+      "18",
+      null,
+      "Public Comment - Limit three (3) minutes per person. No action may be taken."
+    ],
+    [
+      "19",
+      null,
+      "Next Meeting: Thursday, December 10, 2026, at 3:00 p.m., Turquoise Room"
+    ],
+    [
+      "20",
+      null,
+      "Adjournment"
+    ]
+  ]
+}

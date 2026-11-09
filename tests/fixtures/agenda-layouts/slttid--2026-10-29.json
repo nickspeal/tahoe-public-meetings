@@ -1,0 +1,93 @@
+{
+  "agency": "slttid",
+  "source": "https://img1.wsimg.com/blobby/go/d2b08c94-0165-485f-9ec5-f832cd1047fc/downloads/4faa4df5-28b2-425d-85d7-1d4857f47ab7/TID%20Agenda%2010.29.2026.docx?ver=1793223943790",
+  "note": "SLTTID Board agenda, a Word document: Word list numbering rendered into the text (A.-F., then A.-F. again under AGENDA with roman sub-items)",
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "South Lake Tahoe Tourism Improvement District\nBoard of Directors Meeting\nTahoe Lakeshore Lodge & Spa 930 Balbijou Rd.. SLT, CA 96150\n1:00 PM, Thursday Oct 29th, 2026\n\nA. Call to Order\nB. Roll Call\nC. Introduction of Guests and Staff\nD. Approval of Minutes of Previous Meeting (Attachment)\nE. Approval of Agenda\nF. Public Comment (Non-Agenda Items, 5-Minute Limit)\n\nAGENDA\n\n            A. Discussion/Possible Action\n\n                    i. Treasures Report\n                    ii. Board Nomination Forms\n                    iii. Election and Procedure for Email Voting\n                    iv. 2026/2027 Budget Discussion\n                    v. Marketing KPIs and Reporting for LTVA\n\n            B. LTVA Update\n            C. Board Member Comments\n            D. Public Comment (Non-Agenda Items, 5-Minute Limit)\n            E. Next Meeting: Dec 17th, 2026 ?\n            F. Adjournment\n\nPublic Notice:\nNo RSVP, notice or registration is required to attend this meeting. Members of the public may attend or speak at the meeting without prior notice to the Tourism District. Signing, registering or completing any RSVP is voluntary and is not a requirement for attendance at any South Lake Tahoe Tourism Improvement District meeting. All persons may attend the meeting regardless of whether he or she signs in, registers or RSVPs.\n\nThe meeting is accessible to the physically disabled. A person who needs disability-related accommodations or modifications in order to participate in the meeting shall make a request no later than five (5) working days before the meeting to the Board by contacting Rich Bodine (530) 543-6515 or rbodine@hotelazuretahoe.com, or by sending a written request on behalf of that individual to the South Lake Tahoe Tourism Improvement District address at 3300 Lake Tahoe Blvd. South Lake Tahoe, CA. 96150. Requests for further information should be directed to Rich Bodine at the same address and telephone number.\nThe Agenda and Public Meeting Notice are posted on SouthTahoeTourism.com"
+    }
+  ],
+  "expected": [
+    [
+      "A",
+      null,
+      "Call to Order"
+    ],
+    [
+      "B",
+      null,
+      "Roll Call"
+    ],
+    [
+      "C",
+      null,
+      "Introduction of Guests and Staff"
+    ],
+    [
+      "D",
+      null,
+      "Approval of Minutes of Previous Meeting (Attachment)"
+    ],
+    [
+      "E",
+      null,
+      "Approval of Agenda"
+    ],
+    [
+      "F",
+      null,
+      "Public Comment (Non-Agenda Items, 5-Minute Limit)"
+    ],
+    [
+      "A.i",
+      "Discussion/Possible Action",
+      "Treasures Report"
+    ],
+    [
+      "A.ii",
+      "Discussion/Possible Action",
+      "Board Nomination Forms"
+    ],
+    [
+      "A.iii",
+      "Discussion/Possible Action",
+      "Election and Procedure for Email Voting"
+    ],
+    [
+      "A.iv",
+      "Discussion/Possible Action",
+      "2026/2027 Budget Discussion"
+    ],
+    [
+      "A.v",
+      "Discussion/Possible Action",
+      "Marketing KPIs and Reporting for LTVA"
+    ],
+    [
+      "B",
+      "Agenda",
+      "LTVA Update"
+    ],
+    [
+      "C",
+      "Agenda",
+      "Board Member Comments"
+    ],
+    [
+      "D",
+      "Agenda",
+      "Public Comment (Non-Agenda Items, 5-Minute Limit)"
+    ],
+    [
+      "E",
+      "Agenda",
+      "Next Meeting: Dec 17th, 2026 ?"
+    ],
+    [
+      "F",
+      "Agenda",
+      "Adjournment"
+    ]
+  ]
+}

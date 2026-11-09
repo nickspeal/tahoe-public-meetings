@@ -1,0 +1,43 @@
+{
+  "agency": "tbec-stakeholders",
+  "source": "https://tahoedouglasva.org/wp-content/uploads/2026/10/TBEC-Stakeholder-Meeting-October-13-2026-Packet-1.pdf",
+  "note": "Tahoe Blue Event Center stakeholder agenda: first page of the packet, lettered items after the stakeholder composition table",
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "TAHOE BLUE EVENT CENTER\n\n                        STAKEHOLDER AGENDA- QUARTERLY MEETING NO. 10\n\n                                      October 13, 2026 at 2:00 p.m.\n\n                      Tahoe Blue Event Center - Edgewood Room / Zoom Meeting\n\n   Join Zoom Meeting: https://us06web.zoom.us/j/86558255119?pwd=m5SgjzPmsDqzBur8JZrAf91QBID3gw.1\n                                  Meeting ID: 865 5825 5119 / Passcode: 685240\n\n                                           Stakeholder Composition:\n\n    TDVA: Carol Chaplin, Kevin Boryczki,                      Nevada Statewide Representative:\n    Lew Feldman                                               Pam Robinson\n\n    California Statewide Representative:                      Douglas County: Sharla Hales\n    California Attorney General's Office\n    Nicole Rinke                                              TRPA: Paul Nielsen, Kira Smith\n                                                              Dan Segan, Julie Regan\n    League to Save Lake Tahoe:\n    Gavin Feiger, Darcie Goodman                              Public Safety: Kris Rowlett (TDFPD}\n    Collins\n                                                              Monitoring Consultant: LSC\n    City of South Lake Tahoe: Cody Bass                       Transportation Consultants\n\n    TTD: Jim Marino                                           Tahoe Chamber: Jessica Grime\n\n\nA. Introductions\n\nB. Monitoring Update (Leslie Suen)\n\nC. Micro-Transit Performance Update (Gavin Feiger)\n\nD. Late Night US 50 Ridership (Jim Marino)\n\nE. Next Quarterly Meeting: January 12, 2027, at 2:00 p.m.\n\nF. Adjourn"
+    }
+  ],
+  "expected": [
+    [
+      "A",
+      null,
+      "Introductions"
+    ],
+    [
+      "B",
+      null,
+      "Monitoring Update (Leslie Suen)"
+    ],
+    [
+      "C",
+      null,
+      "Micro-Transit Performance Update (Gavin Feiger)"
+    ],
+    [
+      "D",
+      null,
+      "Late Night US 50 Ridership (Jim Marino)"
+    ],
+    [
+      "E",
+      null,
+      "Next Quarterly Meeting: January 12, 2027, at 2:00 p.m."
+    ],
+    [
+      "F",
+      null,
+      "Adjourn"
+    ]
+  ]
+}

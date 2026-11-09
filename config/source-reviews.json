@@ -1070,6 +1070,141 @@
         "note": "The listing answered the project's user agent on 2026-11-09 with 114 meetings since June 2022 (board regular, special, joint special, and annual organizational meetings, and the bond oversight committee). The agenda trees of the 50 newest meetings all number their parts 1, 2, 3 ... with lettered items and an occasional roman third level. The November 12 and October 22, 2026 agendas were captured with 44 and 41 items."
       },
       "implementation": "A new `simbli` discovery type (tahoe_ingest/board_portal_discovery.py) repeats the listing page's own request and keeps rows titled \"Board of Education ...\"; capture reads each meeting page's agenda tree for its text and items, with no agenda layout. The 2026 schedule screenshot on the district site gives the forecast rules; recordings come from the district's YouTube channel. No staff report rule: item attachments open only through the portal's viewer."
+    },
+    {
+      "id": "SR-040",
+      "agencyId": "tdva",
+      "name": "Tahoe Douglas Visitors Authority Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "Decision 0037 adds groups that publish their own meeting dates. TDVA, a Nevada public body, links only its next meeting's agenda and packet from its meetings page; its WordPress media library holds every posted agenda and packet, named with the meeting date (\"TDVA-Agenda-November-11-2026-Packet.pdf\").",
+      "nextStep": "Keep live discovery. Agendas whose file name gives only the month (January to April 2026) are not collected; a file name with a wrong date (the September 9, 2026 agenda was uploaded as \"September-11\") becomes a separate meeting on that date.",
+      "links": [
+        {
+          "label": "Official meetings page",
+          "url": "https://tahoedouglasva.org/meetings/"
+        },
+        {
+          "label": "Media library search",
+          "url": "https://tahoedouglasva.org/wp-json/wp/v2/media?search=agenda"
+        },
+        {
+          "label": "October 14, 2026 agenda",
+          "url": "https://tahoedouglasva.org/wp-content/uploads/2026/10/TDVA-Agenda-October-14-2026.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-09",
+        "note": "The media API and the meetings page answered the project's user agent on 2026-11-09. Live captures of the September 21 (special), October 14, and November 11, 2026 meetings read 9, 18, and 15 items; the meetings page's cancellation notice marks November 11 canceled. The meetings page gives the regular schedule (second Wednesday, 4:00 PM)."
+      },
+      "implementation": "A new `wordpress-media` discovery type (tahoe_ingest/file_discovery.py) searches the media library and groups files by the date in their names; `noticeUrl` reads cancellation notices from the meetings page. The `tdva-board` layout reads the numbered agenda after its AGENDA heading, from the agenda rather than the packet's copy (`agendaBeforePacket`). No staff report rule."
+    },
+    {
+      "id": "SR-041",
+      "agencyId": "tbec-stakeholders",
+      "name": "Tahoe Blue Event Center Stakeholder Meeting",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "TDVA hosts quarterly stakeholder meetings on the Tahoe Blue Event Center (transit, monitoring, and permit conditions, with TRPA, TTD, the League to Save Lake Tahoe, and others). Their agendas and packets are in the same TDVA media library (\"Stakeholder-Agenda-July-14-2026-Packet.pdf\", \"TBEC-Stakeholder-Meeting-October-13-2026-Packet.pdf\").",
+      "nextStep": "Keep live discovery as a sibling of TDVA. A packet that starts with the previous meeting's minutes instead of the agenda (July 14, 2026) keeps its text without items.",
+      "links": [
+        {
+          "label": "Media library search",
+          "url": "https://tahoedouglasva.org/wp-json/wp/v2/media?search=stakeholder"
+        },
+        {
+          "label": "October 13, 2026 packet",
+          "url": "https://tahoedouglasva.org/wp-content/uploads/2026/10/TBEC-Stakeholder-Meeting-October-13-2026-Packet-1.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-09",
+        "note": "Live captures of the April 14 and October 13, 2026 meetings read 8 and 6 lettered items. The 2026 meetings fell on the second Tuesday of January, April, July, and October at 2:00 PM, and the October agenda names January 12, 2027."
+      },
+      "implementation": "`tbec-stakeholders` extends `tdva`, searching the library for \"stakeholder\" with its own file name pattern; the `tbec-stakeholder` layout reads the lettered agenda on the packet's first page."
+    },
+    {
+      "id": "SR-042",
+      "agencyId": "ltva",
+      "name": "Lake Tahoe Visitors Authority Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "LTVA, the South Shore's destination marketing organization, publishes its board meetings on its own events calendar. Its HTML pages answer scripts with HTTP 403, but the calendar plugin's public REST API (The Events Calendar) lists each event with its date, start time, venue, and links to the agenda and packet PDFs.",
+      "nextStep": "Keep live discovery from the events API; the HTML pages are not requested. The calendar also lists other groups' meetings (TDVA, SLTTID, the Tahoe Blue Event Center stakeholders), joint workshops, and community events; only events titled for the board are read.",
+      "links": [
+        {
+          "label": "Events API",
+          "url": "https://ltva.org/wp-json/tribe/events/v1/events"
+        },
+        {
+          "label": "November 12, 2026 agenda",
+          "url": "https://ltva.org/wp-content/uploads/2026/11/11_LTVA-Agenda-November-12-2026.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-09",
+        "note": "The events API answered the project's user agent on 2026-11-09 with 42 events in 2026. Live captures of the October 8 and November 12, 2026 meetings read 20 and 23 items, and the December 10 meeting is listed without an agenda. The \"CANCELLED due to power outage\" August 13 event is a canceled meeting. The 2026 meetings are on the second Thursday at 3:00 PM, with none in July."
+      },
+      "implementation": "A new `tribe-events` discovery type (tahoe_ingest/file_discovery.py) reads The Events Calendar's REST API by date range, keeps events whose title matches, and lists the PDF and Word links in each event's description as its documents. The `ltva-board` layout reads the numbered agenda with lettered sub-items. No staff report rule."
+    },
+    {
+      "id": "SR-043",
+      "agencyId": "ltva-msc",
+      "name": "Lake Tahoe Visitors Authority Marketing Services Committee",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "LTVA's Marketing Services Committee (\"Ad-Hoc\") meets most months on a Wednesday morning; its events on the LTVA calendar link a discussion-topics or items PDF rather than a numbered agenda.",
+      "nextStep": "Keep live discovery without an agenda layout. Add a schedule if the committee settles on a regular pattern; in 2026 it skipped several months.",
+      "links": [
+        {
+          "label": "Events API",
+          "url": "https://ltva.org/wp-json/tribe/events/v1/events"
+        },
+        {
+          "label": "October 2026 items",
+          "url": "https://ltva.org/wp-content/uploads/2026/10/October-2026-MSC-Items.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-09",
+        "note": "Live captures of the October 7 and November 4, 2026 meetings stored the posted documents' text. Their formats differ from month to month and one January file extracts only as unreadable characters, so no layout reads items."
+      },
+      "implementation": "A full entry (not `extends`, since it has no agenda block) on the `tribe-events` type with its own title pattern."
+    },
+    {
+      "id": "SR-044",
+      "agencyId": "slttid",
+      "name": "South Lake Tahoe Tourism Improvement District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The SLTTID board meets about six times a year. Its own website (a GoDaddy site) lists agendas, minutes, and notices as download links labeled \"Download\"; recent agendas are Word files named with the meeting date (\"TID Agenda 10.29.2026.docx\", \"TID Special meeting 9-24-26 (002).docx\"). The same page holds a 2023 South Lake Tahoe Lodging Association agenda and the April 30, 2026 joint workshop agenda.",
+      "nextStep": "Keep live discovery. Minutes files are not linked to meetings yet. The joint workshop and the lodging association's agendas are left out (see the note below the table in source-review.md).",
+      "links": [
+        {
+          "label": "Official agendas page",
+          "url": "https://southtahoetourism.com/agendas%2Fminutes%2Fnotices"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-09",
+        "note": "The page and its downloads answered the project's user agent on 2026-11-09. Live captures of the August 27, September 24 (special), and October 29, 2026 Word agendas read 18, 15, and 16 items once Word's list numbering is rendered into the text. Meetings have no regular schedule."
+      },
+      "implementation": "A new `file-links` discovery type (tahoe_ingest/file_discovery.py) reads dated download links on a page; capture reads Word (.docx) files by file type (tahoe_ingest/docx_source.py). The `slttid-board` layout reads the two lettered lists; `slttid-special` reads the special meeting format, whose typed item numbers are not kept as labels."
     }
   ]
 }

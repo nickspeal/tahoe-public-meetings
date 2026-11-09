@@ -2163,6 +2163,202 @@
     }
   },
   {
+    "id": "tdva",
+    "name": "Tahoe Douglas Visitors Authority — Board of Directors",
+    "shortName": "TDVA",
+    "aliases": [
+      "Tahoe Douglas Visitors Authority",
+      "TDVA Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://tahoedouglasva.org/",
+    "sourceUrl": "https://tahoedouglasva.org/meetings/",
+    "discovery": {
+      "type": "wordpress-media",
+      "indexUrl": "https://tahoedouglasva.org/wp-json/wp/v2/media",
+      "bodyPattern": "^(?:\\d+ )?TDVA (?:BOD )?Agenda\\b",
+      "title": "TDVA Board of Directors Meeting",
+      "noticeUrl": "https://tahoedouglasva.org/meetings/"
+    },
+    "agenda": {
+      "layouts": [
+        "tdva-board"
+      ],
+      "agendaBeforePacket": true
+    },
+    "staffReports": {
+      "published": true,
+      "note": "The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the TDVA meetings page (checked 2026-11-09): the board typically meets the second Wednesday of each month at 4:00 PM at the Tahoe Blue Event Center; the page's 2027 dates follow the same pattern.",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "wednesday",
+          "time": "16:00",
+          "timezone": "America/Los_Angeles",
+          "label": "TDVA Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "tbec-stakeholders",
+    "name": "Tahoe Blue Event Center — Stakeholder Meeting",
+    "shortName": "TBEC Stakeholders",
+    "aliases": [
+      "Tahoe Blue Event Center",
+      "TBEC",
+      "Tahoe Douglas Visitors Authority"
+    ],
+    "extends": "tdva",
+    "follow": true,
+    "discovery": {
+      "bodyPattern": "^(?:TBEC )?Stakeholder (?:Coordination )?(?:Agenda|Meeting)\\b",
+      "title": "Tahoe Blue Event Center Stakeholder Meeting",
+      "search": "stakeholder"
+    },
+    "agenda": {
+      "layouts": [
+        "tbec-stakeholder"
+      ]
+    },
+    "staffReports": {
+      "published": false,
+      "note": "A one-page agenda of lettered discussion items; the packet adds the previous meeting's minutes and monitoring reports, not staff reports."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "Quarterly, hosted by TDVA: the 2026 meetings (January 13, April 14, July 14, October 13) were on the second Tuesday of the quarter's first month at 2:00 PM, and the October agenda names January 12, 2027 at 2:00 PM as the next meeting.",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "tuesday",
+          "months": [
+            1,
+            4,
+            7,
+            10
+          ],
+          "time": "14:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Tahoe Blue Event Center Stakeholder Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ltva",
+    "name": "Lake Tahoe Visitors Authority — Board of Directors",
+    "shortName": "LTVA",
+    "aliases": [
+      "Lake Tahoe Visitors Authority",
+      "Visit Lake Tahoe",
+      "LTVA Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://ltva.org/",
+    "sourceUrl": "https://ltva.org/events/",
+    "discovery": {
+      "type": "tribe-events",
+      "indexUrl": "https://ltva.org/wp-json/tribe/events/v1/events",
+      "bodyPattern": "^(?:CANCELL?ED\\b.*?[–—-]\\s*)?Lake Tahoe Visitors Authority Board of Directors\\b",
+      "title": "LTVA Board of Directors Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "ltva-board"
+      ],
+      "agendaBeforePacket": true
+    },
+    "staffReports": {
+      "published": true,
+      "note": "The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From LTVA's own events calendar (checked 2026-11-09): the 2026 board meetings are on the second Thursday at 3:00 PM, with no July meeting.",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "thursday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "LTVA Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ltva-msc",
+    "name": "Lake Tahoe Visitors Authority — Marketing Services Committee",
+    "shortName": "LTVA",
+    "aliases": [
+      "Lake Tahoe Visitors Authority",
+      "Visit Lake Tahoe",
+      "LTVA Marketing Services Committee",
+      "MSC"
+    ],
+    "follow": true,
+    "officialUrl": "https://ltva.org/",
+    "sourceUrl": "https://ltva.org/events/",
+    "coverageNote": "The committee posts discussion topics rather than a numbered agenda, so its meetings show the posted documents without listed items.",
+    "discovery": {
+      "type": "tribe-events",
+      "indexUrl": "https://ltva.org/wp-json/tribe/events/v1/events",
+      "bodyPattern": "^(?:CANCELL?ED\\b.*?[–—-]\\s*)?Lake Tahoe Visitors Authority Marketing Services Committee\\b",
+      "title": "LTVA Marketing Services Committee Meeting"
+    },
+    "staffReports": {
+      "published": false,
+      "note": "The committee posts discussion topics and presentation slides, not staff reports."
+    }
+  },
+  {
+    "id": "slttid",
+    "name": "South Lake Tahoe Tourism Improvement District — Board of Directors",
+    "shortName": "SLTTID",
+    "aliases": [
+      "South Lake Tahoe Tourism Improvement District",
+      "Tourism Improvement District",
+      "TID"
+    ],
+    "follow": true,
+    "officialUrl": "https://southtahoetourism.com/",
+    "sourceUrl": "https://southtahoetourism.com/agendas%2Fminutes%2Fnotices",
+    "discovery": {
+      "type": "file-links",
+      "indexUrl": "https://southtahoetourism.com/agendas%2Fminutes%2Fnotices",
+      "bodyPattern": "^TID (?:Agenda|Special meeting)\\b",
+      "title": "SLTTID Board of Directors Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "slttid-special",
+        "slttid-board"
+      ]
+    },
+    "staffReports": {
+      "published": false,
+      "note": "A one-page Word agenda; attachments such as the previous minutes are posted separately, not as staff reports."
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

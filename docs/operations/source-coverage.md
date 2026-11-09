@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **48 entries**. **41 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **34** have live discovery, **3** are blocked by a skipped endpoint, and **4** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **53 entries**. **46 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **39** have live discovery, **3** are blocked by a skipped endpoint, and **4** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -25,6 +25,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | `california-fish-game` | `dated-table` | [fgc.ca.gov](https://fgc.ca.gov/Meetings/2026) | `Commission\|Committee` | `fish-game-commission` |
 | `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | `lahontan-board` |
 | `ndep` | `dated-table` | [ndep.nv.gov](https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/) | `.` | `ndep-board` |
+| `slttid` | `file-links` | [southtahoetourism.com](https://southtahoetourism.com/agendas%2Fminutes%2Fnotices) | `^TID (?:Agenda\|Special meeting)\b` | `slttid-special`, `slttid-board` |
 | `douglas-commissioners` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Board of County Commissioners` | `douglas-county-board` |
 | `douglas-planning` (extends `douglas-commissioners`) | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Planning Commission` | `douglas-county-planning` |
 | `douglas-transportation` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `Regional Transportation Commission` | `douglas-county-joint-board-rtc` |
@@ -49,8 +50,12 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | `truckee` | `municode` | [meetings.municode.com](https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA) | `Town Council` | `truckee-council` |
 | `ntpud` | `rss` | [ntpud.org](https://ntpud.org/category/meetings/feed/) | `Board of Directors` | `ntpud-board` |
 | `ltusd` | `simbli` | [simbli.eboardsolutions.com](https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030287) | `^Board of Education\b` | — |
+| `ltva` | `tribe-events` | [ltva.org](https://ltva.org/wp-json/tribe/events/v1/events) | `^(?:CANCELL?ED\b.*?[–—-]\s*)?Lake Tahoe Visitors Authority Board of Directors\b` | `ltva-board` |
+| `ltva-msc` | `tribe-events` | [ltva.org](https://ltva.org/wp-json/tribe/events/v1/events) | `^(?:CANCELL?ED\b.*?[–—-]\s*)?Lake Tahoe Visitors Authority Marketing Services Committee\b` | — |
 | `trpa-advisory` (extends `trpa-governing`) | `trpa` | [www.trpa.gov](https://www.trpa.gov/meeting-materials/) | `Advisory Planning Commission` | `trpa-apc` |
 | `trpa-governing` | `trpa` | [www.trpa.gov](https://www.trpa.gov/meeting-materials/) | `Governing Board` | `trpa-governing-board` |
+| `tbec-stakeholders` (extends `tdva`) | `wordpress-media` | [tahoedouglasva.org](https://tahoedouglasva.org/wp-json/wp/v2/media) | `^(?:TBEC )?Stakeholder (?:Coordination )?(?:Agenda\|Meeting)\b` | `tbec-stakeholder` |
+| `tdva` | `wordpress-media` | [tahoedouglasva.org](https://tahoedouglasva.org/wp-json/wp/v2/media) | `^(?:\d+ )?TDVA (?:BOD )?Agenda\b` | `tdva-board` |
 | `ttd` | `wordpress-meetings` | [tahoetransportation.org](https://tahoetransportation.org/wp-json/wp/v2/meeting) | `board` | `ttd` |
 | `ttd-rtcpc` (extends `ttd`) | `wordpress-meetings` | [tahoetransportation.org](https://tahoetransportation.org/wp-json/wp/v2/meeting) | `Regional (?:and )?Transit (?:and \|& )?Capital Programs` | `ttd` |
 <!-- /generated: discovery -->
@@ -146,9 +151,12 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 
 | Registry ID | Staff reports | Why there is no rule |
 | --- | --- | --- |
+| `ltva-msc` | none published | The committee posts discussion topics and presentation slides, not staff reports. |
 | `nevada-state-parks` | none published | A public hearing notice, not an agenda with staff reports. |
 | `ntcd` | none published | Publishes one-page agreement summaries, not staff reports. |
+| `slttid` | none published | A one-page Word agenda; attachments such as the previous minutes are posted separately, not as staff reports. |
 | `south-shore-tma` | none published | A one-page agenda with unnumbered items and no staff reports. |
+| `tbec-stakeholders` | none published | A one-page agenda of lettered discussion items; the packet adds the previous meeting's minutes and monitoring reports, not staff reports. |
 | `trcd` | none published | The agenda's page column refers to a packet the district does not publish. |
 | `truckee-north-shore-tma` | none published | A two-page agenda whose item numbers restart in each section, and no staff reports. |
 | `placer-planning` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
@@ -156,6 +164,8 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `placer-tahoe-design-review` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `ctc` | published, not attached yet | Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet. |
 | `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |
+| `ltva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
+| `tdva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

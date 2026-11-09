@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
+import sitemap from './integrations/sitemap.mjs';
 
 const href = (id, agencyId) => {
   // Mirrors commentPeriodHref in src/lib/data.ts: stored IDs are `${agencyId}:${slug}`.
@@ -28,4 +29,6 @@ export default defineConfig({
   site: 'https://tahoepublicmeetings.org',
   output: 'static',
   redirects: commentPeriodRedirects(),
+  // Writes dist/sitemap.xml after the build (integrations/sitemap.mjs).
+  integrations: [sitemap()],
 });

@@ -3,7 +3,14 @@ import '../styles/global.css';
 import FeedbackDialog from '../components/FeedbackDialog.astro';
 import { data, formatDate } from '../lib/data';
 import { analyticsConfig, baselineEnabled, BASELINE_PATH, GOATCOUNTER_SCRIPT } from '../lib/analytics';
-const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false } = Astro.props;
+const { title = 'Tahoe Public Meetings', description = 'Follow the local decisions shaping life around Lake Tahoe.', noindex = false, jsonLd = [] } = Astro.props as {
+  title?: string; description?: string; noindex?: boolean; jsonLd?: Record<string, unknown>[];
+};
+// Structured data (src/lib/structured-data.ts) as one graph; the home page also names the site itself.
+const home = new URL('/', Astro.site ?? Astro.url).href;
+const graph = Astro.url.pathname === '/' ? [{ '@type': 'WebSite', '@id': `${home}#website`, name: 'Tahoe Public Meetings', url: home }, ...jsonLd] : jsonLd;
+// Escaping "<" keeps agenda text from closing the script tag.
+const jsonLdScript = graph.length ? JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c') : null;
 // Absolute canonical URL on the production origin (astro.config.mjs `site`), so www and preview hosts point at the apex.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
 // Link preview image (source: scripts/og-image.html). Crawlers need an absolute URL.
@@ -38,6 +45,7 @@ const baseline = baselineEnabled(import.meta.env);
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Tahoe Public Meetings: what's on the agenda around Lake Tahoe" />
     <meta name="twitter:card" content="summary_large_image" />
+    {jsonLdScript && <script is:inline type="application/ld+json" set:html={jsonLdScript} />}
     {analytics && <script is:inline>window.goatcounter = { path: function () { return location.pathname; } };</script>}
     {analytics && <script is:inline async data-goatcounter={analytics.endpoint} src={GOATCOUNTER_SCRIPT.src}></script>}
     {baseline && <script is:inline define:vars={{ path: BASELINE_PATH }}>

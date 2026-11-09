@@ -1,7 +1,7 @@
 {
  "agency": "truckee-north-shore-tma",
  "source": "https://tnttma.com/wp-content/uploads/2026/01/1.8.26-TNT_TMA-Board-Agenda.docx.docx-4-2.pdf",
- "note": "REJECT: list numbering broken in the source",
+ "note": "Word list numbering residue in the source: the heading \"DISCUSSION ITEMS\" prints as \"1.​ DISCUSSION ITEMS\" and its item as \"2.​ 1. Discussion about ...\". The layout's prefix strips a single-digit list number that precedes another item number or an all-caps heading. \"DISCUSSION ITEMS / PRESENTATION/ DISCUSSION\" is two columns run together in the extracted text. Reviewed against the stored page text.",
  "pages": [
   {
    "page_number": 1,
@@ -12,5 +12,91 @@
    "text": "2. Tahoe Transportation District (TTD) Board ​ ​        9:37 am​\n                        ​       Representative Update\n                                        - Andy Chapman, TNT/TMA Board of Directors\n\n​       ​   ​   ​   ​   ​       3. TOT Advisory Committee​    ​        ​        ​       9:39 am\n                                       - Pat Fraser, TNT/TMA Board of Directors\n\n                                4. Tahoe Truckee Area Regional Transit (TART) ​   ​\n                                        - Jaime Wright, Placer County DPW​        ​     9:41 am\n                                        -Alfred Knotts, Town of Truckee​ ​        ​     9:43 am\n\n                                5. North Tahoe Workforce Vanpool​        ​      ​       9:45 am\n                                ​        - Caroline Craffey, TNT/TMA Program Manager​\n\n                                6. Planning & Consulting​ ​     ​     ​        ​      9:47 am​\n                                         -​Steve Teshara, TMA Management & Planning Consultant\n\n        ​   ​   ​   ​   ​       7. Advocacy Opportunities and Review​  ​        ​       9:49 am​\n    ​   ​   ​   ​   ​   ​           ​   -Sara Van Siclen, TNT/TMA Executive Director\n\n                        AREA REPORTS ​            ​       ​     ​        ​        ​     9:51 am\n                        1.​ Member Reports\n                        2. Executive Director’s Report​\n\n                        NEXT TMA BOARD MEETING: February 5, 2026\n                        ​\n                        ADJOURNMENT​              ​       ​     ​        ​        ​     10:00 am​"
   }
  ],
- "expected": null
+ "expected": [
+  [
+   "1",
+   "Action/ Discussion Items",
+   "Approval of the January 8, 2026 Agenda"
+  ],
+  [
+   "2",
+   "Action/ Discussion Items",
+   "Approval of the December 4, 2025 Minutes"
+  ],
+  [
+   "3",
+   "Action/ Discussion Items",
+   "Approval of the November 2025 Bills"
+  ],
+  [
+   "1",
+   "Discussion/ Action Items",
+   "Review and Possible Approval of the Board Officer Election Cycle Policy"
+  ],
+  [
+   "1",
+   "Discussion Items",
+   "Discussion about TMA Helping to Convene Partners and Advocating for Sensor Lights at 267 and Schaffer Mill Road and 267 and Old"
+  ],
+  [
+   "1",
+   "Discussion Items Presentation/ Discussion",
+   "TRPA Comprehensive Operational Analysis (COA) Presentation"
+  ],
+  [
+   "2",
+   "Discussion Items Presentation/ Discussion",
+   "TMA Strategic Plan and Workplan, One-Year Review"
+  ],
+  [
+   "1",
+   "Reports",
+   "North Lake Tahoe Express Update"
+  ],
+  [
+   "2",
+   "Reports",
+   "Tahoe Transportation District (TTD) Board Representative Update"
+  ],
+  [
+   "3",
+   "Reports",
+   "TOT Advisory Committee"
+  ],
+  [
+   "4",
+   "Reports",
+   "Tahoe Truckee Area Regional Transit (TART)"
+  ],
+  [
+   "5",
+   "Reports",
+   "North Tahoe Workforce Vanpool"
+  ],
+  [
+   "6",
+   "Reports",
+   "Planning & Consulting"
+  ],
+  [
+   "7",
+   "Reports",
+   "Advocacy Opportunities and Review"
+  ],
+  [
+   "1",
+   "Area Reports",
+   "Member Reports"
+  ],
+  [
+   "2",
+   "Area Reports",
+   "Executive Director’s Report"
+  ],
+  [
+   null,
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
 }

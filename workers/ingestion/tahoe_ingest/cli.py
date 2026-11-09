@@ -218,6 +218,9 @@ def _parser() -> argparse.ArgumentParser:
                          help="Seconds from the backfill's start after which classify-topics starts no new meeting (default 0: none)")
     history.add_argument("--out", help="Also write the export JSON to this path")
     history.add_argument("--dry-run", action="store_true", help="Discover and report only; no downloads, export, or publish")
+    history.add_argument("--recapture-unparsed", action="store_true",
+                         help="Also capture stored meetings with no agenda items (or items with a review note) whose HTML "
+                              "agenda or newly listed document a capture could read; PDF text is left to reparse")
     history.add_argument("--no-publish", action="store_true", help="Validate but do not store the export or call the deploy hook")
     links = sub.add_parser("meeting-records", help="Match recordings and minutes (YouTube, Laserfiche, draft minutes in later agendas) to stored meetings")
     links.add_argument("--root", default=os.getenv("TAHOE_SOURCE_ROOT", "."), help="Directory holding config/")
@@ -481,7 +484,8 @@ def _backfill(conn, args) -> int:
             since=args.since, until=args.until, agencies=args.agency, root=args.root, max_documents=args.max_documents,
             delay=args.delay, forecast_days=args.forecast_days, min_meetings=args.min_meetings, max_cost=args.max_cost,
             monthly_budget=args.monthly_budget, out=args.out, publish=not args.no_publish, dry_run=args.dry_run,
-            lock_wait_seconds=args.lock_wait_minutes * 60, claude_time_budget=args.claude_time_budget)
+            lock_wait_seconds=args.lock_wait_minutes * 60, claude_time_budget=args.claude_time_budget,
+            recapture_unparsed=args.recapture_unparsed)
         summary = backfill.backfill(conn, options, fetch=lambda url: download_extract(url))
     except ValueError as exc:
         raise SystemExit(str(exc))

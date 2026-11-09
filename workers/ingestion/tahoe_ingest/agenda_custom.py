@@ -366,6 +366,12 @@ def _checked(items: list[dict], complete: bool, warning: str | None = None) -> t
     return items, None
 
 
+CLOSED_COVER = re.compile(r"\bClosed Session\b.*\b(?:City Council|Meeting)\b")
+CLOSED_SECTIONS = {"New Business", "Regular-New Business", "Closed Session"}
+# The Brown Act section a closed session item cites (54954.5 lists the forms: 54956.8, 54956.9, 54957, 54957.6, ...).
+CLOSED_ITEM = re.compile(r"\bGovernment Code [Ss]ection 5495\d")
+
+
 def parse_slt(document_id: str, pages: list[dict]) -> tuple[list[dict], str | None]:
     lines = _lines(pages)
     headings = {
@@ -380,7 +386,17 @@ def parse_slt(document_id: str, pages: list[dict]) -> tuple[list[dict], str | No
     section = "Opening"
     numbered = []
     seen_agenda = False
+    # A special closed session's cover says so; only then is an unnumbered item under New Business read.
+    closed_session = any(CLOSED_COVER.search(line.text) for line in lines[:6])
+    consumed = -1
+
+    def title_ends_unnumbered(j: int) -> bool:
+        text = lines[j].text.strip()
+        return text in headings or bool(re.match(r"^\d{1,2}\.(?:\s|$)", text))
+
     for idx, line in enumerate(lines):
+        if idx <= consumed:
+            continue  # the wrapped lines of an unnumbered closed session item
         content = line.text.strip()
         number_match = re.match(r"^(\d{1,2})\.\s+(.+)", content)
         number_only = re.fullmatch(r"(\d{1,2})\.", content)
@@ -426,6 +442,16 @@ def parse_slt(document_id: str, pages: list[dict]) -> tuple[list[dict], str | No
             items.append(_item_at(str(num), len(items) + 1, section, title, document_id, lines[title_idx].page, quote))
             seen_agenda = True
             continue
+        if closed_session and not numbered and section in CLOSED_SECTIONS and CLOSED_ITEM.search(content) \
+                and content not in headings:
+            # A special closed session may print its one item unnumbered; the Brown Act citation marks it.
+            end = idx
+            while end + 1 < len(lines) and lines[end + 1].page == line.page and not title_ends_unnumbered(end + 1):
+                end += 1
+            items.append({**_item_at(None, len(items) + 1, section, _title(lines, idx, end), document_id, line.page,
+                                     _quote(lines, idx, end)), "_unnumbered": True})
+            seen_agenda, consumed = True, end
+            continue
         if content.startswith("Councilmember Reports and Comments"):
             title = "Councilmember Reports and Comments - Assignments to Boards, Committees, and Commissions"
             items.append(_item_at(None, len(items) + 1, title, title, document_id, line.page, content))
@@ -442,7 +468,17 @@ def parse_slt(document_id: str, pages: list[dict]) -> tuple[list[dict], str | No
             items.append(_item_at(None, len(items) + 1, section, content, document_id, line.page, content))
             if content == "Adjournment" and seen_agenda:
                 break
-    complete = bool(numbered and items and items[-1]["title"] == "Adjournment" and numbered == list(range(1, numbered[-1] + 1)))
+    unnumbered = [item for item in items if item.pop("_unnumbered", False)]
+    if numbered and unnumbered:  # a numbered agenda reads as it always has
+        items = [item for item in items if not any(item is u for u in unnumbered)]
+        for order, item in enumerate(items, 1):
+            item["order"] = order
+        unnumbered = []
+    for item in items:
+        if item["source_number"] is None:
+            item["source_key"] = f"unnumbered-{item['order']}"  # the key ingest gives it anyway (core.ingest_bundle)
+    complete = bool((numbered or unnumbered) and items and items[-1]["title"] == "Adjournment"
+                    and numbered == list(range(1, len(numbered) + 1)))
     return _checked(items, complete, "South Lake Tahoe agenda ending or numbered sequence was not found; review required.")
 
 

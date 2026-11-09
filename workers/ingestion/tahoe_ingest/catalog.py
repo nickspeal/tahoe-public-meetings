@@ -56,13 +56,13 @@ def agency_catalog_path() -> Path:
 
 
 # Every key an agency entry may have, in the order the registry file keeps them (`registry_text`).
-AGENCY_KEYS = ("id", "name", "shortName", "aliases", "extends", "follow", "meetingHost", "officialUrl", "sourceUrl", "coverageNote", "participation",
+AGENCY_KEYS = ("id", "name", "shortName", "page", "aliases", "extends", "follow", "meetingHost", "officialUrl", "sourceUrl", "coverageNote", "participation",
                "participationTypes", "discovery", "agenda", "staffReports", "itemScope", "planningCalendar", "topicHints", "schedule", "duration", "legacy")
-# What an entry says about its own body, never inherited through `extends`: its identity, the decision to follow it,
+# What an entry says about its own body, never inherited through `extends`: its identity and public page, the decision to follow it,
 # what this website cannot show for it, how readers take part, when and how long it meets, and its research record. The rest describes the publisher's
 # website and document formats, which sibling bodies share.
 # A planning calendar belongs to the body whose agenda carries it; its `bodies` map covers sibling bodies.
-OWN_KEYS = frozenset({"id", "name", "aliases", "extends", "follow", "meetingHost", "coverageNote", "participation", "planningCalendar", "schedule", "duration", "legacy"})
+OWN_KEYS = frozenset({"id", "name", "page", "aliases", "extends", "follow", "meetingHost", "coverageNote", "participation", "planningCalendar", "schedule", "duration", "legacy"})
 
 
 def registry_text(entries: list[dict]) -> str:
@@ -108,6 +108,25 @@ def resolve_extends(entries: list[dict]) -> list[dict]:
     return [resolve(entry["id"], (entry["id"],)) for entry in entries]
 
 
+PAGE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+
+
+def validate_page(agency: dict) -> None:
+    """The body's page on the website: a permanent URL slug and the name residents search for.
+
+    Every followed body that is not a per-record host needs one; the website builds
+    /meetings/<slug>/ and dated meeting URLs under it, so a slug never changes once published.
+    """
+    page = agency.get("page")
+    if page is None:
+        if agency.get("follow") and "meetingHost" not in agency:
+            raise ValueError(f"{agency['id']}: a followed body needs a page (slug and name)")
+        return
+    if not (isinstance(page, dict) and set(page) == {"slug", "name"} and isinstance(page["slug"], str)
+            and PAGE_SLUG.fullmatch(page["slug"]) and isinstance(page["name"], str) and page["name"].strip()):
+        raise ValueError(f"invalid page: {agency['id']}")
+
+
 @lru_cache(maxsize=1)
 def agency_catalog() -> tuple[dict, ...]:
     """The validated registry, with ``extends`` resolved (see config/README.md, "Sibling bodies")."""
@@ -121,6 +140,9 @@ def agency_catalog() -> tuple[dict, ...]:
         if unknown := set(entry) - set(AGENCY_KEYS):
             raise ValueError(f"{entry['id']}: unknown registry keys {', '.join(sorted(unknown))}")
     agencies = resolve_extends(raw)
+    slugs = [a["page"]["slug"] for a in agencies if isinstance(a.get("page"), dict) and "slug" in a["page"]]
+    if len(slugs) != len(set(slugs)):
+        raise ValueError("duplicate agency page slugs")
     for agency in agencies:
         if not all(agency.get(k) for k in ("name", "shortName")) or not isinstance(agency.get("follow"), bool):
             raise ValueError(f"invalid agency: {agency}")
@@ -131,6 +153,7 @@ def agency_catalog() -> tuple[dict, ...]:
         # A durable limitation of this website for the body, shown under it on the Coverage page.
         if "coverageNote" in agency and not (isinstance(agency["coverageNote"], str) and agency["coverageNote"].strip()):
             raise ValueError(f"invalid coverageNote: {agency['id']}")
+        validate_page(agency)
         validate_discovery(agency)
         if "meetingHost" in agency:
             # Such an entry is not a body: its records name their own host, so nothing is discovered or forecast for it.

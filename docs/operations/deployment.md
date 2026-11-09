@@ -143,6 +143,15 @@ Without the key, the backfill still links listing minutes and videos, draft minu
 
 Claude classification during a backfill uses the same `--max-cost` ($1 per run) and `--monthly-budget` guards. If the run stops at a cost limit, the remaining meetings keep rule tags and are classified by later scheduled runs.
 
+**Recapturing meetings stored before their parser existed.** A backfill skips every meeting already stored with documents, and the scheduled run never downloads a settled past meeting again, so a meeting captured before its agency's item reader existed keeps no items, or items with a review note, for good. `--recapture-unparsed` also captures those, but only where a download can add something: a stored meeting that is not canceled or quarantined, has no active items or carries a parser's "review required" note, and either has an HTML agenda page (items are read from the page's markup only at capture) or is now listed with a document that is not stored. Meetings whose stored PDF text a parser can read are left to the `reparse` post-step, which downloads nothing. The summary lists each one under `byAgency.<agency>.recaptureMeetings` with its reason (`htmlAgenda` or `newDocument`), and `totals.recapture` counts them. Each costs its documents' downloads and a few database operations; Claude spends only on items that are new or changed, within `--max-cost` and `--monthly-budget`. Check `private/usage/summary.md`, then dry-run the agencies concerned and read the list before running the job:
+```sh
+DATABASE_URL=... tahoe-ingest backfill --since 2026-01-01 --agency tcpud --agency tcpud-parks-recreation-committee --recapture-unparsed --dry-run
+gcloud run jobs update tahoe-backfill --region=us-west1 --project=<project-id> \
+  --args=backfill,--since,2026-01-01,--agency,tcpud,--agency,tcpud-parks-recreation-committee,--recapture-unparsed
+gcloud run jobs execute tahoe-backfill --region=us-west1 --project=<project-id> --wait
+```
+Afterwards set the job's arguments back (`--args=backfill,--since,2026-01-01`) so an ordinary rerun does not recapture.
+
 ## Logs and status
 
 ```sh

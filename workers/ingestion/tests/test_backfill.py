@@ -10,6 +10,8 @@ import psycopg
 import pytest
 
 from tahoe_ingest import backfill, cli, discovery, scheduled, source_discovery
+from tahoe_ingest.html_agenda import parse_html_agenda
+from tahoe_ingest.html_source import html_text
 
 from test_scheduled import ROOT, Hook  # noqa: F401  (shared helpers)
 
@@ -147,13 +149,17 @@ def test_cli_validates_and_prints_summary(db, monkeypatch, capsys):
     seen = {}
 
     def run(conn, opts, **kwargs):
-        seen.update(since=opts.since, until=opts.until, agencies=opts.agencies, dry=opts.dry_run, delay=opts.delay)
+        seen.update(since=opts.since, until=opts.until, agencies=opts.agencies, dry=opts.dry_run, delay=opts.delay,
+                    recapture=opts.recapture_unparsed)
         return {"status": "ok", "steps": []}
     monkeypatch.setattr(backfill, "backfill", run)
     assert cli.main(["--database-url", "unused", "backfill", "--since", "2026-07-01", "--until", "2026-12-31",
                      "--agency", "slt", "--agency", "ttd", "--dry-run"]) == 0
-    assert seen == {"since": SINCE, "until": UNTIL, "agencies": ["slt", "ttd"], "dry": True, "delay": 1.0}
-    assert json.loads(capsys.readouterr().out)["status"] == "ok"
+    assert seen == {"since": SINCE, "until": UNTIL, "agencies": ["slt", "ttd"], "dry": True, "delay": 1.0, "recapture": False}
+    assert cli.main(["--database-url", "unused", "backfill", "--since", "2026-07-01", "--until", "2026-12-31",
+                     "--recapture-unparsed", "--dry-run"]) == 0
+    assert seen["recapture"] is True
+    assert [json.loads(line)["status"] for line in capsys.readouterr().out.splitlines()] == ["ok", "ok"]
 
 
 # ---------------------------------------------------------------- date-range discovery types
@@ -293,3 +299,104 @@ def test_full_listing_sources_are_unbounded_and_filtered_by_date():
     assert len(found) == 6 and earliest == "2026-01-10" and by_date is False  # every listed row, not the newest few
     with pytest.raises(ValueError):
         source_discovery.discover_configured("trcd", config, limit=21, fetch=lambda url: rows)
+
+
+# ---------------------------------------------------------------- --recapture-unparsed
+
+PRC = "tcpud-parks-recreation-committee"  # no agenda layout: items come only from its HTML agenda page at capture
+PRC_PAGE = "https://example.gov/prc/AgendaViewer.php?clip_id={}"
+PRC_MARKUP = ('<h2 class="section-header">1. Call to Order</h2><h2 class="section-header">2. Lake Forest Boat Ramp dredging</h2>'
+              '<h2 class="section-header">3. Adjournment</h2>')
+
+
+def html_fetch(*, parse: bool):
+    """HTML agenda pages as `download_extract` reads them; with ``parse`` False, as before the HTML path read items."""
+    def fetch(url):
+        if url.startswith("https://example.gov/planning/"):
+            return fake_fetch(url)
+        text = html_text(PRC_MARKUP)
+        items, complete = parse_html_agenda(PRC_MARKUP, text) if parse else ([], False)
+        return {"agenda_items": items, "items_complete": complete, "sha256": hashlib.sha256(PRC_MARKUP.encode()).hexdigest(),
+                "bytes": len(PRC_MARKUP), "page_count": 1, "media_type": "text/html",
+                "pages": [{"page_number": 1, "text": text}], "warnings": []}
+    return fetch
+
+
+def prc_meeting(sid, day, *, status=None):
+    candidate = {"agency": PRC, "source_id": sid, "title": "Parks and Recreation Committee", "date": day,
+                 "official_url": PRC_PAGE.format(sid), "warnings": [],
+                 "documents": [{"id": f"{PRC}-agenda-html", "title": "Agenda", "url": PRC_PAGE.format(sid)}]}
+    return {**candidate, "status": status} if status else candidate
+
+
+def listed(listing):
+    def discover(agency_id, config, *, since, until):
+        return {"candidates": [dict(c) for c in listing.get(agency_id, [])], "earliestListed": None, "queryByDate": True}
+    return discover
+
+
+def active_items(db, meeting_id):
+    return [r["number"] for r in db.execute(
+        "SELECT number FROM agenda_items WHERE meeting_id=%s AND active ORDER BY item_order", (meeting_id,))]
+
+
+def test_recapture_unparsed_selects_only_meetings_a_capture_can_give_items(db, monkeypatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    listing = {PRC: [prc_meeting("clip-1727", "2026-09-08"), prc_meeting("clip-1730", "2026-09-22", status="canceled")],
+               "slt-planning": [meeting("7001", "2026-07-09")]}
+    agencies = [PRC, "slt-planning"]
+    # Captured before the HTML path read this body's items: stored with documents and no items.
+    backfill.backfill(db, options(agencies=agencies, publish=False), discover=listed(listing), fetch=html_fetch(parse=False))
+    assert db.execute("SELECT count(*) AS n FROM meetings").fetchone()["n"] == 3
+    assert db.execute("SELECT count(*) AS n FROM agenda_items WHERE active").fetchone()["n"] == 0
+
+    # Without the option every stored meeting is skipped.
+    plain = backfill.backfill(db, options(agencies=agencies, dry_run=True), discover=listed(listing),
+                              fetch=html_fetch(parse=True))
+    assert plain["byAgency"][PRC]["toCapture"] == 0 and "recapture" not in plain["byAgency"][PRC]
+
+    # With it, only the HTML agenda of a meeting that is not canceled is captured again. The planning meeting has no
+    # items either, but its stored PDF text is the reparse step's: a download would read the same text.
+    dry = backfill.backfill(db, options(agencies=agencies, dry_run=True, recapture_unparsed=True),
+                            discover=listed(listing), fetch=html_fetch(parse=True))
+    prc = dry["byAgency"][PRC]
+    assert prc["recapture"] == 1 and prc["toCapture"] == 1 and prc["alreadyStored"] == 1
+    assert prc["recaptureMeetings"] == [{"meeting": f"{PRC}:clip-1727", "reason": "htmlAgenda"}]
+    assert dry["byAgency"]["slt-planning"]["recapture"] == 0 and dry["byAgency"]["slt-planning"]["alreadyStored"] == 1
+    assert dry["window"]["recaptureUnparsed"] is True and dry["totals"]["recapture"] == 1
+
+    # A listing that now links a document the meeting does not have is captured again, whatever its type.
+    listing["slt-planning"][0]["documents"].append({"id": "slt-planning-packet", "title": "Packet",
+                                                    "url": AGENDA.format("7001-packet")})
+    dry = backfill.backfill(db, options(agencies=["slt-planning"], dry_run=True, recapture_unparsed=True),
+                            discover=listed(listing), fetch=html_fetch(parse=True))
+    assert dry["byAgency"]["slt-planning"]["recaptureMeetings"] == [{"meeting": "slt-planning:7001", "reason": "newDocument"}]
+    listing["slt-planning"][0]["documents"].pop()
+
+    fetched, fetch = [], html_fetch(parse=True)
+    done = backfill.backfill(db, options(agencies=agencies, publish=False, recapture_unparsed=True),
+                             discover=listed(listing), fetch=lambda u: fetched.append(u) or fetch(u))
+    assert fetched == [PRC_PAGE.format("clip-1727")] and done["byAgency"][PRC]["captured"] == 1
+    assert active_items(db, f"{PRC}:clip-1727") == ["1", "2", "3"]
+    assert not any("review required" in w for w in
+                   db.execute("SELECT warnings FROM meetings WHERE id=%s", (f"{PRC}:clip-1727",)).fetchone()["warnings"])
+
+    # With items and no review note the meeting is settled again: a rerun selects nothing.
+    again = backfill.backfill(db, options(agencies=agencies, dry_run=True, recapture_unparsed=True),
+                              discover=listed(listing), fetch=html_fetch(parse=True))
+    assert again["byAgency"][PRC]["recapture"] == 0 and again["totals"]["recapture"] == 0
+
+    # Items published with a review note (irregular numbering, decision 0032) qualify again.
+    db.execute("UPDATE meetings SET warnings=%s WHERE id=%s",
+               (json.dumps(["Agenda numbering is not sequential near “5.”; review required."]), f"{PRC}:clip-1727"))
+    db.commit()
+    assert backfill.unparsed_meetings(db, [PRC]) == {f"{PRC}:clip-1727": True}
+
+
+def test_recapture_reason_needs_an_unparsed_meeting():
+    candidate, meeting_id = prc_meeting("clip-1", "2026-09-08"), f"{PRC}:clip-1"
+    stored = {PRC_PAGE.format("clip-1")}
+    assert backfill.recapture_reason({}, stored, meeting_id, candidate) is None
+    assert backfill.recapture_reason({meeting_id: False}, stored, meeting_id, candidate) is None
+    assert backfill.recapture_reason({meeting_id: True}, stored, meeting_id, candidate) == "htmlAgenda"
+    assert backfill.recapture_reason({meeting_id: False}, set(), meeting_id, candidate) == "newDocument"

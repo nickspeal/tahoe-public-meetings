@@ -8,7 +8,14 @@ scheduled run, and then runs the scheduled run's post-steps (quarantine, reparse
 reclassify, classify-topics, export, validate, store, deploy hook).
 
 It is resumable: a meeting already stored with documents is skipped, so a rerun
-continues where a stopped run left off. It takes the same PostgreSQL advisory
+continues where a stopped run left off. With `--recapture-unparsed` a stored
+meeting is captured again when it has no agenda items, or only items published
+with a review note, and a capture could read more than the stored text gives:
+its agenda is an HTML page (items are read from the page's markup only at
+capture, see `html_agenda`), or the listing now links a document that is not
+stored. This reaches meetings captured before their parser or capture path
+existed. Meetings whose stored PDF text a parser can read are left to the
+`reparse` step, which needs no download. It takes the same PostgreSQL advisory
 lock as `run-scheduled`, so the two never overlap: the backfill waits for a
 running scheduled run, and a scheduled run that starts during a backfill skips.
 
@@ -33,7 +40,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from . import ai_topics, records, scheduled
-from .capture import MAX_DOCUMENTS, capture_candidates
+from .capture import MAX_DOCUMENTS, capture_candidates, capture_documents
 from .http import EndpointSkipped
 from .catalog import followed_agencies
 from .core import export_public, init_db, record_failure, stable_id
@@ -51,7 +58,8 @@ class Options:
     def __init__(self, *, since: date, until: date | None = None, agencies=None, root=".", max_documents=MAX_DOCUMENTS, delay=1.0,
                  forecast_days=None, min_meetings=1, max_cost=ai_topics.DEFAULT_MAX_RUN_COST,
                  monthly_budget=ai_topics.DEFAULT_MONTHLY_BUDGET, out=None, publish=True, dry_run=False,
-                 lock_wait_seconds=DEFAULT_LOCK_WAIT_SECONDS, claude_time_budget=0, today: date | None = None):
+                 lock_wait_seconds=DEFAULT_LOCK_WAIT_SECONDS, claude_time_budget=0, recapture_unparsed=False,
+                 today: date | None = None):
         today = today or datetime.now(scheduled.PACIFIC).date()
         self.since = since
         self.until = until or today + timedelta(days=DEFAULT_FUTURE_DAYS)
@@ -73,6 +81,8 @@ class Options:
         # Seconds from the backfill's start after which classify-topics starts no new meeting; 0 (the default)
         # means none, because captures take most of the 6-hour job and classification resumes on any later run.
         self.claude_time_budget = claude_time_budget
+        # Also capture stored meetings a capture could now give items (see `recapture_reason`).
+        self.recapture_unparsed = recapture_unparsed
 
 
 def discover_agency_range(agency_id: str, config: dict, *, since: date, until: date) -> dict:
@@ -138,6 +148,43 @@ def stored_counts(conn) -> dict:
     return {key: int(value) for key, value in row.items()}
 
 
+# Parsers append this to the notes on items published despite irregular numbering (decision 0032) and to failures.
+REVIEW_NOTE = "review required"
+
+
+def unparsed_meetings(conn, agencies) -> dict[str, bool]:
+    """Stored meetings of ``agencies`` a recapture may give items: meeting ID -> whether an agenda is an HTML page.
+
+    One query. A meeting qualifies when it has current documents, is neither canceled nor
+    quarantined, and has no active agenda items or carries a parser's review note.
+    """
+    rows = conn.execute("""SELECT m.id,
+            EXISTS (SELECT 1 FROM document_current c JOIN document_versions v ON v.id=c.version_id
+                    WHERE c.meeting_id=m.id AND v.media_type='text/html') AS html
+        FROM meetings m
+        WHERE m.agency_id=ANY(%s) AND m.quarantine_reason IS NULL AND m.status IS DISTINCT FROM 'canceled'
+          AND EXISTS (SELECT 1 FROM document_current c WHERE c.meeting_id=m.id)
+          AND (NOT EXISTS (SELECT 1 FROM agenda_items i WHERE i.meeting_id=m.id AND i.active)
+               OR EXISTS (SELECT 1 FROM jsonb_array_elements_text(m.warnings) w WHERE w ILIKE %s))""",
+                        (list(agencies), f"%{REVIEW_NOTE}%")).fetchall()
+    conn.commit()
+    return {r["id"]: r["html"] for r in rows}
+
+
+def recapture_reason(unparsed: dict[str, bool], stored_urls: set, meeting_id: str, candidate: dict,
+                     max_documents: int = MAX_DOCUMENTS) -> str | None:
+    """Why ``--recapture-unparsed`` captures a stored meeting again, or None.
+
+    Only a capture reads an HTML agenda's markup or a newly linked document. Items a parser
+    can read from stored PDF text are the ``reparse`` step's, which downloads nothing.
+    """
+    if meeting_id not in unparsed:
+        return None
+    if any(d["url"] not in stored_urls for d in capture_documents(candidate, max_documents)):
+        return "newDocument"
+    return "htmlAgenda" if unparsed[meeting_id] else None
+
+
 def _selected_agencies(options: Options) -> dict[str, dict]:
     followed = followed_agencies()
     discoverable = {aid: config for aid, config in followed.items() if config.get("discovery")}
@@ -151,9 +198,12 @@ def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dic
     """Discover every agency's in-range candidates and split them into to-capture and already stored."""
     quarantined = scheduled._quarantine_keys(options.root)
     stored = scheduled.stored_meetings(conn)  # Every agency is planned before any capture.
+    unparsed = unparsed_meetings(conn, agencies) if options.recapture_unparsed else {}
     plan = {}
     for aid, config in agencies.items():
         report = {"found": 0, "alreadyStored": 0, "quarantined": 0, "toCapture": 0}
+        if options.recapture_unparsed:
+            report["recapture"] = 0
         began = time.monotonic()
         try:
             listed = discover(aid, config, since=options.since, until=options.until)
@@ -172,6 +222,14 @@ def enumerate_agencies(conn, run: scheduled.Run, options: Options, agencies: dic
                 meeting_id = stable_id(aid, stored.identity(candidate))
                 if meeting_id in stored.meetings and (not candidate.get("documents") or meeting_id in stored.document_urls
                                                       or scheduled.documents_skipped(candidate, options.max_documents)):
+                    reason = options.recapture_unparsed and candidate.get("documents") \
+                        and not scheduled.documents_skipped(candidate, options.max_documents) and recapture_reason(unparsed, stored.document_urls.get(meeting_id, set()), meeting_id, candidate,
+                                             options.max_documents)
+                    if reason:  # counted in toCapture too
+                        report["recapture"] += 1
+                        report.setdefault("recaptureMeetings", []).append({"meeting": meeting_id, "reason": reason})
+                        pending.append(candidate)
+                        continue
                     report["alreadyStored"] += 1
                     linked.append(candidate)
                     continue
@@ -242,7 +300,7 @@ def backfill(conn, options: Options, *, discover=discover_agency_range, fetch=do
     run = scheduled.Run(conn)
     run.set_time_budget(options)
     window = {"since": options.since.isoformat(), "until": options.until.isoformat(), "agencies": list(agencies),
-              "dryRun": options.dry_run}
+              "dryRun": options.dry_run, "recaptureUnparsed": options.recapture_unparsed}
     if not acquire_lock(conn, options.lock_wait_seconds, sleep=sleep):
         return {"severity": "WARNING", "message": "backfill skipped: another run held the lock", "status": "skipped",
                 "window": window, "steps": [], "failures": []}
@@ -262,6 +320,8 @@ def backfill(conn, options: Options, *, discover=discover_agency_range, fetch=do
             totals = {"found": sum(r["found"] for r, _ in plan.values()),
                       "alreadyStored": sum(r["alreadyStored"] for r, _ in plan.values()),
                       "toCapture": sum(r["toCapture"] for r, _ in plan.values())}
+            if options.recapture_unparsed:
+                totals["recapture"] = sum(r.get("recapture", 0) for r, _ in plan.values())
             return _agency_status(plan), totals
         run.step("backfill-discover", enumerate_step)
         if options.dry_run:
@@ -321,6 +381,7 @@ def _summary(run, started_at, payload, published, plan, downloads, measured, win
         byAgency=by_agency,
         totals={"found": sum(r.get("found", 0) for r in by_agency.values()),
                 "alreadyStored": sum(r.get("alreadyStored", 0) for r in by_agency.values()),
+                "recapture": sum(r.get("recapture", 0) for r in by_agency.values()),
                 "captured": sum(r.get("captured", 0) for r in by_agency.values()),
                 "failedMeetings": sum(r.get("failed", 0) for r in by_agency.values()),
                 "documentFailures": sum(r.get("documentFailures", 0) for r in by_agency.values()),

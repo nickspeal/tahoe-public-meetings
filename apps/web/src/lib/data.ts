@@ -19,7 +19,24 @@ const emptyData: PublicData = {
   meetings: [],
 };
 
-export const data: PublicData = loadedData ?? emptyData;
+/**
+ * Exports written before decision 0040 kept parser notes among `warnings` and have no `reviewNotes`. Such an export
+ * is still served when the website deploys before the worker that writes the new field has run, so its warnings are
+ * split by the patterns the website used to hide them (the worker's core.LEGACY_REVIEW_NOTE). Remove once every
+ * export the build can read carries `reviewNotes`.
+ */
+const LEGACY_REVIEW_NOTE = /No parser exists|review required|require (?:source )?review|review all agenda documents|No complete .* agenda recognized|differing item sequences|^Check the notice for changes\.$|^Subject to change\.$/i;
+const LEGACY_REPROCESSING = 'A source PDF changed; affected agenda items await reprocessing.';
+
+export function withReviewNotes(meeting: Meeting): Meeting {
+  if (meeting.reviewNotes || isForecast(meeting)) return meeting;
+  const warnings = meeting.warnings.map((warning) => warning === LEGACY_REPROCESSING ? 'Source documents changed; some agenda details still need to be refreshed.' : warning);
+  return { ...meeting, warnings: warnings.filter((warning) => !LEGACY_REVIEW_NOTE.test(warning)), reviewNotes: warnings.filter((warning) => LEGACY_REVIEW_NOTE.test(warning)) };
+}
+
+const sourceData = loadedData ?? emptyData;
+// New objects: the build also serves the loaded export unchanged (pages/data/public-export.json.ts).
+export const data: PublicData = { ...sourceData, meetings: sourceData.meetings.map(withReviewNotes) };
 
 export const commentPeriods = data.commentPeriods ?? [];
 export const topics = data.topics;
@@ -218,30 +235,26 @@ export function sourceDoc(meeting: Meeting, documentId: string) {
 
 export { citationHref, isPdfDocument, itemSourceLink, staffReportLink } from './source-links';
 
-/** Parser outcomes that a reader may want explained next to the agenda history, in brief. */
+/** Parser outcomes (review notes) that a reader may want explained next to the agenda history, in brief. */
 const AGENDA_SOURCE_NOTES: [RegExp, string][] = [
   [/unvalidated structure/i, 'One agenda document could not be read reliably, so items are not listed here.'],
   [/differing item sequences/i, 'The agenda documents list different items, so items are not listed here.'],
 ];
 
-export function agendaSourceNote(meeting: Pick<Meeting, 'warnings'>) {
-  for (const warning of meeting.warnings) {
-    const note = AGENDA_SOURCE_NOTES.find(([pattern]) => pattern.test(warning));
+export function agendaSourceNote(meeting: Pick<Meeting, 'reviewNotes'>) {
+  for (const reviewNote of meeting.reviewNotes ?? []) {
+    const note = AGENDA_SOURCE_NOTES.find(([pattern]) => pattern.test(reviewNote));
     if (note) return note[1];
   }
   return null;
 }
 
-export function residentWarning(value: string) {
+/**
+ * A source document's warning, as residents read it. Meeting warnings need no mapping: the worker writes them for
+ * residents and keeps parser notes apart as `reviewNotes` (decision 0040).
+ */
+export function documentWarning(value: string) {
   if (/HTML\/text source retained/i.test(value)) return 'This source is a webpage or text document; citations refer to source sections rather than PDF pages.';
-  // Parser and discovery outcomes are explained by the agenda section itself (see agendaAvailability).
-  if (/No parser exists|review required|agenda items require (?:source )?review|No complete .* agenda recognized/i.test(value)) return '';
-  // Shown briefly in the agenda history card instead (see agendaSourceNote).
-  if (AGENDA_SOURCE_NOTES.some(([pattern]) => pattern.test(value))) return '';
-  // A blanket caveat that early notice extractions stored; it names no known issue, and the worker rereads revised notices.
-  if (value === 'Check the notice for changes.') return '';
-  if (/A source PDF changed/i.test(value)) return 'Source documents changed; some agenda details still need to be refreshed.';
-
   const retainedPages = value.match(/Text retained for (\d+) of (\d+) source pages/i);
   if (retainedPages) return `Agenda text covers ${retainedPages[1]} of ${retainedPages[2]} source pages; open the official document for full context.`;
   if (/original fetch time is unknown/i.test(value)) return 'Original source capture time is unknown.';

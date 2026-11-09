@@ -102,7 +102,7 @@ WITH rec AS (
   LEFT JOIN meetings direct ON direct.id = rec.record_id
   LEFT JOIN meeting_source_aliases alias ON direct.id IS NULL AND alias.agency_id = rec.agency_id AND alias.alias = rec.source_id
 )
-SELECT t.record_id, m.id AS meeting_id, m.agency_id, m.local_date, m.warnings, m.quarantine_reason,
+SELECT t.record_id, m.id AS meeting_id, m.agency_id, m.local_date, m.warnings, m.review_notes, m.quarantine_reason,
   (m.minutes_url IS NOT NULL OR m.recording_url IS NOT NULL) AS has_links,
   EXISTS (SELECT 1 FROM document_versions v WHERE v.meeting_id = m.id) AS has_documents,
   EXISTS (SELECT 1 FROM agenda_items i WHERE i.meeting_id = m.id) AS has_items,
@@ -143,12 +143,14 @@ def plan(conn, records: dict[str, dict], *, today: date) -> dict:
     strip, documents, delete, keep = [], [], [], []
     for meeting_id, m in sorted(by_meeting.items()):
         warnings = m["warnings"] if isinstance(m["warnings"], list) else json.loads(m["warnings"] or "[]")
+        # A record's operator notes may have moved to review notes (core.migrate_review_notes, decision 0040).
+        notes = m["review_notes"] if isinstance(m["review_notes"], list) else json.loads(m["review_notes"] or "[]")
         hand_warnings = {w for r in m["records"] for w in r["warnings"]}
         bundle_pages = {d: n for r in m["records"] for d, n in r["pages"].items()}
         origins = sorted({o for r in m["records"] for o in r["origins"]})
         own = meeting_id in records  # created under a hand-built ID, not a capture's ID bridged to it
         discovery_aliases = [a for a in m["aliases"] if (m["agency_id"], a) not in hand_ids]
-        still_hand_written = bool(hand_warnings & set(warnings))
+        still_hand_written = bool(hand_warnings & set(warnings + notes))
         if not own or discovery_aliases:
             seen = True
         elif "verified" in origins:
@@ -157,8 +159,10 @@ def plan(conn, records: dict[str, dict], *, today: date) -> dict:
         else:
             seen = m["first_live_ingest"] is not None
         kept_warnings = [w for w in warnings if w not in hand_warnings]
-        if kept_warnings != warnings:
-            strip.append({"meeting": meeting_id, "remove": [w for w in warnings if w in hand_warnings], "keep": kept_warnings})
+        kept_notes = [n for n in notes if n not in hand_warnings]
+        if kept_warnings != warnings or kept_notes != notes:
+            strip.append({"meeting": meeting_id, "remove": [w for w in warnings + notes if w in hand_warnings],
+                          "keep": kept_warnings, "keepReviewNotes": kept_notes})
         for doc in m["documents"] or []:
             fixed = []
             for w in doc["warnings"]:
@@ -198,9 +202,10 @@ def apply(conn, result: dict) -> None:
     """Write a `plan` in one transaction: warnings, document versions, then deletions."""
     with conn.transaction():
         if result["strip"]:
-            conn.execute("""UPDATE meetings m SET warnings = s.warnings::jsonb, updated_at = now()
-                FROM unnest(%s::text[], %s::text[]) AS s(id, warnings) WHERE m.id = s.id""",
-                ([s["meeting"] for s in result["strip"]], [json.dumps(s["keep"]) for s in result["strip"]]))
+            conn.execute("""UPDATE meetings m SET warnings = s.warnings::jsonb, review_notes = s.notes::jsonb, updated_at = now()
+                FROM unnest(%s::text[], %s::text[], %s::text[]) AS s(id, warnings, notes) WHERE m.id = s.id""",
+                ([s["meeting"] for s in result["strip"]], [json.dumps(s["keep"]) for s in result["strip"]],
+                 [json.dumps(s["keepReviewNotes"]) for s in result["strip"]]))
         if result["documents"]:
             conn.execute("""UPDATE document_versions v SET warnings = d.warnings::jsonb,
                 fetched_at = COALESCE(d.fetched_at::timestamptz, v.fetched_at)

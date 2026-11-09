@@ -71,11 +71,21 @@ test('meeting topics include preview topics, and previews filter by topic', () =
   assert.deepEqual(dataLib.previewsForTopic(planned), [bikes, housing]);
 });
 
-test('source lines name the calendar update date or the notice; planned notes pass through unchanged', () => {
+test('source lines name the calendar update date or the notice', () => {
   assert.equal(dataLib.previewSourceLabel(bikes.source), 'From the agenda planning calendar updated September 30, 2026');
   assert.equal(dataLib.previewSourceLabel({ ...bikes.source, kind: 'notice', title: 'West Shore Trail Notice of Preparation' }), 'From the West Shore Trail Notice of Preparation');
-  assert.equal(dataLib.residentWarning('Subject to change.'), 'Subject to change.');
-  assert.equal(dataLib.residentWarning('Check the notice for changes.'), '', 'the old blanket notice caveat is hidden');
+});
+
+test('meeting warnings pass through as written; an export without review notes has its notes split out (decision 0040)', () => {
+  const current = meeting({ warnings: ['Not in the latest notice.'], reviewNotes: ['Truckee agenda numbering is not sequential; review required.'] });
+  assert.equal(dataLib.withReviewNotes(current), current);
+  const legacy = dataLib.withReviewNotes(meeting({ planned: true, warnings: ['Subject to change.', 'Check the notice for changes.', 'Not in the latest notice.',
+    'A source PDF changed; affected agenda items await reprocessing.', 'No complete TRUCKEE agenda recognized in downloaded documents; review required.'] }));
+  assert.deepEqual(legacy.warnings, ['Not in the latest notice.', 'Source documents changed; some agenda details still need to be refreshed.']);
+  assert.deepEqual(legacy.reviewNotes, ['Subject to change.', 'Check the notice for changes.', 'No complete TRUCKEE agenda recognized in downloaded documents; review required.']);
+  assert.equal(dataLib.agendaSourceNote(dataLib.withReviewNotes(meeting({ warnings: ['An agenda PDF has an unvalidated structure; review all agenda documents.'] }))),
+    'One agenda document could not be read reliably, so items are not listed here.');
+  assert.equal(dataLib.documentWarning('Text extracted on 446 of 504 pages; scanned pages may require OCR.'), 'Some pages could not be read; open the official document.');
 });
 
 test('a planned meeting calendar event starts its description with "Subject to change."', () => {

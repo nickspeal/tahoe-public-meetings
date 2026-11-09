@@ -184,7 +184,14 @@ export interface Meeting {
   lastCheckedAt: string | null;
   updatedAt: string;
   change: 'new' | 'revised' | 'rescheduled' | 'canceled' | null;
+  /** Known, specific issues, shown to residents as written (decisions 0039, 0040). */
   warnings: string[];
+  /**
+   * Parser and capture outcomes for the operator ("… numbering is not sequential …; review required."), not shown
+   * to residents as written (decision 0040). Absent from forecasts and from exports written before the field was added,
+   * whose `warnings` still mixed both kinds.
+   */
+  reviewNotes?: string[];
   documents: PublicDocument[];
   /** Absent from exports written before the history was added. */
   history?: MeetingHistoryEvent[];

@@ -13,12 +13,14 @@ HTML agenda's markup cannot be read again from its stored text: a meeting whose
 items cite an HTML document is left as captured (reported under ``kept``) unless
 its items await reprocessing.
 
-A failed reparse rewrites the meeting's parse warnings whenever they differ from
-what is stored, so a stale "await reprocessing" note never sticks. A meeting of
-an agency with no layout cannot be reparsed: only that note is dropped
-(``cleared``). A canceled meeting, or one whose documents include no agenda
-(minutes, a supplement), records no parse failure; items are still stored when
-its agenda does parse.
+A reparse owns the meeting's parse outcome: its review notes (decision 0040)
+become the new failure or irregular-numbering notes, and the "still need to be
+refreshed" warning (``REPROCESSING_WARNING``) is dropped. A failed reparse
+writes whenever either differs from what is stored, so a stale note never
+sticks. A meeting of an agency with no layout cannot be reparsed: only that
+warning is dropped (``cleared``). A canceled meeting, or one whose documents
+include no agenda (minutes, a supplement), records no parse failure; items are
+still stored when its agenda does parse.
 """
 from __future__ import annotations
 
@@ -26,9 +28,10 @@ import json
 import re
 
 from .agenda import has_parser, parse_agenda
-from .core import _json, cited_documents, ingest_bundle, iso
+from .core import REPROCESSING_WARNING, _json, cited_documents, ingest_bundle, iso
 
-STALE = re.compile(r"No parser exists|require (?:source )?review|review required|review all agenda documents|await reprocessing|"
+# Review notes a parse outcome replaces. Every note capture and the parsers write matches; anything else is kept.
+STALE = re.compile(r"No parser exists|require (?:source )?review|review required|review all agenda documents|"
                    r"agenda text (?:is )?not (?:yet )?(?:captured|extracted)", re.I)
 
 
@@ -45,13 +48,13 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
     selected = []
     for m in rows:
         warnings = _json(m["warnings"]) or []
-        stuck = any("await reprocessing" in w for w in warnings)
+        stuck = REPROCESSING_WARNING in warnings
         if stuck and not has_parser(m["agency_id"]):
-            # Nothing can reparse it (its items, if any, come from a capture), so the note would never clear.
+            # Nothing can reparse it (its items, if any, come from a capture), so the warning would never clear.
             report["cleared"].append(m["id"])
             if not dry_run:
                 conn.execute("UPDATE meetings SET warnings=%s WHERE id=%s",
-                             (json.dumps([w for w in warnings if "await reprocessing" not in w]), m["id"]))
+                             (json.dumps([w for w in warnings if w != REPROCESSING_WARNING]), m["id"]))
             continue
         if not has_parser(m["agency_id"]) or not (force or meeting or stuck or m["active_items"] == 0):
             report["skipped"] += 1
@@ -77,18 +80,21 @@ def reparse_meetings(conn, *, agency: str | None = None, meeting: str | None = N
         report["parsed" if parsed.complete else "failed"].append(entry)
         if dry_run:
             continue
-        kept = [w for w in warnings if not STALE.search(w)]
+        kept = [w for w in warnings if w != REPROCESSING_WARNING]
+        notes = _json(m["review_notes"]) or []
+        kept_notes = [n for n in notes if not STALE.search(n)]
         if not parsed.complete:
             # Rewritten whenever it differs, so a stale note goes even when the failure itself is unchanged.
-            new = kept + ([failure] if failure else [])
-            if new != warnings:
-                conn.execute("UPDATE meetings SET warnings=%s WHERE id=%s", (json.dumps(new), m["id"]))
+            new_notes = kept_notes + ([failure] if failure else [])
+            if kept != warnings or new_notes != notes:
+                conn.execute("UPDATE meetings SET warnings=%s, review_notes=%s WHERE id=%s",
+                             (json.dumps(kept), json.dumps(new_notes), m["id"]))
             continue
         row = {"agency": m["agency_id"], "id": m["source_id"], "title": m["title"],
                "starts_at": iso(m["starts_at"]), "date": m["local_date"].isoformat() if m["local_date"] else None,
                "timezone": m["timezone"], "status": m["status"], "location": m["location"],
                "source_meeting_url": m["official_url"], "participation": _json(m["participation"]),
-               "warnings": kept + list(parsed.notes), "partial_logistics": True, "documents": documents, "documents_complete": False,
+               "warnings": kept, "review_notes": kept_notes + list(parsed.notes), "partial_logistics": True, "documents": documents, "documents_complete": False,
                "pages": pages, "agenda_items": parsed.items, "items_complete": True}
         result = ingest_bundle(conn, {"meetings": [row]}, mode="fixture")
         if result["failed"]:

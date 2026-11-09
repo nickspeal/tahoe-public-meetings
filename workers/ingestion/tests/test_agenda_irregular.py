@@ -26,7 +26,7 @@ def _copies(name):
     return fixture, fixture["documents"], fixture["pages"]
 
 
-def test_captured_meeting_publishes_the_items_with_the_notes_as_warnings():
+def test_captured_meeting_publishes_the_items_with_the_notes_for_review():
     fixture, pages = _layout_fixture("douglas-commissioners--2026-11-05")
 
     def fetch(url):
@@ -37,7 +37,7 @@ def test_captured_meeting_publishes_the_items_with_the_notes_as_warnings():
                  "documents": [{"id": "douglas-agenda", "title": "Agenda", "url": "https://example.org/a.pdf"}]}
     row = _capture_row(candidate, 2, fetch, [], [], 0)
     assert row["items_complete"] and len(row["agenda_items"]) == 38
-    assert [w for w in row["warnings"] if w.endswith("review required.")] == fixture["notes"]
+    assert row["review_notes"] == fixture["notes"] and row["warnings"] == []
 
 
 def test_a_skipped_consent_letter_becomes_a_placeholder():

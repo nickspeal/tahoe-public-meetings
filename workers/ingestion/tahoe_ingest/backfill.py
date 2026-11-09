@@ -148,7 +148,8 @@ def stored_counts(conn) -> dict:
     return {key: int(value) for key, value in row.items()}
 
 
-# Parsers append this to the notes on items published despite irregular numbering (decision 0032) and to failures.
+# Parsers append this to the review notes on items published despite irregular numbering (decision 0032) and to
+# failures; capture and reparse store them in meetings.review_notes (decision 0040).
 REVIEW_NOTE = "review required"
 
 
@@ -165,7 +166,7 @@ def unparsed_meetings(conn, agencies) -> dict[str, bool]:
         WHERE m.agency_id=ANY(%s) AND m.quarantine_reason IS NULL AND m.status IS DISTINCT FROM 'canceled'
           AND EXISTS (SELECT 1 FROM document_current c WHERE c.meeting_id=m.id)
           AND (NOT EXISTS (SELECT 1 FROM agenda_items i WHERE i.meeting_id=m.id AND i.active)
-               OR EXISTS (SELECT 1 FROM jsonb_array_elements_text(m.warnings) w WHERE w ILIKE %s))""",
+               OR EXISTS (SELECT 1 FROM jsonb_array_elements_text(m.review_notes) w WHERE w ILIKE %s))""",
                         (list(agencies), f"%{REVIEW_NOTE}%")).fetchall()
     conn.commit()
     return {r["id"]: r["html"] for r in rows}

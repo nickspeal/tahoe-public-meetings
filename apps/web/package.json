@@ -13,7 +13,7 @@
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
-    "test": "npm run build && node --test",
+    "test": "node scripts/build-test-site.mjs && node --test",
     "feedback": "node scripts/feedback.mjs",
     "analytics": "node scripts/analytics-report.mjs"
   },

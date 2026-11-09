@@ -36,7 +36,7 @@ The `localhost` URL selects an existing database instead of starting the native 
 
 | Command | Purpose |
 | --- | --- |
-| `python3 scripts/project.py test` | PostgreSQL tests, evidence validation, Astro checks, build, agenda/timeline interaction tests, calendar tests, and internal links |
+| `python3 scripts/project.py test` | PostgreSQL tests, Astro checks, and the website tests: a test site built from a dated fixture export (`apps/web/test/fixtures/public-data.mjs`, never your local export), its evidence validation, agenda/timeline interaction tests, calendar tests, and internal links |
 | `python3 scripts/project.py refresh` | Export current database state plus 90 days of expected meetings, and validate citations; the dev website reloads |
 | `python3 scripts/project.py ingest` | Run the scheduled pipeline against the local database: discover and capture from official sources, classify (Claude steps only with `ANTHROPIC_API_KEY`, within their budgets), export and validate; nothing is published. Extra arguments pass to `run-scheduled` |
 | `python3 scripts/project.py build` | Build static HTML in `apps/web/dist/` from the current export |

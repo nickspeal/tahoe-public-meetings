@@ -88,10 +88,10 @@ def main():
         refresh()
     elif args.action in ("test", "check"):  # "check" is a hidden alias
         run(PYTHON, "-m", "pytest", "workers/ingestion/tests", "-q")
-        run(sys.executable, ROOT / "scripts/check_export.py")
         run("npm", "run", "check", cwd=WEB)
+        # Builds the test site from the fixture export (apps/web/test/fixtures), never from EXPORT.
         run("npm", "test", cwd=WEB)
-        run(sys.executable, ROOT / "scripts/check_site.py")
+        run(sys.executable, ROOT / "scripts/check_site.py", "--dist", WEB / ".test-site/dist")
     elif args.action == "dev":
         if not EXPORT.exists():
             raise SystemExit("No source data exported. Run python3 scripts/project.py setup first.")

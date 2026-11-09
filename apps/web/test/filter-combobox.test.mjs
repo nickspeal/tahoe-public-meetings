@@ -5,6 +5,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
+import { dist } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const transpile = async (file) => ts.transpileModule(await readFile(resolve(root, file), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
@@ -12,7 +13,7 @@ const comboboxScript = await transpile('src/scripts/filter-combobox.ts');
 const filterScript = await transpile('src/scripts/timeline-filters.ts');
 
 async function openPage(file, route) {
-  const html = await readFile(resolve(root, 'dist', file), 'utf8');
+  const html = await readFile(resolve(dist, file), 'utf8');
   const dom = new JSDOM(html, { url: `http://localhost${route}`, runScripts: 'outside-only' });
   dom.window.scrollBy = () => {};
   dom.window.eval(comboboxScript);

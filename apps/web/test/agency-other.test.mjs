@@ -6,9 +6,9 @@ import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
 import { meetingFile } from './helpers/meeting-paths.mjs';
+import { data, dist } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const publicData = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const registry = JSON.parse(await readFile(resolve(root, '../../packages/domain/agencies.json'), 'utf8'));
 const filterSource = await readFile(resolve(root, 'src/scripts/timeline-filters.ts'), 'utf8');
 const filterScript = ts.transpileModule(filterSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
@@ -37,7 +37,7 @@ test('Other is searchable by the hosts of its meetings; bodies keep their own te
 });
 
 async function openPage(route) {
-  const html = await readFile(resolve(root, 'dist/index.html'), 'utf8');
+  const html = await readFile(resolve(dist, 'index.html'), 'utf8');
   const dom = new JSDOM(html, { url: `http://localhost${route}`, runScripts: 'outside-only' });
   dom.window.scrollBy = () => {};
   dom.window.eval(filterScript);
@@ -45,34 +45,39 @@ async function openPage(route) {
 }
 
 const optionValues = (document) => [...document.querySelectorAll('#agency-filter option')].map((option) => option.value).filter(Boolean);
-const usesOther = publicData.meetings.some((meeting) => meeting.agencyId === 'other' && meeting.kind !== 'forecast');
+// The fixture has two meetings under Other, hosted by "TRPA and El Dorado County" and by "Placer County".
+const otherMeetings = data.meetings.filter((meeting) => meeting.agencyId === 'other');
 
-test('the Agency filter offers Other, last, only when a meeting uses it', async () => {
+test('the Agency filter offers Other last, searchable by its meetings\' hosts', async () => {
   const { document } = (await openPage('/')).window;
   const values = optionValues(document);
-  assert.equal(values.includes('other'), usesOther);
-  if (usesOther) {
-    assert.equal(values.at(-1), 'other');
-    const terms = document.querySelector('#agency-filter option[value="other"]').dataset.terms.split('\n');
-    for (const host of new Set(publicData.meetings.filter((meeting) => meeting.agencyId === 'other').map((meeting) => meeting.host))) assert.ok(terms.includes(host));
-  }
+  assert.equal(values.at(-1), 'other');
+  const terms = document.querySelector('#agency-filter option[value="other"]').dataset.terms.split('\n');
+  assert.ok(terms.includes('TRPA and El Dorado County') && terms.includes('Placer County'));
 });
 
-test('?agency=other shows only Other meetings, and an unused Other is ignored', async () => {
+test('?agency=other shows only Other meetings', async () => {
   const dom = await openPage('/?agency=other');
   const { document } = dom.window;
   const shown = [...document.querySelectorAll('[data-meeting-row]')].filter((row) => !row.hidden);
-  if (usesOther) {
-    assert.equal(document.querySelector('#agency-filter').value, 'other');
-    assert.ok(shown.every((row) => row.dataset.agency === 'other'));
-  } else {
-    assert.equal(document.querySelector('#agency-filter').value, '');
-  }
+  assert.equal(document.querySelector('#agency-filter').value, 'other');
+  assert.ok(shown.length > 0 && shown.every((row) => row.dataset.agency === 'other'));
+  dom.window.close();
+});
+
+test('?agency=other is ignored when the filter does not offer Other', async () => {
+  const html = (await readFile(resolve(dist, 'index.html'), 'utf8')).replace(/<option[^>]*value="other"[^>]*>[^<]*<\/option>/, '');
+  assert.ok(!html.includes('value="other"'));
+  const dom = new JSDOM(html, { url: 'http://localhost/?agency=other', runScripts: 'outside-only' });
+  dom.window.scrollBy = () => {};
+  dom.window.eval(filterScript);
+  assert.equal(dom.window.document.querySelector('#agency-filter').value, '');
   dom.window.close();
 });
 
 test('a meeting under Other names its host on its card and page', async () => {
-  for (const meeting of publicData.meetings.filter((candidate) => candidate.agencyId === 'other' && candidate.kind !== 'forecast')) {
+  assert.equal(otherMeetings.length, 2);
+  for (const meeting of otherMeetings) {
     const page = await readFile(await meetingFile(meeting), 'utf8');
     const document = new JSDOM(page).window.document;
     assert.equal(document.querySelector('.meeting-detail-hero .eyebrow').textContent, meeting.host);

@@ -7,10 +7,10 @@ import { JSDOM } from 'jsdom';
 import ts from 'typescript';
 import { dataLib } from './helpers/load-data.mjs';
 import { meetingFile } from './helpers/meeting-paths.mjs';
+import { dist, record as fixture, recordStartingWith } from './helpers/site.mjs';
 
 // IDEA-018: previews from notices and planning calendars, one-off meetings from notices, planned meetings.
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const publicData = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const filterSource = await readFile(resolve(root, 'src/scripts/timeline-filters.ts'), 'utf8');
 const filterScript = ts.transpileModule(filterSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 const calendarSource = await readFile(resolve(root, 'src/lib/calendar.ts'), 'utf8');
@@ -139,17 +139,17 @@ test('the timeline shows the first three planned subjects, and lists the matchin
   biking.window.close();
 });
 
-// Against the built site, when the export carries IDEA-018 records.
-const builtToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
-const upcoming = (record) => (record.date ?? record.startsAt?.slice(0, 10) ?? '') > builtToday;
-const stored = publicData.meetings.filter((record) => record.kind !== 'forecast');
-const withPreviews = stored.filter((record) => record.previews?.length && upcoming(record));
-const planned = stored.filter((record) => record.planned);
-const noticeOneOffs = stored.filter((record) => record.sourceId.startsWith('one-off-') && !record.documents.length && !record.items.length && record.status !== 'canceled' && upcoming(record));
-const skip = (records, what) => (records.length ? false : `the export has no ${what} yet`);
+// Against the test site: a City Council meeting planned from the agenda planning calendar (five subjects, timed),
+// a TRPA APC meeting planned from a notice (date only), an upcoming one-off meeting with only its notice, and a
+// Douglas County agenda missing a project its notice named.
+const sltPlanned = recordStartingWith('slt:planned-');
+const apcPlanned = recordStartingWith('trpa-advisory:planned-');
+const withPreviews = [sltPlanned, apcPlanned];
+const planned = withPreviews;
+const noticeOneOffs = [recordStartingWith('other:one-off-west-shore-trail-scoping-')];
 
 async function openPage(file, route) {
-  const html = await readFile(resolve(root, 'dist', file), 'utf8');
+  const html = await readFile(resolve(dist, file), 'utf8');
   const dom = new JSDOM(html, { url: `http://localhost${route}`, runScripts: 'outside-only' });
   dom.window.scrollBy = () => {};
   dom.window.eval(filterScript);
@@ -158,7 +158,7 @@ async function openPage(file, route) {
 const rowFor = (document, id) => [...document.querySelectorAll('[data-meeting-row]')].find((row) => row.dataset.meetingId === id);
 const pageFor = async (record) => new JSDOM(await readFile(await meetingFile(record), 'utf8')).window.document;
 
-test('upcoming meetings with previews show by default with the pill and are not counted as awaiting', { skip: skip(withPreviews, 'upcoming meeting with previews') }, async () => {
+test('upcoming meetings with previews show by default with the pill and are not counted as awaiting', async () => {
   const dom = await openPage('index.html', '/');
   const { document } = dom.window;
   for (const record of withPreviews) {
@@ -185,10 +185,10 @@ test('upcoming meetings with previews show by default with the pill and are not 
   dom.window.close();
 });
 
-test('a topic filter matches through preview topics and lists the matching subjects under the card', { skip: skip(withPreviews.filter((record) => record.previews.some((entry) => entry.topics.length)), 'tagged preview') }, async () => {
-  const record = withPreviews.find((candidate) => candidate.previews.some((entry) => entry.topics.includes('biking'))) ?? withPreviews.find((candidate) => candidate.previews.some((entry) => entry.topics.length));
-  const topic = record.previews.some((entry) => entry.topics.includes('biking')) ? 'biking' : record.previews.find((entry) => entry.topics.length).topics[0];
-  const expected = record.previews.filter((entry) => entry.topics.includes(topic)).map((entry) => entry.subject);
+test('a topic filter matches through preview topics and lists the matching subjects under the card', async () => {
+  const record = sltPlanned;
+  const topic = 'biking';
+  const expected = ['Prioritization of Bikes at City Intersections and Bike Lanes', 'Bijou Bike Park Expansion'];
   for (const [file, route] of [['index.html', `/?topic=${topic}`], [`topics/${topic}/index.html`, `/topics/${topic}/`]]) {
     const dom = await openPage(file, route);
     const { document } = dom.window;
@@ -205,14 +205,14 @@ test('a topic filter matches through preview topics and lists the matching subje
   }
 });
 
-test('the planned APC meeting appears under ?topic=biking', { skip: skip(withPreviews.filter((record) => record.agencyId === 'trpa-advisory'), 'planned TRPA APC meeting with previews') }, async () => {
-  const record = withPreviews.find((candidate) => candidate.agencyId === 'trpa-advisory');
+test('the planned APC meeting appears under ?topic=biking', async () => {
+  const record = apcPlanned;
   const dom = await openPage('index.html', '/?topic=biking');
   assert.equal(rowFor(dom.window.document, record.id)?.hidden, false);
   dom.window.close();
 });
 
-test('meeting pages list previews above the empty agenda with their source line', { skip: skip(withPreviews, 'upcoming meeting with previews') }, async () => {
+test('meeting pages list previews above the empty agenda with their source line', async () => {
   for (const record of withPreviews) {
     const document = await pageFor(record);
     const section = document.querySelector('.meeting-previews-section');
@@ -233,19 +233,19 @@ test('meeting pages list previews above the empty agenda with their source line'
   }
 });
 
-test('planned meetings say "Subject to change" once, and timed ones get a calendar file that says so first', { skip: skip(planned, 'planned meeting') }, async () => {
+test('planned meetings say "Subject to change" once, and timed ones get a calendar file that says so first', async () => {
   for (const record of planned) {
     const document = await pageFor(record);
     assert.equal(document.querySelector('.meeting-time-note')?.textContent, 'Subject to change');
     assert.ok(![...document.querySelectorAll('.warning-note p')].some((node) => node.textContent === 'Subject to change.'));
     if (!record.startsAt || record.status === 'canceled' || record.change === 'canceled') continue;
     assert.ok(document.querySelector('.calendar-menu a[download]'), `${record.id} has a calendar download`);
-    const ics = unfold(await readFile(resolve(root, 'dist', 'calendar', record.agencyId, `${record.sourceId}.ics`), 'utf8'));
+    const ics = unfold(await readFile(resolve(dist, 'calendar', record.agencyId, `${record.sourceId}.ics`), 'utf8'));
     assert.match(ics, /\r\nDESCRIPTION:Subject to change\.(\\n|\r\n)/);
   }
 });
 
-test('one-off meetings with only their notice show by default as a posted notice', { skip: skip(noticeOneOffs, 'upcoming one-off meeting from a notice') }, async () => {
+test('one-off meetings with only their notice show by default as a posted notice', async () => {
   const dom = await openPage('index.html', '/');
   for (const record of noticeOneOffs) {
     const row = rowFor(dom.window.document, record.id);
@@ -262,9 +262,7 @@ test('one-off meetings with only their notice show by default as a posted notice
   dom.window.close();
 });
 
-test('a project missing from the posted agenda gets a one-line note', { skip: skip(stored.filter((record) => record.previewNotOnAgenda?.length), 'meeting with previewNotOnAgenda') }, async () => {
-  for (const record of stored.filter((candidate) => candidate.previewNotOnAgenda?.length)) {
-    const document = await pageFor(record);
-    assert.deepEqual([...document.querySelectorAll('.preview-not-on-agenda')].map((node) => node.textContent), record.previewNotOnAgenda.map((project) => `${project}: not on the posted agenda.`));
-  }
+test('a project missing from the posted agenda gets a one-line note', async () => {
+  const document = await pageFor(fixture('douglas-planning:5301'));
+  assert.deepEqual([...document.querySelectorAll('.preview-not-on-agenda')].map((node) => node.textContent), ['Genoa Lakes Village: not on the posted agenda.']);
 });

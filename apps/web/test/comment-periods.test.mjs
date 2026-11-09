@@ -2,16 +2,15 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { meetingPath } from './helpers/meeting-paths.mjs';
+import { data, dist } from './helpers/site.mjs';
 
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
-const periods = data.commentPeriods ?? [];
+// An open period hosted under Other that moved from the TRPA Governing Board, a closed TTD period, and one not yet open.
+const periods = data.commentPeriods;
 
 async function page(path) {
-  const html = await readFile(resolve(root, 'dist', ...path.split('/').filter(Boolean).map(decodeURIComponent), 'index.html'), 'utf8');
+  const html = await readFile(resolve(dist, ...path.split('/').filter(Boolean).map(decodeURIComponent), 'index.html'), 'utf8');
   return new JSDOM(html).window.document;
 }
 
@@ -25,7 +24,8 @@ test('the index lists open periods soonest first and past periods most recent fi
   const past = periods.filter(closed).sort((a, b) => deadline(b) - deadline(a) || a.id.localeCompare(b.id));
   assert.deepEqual(cards('[aria-labelledby="current-comment-periods"] [data-comment-period]'), current.map((period) => period.id));
   assert.deepEqual(cards('[aria-labelledby="past-comment-periods"] [data-comment-period]'), past.map((period) => period.id));
-  if (!past.length) assert.equal(index.querySelector('#past-comment-periods'), null);
+  assert.deepEqual(current.map((period) => period.id), ['other:west-shore-trail-scoping', 'slt:housing-element-update']);
+  assert.deepEqual(past.map((period) => period.id), ['ttd:short-range-transit-plan']);
   for (const period of periods) {
     const link = index.querySelector(`[data-comment-period="${period.id}"] h3 a`);
     assert.equal(link.textContent, period.title);
@@ -60,7 +60,9 @@ const pathOf = (id, agencyId) => `/comment-periods/${agencyId}/${id.slice(agency
 
 test('a period with a host shows it in place of the agency name on its card and page', async () => {
   const index = await page('/comment-periods/');
-  for (const period of periods.filter((candidate) => candidate.host)) {
+  const hosted = periods.filter((candidate) => candidate.host);
+  assert.equal(hosted.length, 1);
+  for (const period of hosted) {
     assert.equal(index.querySelector(`[data-comment-period="${period.id}"] .eyebrow`).textContent, period.host);
     const document = await page(pathOf(period.id, period.agencyId));
     assert.equal(document.querySelector('.meeting-detail-hero .eyebrow').textContent, period.host);
@@ -69,11 +71,12 @@ test('a period with a host shows it in place of the agency name on its card and 
 });
 
 test('the old page of a moved period redirects to its new page', async () => {
+  assert.deepEqual(periods.flatMap((period) => period.previousIds ?? []), ['trpa-governing:west-shore-trail-scoping']);
   for (const period of periods) {
     for (const old of period.previousIds ?? []) {
       const [oldAgency] = old.split(':');
       assert.notEqual(oldAgency, period.agencyId);
-      const html = await readFile(resolve(root, 'dist', ...pathOf(old, oldAgency).split('/').filter(Boolean), 'index.html'), 'utf8');
+      const html = await readFile(resolve(dist, ...pathOf(old, oldAgency).split('/').filter(Boolean), 'index.html'), 'utf8');
       const target = pathOf(period.id, period.agencyId);
       assert.match(html, new RegExp(`http-equiv="refresh" content="0;\\s*url=${target}"`));
       assert.ok(html.includes(`href="${target}"`) || html.includes(`href=${target}`));

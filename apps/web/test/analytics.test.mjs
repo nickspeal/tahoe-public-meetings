@@ -6,9 +6,9 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
+import { dist } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const dist = resolve(root, 'dist');
 const source = await readFile(resolve(root, 'src/lib/analytics.ts'), 'utf8');
 const javascript = ts.transpileModule(source, {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },

@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { dist, record } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const source = await readFile(resolve(root, 'src/lib/calendar.ts'), 'utf8');
@@ -105,16 +106,13 @@ test('omits unconfirmed date-only meetings and rejects a floating start timestam
 });
 
 test('Astro static output includes a timed event and omits a date-only listing', async () => {
-  // Picked from the current export, so the test follows whichever meetings it holds.
-  const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
-  const stored = data.meetings.filter((candidate) => candidate.kind !== 'expected');
-  const timed = stored.find((candidate) => calendar.canExportMeeting(candidate));
-  const dateOnly = stored.find((candidate) => !candidate.startsAt);
-  assert.ok(timed && dateOnly, 'export should include a timed meeting and a date-only one');
-  const event = await readFile(resolve(root, `dist${calendar.calendarHref(timed)}`), 'utf8');
+  const timed = record('slt:2003');
+  const dateOnly = record('truckee:3003');
+  assert.equal(calendar.canExportMeeting(timed), true);
+  const event = await readFile(resolve(dist, `.${calendar.calendarHref(timed)}`), 'utf8');
   assert.match(event, new RegExp(`UID:${timed.agencyId}\\.${timed.sourceId}@tahoe-public-meetings\\.local\r\n`));
   assert.match(event, /DTSTART:\d{8}T\d{6}Z\r\nDTEND:\d{8}T\d{6}Z\r\n/);
-  await assert.rejects(readFile(resolve(root, `dist${calendar.calendarHref(dateOnly)}`), 'utf8'), { code: 'ENOENT' });
+  await assert.rejects(readFile(resolve(dist, `.${calendar.calendarHref(dateOnly)}`), 'utf8'), { code: 'ENOENT' });
 });
 
 test('a meeting with a named host says so in the description', () => {

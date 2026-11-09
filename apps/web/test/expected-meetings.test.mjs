@@ -5,15 +5,15 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
+import { data, dist } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const filterSource = await readFile(resolve(root, 'src/scripts/timeline-filters.ts'), 'utf8');
 const filterScript = ts.transpileModule(filterSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 const forecasts = data.meetings.filter((meeting) => meeting.kind === 'forecast');
 
 async function openPage(file, route) {
-  const html = await readFile(resolve(root, 'dist', file), 'utf8');
+  const html = await readFile(resolve(dist, file), 'utf8');
   const dom = new JSDOM(html, { url: `http://localhost${route}`, runScripts: 'outside-only' });
   dom.window.eval(filterScript);
   return dom;
@@ -109,10 +109,10 @@ test('topic pages keep expected meetings out even when the bookmark opts in', as
 test('expected meetings get no meeting page or calendar download', async () => {
   for (const meeting of forecasts) {
     const route = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
-    assert.equal(await exists(resolve(root, 'dist', 'meetings', route, 'index.html')), false, `${meeting.id} has no page`);
-    assert.equal(await exists(resolve(root, 'dist', 'calendar', meeting.agencyId, `${meeting.sourceId}.ics`)), false);
+    assert.equal(await exists(resolve(dist, 'meetings', route, 'index.html')), false, `${meeting.id} has no page`);
+    assert.equal(await exists(resolve(dist, 'calendar', meeting.agencyId, `${meeting.sourceId}.ics`)), false);
   }
-  const html = await readFile(resolve(root, 'dist', 'coverage', 'index.html'), 'utf8');
+  const html = await readFile(resolve(dist, 'coverage', 'index.html'), 'utf8');
   const confirmed = data.meetings.length - forecasts.length;
   assert.match(html, new RegExp(`${confirmed} meetings from`), 'coverage counts only stored records');
 });

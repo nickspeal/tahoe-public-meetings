@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom';
 import ts from 'typescript';
 import { createFeedbackHandler, notify, parseSubmission, withClient, PER_CLIENT_HOURLY_LIMIT } from '../server/feedback.mjs';
 import { main as feedbackCli } from '../scripts/feedback.mjs';
+import { dist } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const transpile = async (file) => ts.transpileModule(await readFile(resolve(root, file), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
@@ -100,7 +101,7 @@ test('posts the ntfy alert with a title and optional token', async () => {
 });
 
 test('the Suggest a topic option opens the feedback dialog with the starter prompt', async () => {
-  const html = await readFile(resolve(root, 'dist/index.html'), 'utf8');
+  const html = await readFile(resolve(dist, 'index.html'), 'utf8');
   const dom = new JSDOM(html, { url: 'http://localhost/?topic=transit', runScripts: 'outside-only' });
   const { window } = dom;
   window.HTMLDialogElement.prototype.showModal = function showModal() { this.open = true; };

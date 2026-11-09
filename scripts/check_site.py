@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from urllib.request import urlopen
 
-ROOT = Path(__file__).resolve().parents[1] / "apps/web/dist"
+DIST = Path(__file__).resolve().parents[1] / "apps/web/dist"
 
 
 class Page(HTMLParser):
@@ -15,6 +15,7 @@ class Page(HTMLParser):
         self.ids = set()
         self.links = []
         self.h1 = self.main = 0
+        self.redirect = False  # Astro's redirect pages (comment periods that moved) are a bare meta refresh.
         self.language = None
         self.feed(path.read_text())
 
@@ -22,6 +23,8 @@ class Page(HTMLParser):
         values = dict(attrs)
         if values.get("id"):
             self.ids.add(values["id"])
+        if tag == "meta" and (values.get("http-equiv") or "").lower() == "refresh":
+            self.redirect = True
         if tag == "html":
             self.language = values.get("lang")
         if tag == "main":
@@ -35,10 +38,12 @@ class Page(HTMLParser):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", help="Also check served routes against this local server URL")
+    parser.add_argument("--dist", type=Path, default=DIST, help="Built site to check (default: apps/web/dist)")
     args = parser.parse_args()
+    root = args.dist.resolve()
     if args.url and urlsplit(args.url).hostname not in {"localhost", "127.0.0.1", "::1"}:
         parser.error("HTTP checks are restricted to a local preview")
-    paths = list(ROOT.rglob("*.html"))
+    paths = list(root.rglob("*.html"))
     if not paths:
         raise SystemExit("No built pages; run the web build first")
     pages = {p: Page(p) for p in paths}
@@ -46,8 +51,8 @@ def main():
     link_count = 0
     served_paths = {"/"}
     for path, page in pages.items():
-        label = str(path.relative_to(ROOT))
-        if page.h1 != 1 or page.main != 1 or page.language != "en":
+        label = str(path.relative_to(root))
+        if not page.redirect and (page.h1 != 1 or page.main != 1 or page.language != "en"):
             errors.append(f"{label}: expected one h1, one main, and lang=en")
         for href in page.links:
             parsed = urlsplit(href)
@@ -60,14 +65,14 @@ def main():
             if not target_path:
                 target = path
             elif target_path.startswith("/"):
-                target = ROOT / target_path.lstrip("/")
+                target = root / target_path.lstrip("/")
             else:
                 target = path.parent / target_path
             if target.is_dir():
                 target = target / "index.html"
             if not target.exists():
                 # Static routes may keep URL-encoded source IDs as directory names.
-                raw = ROOT / parsed.path.lstrip("/")
+                raw = root / parsed.path.lstrip("/")
                 if raw.is_dir():
                     raw = raw / "index.html"
                 if raw.exists():

@@ -6,8 +6,8 @@ import { meetingCardTitle } from './meeting-title';
 import { isRoutineItem } from './routine-items';
 import { citationHref } from './source-links';
 
-const publicDataModules = import.meta.glob('../data/public.json', { eager: true, import: 'default' }) as Record<string, PublicData>;
-const loadedData = publicDataModules['../data/public.json'];
+// src/data/public.json, or the file TAHOE_PUBLIC_DATA names (the test site); undefined when absent (astro.config.mjs).
+import loadedData from 'virtual:tahoe-public-data';
 
 const emptyData: PublicData = {
   schemaVersion: 2,

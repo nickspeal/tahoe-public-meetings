@@ -6,14 +6,14 @@ import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
 import { shown } from './helpers/shown-items.mjs';
+import { data, dist, record } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const publicData = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const filterSource = await readFile(resolve(root, 'src/scripts/timeline-filters.ts'), 'utf8');
 const filterScript = ts.transpileModule(filterSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 
 async function openPage(file, route) {
-  const html = await readFile(resolve(root, 'dist', file), 'utf8');
+  const html = await readFile(resolve(dist, file), 'utf8');
   const dom = new JSDOM(html, { url: `http://localhost${route}`, runScripts: 'outside-only' });
   dom.window.scrollBy = () => {}; // jsdom has no layout to scroll.
   dom.window.eval(filterScript);
@@ -93,16 +93,22 @@ test('combines topic and agency filters and keeps shareable query state', async 
   const rows = visibleRows(document);
   const ids = rows.map(meetingId);
 
-  assert.ok(ids.includes('ttd:6049'));
-  assert.ok(ids.includes('ttd:7110'));
+  assert.ok(ids.includes('ttd:1001'));
+  assert.ok(ids.includes('ttd:1002'));
   assert.ok(rows.every((row) => row.dataset.agency === 'ttd' && JSON.parse(row.dataset.topics).includes('transit')));
   assert.equal(document.querySelector('#timeline-count').textContent, `${rows.length} ${rows.length === 1 ? 'meeting' : 'meetings'} · Transit`);
   assert.equal(dom.window.location.search, '?topic=transit&agency=ttd');
   assert.ok(document.querySelector('#agenda-count').textContent.includes('related agenda item'));
-  const upcomingMatches = rows.filter((row) => row.dataset.bucket !== 'earlier' && row.dataset.canceled !== 'true').length;
-  assert.equal(document.querySelector('#no-upcoming-message').hidden, upcomingMatches > 0);
-  if (upcomingMatches === 0) assert.equal(document.querySelector('#no-upcoming-message').textContent, 'No upcoming agendas match Transit yet.');
+  assert.ok(rows.some((row) => meetingId(row) === 'ttd:1003' && row.dataset.bucket !== 'earlier'), 'an upcoming TTD agenda has a transit item');
+  assert.equal(document.querySelector('#no-upcoming-message').hidden, true);
   dom.window.close();
+
+  // TTD's only housing item is in the past, so the timeline says no upcoming agenda matches.
+  const housing = await openPage('index.html', '/?topic=housing&agency=ttd');
+  const message = housing.window.document.querySelector('#no-upcoming-message');
+  assert.equal(message.hidden, false);
+  assert.equal(message.textContent, 'No upcoming agendas match Housing yet.');
+  housing.window.close();
 });
 
 test('shows a specific empty state and hides history when combined filters have no matches', async () => {
@@ -134,14 +140,14 @@ test('topic route wins over a conflicting topic query and keeps the route/query 
   assert.equal(document.querySelector('#clear-filters').getAttribute('href'), '/');
   const more = document.querySelector('#earlier-more');
   while (!more.hidden) click(dom, more);
-  assert.ok(visibleRows(document).map(meetingId).includes('ttd:6941'));
+  assert.ok(visibleRows(document).map(meetingId).includes('ttd:1001'));
 
   const agency = document.querySelector('#agency-filter');
   agency.value = 'slt';
   change(dom, agency);
   while (!more.hidden) click(dom, more);
   const sltRows = visibleRows(document);
-  assert.ok(sltRows.some((row) => meetingId(row) === 'slt:2339'));
+  assert.ok(sltRows.some((row) => meetingId(row) === 'slt:2001'));
   assert.ok(sltRows.every((row) => row.dataset.agency === 'slt' && JSON.parse(row.dataset.topics).includes('biking')));
   assert.equal(dom.window.location.pathname, '/topics/biking/');
   assert.equal(dom.window.location.search, '?agency=slt');
@@ -151,18 +157,20 @@ test('topic route wins over a conflicting topic query and keeps the route/query 
 test('renders compact date badges and truthful agenda availability on a meeting card', async () => {
   const dom = await openPage('index.html', '/');
   const { document } = dom.window;
-  const row = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:1796');
+  const row = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:3002');
   assert.ok(row);
-  assert.equal(row.querySelector('.date-day').textContent, '27');
-  assert.equal(row.querySelector('.meeting-date > span:nth-child(2)').textContent, 'Oct');
-  // The card counts listed agenda items; without them it shows no agenda text, and a pending agenda gets the status pill.
-  const stored = publicData.meetings.find((meeting) => meeting.id === 'truckee:1796');
-  const listed = stored.items.filter(shown).length;
+  const date = new Date(`${record('truckee:3002').date}T12:00:00Z`);
+  assert.equal(row.querySelector('.date-day').textContent, String(date.getUTCDate()));
+  assert.equal(row.querySelector('.meeting-date > span:nth-child(2)').textContent, date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }));
+  // The card counts listed agenda items (Adjournment is routine and not counted); a meeting without them shows no agenda text.
   const copy = row.querySelector('.meeting-card-copy').textContent;
-  if (listed) assert.match(copy, new RegExp(`${listed} agenda items?`));
-  else assert.doesNotMatch(copy, /agenda (?:posted|not posted)|items not listed/i);
+  assert.equal(record('truckee:3002').items.filter(shown).length, 2);
+  assert.match(copy, /2 agenda items/);
   assert.doesNotMatch(copy, /0 agenda|Location not yet published/);
-  const canceled = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:1771');
+  const pending = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:3003');
+  assert.doesNotMatch(pending.querySelector('.meeting-card-copy').textContent, /agenda (?:posted|not posted)|items not listed/i);
+  assert.match(pending.querySelector('.status-pill').textContent, /Expected · no agenda yet/);
+  const canceled = [...document.querySelectorAll('[data-meeting-row]')].find((candidate) => meetingId(candidate) === 'truckee:3001');
   assert.equal(canceled.dataset.bucket, 'earlier');
   assert.match(canceled.textContent, /Canceled/);
   dom.window.close();
@@ -171,7 +179,7 @@ test('renders compact date badges and truthful agenda availability on a meeting 
 test('meeting cards badge their topics in catalog order and mark the selected topic', async () => {
   const dom = await openPage('index.html', '/?topic=transit');
   const { document } = dom.window;
-  const catalog = publicData.topics.map((topic) => topic.id);
+  const catalog = data.topics.map((topic) => topic.id);
   const badged = (row) => [...row.querySelectorAll('[data-card-topic]')].map((badge) => badge.dataset.cardTopic);
   const selected = (row) => [...row.querySelectorAll('.meeting-topic-selected')].map((badge) => badge.dataset.cardTopic);
   const rows = [...document.querySelectorAll('[data-meeting-row]')];
@@ -191,7 +199,7 @@ test('meeting cards badge their topics in catalog order and mark the selected to
 });
 
 test('a page built yesterday moves Today to the reader’s Lake Tahoe date', async () => {
-  const html = await readFile(resolve(root, 'dist', 'index.html'), 'utf8');
+  const html = await readFile(resolve(dist, 'index.html'), 'utf8');
   const dom = new JSDOM(html, { url: 'http://localhost/', runScripts: 'outside-only' });
   const { document } = dom.window;
   const builtToday = document.querySelector('#today-divider').dataset.today;

@@ -2,12 +2,10 @@ import assert from 'node:assert/strict';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { agencyCatalog, meetingFile, meetingPath, paths } from './helpers/meeting-paths.mjs';
+import { data, dist, record as fixture } from './helpers/site.mjs';
 
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const pages = paths.agencyPages(agencyCatalog);
 const record = (fields) => ({ agencyId: 'slt', sourceId: fields.id.split(':')[1], date: null, startsAt: null, timezone: 'America/Los_Angeles', ...fields });
 const pathsFor = (meetings) => Object.fromEntries(paths.meetingPaths(meetings, pages));
@@ -71,28 +69,29 @@ test('a meeting without an agency page or a shared slug fails loudly', () => {
 
 test('every stored meeting in the export has a built page at its path, and forecasts have none', async () => {
   for (const meeting of data.meetings.filter((row) => row.kind !== 'forecast')) await access(await meetingFile(meeting));
-  const entries = await readdir(resolve(root, 'dist', 'meetings'));
+  const entries = await readdir(resolve(dist, 'meetings'));
   assert.ok(!entries.some((name) => name.includes(':')), 'no page is left at an ID path');
 });
 
-test('a body page lists its meetings and states the next one', async (t) => {
+test('a body page lists its meetings and states the next one', async () => {
   const slt = data.meetings.filter((meeting) => meeting.agencyId === 'slt' && meeting.kind !== 'forecast');
-  if (!slt.length) return t.skip('the export has no South Lake Tahoe City Council meetings');
-  const document = new JSDOM(await readFile(resolve(root, 'dist', 'meetings', 'south-lake-tahoe-city-council', 'index.html'), 'utf8')).window.document;
+  const document = new JSDOM(await readFile(resolve(dist, 'meetings', 'south-lake-tahoe-city-council', 'index.html'), 'utf8')).window.document;
   assert.equal(document.querySelector('h1').textContent, 'South Lake Tahoe City Council meetings');
   assert.equal(document.title, 'South Lake Tahoe City Council meetings · Tahoe Public Meetings');
   const hrefs = new Set([...document.querySelectorAll('.meeting-card a')].map((link) => link.getAttribute('href')));
   for (const meeting of slt) assert.ok(hrefs.has(await meetingPath(meeting)), `${meeting.id} is listed`);
   const description = document.querySelector('meta[name="description"]').getAttribute('content');
+  // The next meeting that is not canceled is the upcoming regular meeting.
   const nextLink = document.querySelector('.page-intro a[href^="/meetings/"]');
-  if (nextLink) assert.match(description, /^Next South Lake Tahoe City Council meeting: /);
+  assert.equal(nextLink.getAttribute('href'), await meetingPath(fixture('slt:2003')));
+  assert.match(description, /^Next South Lake Tahoe City Council meeting: /);
 });
 
 test('the meetings directory links each body page; the nav and back links go to the home timeline', async () => {
-  const directory = new JSDOM(await readFile(resolve(root, 'dist', 'meetings', 'index.html'), 'utf8')).window.document;
+  const directory = new JSDOM(await readFile(resolve(dist, 'meetings', 'index.html'), 'utf8')).window.document;
   const links = [...directory.querySelectorAll('.agency-coverage a')].map((link) => link.getAttribute('href'));
   assert.ok(links.length > 0);
-  for (const href of links) await access(resolve(root, 'dist', ...href.split('/').filter(Boolean), 'index.html'));
+  for (const href of links) await access(resolve(dist, ...href.split('/').filter(Boolean), 'index.html'));
   assert.ok(!links.includes('/meetings/other-agencies/'), 'Other is not a body');
   assert.equal(directory.querySelector('.primary-nav a').getAttribute('href'), '/');
   const stored = data.meetings.find((meeting) => meeting.kind !== 'forecast');

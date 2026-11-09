@@ -21,6 +21,7 @@ dist/
 build/
 coverage/
 apps/web/src/data/public.json
+apps/web/.test-site/
 apps/web/public/data/
 
 # Runtime archives, databases, logs, and temporary files

@@ -1,7 +1,5 @@
 import type { APIRoute } from 'astro';
-
-const publicDataModules = import.meta.glob('../../data/public.json', { eager: true, import: 'default' });
-const exported = publicDataModules['../../data/public.json'];
+import exported from 'virtual:tahoe-public-data';
 
 /** The export this build used, unchanged. A later build reads it when the database is unavailable (scripts/fetch-export.mjs). */
 export const GET: APIRoute = () =>

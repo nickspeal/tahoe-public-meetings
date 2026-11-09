@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
-// Loads src/lib/data.ts without Astro: the export glob becomes empty (functions take synthetic meetings),
+// Loads src/lib/data.ts without Astro: the export module becomes empty (functions take synthetic meetings),
 // the topic and agency catalogs are inlined, and the local modules it uses are loaded as data URLs.
 const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const transpile = (source) => ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
@@ -14,7 +14,7 @@ const source = (await readFile(resolve(root, 'src/lib/data.ts'), 'utf8'))
   .replace(/import topicCatalog from .*;\n/, `const topicCatalog = ${catalog};\n`)
   .replace(/import agencyCatalog from .*;\n/, `const agencyCatalog = ${agencyCatalog};\n`)
   .replace("'./meeting-paths'", `'${await moduleUrl('src/lib/meeting-paths.ts')}'`)
-  .replace(/import\.meta\.glob\([^)]*\)/, '({})')
+  .replace(/import loadedData from 'virtual:tahoe-public-data';\n/, 'const loadedData = undefined;\n')
   .replace("'./meeting-title'", `'${await moduleUrl('src/lib/meeting-title.ts')}'`)
   .replace("'./routine-items'", `'${await moduleUrl('src/lib/routine-items.ts')}'`)
   .replaceAll("'./source-links'", `'${await moduleUrl('src/lib/source-links.ts')}'`);

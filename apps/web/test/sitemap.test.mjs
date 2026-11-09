@@ -2,16 +2,14 @@ import assert from 'node:assert/strict';
 import { access, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { data, dist } from './helpers/site.mjs';
 
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const SITE = 'https://tahoepublicmeetings.org';
-const xml = await readFile(resolve(root, 'dist/sitemap.xml'), 'utf8');
+const xml = await readFile(resolve(dist, 'sitemap.xml'), 'utf8');
 const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 const paths = locs.map((loc) => new URL(loc).pathname);
-const built = (path) => resolve(root, 'dist', ...path.split('/').filter(Boolean).map(decodeURIComponent), 'index.html');
+const built = (path) => resolve(dist, ...path.split('/').filter(Boolean).map(decodeURIComponent), 'index.html');
 
 test('the sitemap lists the home page and every meeting page on the production origin', () => {
   assert.match(xml, /^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
@@ -25,7 +23,7 @@ test('the sitemap lists the home page and every meeting page on the production o
 });
 
 test('the sitemap leaves out the 404 page, calendar files, raw data, and endpoints', async () => {
-  await access(resolve(root, 'dist/404.html'));
+  await access(resolve(dist, '404.html'));
   assert.ok(!paths.some((path) => path.startsWith('/404') || path.startsWith('/calendar/') || path.startsWith('/data/')));
   assert.ok(!paths.some((path) => /\.(?:json|txt|ics)$/.test(path)));
 });
@@ -39,7 +37,7 @@ test('every listed page is built and is its own canonical URL', async () => {
 });
 
 test('robots.txt points crawlers at the sitemap', async () => {
-  const robots = await readFile(resolve(root, 'dist/robots.txt'), 'utf8');
+  const robots = await readFile(resolve(dist, 'robots.txt'), 'utf8');
   assert.match(robots, new RegExp(`^Sitemap: ${SITE}/sitemap\\.xml$`, 'm'));
 });
 

@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom';
 import { shown } from './helpers/shown-items.mjs';
 import ts from 'typescript';
 import { meetingFile } from './helpers/meeting-paths.mjs';
+import { record } from './helpers/site.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const source = await readFile(resolve(root, 'src/lib/source-links.ts'), 'utf8');
@@ -42,12 +43,12 @@ test('PDF detection covers redirect and document-center URLs', () => {
 });
 
 test('every cited agenda item on a built meeting page links to its official page', async () => {
-  const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
-  const meeting = data.meetings.find((candidate) => candidate.items.some((item) => item.citations.length));
-  assert.ok(meeting, 'export should include a meeting with cited agenda items');
+  const meeting = record('slt:2001');
   const html = await readFile(await meetingFile(meeting), 'utf8');
   const page = new JSDOM(html).window.document;
-  for (const item of meeting.items.filter((candidate) => shown(candidate) && candidate.citations.length)) {
+  const cited = meeting.items.filter((candidate) => shown(candidate) && candidate.citations.length);
+  assert.ok(cited.length >= 4);
+  for (const item of cited) {
     const expected = links.itemSourceLink(meeting, item);
     const anchor = page.querySelector(`[data-item-id="${item.id}"] a.agenda-source-link`);
     assert.ok(anchor, `${item.id} should offer a direct source link`);
@@ -58,7 +59,6 @@ test('every cited agenda item on a built meeting page links to its official page
     assert.equal(anchor.getAttribute('target'), '_blank');
   }
 });
-
 
 test('stored HTML source sections never get PDF fragments even on extensionless URLs', () => {
   const html = { documents: [doc({ url: 'https://example.gov/agenda/42', mediaType: 'text/html', pageCount: 1 })] };

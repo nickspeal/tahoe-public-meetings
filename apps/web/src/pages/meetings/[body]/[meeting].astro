@@ -5,7 +5,7 @@ import CalendarDownload from '../../../components/CalendarDownload.astro';
 import AgendaItemCard from '../../../components/AgendaItemCard.astro';
 import { agendaGroups, displayedItems } from '../../../lib/agenda-sections';
 import { clickEvent, documentEvent, type OutboundEvent } from '../../../lib/analytics';
-import { meetingJsonLd } from '../../../lib/structured-data';
+import { meetingJsonLd, meetingSearchDescription, meetingSearchName } from '../../../lib/structured-data';
 import { agendaAvailability, agendaHistory, agendaSourceNote, agendaHistoryHeading, documentFetchLabel, documentStatusLabel, formatDate, meetingAgencyLabel, meetingDateLabel, meetingDateValue, meetingBody, meetingHref, meetingPreviews, meetingStateLabel, meetings, previewSourceHref, previewSourceLabel, residentWarning, sourceCheckLabel, topicHref, topics } from '../../../lib/data';
 // /meetings/<body slug>/<date>[-<qualifier>]/: meetingHref holds the rule and fails the build on a shared path.
 export function getStaticPaths() {
@@ -55,8 +55,11 @@ const homeUrl = new URL('/', Astro.site).href;
 const body = meetingBody(meeting);
 const jsonLd = meetingJsonLd(meeting, { url: new URL(meetingHref(meeting), Astro.site).href, homeUrl, body: body ? { name: body.name, url: new URL(body.href, Astro.site).href, officialUrl: body.officialUrl ?? undefined } : { name: meeting.host ?? 'Tahoe-area agency', url: homeUrl } })
   .filter((node) => body || node['@type'] !== 'BreadcrumbList');
+// The page title and search snippet name the body and date ("South Lake Tahoe City Council Meeting – November 17, 2026");
+// the heading on the page keeps the agency's own title, shown under the agency name.
+const bodyName = body?.name ?? meeting.host ?? 'Tahoe-area agency';
 ---
-<SiteLayout title={meeting.title} description={`Meeting information and agenda for ${meeting.title}`} jsonLd={jsonLd}>
+<SiteLayout title={meetingSearchName(meeting, bodyName)} description={meetingSearchDescription(meeting, bodyName)} jsonLd={jsonLd}>
   <section class="meeting-detail-hero"><div class="section-wrap"><a class="back-link" href="/">← All meetings</a><div class="meeting-title-line"><div><p class="eyebrow">{meetingAgencyLabel(meeting) ?? 'Agency information not available'}</p><h1>{meeting.title}</h1>{noticeTopics.length > 0 && <div class="tag-row" aria-label="Meeting notice topics">{noticeTopics.map((topic) => <a class="tag" href={`/topics/${topic.id}/`}>{topic.name}</a>)}</div>}</div>{state && <StatusPill label={state} tone={stateTone} />}</div><p class="meeting-time">{when}</p>{meeting.planned && <p class="meeting-time-note">{PLANNED_NOTE}</p>}<div class="meeting-hero-meta">{meeting.location && <span>◷ &nbsp;{meeting.location}</span>}<a href={meeting.officialUrl} target="_blank" rel="noopener noreferrer" {...outbound('outbound-agency')}>Official meeting page ↗</a></div>{warnings.length > 0 && <div class="warning-note">{warnings.map((warning) => <p>{warning}</p>)}</div>}</div></section>
   <section class="section-wrap detail-layout">
     <div class="detail-main">

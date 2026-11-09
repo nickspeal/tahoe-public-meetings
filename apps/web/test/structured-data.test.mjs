@@ -10,7 +10,7 @@ const transpile = (source) => ts.transpileModule(source, { compilerOptions: { ta
 const dataUrl = (javascript) => `data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`;
 const routine = dataUrl(transpile(await readFile(resolve(root, 'src/lib/routine-items.ts'), 'utf8')));
 const source = (await readFile(resolve(root, 'src/lib/structured-data.ts'), 'utf8')).replace("'./routine-items'", `'${routine}'`);
-const { meetingJsonLd, bodyJsonLd, localIso, meetingKind } = await import(dataUrl(transpile(source)));
+const { meetingJsonLd, bodyJsonLd, localIso, meetingKind, meetingSearchName, meetingSearchDescription } = await import(dataUrl(transpile(source)));
 
 const HOME = 'https://tahoepublicmeetings.org/';
 const body = { name: 'South Lake Tahoe City Council', url: `${HOME}meetings/south-lake-tahoe-city-council/`, officialUrl: 'https://www.cityofslt.us/' };
@@ -119,4 +119,13 @@ test('a body hub is a GovernmentOrganization with a breadcrumb', () => {
   const [org, crumbs] = bodyJsonLd({ ...body, homeUrl: HOME });
   assert.deepEqual(org, { '@type': 'GovernmentOrganization', '@id': `${body.url}#body`, name: body.name, url: body.officialUrl, mainEntityOfPage: body.url });
   assert.deepEqual(crumbs.itemListElement.map((crumb) => crumb.item), [HOME, body.url]);
+});
+
+test('the page title names the body, kind of meeting, and date; the snippet says when, where, and what', () => {
+  assert.equal(meetingSearchName(meeting(), body.name), 'South Lake Tahoe City Council Special Closed Session – November 3, 2026');
+  assert.equal(meetingSearchDescription(meeting(), body.name),
+    'Tuesday, November 3, 2026 at 5:30 PM · City Hall, Council Chambers, 1901 Lisa Maloff Way, South Lake Tahoe, CA. Agenda: Approve a contract for snow removal; Adopt the housing element; Budget hearing, and 1 more.');
+  assert.match(meetingSearchDescription(meeting({ status: 'canceled' }), body.name), /^Canceled · Tuesday, November 3, 2026 at 5:30 PM\. Agenda:/);
+  assert.equal(meetingSearchDescription(meeting({ startsAt: null, location: null, items: [] }), body.name),
+    'Tuesday, November 3, 2026. Agenda, official documents, and how to attend or comment on this South Lake Tahoe City Council meeting.');
 });

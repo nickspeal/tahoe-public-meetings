@@ -100,13 +100,37 @@ function description(meeting: Meeting, fallback: string): string {
   return fallback;
 }
 
+/**
+ * The meeting's name as residents search for it, also its page title and search-result headline:
+ * "South Lake Tahoe City Council Special Closed Session – October 26, 2026".
+ */
+export function meetingSearchName(meeting: Meeting, bodyName: string): string {
+  const day = localDate(meeting);
+  // A per-record host (agency "Other") is a one-off meeting: its own title and host say more than the catch-all body.
+  const baseName = meeting.host ? meeting.title.replace(/\s+/g, ' ').trim() : `${bodyName} ${meetingKind(meeting.title)}`;
+  return day ? `${baseName} – ${dateLabel(day)}` : baseName;
+}
+
+/**
+ * The search-result snippet: when the meeting is, then what is on it.
+ * "Tuesday, November 17, 2026 at 5:30 PM. Planned subjects: Ordinance Increasing City Council Compensation; …"
+ */
+export function meetingSearchDescription(meeting: Meeting, bodyName: string): string {
+  const day = localDate(meeting);
+  const when = meeting.startsAt
+    ? new Intl.DateTimeFormat('en-US', { timeZone: meeting.timezone, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(meeting.startsAt))
+    : day ? new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date(`${day}T12:00:00Z`)) : null;
+  const canceled = eventStatus(meeting) === `${SCHEMA}EventCancelled`;
+  const lead = [canceled ? 'Canceled' : null, when, meeting.location && !canceled ? meeting.location.replace(/\s+/g, ' ').trim() : null].filter(Boolean).join(' · ');
+  const body = description(meeting, `Agenda, official documents, and how to attend or comment on this ${meeting.host ?? bodyName} meeting.`);
+  return lead ? `${lead}. ${body}` : body;
+}
+
 export function meetingJsonLd(meeting: Meeting, ctx: { url: string; body: BodyRef; homeUrl: string }): Node[] {
   if (meeting.kind === 'forecast') return [];
   const day = localDate(meeting);
   const startDate = meeting.startsAt ? localIso(meeting.startsAt, meeting.timezone) : day;
-  // A per-record host (agency "Other") is a one-off meeting: its own title and host say more than the catch-all body.
-  const baseName = meeting.host ? meeting.title.replace(/\s+/g, ' ').trim() : `${ctx.body.name} ${meetingKind(meeting.title)}`;
-  const name = day ? `${baseName} – ${dateLabel(day)}` : baseName;
+  const name = meetingSearchName(meeting, ctx.body.name);
   const trail = breadcrumbs(ctx.homeUrl, [{ name: ctx.body.name, url: ctx.body.url }, { name, url: ctx.url }]);
   if (!startDate) return [trail];
 

@@ -54,21 +54,40 @@ def test_a_skipped_consent_letter_becomes_a_placeholder():
     assert [i for i in result.items if is_placeholder(i)] == [placeholder]
     assert "Douglas County Board of Commissioners agenda skips item 9.E; it is listed as “Not Found In Agenda”; review required." \
         in result.notes
-    # "6.68 acres ..." inside item 12 reads like a dotted label; it is passed over with the existing warning text.
-    assert any(n.startswith("Douglas County Board of Commissioners agenda numbering is not sequential near “6.68 acres")
-               for n in result.notes)
+    # "6.68 acres ..." wraps under item 12's title column and reads like a dotted label: it is description text,
+    # passed over without a note.
+    assert not any("numbering is not sequential" in n for n in result.notes)
     assert numbers[-6:] == ["12", "13.1", "13.2", "14", "15", "16"]
 
 
 def test_indentation_that_contradicts_sequential_numbers_gives_a_flat_list():
-    # Items 8-20 are printed indented like subitems; 21 returns to the margin.
+    # Items 8-20 are printed indented like subitems; 21 returns to the margin. Only the indentation differs, and the
+    # number wins (decision 0032), so nothing is skipped and nothing is noted.
     fixture, pages = _layout_fixture("washoe-commissioners--2026-10-27")
     result = parse_agenda(fixture["agency"], [{"id": "doc"}], pages)
     assert result.complete and len(result.items) == 41
     top = [i["source_number"] for i in result.items if i["source_number"] and "." not in i["source_number"]]
     assert top == [str(n) for n in [1, 2, 3, 4] + list(range(8, 23))]
-    assert result.notes == ("Washoe County Board of Commissioners agenda numbering is not sequential near "
-                            "“21.    Public Comment. Comment heard under this item will be”; review required.",)
+    assert result.notes == ()
+
+
+def test_a_numbered_line_out_of_sequence_at_the_margin_is_still_noted():
+    # The same Douglas line moved to the margin is a stray label, not description text under item 12.
+    fixture, pages = _layout_fixture("douglas-commissioners--2026-11-05")
+    moved = _replace(pages, "          6.68 acres into", "6.68 acres into")
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], moved)
+    assert result.complete
+    assert any(n.startswith("Douglas County Board of Commissioners agenda numbering is not sequential near “6.68 acres")
+               for n in result.notes)
+
+
+def test_a_layout_failure_names_the_document_once():
+    fixture, pages = _layout_fixture("washoe-commissioners--2026-10-27")
+    # A canceled meeting's agenda holds only its adjournment, as on Sept 22 and Oct 20, 2026.
+    first = pages[0]["text"].split("\n")
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], [dict(pages[0], text="\n".join(first[:12]) + "\n\n10:00 a.m. Adjournment\n")])
+    assert not result.complete
+    assert result.warning == "Washoe County Board of Commissioners agenda items were not found; review required."
 
 
 def _stpud():

@@ -487,12 +487,18 @@ class Parser:
                         len(found[0][1].group("indent")) > reference[0] + layout.indent_tolerance:
                     continue  # a numbered list inside an item's description
                 # Strict reading failed: bridge a short gap or ignore indentation, else pass over the line.
+                # A lenient reading of the next expected number differs only in indentation: the number wins, with
+                # no note (decision 0032). Skipped labels are noted as they are filled.
                 choice = self.choose(row, found, stack, level_indent, started, lenient=idx)
                 if choice is None and found[0][0] == 0 and self.end.search(found[0][1].group("t").strip()):
                     choice = (0, found[0][1], ())  # a numbered ending ("18. Adjournment") still ends the agenda
-                if choice is None or not choice[2]:
-                    self.out_of_sequence(stripped)  # skipped labels are noted as they are filled
+                    self.out_of_sequence(stripped)
                 if choice is None:
+                    if not (reference and reference[2] == row.page and not row.page_start and
+                            len(found[0][1].group("indent")) >= reference[1] - 1):
+                        # A line at or past the open item's title column ("6.68 acres …" wrapped under
+                        # item 12) is its description, not a stray label.
+                        self.out_of_sequence(stripped)
                     continue
             skipped = ()
             if choice is not None:
@@ -587,12 +593,13 @@ class Parser:
                                    segment if segment in row.raw else "", None))
                 stack = stack[:1]
                 continue
+        # Layout labels already name the document ("… Board agenda", "… workshop notice").
         if start is not None:
-            raise Invalid(f"{layout.label} agenda heading was not found; review required.")
+            raise Invalid(f"{layout.label} heading was not found; review required.")
         if not started:
-            raise Invalid(f"{layout.label} agenda items were not found; review required.")
+            raise Invalid(f"{layout.label} items were not found; review required.")
         if not ended:
-            raise Invalid(f"{layout.label} agenda ending was not found; review required.")
+            raise Invalid(f"{layout.label} ending was not found; review required.")
         self.appendices(roots)
         self.addendum(roots)
         return roots

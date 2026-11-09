@@ -18,6 +18,7 @@ from .one_offs import load_one_offs
 from .duration_ops import detect_from_minutes, duration_report, format_report, set_duration
 from . import (ai_topics, alerts, backfill, coverage, evaluate_topics, hand_built, item_summaries, notices, participation, short_titles,
                planning_calendars, previews, scheduled, staff_reports)
+from . import retired_warnings
 from .schedules import DEFAULT_FORECAST_DAYS, describe, learn_schedules_report, write_schedules
 
 
@@ -230,6 +231,9 @@ def _parser() -> argparse.ArgumentParser:
     clean.add_argument("--root", default=".", help="Repository checkout holding tests/fixtures/meetings.json and "
                        "docs/research/verified-agency-meetings/ (default: the working directory)")
     clean.add_argument("--apply", action="store_true", help="Write the changes (default: report only)")
+    retired = sub.add_parser("clean-retired-warnings", help="Remove stored meeting warnings no code writes any more "
+                             "(decision 0037); dry run unless --apply")
+    retired.add_argument("--apply", action="store_true", help="Write the changes (default: report only)")
     publish = sub.add_parser("publish-export",help="Validate an export file, store it in public_exports, and call the deploy hook if set")
     publish.add_argument("--file", required=True)
     publish.add_argument("--min-meetings", type=int, default=1)
@@ -352,6 +356,8 @@ def main(argv=None) -> int:
             return 1 if result["failed"] else 0
         elif args.command == "clean-hand-built":
             print(json.dumps(hand_built.clean_hand_built(conn, Path(args.root), dry_run=not args.apply), indent=2, default=str))
+        elif args.command == "clean-retired-warnings":
+            print(json.dumps(retired_warnings.clean_retired_warnings(conn, dry_run=not args.apply), indent=2))
         elif args.command == "learn-schedules":
             return _learn_schedules(conn, args)
         elif args.command == "export":

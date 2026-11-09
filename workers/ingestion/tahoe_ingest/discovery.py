@@ -122,14 +122,23 @@ def _pdf_links(markup: str, base: str, agency: str) -> list[dict]:
 # A WordPress REST collection of meeting posts (`indexUrl`, e.g. .../wp-json/wp/v2/meeting).
 # A board and its committees can share one feed; `bodyPattern` selects one by post title.
 
+CANCELED_TITLE = re.compile(r"\bcancel(?:l?ed|l?ation)\b", re.I)
+
+
 def _wordpress_post(agency: str, config: dict, record: dict, title: str, fetch) -> dict:
-    """One post as a candidate: its uploaded PDFs, with IDs prefixed by `documentIdPrefix` (default: the agency ID)."""
+    """One post as a candidate: its uploaded PDFs, with IDs prefixed by `documentIdPrefix` (default: the agency ID).
+
+    A post titled as canceled ("… – October 5, 2026- CANCELED") is the meeting, canceled. A post states nothing
+    else about its status, so others are left for capture to record as unknown.
+    """
     page_url = record["link"]
     page = fetch(page_url)
     docs = [d for d in _pdf_links(page, page_url, config.get("documentIdPrefix", agency)) if "/wp-content/uploads/" in d["url"]]
-    return {"agency": agency, "source_id": str(record["id"]), "title": title, "official_url": page_url,
-            "documents": docs, "source_modified": record.get("modified"),
-            "warnings": ["Meeting date and agenda items require source review."]}
+    row = {"agency": agency, "source_id": str(record["id"]), "title": title, "official_url": page_url,
+           "documents": docs, "source_modified": record.get("modified"), "warnings": []}
+    if CANCELED_TITLE.search(title):
+        row["status"] = "canceled"
+    return row
 
 
 def wordpress_meetings(agency: str, config: dict, *, limit: int = 5, fetch=fetch_text, delay: float = 2.0) -> list[dict]:
@@ -233,7 +242,7 @@ def _granicus_id_rows(agency: str, config: dict, markup: str):
                     "documents": [{"id": f"{agency}-agenda", "title": "Agenda", "url": agenda},
                                   *(d for d in _pdf_links(row, index, agency)
                                     if d["url"] != agenda and not re.fullmatch(rf"{re.escape(agency)}-agenda(-[0-9a-f]{{12}})?", d["id"]))],
-                    "warnings": ["Publisher row date/time and agenda items require source review."],
+                    "warnings": [],
                     **granicus_links(links, html.unescape(row), index)}
 
 

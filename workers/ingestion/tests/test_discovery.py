@@ -73,6 +73,18 @@ def test_granicus_row_ids_use_clip_id_row_title_and_agenda_viewer_before_packet(
     assert rows[0]["documents"] == [{"id": "slt-agenda", "title": "Agenda", "url": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2351"},
                                     {"id": "slt-agenda-packet", "title": "Agenda Packet", "url": "https://d3n.example/slt/packet.pdf"}]
     assert [d["id"] for d in rows[1]["documents"]] == ["slt-agenda"]
+    # No blanket caveat: a failed parse records its own specific warning at capture.
+    assert all(r["warnings"] == [] for r in rows)
+
+
+def test_a_wordpress_post_titled_canceled_is_a_canceled_meeting():
+    titles = {7112: "Regional Transit and Capital Programs Committee – October 5, 2026- CANCELED",
+              7174: "TTD Regional and Transit Capital Programs Committee Meeting – November 2, 2026"}
+    api = json.dumps([{"id": i, "link": f"https://tahoetransportation.org/meeting/{i}/", "title": {"rendered": t},
+                       "modified": "2026-10-13"} for i, t in titles.items()])
+    rows = wordpress_meetings("ttd-rtcpc", wordpress(RTCPC), limit=5, fetch=lambda url: api if "wp-json" in url else "", delay=0)
+    assert {r["source_id"]: r.get("status") for r in rows} == {"7112": "canceled", "7174": None}
+    assert all(r["warnings"] == [] for r in rows)
 
 
 def test_document_identifiers_do_not_depend_on_link_order():

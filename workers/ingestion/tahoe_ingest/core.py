@@ -30,6 +30,8 @@ from .outline import NOT_PLACEHOLDER_SQL, is_placeholder
 
 TOPICS = public_topics()
 AGENCIES = followed_agencies()
+# Added when a source change voids the summaries of published items that a partial capture did not reparse.
+REPROCESSING_WARNING = "A source PDF changed; affected agenda items await reprocessing."
 
 
 def connect(url: str) -> psycopg.Connection:
@@ -606,7 +608,8 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                      (meeting_id, list(incoming_document_ids)))
     if (revised_documents or source_set_changed) and not items_complete:
         # A PDF changed before its items were parsed. Never leave its old summary published.
-        for item_row in conn.execute("SELECT id,citations FROM agenda_items WHERE meeting_id=%s", (meeting_id,)):
+        invalidated = 0
+        for item_row in conn.execute("SELECT id,citations,active FROM agenda_items WHERE meeting_id=%s", (meeting_id,)):
             if item_row["id"] in seen_items:
                 # These items were just processed against incoming source text.
                 # A partial item list only leaves the other items unprocessed.
@@ -619,7 +622,10 @@ def _ingest_meeting(conn, row, aid, source_id, meeting_id, mode, captured_at=Non
                     SELECT item_id,'','pending',method,source_fingerprint,'[]'::jsonb,
                     'Source PDF revised; item requires reprocessing' FROM summaries WHERE item_id=%s""", (item_row["id"],))
                 conn.execute("UPDATE agenda_items SET change='revised',updated_at=now(),citations='[]'::jsonb WHERE id=%s", (item_row["id"],))
-        conn.execute("UPDATE meetings SET warnings=warnings || %s::jsonb WHERE id=%s", (json.dumps(["A source PDF changed; affected agenda items await reprocessing."]), meeting_id))
+                invalidated += bool(item_row["active"])
+        if invalidated and REPROCESSING_WARNING not in meeting_warnings:
+            # Only when a published item lost its summary; a meeting without items has nothing awaiting reprocessing.
+            conn.execute("UPDATE meetings SET warnings=warnings || %s::jsonb WHERE id=%s", (json.dumps([REPROCESSING_WARNING]), meeting_id))
     if old and (revised_documents or source_set_changed or changed_items or withdrawn_count or changed_topics):
         _touch_meeting(conn, meeting_id)
     if mode == "live":
@@ -934,7 +940,7 @@ def export_public(conn, *, mode="live", forecast_days: int = 0, today: date | No
             meeting["location"], meeting["participation"] = merged_participation(
                 meeting["location"], meeting["participation"], None, AGENCIES[meeting["agencyId"]].get("participation"))
     return {"schemaVersion": 2, "generatedAt": generated_at, "mode": mode,
-            "coverageNote": "Meetings and agenda items shown are limited to the official source documents processed so far. Check each agency's source and meeting warnings for gaps.",
+            "coverageNote": "Meetings and agenda items shown are limited to the official source documents processed so far.",
             "agencies": agencies, "topics": TOPICS, "meetings": meetings, "commentPeriods": comment_periods}
 
 

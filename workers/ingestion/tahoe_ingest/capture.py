@@ -284,6 +284,10 @@ def _capture_row(candidate: dict, max_documents: int, fetch, failures: list, fai
     if parsed and parsed.complete:
         warnings = [w for w in warnings if "agenda items require" not in w.lower()]
         warnings.extend(parsed.notes)  # irregular numbering published for review (decision 0032)
+    elif candidate.get("status") == "canceled":
+        pass  # A cancellation notice is not expected to parse; its items, if any parse, are still stored above.
+    elif parsed and not parsed.warning:
+        pass  # No captured document is an agenda (minutes, a supplement): availability is derived, nothing to review.
     elif parsed or docs:
         warnings.append(parsed.warning if parsed else
                         f"The listing links {listed} documents, more than the {max_documents} capture reads; "

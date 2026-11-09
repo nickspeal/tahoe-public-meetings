@@ -274,3 +274,18 @@ def test_a_title_cut_at_the_line_limit_keeps_its_full_text():
     # A title within the limit has no full text, and the quote (the source fingerprint's evidence) is unchanged.
     assert all("full_title" not in i for i in result.items if i["title"].endswith((".", ")")) and len(i["title"]) < 200)
     assert len(cut["source_pages"][0]["quote"]) <= 300
+
+
+def test_tnt_tma_word_list_residue_is_not_an_item_number():
+    # January 8, 2026: Word's list numbering prints "1.​ DISCUSSION ITEMS" and "2.​ 1. Discussion about ...".
+    fixture, pages = _fixture("truckee-north-shore-tma--2026-01-08")
+    assert "2.​ 1. Discussion about" in pages[0]["text"]
+    result = parse_agenda(fixture["agency"], [{"id": "doc"}], pages)
+    assert result.complete and not result.notes
+    discussion = [i for i in result.items if i["section"] == "Discussion Items"]
+    assert [(i["source_number"], i["title"][:24]) for i in discussion] == [("1", "Discussion about TMA Hel")]
+    assert discussion[0]["full_title"].endswith("267 and Old Brockway Road")
+    assert not any(i["title"] == "DISCUSSION ITEMS" for i in result.items)
+    # Presenter and stray time lines end a title.
+    assert {i["title"] for i in result.items} >= {"TRPA Comprehensive Operational Analysis (COA) Presentation",
+                                                  "TMA Strategic Plan and Workplan, One-Year Review"}

@@ -12,8 +12,8 @@ from pathlib import Path
 import psycopg
 import pytest
 
-from tahoe_ingest import (ai_topics, alerts, capture, cli, item_summaries, notices, participation, previews, scheduled, source,
-                          staff_reports)
+from tahoe_ingest import (ai_topics, alerts, capture, cli, item_summaries, notices, participation, previews, scheduled, short_titles,
+                          source, staff_reports)
 from tahoe_ingest.core import init_db
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -154,7 +154,7 @@ class NoCalls:
 @pytest.fixture
 def stub_claude(monkeypatch):
     NoCalls.sent = []
-    for module in (ai_topics, item_summaries, notices, participation, previews):
+    for module in (ai_topics, item_summaries, notices, participation, previews, short_titles):
         monkeypatch.setattr(module, "AnthropicTopicModel", NoCalls)
         monkeypatch.setattr(module, "has_credentials", lambda: True)
     return NoCalls.sent

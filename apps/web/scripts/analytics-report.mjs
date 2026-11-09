@@ -39,7 +39,15 @@ export function dateRange(days, now = new Date()) {
 
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
-export function createClient({ token, fetchImpl = fetch, gap = REQUEST_GAP_MS }) {
+/**
+ * Waits before each retry of a failed request. GoatCounter has answered a valid stats request with
+ * `404 {"error":"not found"}` once and then succeeded on the same request moments later, so a 404 is
+ * retried along with rate limiting (429) and server errors. A bad token is a 401 and fails at once.
+ */
+const RETRY_DELAYS_MS = [2000, 5000];
+const RETRYABLE_STATUS = new Set([404, 429, 500, 502, 503, 504]);
+
+export function createClient({ token, fetchImpl = fetch, gap = REQUEST_GAP_MS, retryDelays = RETRY_DELAYS_MS }) {
   let last = 0;
   return async function get(site, path, params = {}) {
     const url = new URL(`/api/v0/${path}`, site);
@@ -47,13 +55,23 @@ export function createClient({ token, fetchImpl = fetch, gap = REQUEST_GAP_MS })
       if (Array.isArray(value)) value.forEach((item) => url.searchParams.append(key, String(item)));
       else if (value !== undefined && value !== null) url.searchParams.set(key, String(value));
     }
-    const wait = last + gap - Date.now();
-    if (wait > 0) await sleep(wait);
-    last = Date.now();
-    const response = await fetchImpl(url.href, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } });
-    const text = await response.text();
-    if (!response.ok) throw new Error(`${url.pathname} on ${url.host}: HTTP ${response.status} ${text.slice(0, 200)}`);
-    return JSON.parse(text);
+    for (let attempt = 0; ; attempt += 1) {
+      const wait = last + gap - Date.now();
+      if (wait > 0) await sleep(wait);
+      last = Date.now();
+      let response;
+      try {
+        response = await fetchImpl(url.href, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } });
+      } catch (error) {
+        if (attempt < retryDelays.length) { await sleep(retryDelays[attempt]); continue; }
+        throw new Error(`${url.pathname} on ${url.host}: ${error.message}`);
+      }
+      const text = await response.text();
+      if (response.ok) return JSON.parse(text);
+      if (RETRYABLE_STATUS.has(response.status) && attempt < retryDelays.length) { await sleep(retryDelays[attempt]); continue; }
+      const tries = attempt + 1;
+      throw new Error(`${url.pathname} on ${url.host}: HTTP ${response.status} ${text.slice(0, 200)}${tries > 1 ? ` (after ${tries} attempts)` : ''}`);
+    }
   };
 }
 

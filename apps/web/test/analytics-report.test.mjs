@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildReport, dateRange, main, siteUrls } from '../scripts/analytics-report.mjs';
+import { buildReport, createClient, dateRange, main, siteUrls } from '../scripts/analytics-report.mjs';
 
 const env = {
   GOATCOUNTER_API_TOKEN: 'read-token',
@@ -61,6 +61,22 @@ test('the report compares both sites per day and per path and lists events', asy
   assert.deepEqual(report.events, [{ path: 'outbound-agenda', event: true, count: 6 }]);
   assert.ok(lines.some((line) => line.includes('tracked 75%')));
   assert.ok(lines.some((line) => line.includes('outbound-agenda')));
+});
+
+test('a passing 404, rate limit, or server error is retried; a bad token is not', async () => {
+  const answers = [new Response('{"error":"not found"}', { status: 404 }), new Response('slow down', { status: 429 }), new Response('{"total":1}', { status: 200 })];
+  let calls = 0;
+  const get = createClient({ token: 't', gap: 0, retryDelays: [0, 0], fetchImpl: async () => answers[calls++] });
+  assert.deepEqual(await get('https://example.goatcounter.com', 'stats/total'), { total: 1 });
+  assert.equal(calls, 3);
+
+  let unauthorized = 0;
+  const denied = createClient({ token: 'bad', gap: 0, retryDelays: [0, 0], fetchImpl: async () => { unauthorized += 1; return new Response('unknown token', { status: 401 }); } });
+  await assert.rejects(denied('https://example.goatcounter.com', 'stats/total'), /HTTP 401 unknown token$/);
+  assert.equal(unauthorized, 1);
+
+  const down = createClient({ token: 't', gap: 0, retryDelays: [0, 0], fetchImpl: async () => new Response('oops', { status: 503 }) });
+  await assert.rejects(down('https://example.goatcounter.com', 'stats/total'), /HTTP 503 oops \(after 3 attempts\)/);
 });
 
 test('without a baseline site only the main site is reported', () => {

@@ -15,6 +15,7 @@ class Page(HTMLParser):
         self.ids = set()
         self.links = []
         self.h1 = self.main = 0
+        self.document = False  # Static files such as a search console verification token are not pages.
         self.redirect = False  # Astro's redirect pages (comment periods that moved) are a bare meta refresh.
         self.language = None
         self.feed(path.read_text())
@@ -26,6 +27,7 @@ class Page(HTMLParser):
         if tag == "meta" and (values.get("http-equiv") or "").lower() == "refresh":
             self.redirect = True
         if tag == "html":
+            self.document = True
             self.language = values.get("lang")
         if tag == "main":
             self.main += 1
@@ -52,7 +54,7 @@ def main():
     served_paths = {"/"}
     for path, page in pages.items():
         label = str(path.relative_to(root))
-        if not page.redirect and (page.h1 != 1 or page.main != 1 or page.language != "en"):
+        if page.document and not page.redirect and (page.h1 != 1 or page.main != 1 or page.language != "en"):
             errors.append(f"{label}: expected one h1, one main, and lang=en")
         for href in page.links:
             parsed = urlsplit(href)

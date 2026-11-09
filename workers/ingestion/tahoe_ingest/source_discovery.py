@@ -42,7 +42,10 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'meeting-post-feed':{'title','scheduleUrl'},
        'dated-page-links':{'title','headingPattern'},
        'dated-sections':{'title','idPrefix','documentPattern','pages'},
-       'simbli':{'title'}}
+       'simbli':{'title'},
+       'wordpress-media':{'title','idPrefix','search','noticeUrl'},
+       'file-links':{'title','idPrefix'},
+       'tribe-events':{'title','horizonDays'}}
 # Rows of these types state no meeting date, so a scheduled run cannot window them before
 # reading, and each costs a page fetch: it bounds them by count instead.
 UNDATED_TYPES=frozenset({'wordpress-meetings'})
@@ -67,8 +70,9 @@ def validate_discovery(agency):
         raise ValueError(f'invalid source configuration: {aid}: sectionTitles are objects of headingPattern, title, and idSuffix')
     for rule in sections:
         re.compile(rule['headingPattern'],re.I)
-    if 'scheduleUrl' in config and not str(config['scheduleUrl']).startswith('https://'):
-        raise ValueError(f'invalid source configuration: {aid}: scheduleUrl must be https')
+    for key in ('scheduleUrl','noticeUrl'):
+        if key in config and not str(config[key]).startswith('https://'):
+            raise ValueError(f'invalid source configuration: {aid}: {key} must be https')
     if 'pages' in config:
         from .page_discovery import validate_section_pages
         validate_section_pages(aid,config['pages'])
@@ -83,6 +87,7 @@ def date_in(text):
                          (r'\b\d{1,2}/\d{1,2}/\d{4}\b','%m/%d/%Y'),
                          (r'\b\d{4}\.\d{2}\.\d{2}\b','%Y.%m.%d'),
                          (r'\b\d{1,2}\.\d{1,2}\.\d{2}\b','%m.%d.%y'),
+                         (r'\b\d{1,2}\.\d{1,2}\.\d{4}\b','%m.%d.%Y'),
                          (r'\b\d{4}-[A-Za-z]+-\d{1,2}\b','%Y-%B-%d'),
                          (r'\b[A-Za-z]{3} \d{1,2},? \d{4}\b','%b %d %Y'),
                          (r'\b\d{1,2}-\d{1,2}-\d{4}\b','%m-%d-%Y'),
@@ -296,6 +301,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind in {'dated-page-links','dated-sections'}:
         from . import page_discovery  # imports this module's helpers
         return getattr(page_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
+    if kind in {'wordpress-media','file-links','tribe-events'}:
+        from . import file_discovery  # imports this module's helpers
+        return getattr(file_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
     if kind=='simbli':
         from . import board_portal_discovery  # imports this module's helpers
         return board_portal_discovery.simbli(agency,config,limit,fetch)
@@ -934,6 +942,9 @@ def discover_configured_range(agency, config, *, since, until, fetch=fetch_text,
     if kind=='civicclerk':
         found,earliest=civicclerk_range(agency,config,since,until,fetch=fetch)
         return found,earliest,False
+    if kind in {'wordpress-media','tribe-events'}:
+        from . import file_discovery
+        return (*getattr(file_discovery,kind.replace('-','_')+'_range')(agency,config,since,until,fetch),kind=='tribe-events')
     template=config.get('indexUrlTemplate')
     if template and '{year}' in template:
         rows=[]

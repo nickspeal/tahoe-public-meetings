@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { shown } from './helpers/shown-items.mjs';
 import ts from 'typescript';
+import { meetingFile } from './helpers/meeting-paths.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const source = await readFile(resolve(root, 'src/lib/source-links.ts'), 'utf8');
@@ -44,8 +45,7 @@ test('every cited agenda item on a built meeting page links to its official page
   const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
   const meeting = data.meetings.find((candidate) => candidate.items.some((item) => item.citations.length));
   assert.ok(meeting, 'export should include a meeting with cited agenda items');
-  const routeId = encodeURIComponent(meeting.id).replaceAll('%3A', ':');
-  const html = await readFile(resolve(root, 'dist', 'meetings', routeId, 'index.html'), 'utf8');
+  const html = await readFile(await meetingFile(meeting), 'utf8');
   const page = new JSDOM(html).window.document;
   for (const item of meeting.items.filter((candidate) => shown(candidate) && candidate.citations.length)) {
     const expected = links.itemSourceLink(meeting, item);

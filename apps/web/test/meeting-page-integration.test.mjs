@@ -5,17 +5,14 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { shown } from './helpers/shown-items.mjs';
+import { meetingFile } from './helpers/meeting-paths.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
 const topicRank = new Map(data.topics.map((topic, index) => [topic.id, index]));
 
-function routeId(id) {
-  return encodeURIComponent(id).replaceAll('%3A', ':');
-}
-
 async function meetingDocument(meeting) {
-  const html = await readFile(resolve(root, 'dist', 'meetings', routeId(meeting.id), 'index.html'), 'utf8');
+  const html = await readFile(await meetingFile(meeting), 'utf8');
   return new JSDOM(html).window.document;
 }
 

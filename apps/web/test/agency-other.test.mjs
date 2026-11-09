@@ -5,6 +5,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import ts from 'typescript';
+import { meetingFile } from './helpers/meeting-paths.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const publicData = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
@@ -72,7 +73,7 @@ test('?agency=other shows only Other meetings, and an unused Other is ignored', 
 
 test('a meeting under Other names its host on its card and page', async () => {
   for (const meeting of publicData.meetings.filter((candidate) => candidate.agencyId === 'other' && candidate.kind !== 'forecast')) {
-    const page = await readFile(resolve(root, 'dist/meetings', ...encodeURIComponent(meeting.id).replaceAll('%3A', ':').split('/'), 'index.html'), 'utf8');
+    const page = await readFile(await meetingFile(meeting), 'utf8');
     const document = new JSDOM(page).window.document;
     assert.equal(document.querySelector('.meeting-detail-hero .eyebrow').textContent, meeting.host);
     assert.ok(!page.includes('>Other<'));

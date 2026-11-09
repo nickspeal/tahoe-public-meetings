@@ -1,0 +1,30 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import MeetingCard from '../../../components/MeetingCard.astro';
+import { clickEvent } from '../../../lib/analytics';
+import { bodyHubs, formatDate, meetingDateLabel, meetingHref, type BodyHub } from '../../../lib/data';
+// One page per public body, at the slug its meetings live under: the page people searching for the body should find.
+export function getStaticPaths() { return bodyHubs().map((hub) => ({ params: { body: hub.slug }, props: { hub } })); }
+const { hub } = Astro.props as { hub: BodyHub };
+const next = hub.next;
+// Same wording as the meeting page's time line, so the two never disagree.
+const nextWhen = next ? (next.startsAt ? formatDate(next.startsAt, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : meetingDateLabel(next, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })) : null;
+const description = next
+  ? `Next ${hub.name} meeting: ${nextWhen}. Agendas, schedules, minutes and recordings.`
+  : `${hub.name} meeting agendas, schedules, minutes and recordings.`;
+const schedule = hub.scheduleBasis ? hub.scheduleBasis.replace(/^Usually\b/, 'usually') : null;
+---
+<SiteLayout title={`${hub.name} meetings`} description={description}>
+  <section class="page-hero compact"><div class="section-wrap"><p class="eyebrow">Public body</p><h1>{hub.name} meetings</h1>
+    <p class="page-intro">{next ? <>The next meeting is <a href={meetingHref(next)}>{nextWhen}</a>{next.location && <>, at {next.location}</>}.{next.planned && ' It is planned and subject to change.'}</> : 'No upcoming meeting is listed yet.'}{schedule && <> Regular schedule: {schedule}.</>}</p>
+    {hub.officialUrl && <p class="page-intro"><a href={hub.officialUrl} target="_blank" rel="noopener noreferrer" {...clickEvent('outbound-agency', Astro.url.pathname, hub.agencyId)}>Official website ↗</a></p>}
+  </div></section>
+  <section class="section-wrap content-section" aria-labelledby="upcoming-meetings">
+    <div class="content-heading"><h2 id="upcoming-meetings">Upcoming meetings</h2></div>
+    {hub.upcoming.length ? <div class="body-meetings">{hub.upcoming.map((meeting) => <MeetingCard meeting={meeting} />)}</div> : <p class="muted-panel">No upcoming meetings are listed yet. Agencies usually post them a few days to a few weeks ahead.</p>}
+  </section>
+  {hub.past.length > 0 && <section class="section-wrap content-section" aria-labelledby="past-meetings">
+    <div class="content-heading"><h2 id="past-meetings">Past meetings</h2><p>Most recent first. Open one for its agenda, minutes, and recording where published.</p></div>
+    <div class="body-meetings">{hub.past.map((meeting) => <MeetingCard meeting={meeting} />)}</div>
+  </section>}
+</SiteLayout>

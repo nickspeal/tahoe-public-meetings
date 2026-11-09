@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { meetingPath } from './helpers/meeting-paths.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const data = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
@@ -46,7 +47,7 @@ test('each comment period page shows its instructions, notice quote, and closed 
     assert.equal(document.querySelectorAll('.comment-period-meetings .meeting-card').length, expected.length);
     assert.equal(Boolean(document.querySelector('[aria-labelledby="related-meetings"] .muted-panel')), expected.length === 0);
     for (const meeting of expected.filter((candidate) => candidate.kind !== 'forecast')) {
-      assert.ok(document.querySelector(`.comment-period-meetings a[href="/meetings/${encodeURIComponent(meeting.id).replaceAll('%3A', ':')}/"]`), `${meeting.id} should link to its page`);
+      assert.ok(document.querySelector(`.comment-period-meetings a[href="${await meetingPath(meeting)}"]`), `${meeting.id} should link to its page`);
     }
     for (const link of document.querySelectorAll('.comment-period-summary a')) assert.ok(period.summary.includes(link.getAttribute('href')));
     assert.ok([...document.querySelectorAll('a')].some((link) => link.getAttribute('href') === period.officialUrl));

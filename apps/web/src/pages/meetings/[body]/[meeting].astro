@@ -1,12 +1,18 @@
 ---
-import SiteLayout from '../../layouts/SiteLayout.astro';
-import StatusPill from '../../components/StatusPill.astro';
-import CalendarDownload from '../../components/CalendarDownload.astro';
-import AgendaItemCard from '../../components/AgendaItemCard.astro';
-import { agendaGroups, displayedItems } from '../../lib/agenda-sections';
-import { clickEvent, documentEvent, type OutboundEvent } from '../../lib/analytics';
-import { agendaAvailability, agendaHistory, agendaSourceNote, agendaHistoryHeading, documentFetchLabel, documentStatusLabel, formatDate, meetingAgencyLabel, meetingDateLabel, meetingDateValue, meetingPreviews, meetingStateLabel, meetings, previewSourceHref, previewSourceLabel, residentWarning, sourceCheckLabel, topicHref, topics } from '../../lib/data';
-export function getStaticPaths() { return meetings.map((meeting) => ({ params: { id: meeting.id }, props: { meeting } })); }
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import StatusPill from '../../../components/StatusPill.astro';
+import CalendarDownload from '../../../components/CalendarDownload.astro';
+import AgendaItemCard from '../../../components/AgendaItemCard.astro';
+import { agendaGroups, displayedItems } from '../../../lib/agenda-sections';
+import { clickEvent, documentEvent, type OutboundEvent } from '../../../lib/analytics';
+import { agendaAvailability, agendaHistory, agendaSourceNote, agendaHistoryHeading, documentFetchLabel, documentStatusLabel, formatDate, meetingAgencyLabel, meetingDateLabel, meetingDateValue, meetingHref, meetingPreviews, meetingStateLabel, meetings, previewSourceHref, previewSourceLabel, residentWarning, sourceCheckLabel, topicHref, topics } from '../../../lib/data';
+// /meetings/<body slug>/<date>[-<qualifier>]/: meetingHref holds the rule and fails the build on a shared path.
+export function getStaticPaths() {
+  return meetings.map((meeting) => {
+    const [, , body, segment] = meetingHref(meeting).split('/');
+    return { params: { body, meeting: segment }, props: { meeting } };
+  });
+}
 const { meeting } = Astro.props;
 const groups = agendaGroups(meeting);
 const items = displayedItems(groups);
@@ -45,7 +51,7 @@ const availabilityDocument = meeting.documents.find((doc) => doc.url === availab
 const availabilityEvent: OutboundEvent = availabilityDocument ? documentEvent(availabilityDocument.title) : 'outbound-agency';
 ---
 <SiteLayout title={meeting.title} description={`Meeting information and agenda for ${meeting.title}`}>
-  <section class="meeting-detail-hero"><div class="section-wrap"><a class="back-link" href="/meetings/">← All meetings</a><div class="meeting-title-line"><div><p class="eyebrow">{meetingAgencyLabel(meeting) ?? 'Agency information not available'}</p><h1>{meeting.title}</h1>{noticeTopics.length > 0 && <div class="tag-row" aria-label="Meeting notice topics">{noticeTopics.map((topic) => <a class="tag" href={`/topics/${topic.id}/`}>{topic.name}</a>)}</div>}</div>{state && <StatusPill label={state} tone={stateTone} />}</div><p class="meeting-time">{when}</p>{meeting.planned && <p class="meeting-time-note">{PLANNED_NOTE}</p>}<div class="meeting-hero-meta">{meeting.location && <span>◷ &nbsp;{meeting.location}</span>}<a href={meeting.officialUrl} target="_blank" rel="noopener noreferrer" {...outbound('outbound-agency')}>Official meeting page ↗</a></div>{warnings.length > 0 && <div class="warning-note">{warnings.map((warning) => <p>{warning}</p>)}</div>}</div></section>
+  <section class="meeting-detail-hero"><div class="section-wrap"><a class="back-link" href="/">← All meetings</a><div class="meeting-title-line"><div><p class="eyebrow">{meetingAgencyLabel(meeting) ?? 'Agency information not available'}</p><h1>{meeting.title}</h1>{noticeTopics.length > 0 && <div class="tag-row" aria-label="Meeting notice topics">{noticeTopics.map((topic) => <a class="tag" href={`/topics/${topic.id}/`}>{topic.name}</a>)}</div>}</div>{state && <StatusPill label={state} tone={stateTone} />}</div><p class="meeting-time">{when}</p>{meeting.planned && <p class="meeting-time-note">{PLANNED_NOTE}</p>}<div class="meeting-hero-meta">{meeting.location && <span>◷ &nbsp;{meeting.location}</span>}<a href={meeting.officialUrl} target="_blank" rel="noopener noreferrer" {...outbound('outbound-agency')}>Official meeting page ↗</a></div>{warnings.length > 0 && <div class="warning-note">{warnings.map((warning) => <p>{warning}</p>)}</div>}</div></section>
   <section class="section-wrap detail-layout">
     <div class="detail-main">
       {(meeting.previewNotOnAgenda ?? []).map((project) => <p class="preview-not-on-agenda">{project}: not on the posted agenda.</p>)}
@@ -62,6 +68,6 @@ const availabilityEvent: OutboundEvent = availabilityDocument ? documentEvent(av
       : <section class="aside-card agenda-history"><p class="eyebrow">Source status</p><h2>Meeting record updated {formatDate(meeting.updatedAt)}</h2>{sourceNote && <p class="history-note history-source-note">{sourceNote}</p>}<p class="history-note">{sourceCheckLabel(meeting.lastCheckedAt)}.</p></section>}
     </aside>
   </section>
-  <script src="../../scripts/meeting-agenda-filter.ts"></script>
-  <script src="../../scripts/open-agenda-item.ts"></script>
+  <script src="../../../scripts/meeting-agenda-filter.ts"></script>
+  <script src="../../../scripts/open-agenda-item.ts"></script>
 </SiteLayout>

@@ -25,8 +25,7 @@ function visibleRows(document) {
 }
 
 function meetingId(row) {
-  const href = row.querySelector('.meeting-card-main').getAttribute('href');
-  return decodeURIComponent(new URL(href, 'http://localhost').pathname.split('/').filter(Boolean).at(-1));
+  return row.dataset.meetingId;
 }
 
 const click = (dom, element) => element.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));

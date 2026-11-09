@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { shown } from './helpers/shown-items.mjs';
 import ts from 'typescript';
+import { meetingFile, meetingPath } from './helpers/meeting-paths.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const publicData = JSON.parse(await readFile(resolve(root, 'src/data/public.json'), 'utf8'));
@@ -14,10 +15,6 @@ const openSource = await readFile(resolve(root, 'src/scripts/open-agenda-item.ts
 const transpile = (source) => ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 const filterScript = transpile(filterSource);
 const openScript = transpile(openSource);
-
-function routeId(id) {
-  return encodeURIComponent(id).replaceAll('%3A', ':');
-}
 
 function topicCombinationMeeting() {
   return publicData.meetings.find((meeting) => {
@@ -28,9 +25,9 @@ function topicCombinationMeeting() {
 }
 
 async function openMeeting(meeting, query = '') {
-  const html = await readFile(resolve(root, 'dist', 'meetings', routeId(meeting.id), 'index.html'), 'utf8');
+  const html = await readFile(await meetingFile(meeting), 'utf8');
   const dom = new JSDOM(html, {
-    url: `http://localhost/meetings/${routeId(meeting.id)}/${query}`,
+    url: `http://localhost${await meetingPath(meeting)}${query}`,
     runScripts: 'outside-only',
     pretendToBeVisual: true,
   });

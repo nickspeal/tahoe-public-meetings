@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **47 entries**. **40 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **33** have live discovery, **3** are blocked by a skipped endpoint, and **4** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **48 entries**. **41 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **34** have live discovery, **3** are blocked by a skipped endpoint, and **4** have no live discovery. 3 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -48,6 +48,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | `state-lands` | `meeting-post-feed` | [www.slc.ca.gov](https://www.slc.ca.gov/category/meeting/feed/) | `Commission Meeting` | — |
 | `truckee` | `municode` | [meetings.municode.com](https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA) | `Town Council` | `truckee-council` |
 | `ntpud` | `rss` | [ntpud.org](https://ntpud.org/category/meetings/feed/) | `Board of Directors` | `ntpud-board` |
+| `ltusd` | `simbli` | [simbli.eboardsolutions.com](https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030287) | `^Board of Education\b` | — |
 | `trpa-advisory` (extends `trpa-governing`) | `trpa` | [www.trpa.gov](https://www.trpa.gov/meeting-materials/) | `Advisory Planning Commission` | `trpa-apc` |
 | `trpa-governing` | `trpa` | [www.trpa.gov](https://www.trpa.gov/meeting-materials/) | `Governing Board` | `trpa-governing-board` |
 | `ttd` | `wordpress-meetings` | [tahoetransportation.org](https://tahoetransportation.org/wp-json/wp/v2/meeting) | `board` | `ttd` |
@@ -154,6 +155,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `placer-supervisors` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-tahoe-design-review` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `ctc` | published, not attached yet | Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet. |
+| `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

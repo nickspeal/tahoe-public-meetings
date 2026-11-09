@@ -17,7 +17,8 @@
     {"agency": "trpa-governing", "playlistId": "PLKbZed26aeuA8fh-HWQcwdhIwQM6uFTdL", "include": "\\bgoverning board\\b"},
     {"agency": "trpa-advisory", "playlistId": "PLKbZed26aeuC-_H0pVaaKhTScREvsGH-k", "include": "\\badvisory planning commission\\b"},
     {"agency": "stpud", "channelId": "UCCTZ5fNgs42NvLIseQd7OIw", "include": "\\bboard meeting\\b", "exclude": "\\bforum\\b"},
-    {"agency": "california-fish-game", "channelId": "UCTrLyrErKM3UNqI-3gBWLSg", "include": "\\bcommittee\\b"}
+    {"agency": "california-fish-game", "channelId": "UCTrLyrErKM3UNqI-3gBWLSg", "include": "\\bcommittee\\b"},
+    {"agency": "ltusd", "channelId": "UCHZeyuZYC9ZXKyTO2k-sJ5Q", "include": "\\bboard meeting\\b", "exclude": "\\bclosed session\\b"}
   ],
   "laserfiche": [
     {"agency": "truckee", "repo": "r-6a91ddbc", "folderId": 59909164}

@@ -2094,6 +2094,75 @@
     }
   },
   {
+    "id": "ltusd",
+    "name": "LTUSD — Board of Education",
+    "shortName": "LTUSD",
+    "aliases": [
+      "Lake Tahoe Unified School District",
+      "Lake Tahoe Unified",
+      "LTUSD Board of Trustees"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.ltusd.org/district-link/board-of-education",
+    "sourceUrl": "https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030287",
+    "participation": {
+      "watchUrl": "https://www.youtube.com/channel/UCHZeyuZYC9ZXKyTO2k-sJ5Q",
+      "instructions": "Attend in person at the District Office Boardroom, 1021 Al Tahoe Blvd., South Lake Tahoe, or watch live on the district's YouTube channel. Public comment procedures are printed in each agenda.",
+      "sourceUrl": "https://www.ltusd.org/district-link/board-of-education/board-meeting-schedule",
+      "checkedOn": "2026-11-09"
+    },
+    "discovery": {
+      "type": "simbli",
+      "indexUrl": "https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030287",
+      "bodyPattern": "^Board of Education\\b"
+    },
+    "staffReports": {
+      "published": true,
+      "note": "Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's 2026 Board Meeting Schedule (checked 2026-11-09): regular meetings on the second and fourth Thursdays, except no second-Thursday meeting in January, April, or July and no fourth-Thursday meeting in November or December (the December 11 annual organizational meeting is not a rule). No time is set: the page gives 6:00 PM for open session, but a closed session often starts at 5:00 PM and Simbli lists that start. Recheck when the 2027 schedule is posted.",
+      "rules": [
+        {
+          "ordinal": 2,
+          "weekday": "thursday",
+          "months": [
+            2,
+            3,
+            5,
+            6,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "timezone": "America/Los_Angeles",
+          "label": "Board of Education Regular Meeting"
+        },
+        {
+          "ordinal": 4,
+          "weekday": "thursday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "timezone": "America/Los_Angeles",
+          "label": "Board of Education Regular Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

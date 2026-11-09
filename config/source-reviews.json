@@ -1039,6 +1039,37 @@
         "note": "The index lists quarterly meetings since January 2025 and an August 2025 cancellation notice; four agendas (Oct 30 2025, Apr 30, Jul 30, Oct 29 2026) were captured and parsed."
       },
       "implementation": "Body-filtered Granicus discovery, a JPA agenda layout using the SLT commission headings, and the SLT commission staff report rule with the JPA's \"(JPA) Board Report\" heading."
+    },
+    {
+      "id": "SR-039",
+      "agencyId": "ltusd",
+      "name": "Lake Tahoe Unified School District Board of Education",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "The maintainer requested the Lake Tahoe Unified School District board. The district's agendas page links its Simbli (eBOARDsolutions) meeting listing, an empty grid that the page's script fills from the portal's listing API; each meeting page draws its agenda from the portal's agenda tree, and no agenda PDF or server-rendered agenda is public (the print views require a login).",
+      "nextStep": "Keep the board's live discovery; add the Citizens' Bond Oversight Committee from the same listing only if the maintainer asks.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "Official source",
+          "url": "https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030287"
+        },
+        {
+          "label": "November 12, 2026 meeting",
+          "url": "https://simbli.eboardsolutions.com/SB_Meetings/ViewMeeting.aspx?S=36030287&MID=91500"
+        },
+        {
+          "label": "Board meeting schedule",
+          "url": "https://www.ltusd.org/district-link/board-of-education/board-meeting-schedule"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-09",
+        "note": "The listing answered the project's user agent on 2026-11-09 with 114 meetings since June 2022 (board regular, special, joint special, and annual organizational meetings, and the bond oversight committee). The agenda trees of the 50 newest meetings all number their parts 1, 2, 3 ... with lettered items and an occasional roman third level. The November 12 and October 22, 2026 agendas were captured with 44 and 41 items."
+      },
+      "implementation": "A new `simbli` discovery type (tahoe_ingest/board_portal_discovery.py) repeats the listing page's own request and keeps rows titled \"Board of Education ...\"; capture reads each meeting page's agenda tree for its text and items, with no agenda layout. The 2026 schedule screenshot on the district site gives the forecast rules; recordings come from the district's YouTube channel. No staff report rule: item attachments open only through the portal's viewer."
     }
   ]
 }

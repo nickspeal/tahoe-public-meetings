@@ -41,7 +41,8 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'wordpress-meetings':{'documentIdPrefix'},
        'meeting-post-feed':{'title','scheduleUrl'},
        'dated-page-links':{'title','headingPattern'},
-       'dated-sections':{'title','idPrefix','documentPattern','pages'}}
+       'dated-sections':{'title','idPrefix','documentPattern','pages'},
+       'simbli':{'title'}}
 # Rows of these types state no meeting date, so a scheduled run cannot window them before
 # reading, and each costs a page fetch: it bounds them by count instead.
 UNDATED_TYPES=frozenset({'wordpress-meetings'})
@@ -295,6 +296,9 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind in {'dated-page-links','dated-sections'}:
         from . import page_discovery  # imports this module's helpers
         return getattr(page_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
+    if kind=='simbli':
+        from . import board_portal_discovery  # imports this module's helpers
+        return board_portal_discovery.simbli(agency,config,limit,fetch)
     if '{year}' in config.get('indexUrlTemplate',''):
         return yearly_pages(agency,config,limit,fetch)
     url=config.get('indexUrlTemplate',config['indexUrl'])

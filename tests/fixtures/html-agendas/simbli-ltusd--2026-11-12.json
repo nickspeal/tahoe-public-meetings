@@ -1,0 +1,228 @@
+{
+ "agency": "ltusd",
+ "source": "https://simbli.eboardsolutions.com/SB_Meetings/ViewMeeting.aspx?S=36030287&MID=91500",
+ "tree": "https://simbli.eboardsolutions.com/Services/api/GetAgendaTree/ (the meeting page's agenda tree)",
+ "note": "November 12, 2026 Board of Education Regular Meeting, fetched 2026-11-09. Items reviewed against the meeting as Simbli draws it: sixteen numbered parts (1 Call to Order at 5:00 PM through 16 Adjourn) and their lettered items, 44 in all; 14 Consent Agenda has items a-g; 15 Items for Consideration at Future Board Meetings has none.",
+ "expected": [
+  [
+   "1",
+   "CALL TO ORDER - 5:00 PM",
+   "CALL TO ORDER - 5:00 PM"
+  ],
+  [
+   "1.a",
+   "CALL TO ORDER - 5:00 PM",
+   "Pledge of Allegiance"
+  ],
+  [
+   "1.b",
+   "CALL TO ORDER - 5:00 PM",
+   "Roll Call"
+  ],
+  [
+   "2",
+   "ADOPT AGENDA",
+   "ADOPT AGENDA"
+  ],
+  [
+   "3",
+   "ANNOUNCEMENT OF ITEMS TO BE DISCUSSED IN CLOSED SESSION",
+   "ANNOUNCEMENT OF ITEMS TO BE DISCUSSED IN CLOSED SESSION"
+  ],
+  [
+   "3.a",
+   "ANNOUNCEMENT OF ITEMS TO BE DISCUSSED IN CLOSED SESSION",
+   "Conference with Legal Counsel - Anticipated Litigation [Government Code Section 54956.9(d)(2)]"
+  ],
+  [
+   "3.b",
+   "ANNOUNCEMENT OF ITEMS TO BE DISCUSSED IN CLOSED SESSION",
+   "Public Employee Performance Evaluation (Government Code Section 54957)"
+  ],
+  [
+   "4",
+   "ADJOURN TO CLOSED SESSION (Government Code Section 54957)",
+   "ADJOURN TO CLOSED SESSION (Government Code Section 54957)"
+  ],
+  [
+   "5",
+   "RECONVENE INTO REGULAR OPEN SESSION - 6:00 PM (no earlier than 6:00 p.m.)",
+   "RECONVENE INTO REGULAR OPEN SESSION - 6:00 PM (no earlier than 6:00 p.m.)"
+  ],
+  [
+   "6",
+   "REPORT ANY ACTION ON ITEMS FROM CLOSED SESSION",
+   "REPORT ANY ACTION ON ITEMS FROM CLOSED SESSION"
+  ],
+  [
+   "7",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)"
+  ],
+  [
+   "7.a",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)",
+   "Board Member Reports"
+  ],
+  [
+   "7.b",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)",
+   "Student Board Member Report"
+  ],
+  [
+   "7.c",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)",
+   "Superintendent Report"
+  ],
+  [
+   "7.d",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)",
+   "Employee Association Reports"
+  ],
+  [
+   "7.e",
+   "COMMUNICATION / REPORTS (Reports 7.a - 7.d limited to 5 minutes)",
+   "Public Comment"
+  ],
+  [
+   "8",
+   "STUDENT CELEBRATION",
+   "STUDENT CELEBRATION"
+  ],
+  [
+   "8.a",
+   "STUDENT CELEBRATION",
+   "South Tahoe High School"
+  ],
+  [
+   "9",
+   "LTUSD PARTNER ORGANIZATION UPDATES",
+   "LTUSD PARTNER ORGANIZATION UPDATES"
+  ],
+  [
+   "9.a",
+   "LTUSD PARTNER ORGANIZATION UPDATES",
+   "Tahoe Coalition for the Homeless"
+  ],
+  [
+   "10",
+   "STUDENT SERVICES",
+   "STUDENT SERVICES"
+  ],
+  [
+   "10.a",
+   "STUDENT SERVICES",
+   "Tahoe Alpine Special Education Local Plan Area (SELPA) Update"
+  ],
+  [
+   "10.b",
+   "STUDENT SERVICES",
+   "Recommendation for LTUSD representatives to Community Advisory Committee for the Tahoe Alpine Special Education Local Plan Area"
+  ],
+  [
+   "11",
+   "PERSONNEL SERVICES",
+   "PERSONNEL SERVICES"
+  ],
+  [
+   "11.a",
+   "PERSONNEL SERVICES",
+   "Memorandum of Understanding with Classified School Employee Association (CSEA) and Adjusted Salary Schedule"
+  ],
+  [
+   "11.b",
+   "PERSONNEL SERVICES",
+   "Approval of Revised Salary Schedules, Health and Welfare Contributions, and One-Time Payments for Unrepresented Employees"
+  ],
+  [
+   "12",
+   "BUSINESS SERVICES & OPERATIONS",
+   "BUSINESS SERVICES & OPERATIONS"
+  ],
+  [
+   "12.a",
+   "BUSINESS SERVICES & OPERATIONS",
+   "2026 Summary of the Fund Our Future Campaign"
+  ],
+  [
+   "13",
+   "BOARD GOVERNANCE",
+   "BOARD GOVERNANCE"
+  ],
+  [
+   "13.a",
+   "BOARD GOVERNANCE",
+   "Set Annual Organizational Meeting (AOM)"
+  ],
+  [
+   "13.b",
+   "BOARD GOVERNANCE",
+   "Resolution No. 2026-27 - 05 Amending the Conflict of Interest Code"
+  ],
+  [
+   "13.c",
+   "BOARD GOVERNANCE",
+   "Review proposed changes to the Board of Education Meeting Calendar"
+  ],
+  [
+   "13.d",
+   "BOARD GOVERNANCE",
+   "Revison to Board Policy 3350 Travel Expenses"
+  ],
+  [
+   "13.e",
+   "BOARD GOVERNANCE",
+   "Revision to Board Policy and Administrative Regulation 7211 Developer Fees"
+  ],
+  [
+   "14",
+   "CONSENT AGENDA",
+   "CONSENT AGENDA"
+  ],
+  [
+   "14.a",
+   "CONSENT AGENDA",
+   "Payment Order No. 2026-27 07"
+  ],
+  [
+   "14.b",
+   "CONSENT AGENDA",
+   "Board of Education Minutes"
+  ],
+  [
+   "14.c",
+   "CONSENT AGENDA",
+   "Personnel Order No. 2627-8"
+  ],
+  [
+   "14.d",
+   "CONSENT AGENDA",
+   "Resolution No. 2026-27 - 07 Board Compenation for Missed Board Meetings"
+  ],
+  [
+   "14.e",
+   "CONSENT AGENDA",
+   "El Dorado County Office of Education Williams Settlement Visits Report 10/12/2026"
+  ],
+  [
+   "14.f",
+   "CONSENT AGENDA",
+   "Quarterly Investment for the Period Ending 09/30/2026"
+  ],
+  [
+   "14.g",
+   "CONSENT AGENDA",
+   "Ratification for Measure U TVES Modernization Project Modification Costs"
+  ],
+  [
+   "15",
+   "ITEMS FOR CONSIDERATION AT FUTURE BOARD MEETINGS",
+   "ITEMS FOR CONSIDERATION AT FUTURE BOARD MEETINGS"
+  ],
+  [
+   "16",
+   "ADJOURN",
+   "ADJOURN"
+  ]
+ ]
+}

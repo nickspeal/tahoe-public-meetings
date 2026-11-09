@@ -37,6 +37,9 @@ def download_extract(url: str, *, max_bytes: int = MAX_PDF_BYTES) -> dict:
             raise ValueError(f"source is not a supported PDF, HTML, or plain text document: {content_type}")
         raw = fetched.path.read_bytes()  # pages and plain text are small, and bounded by max_bytes
     decoded = raw.decode("utf-8-sig", "replace")
+    from .board_portal_discovery import portal_agenda  # a portal meeting page whose script draws the agenda (Simbli)
+    if media_type == "text/html" and (portal := portal_agenda(url, decoded)) is not None:
+        return portal
     text = html_text(decoded) if media_type == "text/html" else decoded.strip()
     if any(marker in decoded.lower() for marker in ("<title>just a moment", "<title>access denied", "enable javascript and cookies to continue")):
         raise ValueError("source returned a browser challenge instead of document content")

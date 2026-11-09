@@ -50,10 +50,10 @@ For manual capture candidates, see the per-source URLs in the JSON and the [TCPU
 | SR-042 | Add and follow the Lake Tahoe Visitors Authority board (2026-11-09). | LTVA's HTML pages answer HTTP 403, so discovery reads its events calendar's public REST API (`tribe-events`) and only events titled for the board. |
 | SR-043 | Add and follow the LTVA Marketing Services Committee (2026-11-09). | Same events API; it posts discussion topics rather than a numbered agenda, so no items are listed. |
 | SR-044 | Add and follow the South Lake Tahoe Tourism Improvement District board (2026-11-09). | [Official agendas page](https://southtahoetourism.com/agendas%2Fminutes%2Fnotices); a `file-links` type reads its dated downloads, and capture reads its Word (.docx) agendas with their list numbering. |
+| SR-045 | Keep the Tahoe Truckee Unified School District board listed with a coverage note; agenda acquisition blocked (2026-11-09). | Its only agenda source, the [iCompass portal](https://ttusdpub.ic-board.com/), answers HTTP 403 to the project's user agent. The maintainer chose to list the board with a note, as for Placer County; there is no discovery until the portal answers. |
 
 **Considered on 2026-11-09 and not added.** Under decision 0040 a group is added only when it publishes its own meeting dates on a page or API the worker can read without getting around a block:
 
-- **Tahoe Truckee Unified School District board.** Its only agenda source, `ttusdpub.ic-board.com`, answered every request with HTTP 403, and ttusd.org links nothing else. With no readable source there is no discovery type to configure, so no registry entry was added.
 - **South Lake Tahoe Lodging Association.** `sltla.org` does not resolve. The SLTTID page holds only a 2023 lodging association agenda.
 - **South Lake Tahoe Restaurant Association.** No association website publishing meeting dates was found; the likely domain is a parked page.
 - **Tahoe Chamber board.** The chamber's board page lists directors but no meeting dates, and its events calendar (`business.tahoechamber.org`) answers HTTP 403.

@@ -2167,6 +2167,27 @@
     }
   },
   {
+    "id": "ttusd",
+    "name": "TTUSD — Board of Education",
+    "shortName": "TTUSD",
+    "page": {
+      "slug": "tahoe-truckee-unified-school-district-board",
+      "name": "Tahoe Truckee Unified School District Board of Education"
+    },
+    "aliases": [
+      "Tahoe Truckee Unified School District",
+      "Tahoe Truckee Unified",
+      "TTUSD Board of Trustees"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.ttusd.org/our-district/board-of-education",
+    "sourceUrl": "https://ttusdpub.ic-board.com/",
+    "coverageNote": "The district's agenda site blocks automatic collection, so meetings, agendas, items, and summaries aren't shown. Check the district's board page for meetings.",
+    "staffReports": {
+      "note": "Blocked: the district's agenda site answers HTTP 403 to the project's user agent."
+    }
+  },
+  {
     "id": "tdva",
     "name": "Tahoe Douglas Visitors Authority — Board of Directors",
     "shortName": "TDVA",

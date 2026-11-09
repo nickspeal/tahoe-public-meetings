@@ -1205,6 +1205,34 @@
         "note": "The page and its downloads answered the project's user agent on 2026-11-09. Live captures of the August 27, September 24 (special), and October 29, 2026 Word agendas read 18, 15, and 16 items once Word's list numbering is rendered into the text. Meetings have no regular schedule."
       },
       "implementation": "A new `file-links` discovery type (tahoe_ingest/file_discovery.py) reads dated download links on a page; capture reads Word (.docx) files by file type (tahoe_ingest/docx_source.py). The `slttid-board` layout reads the two lettered lists; `slttid-special` reads the special meeting format, whose typed item numbers are not kept as labels."
+    },
+    {
+      "id": "SR-045",
+      "agencyId": "ttusd",
+      "name": "Tahoe Truckee Unified School District Board of Education",
+      "status": "deferred",
+      "group": "Unresolved download failures",
+      "flags": [
+        "download-blocked"
+      ],
+      "issue": "The district's only agenda source, its iCompass portal at ttusdpub.ic-board.com, answers HTTP 403 to the project's user agent (checked 2026-11-09); ttusd.org links nothing else that lists meetings.",
+      "nextStep": "Keep the board in the registry with a coverage note and no discovery; retry if the portal starts answering the project's user agent.",
+      "owner": "maintainer",
+      "links": [
+        {
+          "label": "Board of Education page",
+          "url": "https://www.ttusd.org/our-district/board-of-education"
+        },
+        {
+          "label": "Agenda portal",
+          "url": "https://ttusdpub.ic-board.com/"
+        }
+      ],
+      "resolution": {
+        "decision": "keep; agenda acquisition blocked",
+        "resolvedAt": "2026-11-09",
+        "note": "The maintainer chose to list the board with a note, as for Placer County, rather than leave it out."
+      }
     }
   ]
 }

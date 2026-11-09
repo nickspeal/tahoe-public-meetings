@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **53 entries**. **46 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **39** have live discovery, **3** are blocked by a skipped endpoint, and **4** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **54 entries**. **47 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **39** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -105,6 +105,7 @@ These have no live discovery, so no new meetings arrive for them. Meetings store
 | `usfws` | USFWS | comment periods and meetings | [www.fws.gov](https://www.fws.gov/office/reno-fish-and-wildlife/news) |
 | `nevada-state-parks` | Nevada State Parks | meetings | [parks.nv.gov](https://parks.nv.gov/news) |
 | `tahoe-usfs` | Tahoe USFS | comment periods only | [www.fs.usda.gov](https://www.fs.usda.gov/r05/tahoe/newsroom) |
+| `ttusd` | TTUSD — Board of Education | meetings | [ttusdpub.ic-board.com](https://ttusdpub.ic-board.com/) |
 <!-- /generated: no-discovery -->
 
 Why there is no discovery:
@@ -162,6 +163,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `placer-planning` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-supervisors` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-tahoe-design-review` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
+| `ttusd` | not known | Blocked: the district's agenda site answers HTTP 403 to the project's user agent. |
 | `ctc` | published, not attached yet | Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet. |
 | `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |
 | `ltva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |

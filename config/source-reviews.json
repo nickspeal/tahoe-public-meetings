@@ -1079,7 +1079,7 @@
       "group": "Added meeting body",
       "flags": [],
       "owner": "Maintainer",
-      "issue": "Decision 0037 adds groups that publish their own meeting dates. TDVA, a Nevada public body, links only its next meeting's agenda and packet from its meetings page; its WordPress media library holds every posted agenda and packet, named with the meeting date (\"TDVA-Agenda-November-11-2026-Packet.pdf\").",
+      "issue": "Decision 0040 adds groups that publish their own meeting dates. TDVA, a Nevada public body, links only its next meeting's agenda and packet from its meetings page; its WordPress media library holds every posted agenda and packet, named with the meeting date (\"TDVA-Agenda-November-11-2026-Packet.pdf\").",
       "nextStep": "Keep live discovery. Agendas whose file name gives only the month (January to April 2026) are not collected; a file name with a wrong date (the September 9, 2026 agenda was uploaded as \"September-11\") becomes a separate meeting on that date.",
       "links": [
         {

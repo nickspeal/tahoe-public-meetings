@@ -159,6 +159,12 @@ def test_calendar_events_of_the_body_are_its_meetings(november):
     assert rows[0]["documents"] == []  # December: no agenda yet
 
 
+def test_a_challenge_page_instead_of_json_is_named_in_the_error(november):
+    page = "<!DOCTYPE html><html><head><title>Just a moment...</title></head><body></body></html>"
+    with pytest.raises(ValueError, match=r"ltva\.org answered with non-JSON content: 'Just a moment\.\.\.'"):
+        discover_configured("ltva", agency("ltva")["discovery"], limit=5, fetch=lambda url: page)
+
+
 def test_a_canceled_event_is_a_canceled_meeting_and_the_committee_is_kept_apart():
     rows, earliest, by_date = discover_configured_range("ltva", agency("ltva")["discovery"], since=date(2026, 8, 1),
                                                         until=date(2026, 8, 31), fetch=events_fetch([]))

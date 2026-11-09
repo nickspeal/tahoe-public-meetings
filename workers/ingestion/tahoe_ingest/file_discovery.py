@@ -46,6 +46,18 @@ MAX_PAGES = 20
 _CANCELED_TITLE = re.compile(r'^\s*CANCELL?ED\b[^–—-]*[–—-]\s*', re.I)
 
 
+def _json(fetch, url: str):
+    """Parse a JSON API answer; name what came back instead when it is not JSON (a bot challenge page, say)."""
+    text = fetch(url)
+    try:
+        return json.loads(text)
+    except ValueError:
+        title = re.search(r'<title[^>]*>(.*?)</title>', text or '', re.I | re.S)
+        shown = re.sub(r'\s+', ' ', html.unescape(title.group(1) if title else (text or '')[:120])).strip()
+        raise ValueError(f'{urllib.parse.urlsplit(url).netloc} answered with non-JSON content: '
+                         f'{shown or "an empty body"!r}') from None
+
+
 def _today() -> date:
     return datetime.now(ZoneInfo('America/Los_Angeles')).date()
 
@@ -146,7 +158,7 @@ def _mark_canceled(agency: str, config: dict, rows: list[dict], fetch) -> None:
 def _media_files(config: dict, fetch, page: int) -> list[tuple[str, str]]:
     query = urllib.parse.urlencode({'search': config.get('search', 'agenda'), 'per_page': MEDIA_PAGE_SIZE, 'page': page,
                                     'orderby': 'date', 'order': 'desc', '_fields': 'id,date,source_url,title'})
-    records = json.loads(fetch(f"{config['indexUrl']}?{query}"))
+    records = _json(fetch, f"{config['indexUrl']}?{query}")
     return [(r.get('source_url') or '', html.unescape((r.get('title') or {}).get('rendered') or '')) for r in records]
 
 
@@ -214,7 +226,7 @@ def _events(config: dict, since: date, until: date, fetch) -> list[dict]:
     for page in range(1, MAX_PAGES + 1):
         query = urllib.parse.urlencode({'start_date': since.isoformat(), 'end_date': until.isoformat(),
                                         'per_page': EVENTS_PAGE_SIZE, 'page': page})
-        data = json.loads(fetch(f"{config['indexUrl']}?{query}"))
+        data = _json(fetch, f"{config['indexUrl']}?{query}")
         found.extend(data.get('events') or [])
         if page >= int(data.get('total_pages') or 1):
             break

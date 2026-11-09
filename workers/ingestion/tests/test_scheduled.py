@@ -177,13 +177,13 @@ def test_a_spent_time_budget_stops_claude_steps_and_still_publishes(db, monkeypa
     # Export, validation, storage, and the deploy hook run regardless.
     assert [steps[n]["status"] for n in ("export", "validate", "store", "deploy-hook")] == ["ok"] * 4
     assert summary["exportId"] and hook.calls and summary["status"] == "degraded"
-    assert summary["timeBudgetReached"] and summary["timeBudgetSteps"] == ["classify-topics", "participation", "short-titles", "staff-reports"]
+    assert summary["timeBudgetReached"] and summary["timeBudgetSteps"] == ["classify-topics", "participation", "staff-reports", "short-titles"]
     assert summary["timeBudgetSeconds"] == scheduled.DEFAULT_CLAUDE_TIME_BUDGET
-    assert "time budget reached in classify-topics, participation, short-titles, staff-reports" in summary["message"]
+    assert "time budget reached in classify-topics, participation, staff-reports, short-titles" in summary["message"]
     # The ntfy alert names the stopped steps once, and not as a cost limit.
     problems = alerts.run_problems(summary)
     assert [p for p in problems if "time budget" in p] == [problems[0]] and "cost limit" not in " ".join(problems)
-    assert "classify-topics, participation, staff-reports stopped early" in problems[0]
+    assert "classify-topics, participation, staff-reports, short-titles stopped early" in problems[0]
 
 
 def test_time_budget_is_measured_from_the_run_start_and_zero_disables_it(db):

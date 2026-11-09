@@ -276,6 +276,27 @@ def test_a_title_cut_at_the_line_limit_keeps_its_full_text():
     assert len(cut["source_pages"][0]["quote"]) <= 300
 
 
+def test_slt_unnumbered_item_is_read_only_on_a_closed_session_agenda():
+    fixture, pages = _fixture("slt--2306")
+    result = parse_agenda("slt", [{"id": "doc"}], pages)
+    assert result.complete and [i["title"] for i in result.items if i["section"] == "New Business"][1].startswith(
+        "Public Employment Appointment - Government Code section 54957(b)")
+
+    def edited(old, new, page=0):
+        return [dict(p, text=p["text"].replace(old, new)) if k == page else p for k, p in enumerate(pages)]
+    # Another special meeting's cover, or an unnumbered line that cites no closed session section, is not read.
+    for changed in (edited("Special Closed Session City Council", "Special City Council"),
+                    edited("Public Employment Appointment - Government Code section 54957(b)",
+                           "Public Employment Appointment", page=1)):
+        rejected = parse_agenda("slt", [{"id": "doc"}], changed)
+        assert not rejected.complete and "numbered sequence was not found" in rejected.warning
+    # A numbered item beside it keeps the numbered reading: the unnumbered line is not an item.
+    numbered = edited("New Business\n", "New Business\n\n1. Conference with Legal Counsel - Existing Litigation\n", page=1)
+    result = parse_agenda("slt", [{"id": "doc"}], numbered)
+    assert result.complete and [i["source_number"] for i in result.items] == [None, None, "1", None]
+    assert [i["order"] for i in result.items] == [1, 2, 3, 4]
+
+
 def test_tnt_tma_word_list_residue_is_not_an_item_number():
     # January 8, 2026: Word's list numbering prints "1.​ DISCUSSION ITEMS" and "2.​ 1. Discussion about ...".
     fixture, pages = _fixture("truckee-north-shore-tma--2026-01-08")

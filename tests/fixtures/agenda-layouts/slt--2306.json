@@ -1,0 +1,37 @@
+{
+ "agency": "slt",
+ "source": "https://slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2306",
+ "note": "Special Closed Session City Council agenda, September 8, 2026 (stored page text). Its one item is printed without a number under New Business; the parser reads it only on a closed session cover and when it cites the Brown Act's Government Code section.",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "City of South Lake Tahoe\n                    Special Closed Session City Council\n                              Meeting Agenda\n                   Tuesday, September 8, 2026 at 8:15 am\n   City Hall - Council Chambers - 1901 Lisa Maloff Way, South Lake Tahoe\n\nCity Council                                              Mission of the City Council\nCody Bass, Mayor                                          We provide responsive and effective local\nKeith Roberts, Mayor Pro Tem                              government by maintaining a safe, livable, and\nScott Robbins, Councilmember                              well-managed city through smart investment,\nDavid Jinkens, Councilmember                              reliable services, and thoughtful planning.\nHeather Horgan, Councilmember\n\n\n\nNotice Requirements\nGovernment Code section 54956 et seq. (The Brown Act) states that SPECIAL MEETINGS require\ntwenty-four hour (24) notice be provided to members of legislative body and media outlets including brief\ngeneral description of matters to be considered or discussed. The order of Agenda items are listed for\nreference and may be taken in any order deemed appropriate by the legislative body.\n\n\nEvery reasonable effort will be made to accommodate any person needing special assistance to\nparticipate in this meeting. Contact the City Clerk at (530) 542-6005 in advance of the meeting for\nassistance [28 CFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2,\n54954.1, 54954.2, and 54957.5].\n\nPublic Participation\nCity Council meetings are held in person at the time and location listed on this agenda. A public agenda\npacketis available for review at City Hall, 1901 Lisa Maloff Way, on the City’s Website at\nwww.cityofslt.us, or by contacting the City Clerk's Office, (530) 542-6005 or sblankenship@cityofslt.us\nProviding Public Comment:\nRemote Public Participation: If you would like to participate remotely, please join the ZOOM meeting\nby using this link: https://us02web.zoom.us/j/89484823280 If you would like to make a comment, wait for\nthe agenda item to begin, then press the \"raise hand\" button. Meetings are also live-streamed (for\nviewing only) on Channel 21, the City website at www.cityofslt.us, and YouTube at\nhttps://www.youtube.com/channel/UC3LYne8Ih-kTPLnnuyJW9SQ/live\nNote: The Mayor reserves the right to conduct the meeting with in-person public participation\nonly, if there is a technology malfunction that precludes the use of remote public participation.\nIn Person: Every agenda for regular meetings provides an opportunity for members of the public to\ndirectly address the legislative body (City Council), on any item of public interest which is within the\njurisdiction of the City Council during Public Communications. For items on the agenda or in connection\nwith any item which the City Council will consider, the public is given the opportunity to comment before\nor during the City Council's consideration of the item [Government Code Section 54954.3(a)]."
+  },
+  {
+   "page_number": 2,
+   "text": "In Writing: Written comments received by 3 p.m. the day before the meeting will be distributed to City\nCouncil prior to the meeting. Written public comment regarding any item on this agenda may be sent to\nPublicComment@cityofslt.us. When emailing comments, identify the agenda item number in the subject\nline to which your comments relate. Any such comment that is a public record and is emailed to\nPublicComment@cityofslt.us or otherwise provided to a majority of the City Council before the meeting\nwill be made available for public inspection during normal business hours at the City Clerk's Office\nlocated at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe [Government Code Section 54957.5(b)].\nWritten comments will not be read out loud during the meeting.\nThe City Council Chambers meeting facility is accessible to people with disabilities. Every reasonable\neffort will be made to accommodate any person needing special assistance to attend this meeting.\nContact the City Clerk at (530) 542-6005 at least 48 hours in advance of the meeting for assistance [28\nCFR 35.102.35.104 ADA Title II and Brown Act Government Code Sections 54953.2, 54954.1, 54954.2,\nand 54957.5].\nSpanish Interpretations: The public may access Spanish interpretation using the ZOOM link listed on\nthe front of the Agenda from an internet device (smartphone, laptop, tablet, home computer) with audio\ncapabilities and selecting the Spanish language option. Persons without an internet device may attend\nthe meeting in -person and a device will be provided while supplies last. Requests for interpreter services\nto offer public comment may be made by contacting the City Clerk.\n\nCall to Order\n\nRoll Call\n\nNew Business\n\n     Public Employment Appointment - Government Code section 54957(b) Title: City Attorney\n\nAdjournment\nI, Susan Blankenship, City Clerk for the City of South Lake Tahoe, declare that the foregoing agenda for\nthe Tuesday, September 8, 2026, Special Closed Session City Council agenda was posted and available\nfor review on Wednesday, September 2, 2026, at City Hall, 1901 Lisa Maloff Way, South Lake Tahoe,\nCA 96150. The agenda was also available on the City website at https://www.cityofslt.us.\nSigned September 2, 2026\n\n\\\\sb\\\\ Susan Blankenship, Elected City Clerk"
+  }
+ ],
+ "expected": [
+  [
+   null,
+   "Opening",
+   "Roll Call"
+  ],
+  [
+   null,
+   "New Business",
+   "New Business"
+  ],
+  [
+   null,
+   "New Business",
+   "Public Employment Appointment - Government Code section 54957(b) Title: City Attorney"
+  ],
+  [
+   null,
+   "Adjournment",
+   "Adjournment"
+  ]
+ ]
+}

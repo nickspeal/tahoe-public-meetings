@@ -322,6 +322,24 @@
       ],
       "notes": "Wildlife connectivity monitoring; Environment kept from the published tags.",
       "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "trcd:2026-05-21:XI.3",
+      "title": "Resolution 2026-03 to Approve Application to for Grant Funds from the Wildlife Conservation Board for the Johnson Meadow, Upper Truckee River Middle Reaches 1&2, Restoration Implementation Project Phase 1",
+      "gold": [
+        "environment"
+      ],
+      "notes": "Meadow restoration funded by the Wildlife Conservation Board; not Wildlife.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "trcd:2026-08-04:XI.1",
+      "title": "Agreement Between Tahoe RCD and the Wildlife Conservation Board in the Amount of $4,000,000.00 for the Phase 1 implementation of the Johnson Meadow Restoration",
+      "gold": [
+        "environment"
+      ],
+      "notes": "Meadow restoration funded by the Wildlife Conservation Board; not Wildlife.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
     }
   ]
 }

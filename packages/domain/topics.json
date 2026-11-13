@@ -103,7 +103,7 @@
     "titlePatterns": [
       {
         "id": "wild-animals",
-        "pattern": "\\b(?:wildlife|black bears?|bears|bear[- ]?(?:box(?:es)?|resistant|proof|aware|activity|encounters?|conflicts?|safety)|BEAR League|roadkill|animal[- ]vehicle collisions?|deer|(?<!Bear )elk(?! Point)(?!'?s Lodge)|coyotes?(?! Crossing)|mountain lions?|beavers?|wild horses?|NDOW|CDFW)\\b"
+        "pattern": "\\b(?:wildlife(?! Conservation Board)|black bears?|bears|bear[- ]?(?:box(?:es)?|resistant|proof|aware|activity|encounters?|conflicts?|safety)|BEAR League|roadkill|animal[- ]vehicle collisions?|deer|(?<!Bear )elk(?! Point)(?!'?s Lodge)|coyotes?(?! Crossing)|mountain lions?|beavers?|wild horses?|NDOW|CDFW)\\b"
       },
       {
         "id": "wildlife-proof-trash",
@@ -115,6 +115,11 @@
         "item": "Heavenly Village Entertainment Zone ordinance that adds bear-proof trash cans",
         "tag": true,
         "why": "secures trash from bears"
+      },
+      {
+        "item": "Wildlife Conservation Board grant for the Johnson Meadow restoration",
+        "tag": false,
+        "why": "meadow restoration; the funder's name alone is not wildlife"
       },
       {
         "item": "South Tahoe Refuse Company trash disposal rate increase",

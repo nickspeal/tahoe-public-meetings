@@ -62,6 +62,7 @@ def test_csv_rows_remain_distinct_unverified_research():
     ('Douglas County Animal Services Operations Manual fee update', set()),
     ('Elk Point Country Club HOW', set()),
     ('Coyote Crossing Water Well Association', set()),
+    ('Wildlife Conservation Board grant for the Johnson Meadow Restoration', {'environment'}),
     ('Award contract to Green Bear Construction, Inc.', set()),
 ])
 def test_requested_topic_boundaries(title, expected):

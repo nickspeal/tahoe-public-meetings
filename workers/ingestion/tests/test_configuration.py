@@ -53,6 +53,16 @@ def test_csv_rows_remain_distinct_unverified_research():
     ('Council Support of School District Measure P', {'elections'}),
     ('Implementation of Measure K Road Maintenance Sales Tax', {'biking'}),
     ('Election consolidation request', {'elections'}),
+    ('South Tahoe Basin Wildlife Crossings Planning', {'wildlife'}),
+    ('Bear-resistant trash enclosure requirements', {'wildlife'}),
+    ('Ordinance prohibiting the feeding of wildlife', {'wildlife'}),
+    ('Trash containers to deter bears', {'wildlife'}),
+    ("Increasing the South Tahoe Refuse Company's trash disposal rates", set()),
+    ('Solid Waste Collection Services Franchise Agreement Procurement Update', set()),
+    ('Douglas County Animal Services Operations Manual fee update', set()),
+    ('Elk Point Country Club HOW', set()),
+    ('Coyote Crossing Water Well Association', set()),
+    ('Award contract to Green Bear Construction, Inc.', set()),
 ])
 def test_requested_topic_boundaries(title, expected):
     assert set(classify('slt', title, [])) == expected

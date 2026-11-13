@@ -91,6 +91,49 @@
     ]
   },
   {
+    "id": "wildlife",
+    "name": "Wildlife",
+    "description": "Bears and other wild animals, human-wildlife conflict, and keeping trash away from wildlife",
+    "examples": [
+      "bear-resistant trash cans and bear boxes",
+      "wildlife crossings and collisions",
+      "rules against feeding wildlife",
+      "wildlife habitat and monitoring"
+    ],
+    "titlePatterns": [
+      {
+        "id": "wild-animals",
+        "pattern": "\\b(?:wildlife|black bears?|bears|bear[- ]?(?:box(?:es)?|resistant|proof|aware|activity|encounters?|conflicts?|safety)|BEAR League|roadkill|animal[- ]vehicle collisions?|deer|(?<!Bear )elk(?! Point)(?!'?s Lodge)|coyotes?(?! Crossing)|mountain lions?|beavers?|wild horses?|NDOW|CDFW)\\b"
+      },
+      {
+        "id": "wildlife-proof-trash",
+        "pattern": "\\b(?:(?:wildlife|animal)[- ](?:resistant|proof)|feeding (?:of )?(?:wildlife|wild animals|bears)|(?:wildlife|bear|animal) attractants?|(?:trash|garbage|refuse)\\b.{0,60}\\b(?:bears?|wildlife|wild animals)|(?:bears?|wildlife|wild animals)\\b.{0,60}\\b(?:trash|garbage|refuse))\\b"
+      }
+    ],
+    "judgmentExamples": [
+      {
+        "item": "Heavenly Village Entertainment Zone ordinance that adds bear-proof trash cans",
+        "tag": true,
+        "why": "secures trash from bears"
+      },
+      {
+        "item": "South Tahoe Refuse Company trash disposal rate increase",
+        "tag": false,
+        "why": "trash fees, not wildlife"
+      },
+      {
+        "item": "Solid waste franchise agreement procurement or assignment to a new hauler",
+        "tag": false,
+        "why": "trash collection contract that does not address wildlife"
+      },
+      {
+        "item": "Animal Services fee and operations manual update",
+        "tag": false,
+        "why": "pets and animal control, not wild animals"
+      }
+    ]
+  },
+  {
     "id": "elections",
     "name": "Elections",
     "description": "Elections, ballot measures, and agency positions on them",

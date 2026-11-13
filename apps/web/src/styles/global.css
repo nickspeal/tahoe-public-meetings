@@ -282,6 +282,11 @@ button, a, select, summary { touch-action: manipulation; }
 .agenda-attachments-label { margin: 0 0 4px; color: var(--muted); font-size: 13px; font-weight: 600; }
 .agenda-attachments ul { margin: 0; padding-left: 18px; }
 .agenda-attachments li { margin: 2px 0; }
+/* Each item's permalink, and the item a shared link points at. */
+.agenda-item-permalink { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin: 14px 0 0; font-size: 14px; }
+.agenda-item-permalink a { font-weight: 600; }
+.agenda-item-permalink-status { color: var(--muted); font-size: 13px; }
+.agenda-item:target { border-radius: 6px; background: var(--tint); box-shadow: 0 0 0 8px var(--tint); }
 .agenda-source-missing { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
 .tag { padding: 4px 8px; border-radius: 6px; background: var(--tint); color: var(--heading); font-size: 13px; font-weight: 600; }
 a.tag { text-decoration: none; }

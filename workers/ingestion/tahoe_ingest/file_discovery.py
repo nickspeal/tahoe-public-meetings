@@ -12,6 +12,9 @@ paragraphs announce cancellations ("the meeting scheduled for Wednesday, Novembe
 `file-links`: a page of download links (`indexUrl`) whose file names carry the body and
 the date ("TID Agenda 10.29.2026.docx", "TID Special meeting 9-24-26 (002).docx"), read
 the same way; the page is each meeting's official URL. PDFs and Word (.docx) files qualify.
+With `matchLabels`, each link's label is read instead of its file name, for a page that
+names its files loosely but labels every link with the body and date ("Regular Meeting of
+the Board of Directors – 10/22/2026 – Agenda Packet").
 
 `tribe-events`: The Events Calendar's REST API (`indexUrl`, ``.../wp-json/tribe/events/v1/events``),
 one candidate per event whose title matches `bodyPattern`, dated and timed by the event.
@@ -106,15 +109,16 @@ def _title(agency: str, config: dict, qualifier: str | None) -> str:
 def meetings_from_files(agency: str, config: dict, files: list[tuple[str, str]], official_url: str | None) -> list[dict]:
     """Candidates from dated files, newest first: one per date (and qualifier), its files as documents.
 
-    ``files`` are (url, label) pairs. A file counts when its name matches `bodyPattern` and states a
-    full date. ``official_url`` is the meeting's official page, else its first document.
+    ``files`` are (url, label) pairs. A file counts when its name (its link label, with `matchLabels`)
+    matches `bodyPattern` and states a full date. ``official_url`` is the meeting's official page,
+    else its first document.
     """
     body = re.compile(config.get('bodyPattern', '.'), re.I)
     grouped: dict[str, list] = {}
     for url, label in files:
         if not _is_file(url):
             continue
-        name = file_name(url)
+        name = ' '.join(label.split()) if config.get('matchLabels') else file_name(url)
         if not body.search(name):
             continue
         day = date_in(name)

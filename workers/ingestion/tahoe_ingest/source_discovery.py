@@ -44,7 +44,7 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'dated-sections':{'title','idPrefix','documentPattern','pages'},
        'simbli':{'title'},
        'wordpress-media':{'title','idPrefix','search','noticeUrl'},
-       'file-links':{'title','idPrefix'},
+       'file-links':{'title','idPrefix','matchLabels'},
        'tribe-events':{'title','horizonDays'},
        'dated-paragraphs':{'title','idPrefix','documentPattern'},
        'squarespace-blog':{'title','documentPattern'}}
@@ -72,6 +72,8 @@ def validate_discovery(agency):
         raise ValueError(f'invalid source configuration: {aid}: sectionTitles are objects of headingPattern, title, and idSuffix')
     for rule in sections:
         re.compile(rule['headingPattern'],re.I)
+    if not isinstance(config.get('matchLabels',False),bool):
+        raise ValueError(f'invalid source configuration: {aid}: matchLabels is true or false')
     for key in ('scheduleUrl','noticeUrl'):
         if key in config and not str(config[key]).startswith('https://'):
             raise ValueError(f'invalid source configuration: {aid}: {key} must be https')
@@ -796,17 +798,25 @@ def schedule_dates(markup):
     return found
 
 
+def feed_posts(text):
+    """(title, link) of each post in an RSS feed, or in a WordPress REST collection of posts (a JSON list)."""
+    if text.lstrip().startswith('['):
+        return [(html.unescape((post.get('title') or {}).get('rendered') or ''),post.get('link') or '')
+                for post in json.loads(text) if isinstance(post,dict)]
+    return [(item.findtext('title') or '',item.findtext('link') or '') for item in ET.fromstring(text).findall('.//item')]
+
+
 def meeting_post_feed(agency, config, limit, fetch):
     """Posted meetings from the feed, newest first, and scheduled ones without a post yet."""
     body=re.compile(config.get('bodyPattern','.'),re.I)
-    root=ET.fromstring(fetch(config['indexUrl']))
+    posts=feed_posts(fetch(config['indexUrl']))
     try:
         schedule=schedule_dates(fetch(config['scheduleUrl'])) if config.get('scheduleUrl') else {}
     except (OSError,RuntimeError,ValueError):  # The feed alone still gives the posted meetings.
         schedule={}
     rows=[]
-    for item in root.findall('.//item'):
-        title=' '.join((item.findtext('title') or '').split());target=(item.findtext('link') or '').strip()
+    for title,target in posts:
+        title=' '.join(title.split());target=target.strip()
         if not body.search(title) or urllib.parse.urlparse(target).scheme!='https':continue
         day=date_in(title)
         if not day:continue

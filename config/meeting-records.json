@@ -5,6 +5,7 @@
     {"agency": "slt-planning", "channelId": "UC3LYne8Ih-kTPLnnuyJW9SQ", "include": "\\bplanning commission\\b"},
     {"agency": "truckee", "playlistId": "PLr_DSJ6rtN1Zms9Rs8SazB8Tf1EBfhf6p", "include": "\\btruckee town council\\b"},
     {"agency": "truckee-tahoe-airport", "playlistId": "PLr_DSJ6rtN1YYUKFqxioyQ-kNF1N0q_Qr", "include": "\\b(?:ttad|truckee tahoe airport)\\b"},
+    {"agency": "tfhd", "playlistId": "PLr_DSJ6rtN1ZhLFh9EOu-oyKQBRZQGyd-", "include": "\\btahoe forest (?:hospital district|health system)\\b", "exclude": "\\bjoint\\b|\\btown council\\b"},
     {"agency": "douglas-commissioners", "channelId": "UCj6Vp4YBriA8dhsZjB4wKIw", "include": "\\bboard of county commissioners\\b"},
     {"agency": "douglas-planning", "channelId": "UCj6Vp4YBriA8dhsZjB4wKIw", "include": "\\bplanning commission\\b"},
     {"agency": "douglas-transportation", "channelId": "UCj6Vp4YBriA8dhsZjB4wKIw", "include": "\\bboard of county commissioners\\b", "meetingPattern": "\\bjoint\\b"},

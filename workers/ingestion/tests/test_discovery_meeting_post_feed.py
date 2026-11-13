@@ -82,3 +82,27 @@ def test_schedule_url_must_be_https():
         validate_discovery({"id": "x", "discovery": block})
     with pytest.raises(ValueError, match="does not read"):
         validate_discovery({"id": "x", "discovery": {**block, "scheduleUrl": MEETINGS_URL, "idPrefix": "x"}})
+
+
+def test_a_wordpress_rest_collection_of_posts_reads_like_a_feed():
+    # The Olympic Valley PSD's "agenda" posts: a REST collection holds 100 posts where its RSS feed holds 10, and the
+    # district has re-published 2023 agendas recently, so the feed alone would lose most of the year.
+    posts = (FIXTURES / "ovpsd-agenda-posts-2026-11-13.json").read_text(encoding="utf-8")
+    config = next(a for a in agency_catalog() if a["id"] == "ovpsd")["discovery"]
+    requested = []
+
+    def fetch(url):
+        requested.append(url)
+        return posts
+    rows = discover_configured("ovpsd", config, limit=12, fetch=fetch)
+    assert requested == [config["indexUrl"]]
+    assert [(r["source_id"], r["title"]) for r in rows][:3] == [
+        ("2026-10-27", "OVPSD Board of Directors Meeting"), ("2026-09-29", "OVPSD Board of Directors Meeting"),
+        ("2026-08-25", "OVPSD Board of Directors Meeting")]
+    assert sum(r["date"].startswith("2026") for r in rows) == 11
+    special = next(r for r in rows if r["source_id"] == "2026-01-15-special")
+    assert special["title"] == "Special OVPSD Board of Directors Meeting"  # "Special Board Meeting – Thursday, January 15, 2026"
+    assert special["documents"] == [{"id": "ovpsd-agenda-html", "title": "Official agenda (HTML)", "url": special["official_url"]}]
+    every = discover_configured("ovpsd", config, limit=None, fetch=fetch)
+    assert not any("committee" in r["official_url"] for r in every)  # Finance Committee posts are left out
+    assert min(r["date"] for r in every) < "2024-01-01"  # the re-published 2023 agendas are dated by their titles

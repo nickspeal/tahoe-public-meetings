@@ -1,0 +1,217 @@
+{
+ "agency": "ovpsd",
+ "source": "https://ovpsd.org/agenda/regular-board-meeting-tuesday-october-27-2026-830-a-m/",
+ "note": "October 27, 2026 regular board meeting post, fetched 2026-11-13. Items reviewed against the page: eight lettered parts (the letters come from the page's list style; the nested items print B-1, D-1 ... G-7 themselves), parts A, C, and H without nested items, and 39 numbered items under five sections.",
+ "expected": [
+  [
+   "A",
+   null,
+   "Call to Order, Roll Call & Pledge of Allegiance"
+  ],
+  [
+   "B-1",
+   "Community Informational Items",
+   "Tahoe-Truckee Sanitation Agency"
+  ],
+  [
+   "B-2",
+   "Community Informational Items",
+   "Olympic Valley Mutual Water Company"
+  ],
+  [
+   "B-3",
+   "Community Informational Items",
+   "Olympic Valley Firewise Community"
+  ],
+  [
+   "B-4",
+   "Community Informational Items",
+   "Olympic Valley Design Review"
+  ],
+  [
+   "B-5",
+   "Community Informational Items",
+   "Olympic Valley Municipal Advisory Council / Olympic Valley Supervisor Forum"
+  ],
+  [
+   "C",
+   null,
+   "Public Comment / Presentation"
+  ],
+  [
+   "D-1",
+   "Financial Consent Agenda",
+   "Operating Account Check Register"
+  ],
+  [
+   "D-2",
+   "Financial Consent Agenda",
+   "Operations Enterprise Fund, Revenue vs. Expenditure/Balance Sheet"
+  ],
+  [
+   "D-3",
+   "Financial Consent Agenda",
+   "Fire Government Fund, Revenue vs. Expenditure/Balance Sheet"
+  ],
+  [
+   "D-4",
+   "Financial Consent Agenda",
+   "Combined Revenues/Expenditures/Balance Sheet"
+  ],
+  [
+   "D-5",
+   "Financial Consent Agenda",
+   "Fund Balance Statement"
+  ],
+  [
+   "D-6",
+   "Financial Consent Agenda",
+   "Capital Improvement Financial Progress – Quarterly"
+  ],
+  [
+   "D-7",
+   "Financial Consent Agenda",
+   "Progress Payment – Pathways Consulting – Leadership Development"
+  ],
+  [
+   "D-8",
+   "Financial Consent Agenda",
+   "Progress Payment – Ridgeline Municipal Strategies – Annexation Financial Analysis"
+  ],
+  [
+   "D-9",
+   "Financial Consent Agenda",
+   "Progress Payment – Feather River Forestry – OV-2 Fuel Reduction Project"
+  ],
+  [
+   "D-10",
+   "Financial Consent Agenda",
+   "Progress Payment – Feather River Forestry – OV-5 Fuel Reduction Project"
+  ],
+  [
+   "D-11",
+   "Financial Consent Agenda",
+   "Progress Payment – DOWL – Water System and Resource Plan"
+  ],
+  [
+   "D-12",
+   "Financial Consent Agenda",
+   "Progress Payment – DOWL – 2026 Sewer Rehabilitation Project"
+  ],
+  [
+   "D-13",
+   "Financial Consent Agenda",
+   "Progress Payment – CME – 2026 Sewer Rehabilitation Project"
+  ],
+  [
+   "D-14",
+   "Financial Consent Agenda",
+   "Progress Payment – DOWL – 2027 Backyard Sewer Replacement Project"
+  ],
+  [
+   "D-15",
+   "Financial Consent Agenda",
+   "Progress Payment – Hydros – Chlorination Study"
+  ],
+  [
+   "D-16",
+   "Financial Consent Agenda",
+   "Progress Payment – UES – Washeshu Creek Stream Gage Project"
+  ],
+  [
+   "D-17",
+   "Financial Consent Agenda",
+   "Progress Payment – Stephens Construction – 305 Boiler & Controls Replacement Project"
+  ],
+  [
+   "D-18",
+   "Financial Consent Agenda",
+   "Progress Payment – AA-ME – 305 Boiler & Controls Replacement Project"
+  ],
+  [
+   "D-19",
+   "Financial Consent Agenda",
+   "Progress Payment – UNVC – 305 Boiler & Controls Replacement Project"
+  ],
+  [
+   "E-1",
+   "Approve Minutes",
+   "Minutes for the Regular Board of Directors meeting of September 29th, 2026"
+  ],
+  [
+   "F-1",
+   "Old and New Business",
+   "Placer County Local Area Formation Commission (LAFCo) Call for Nominations"
+  ],
+  [
+   "F-2",
+   "Old and New Business",
+   "Bike Trail Snow Removal Contract"
+  ],
+  [
+   "F-3",
+   "Old and New Business",
+   "Annual Review of the Bike Trail Snow Removal Financial Reserves Policy"
+  ],
+  [
+   "F-4",
+   "Old and New Business",
+   "Annual Review of the Financial Reserves Policy"
+  ],
+  [
+   "F-5",
+   "Old and New Business",
+   "Annual Review of the Investment Policy"
+  ],
+  [
+   "F-6",
+   "Old and New Business",
+   "Annual Review of the Pension 115 Trust Funding Policy"
+  ],
+  [
+   "F-7",
+   "Old and New Business",
+   "Annual Review of Other Post-Employment Benefit (OPEB) 115 Trust Funding Policy"
+  ],
+  [
+   "G-1",
+   "Management Status Reports",
+   "Fire Department Report"
+  ],
+  [
+   "G-2",
+   "Management Status Reports",
+   "Water & Sewer Operations Report"
+  ],
+  [
+   "G-3",
+   "Management Status Reports",
+   "Engineering Report"
+  ],
+  [
+   "G-4",
+   "Management Status Reports",
+   "Administration & Office Report"
+  ],
+  [
+   "G-5",
+   "Management Status Reports",
+   "General Manager Report"
+  ],
+  [
+   "G-6",
+   "Management Status Reports",
+   "Legal Report (verbal)"
+  ],
+  [
+   "G-7",
+   "Management Status Reports",
+   "Directors Comments (verbal)"
+  ],
+  [
+   "H",
+   null,
+   "Adjourn"
+  ]
+ ]
+}

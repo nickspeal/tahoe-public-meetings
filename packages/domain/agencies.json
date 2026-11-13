@@ -2547,6 +2547,146 @@
     }
   },
   {
+    "id": "tfhd",
+    "name": "Tahoe Forest Hospital District — Board of Directors",
+    "shortName": "TFHD",
+    "page": {
+      "slug": "tahoe-forest-hospital-district-board",
+      "name": "Tahoe Forest Hospital District Board"
+    },
+    "aliases": [
+      "Tahoe Forest Hospital District",
+      "Tahoe Forest Health System",
+      "Tahoe Forest Hospital",
+      "TFHD Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.tfhd.com/",
+    "sourceUrl": "https://www.tfhd.com/about/minutes-agendas/",
+    "participation": {
+      "url": "https://www.tfhd.com/board-of-directors/board-meetings/#comment",
+      "instructions": "Attend in person or join by Zoom (each agenda gives the link). Submit written comment with the Board's public comment form, open from when the agenda is released until 4 p.m. the day before the meeting.",
+      "sourceUrl": "https://www.tfhd.com/board-of-directors/board-meetings/",
+      "checkedOn": "2026-11-13"
+    },
+    "discovery": {
+      "type": "file-links",
+      "indexUrl": "https://www.tfhd.com/about/minutes-agendas/",
+      "bodyPattern": "^(?:Regular|Special) Meeting of the Board of Directors\\b(?!.*\\bMinutes?$)",
+      "title": "TFHD Board of Directors Meeting",
+      "matchLabels": true
+    },
+    "agenda": {
+      "layouts": [
+        "tfhd-board"
+      ],
+      "agendaBeforePacket": true
+    },
+    "staffReports": {
+      "published": true,
+      "note": "The agenda packet is a 200-page meeting book that opens each item's materials with an agenda item cover sheet; no rule reads it yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's board meetings page (checked 2026-11-13): regular meetings on the fourth Thursday, moved when they fall on or between holidays. The agendas give 4:00 PM (closed session first, open session about 6:00 PM). November and December met on the third Thursday in 2024 and 2025, and the October 22, 2026 agenda names November 19, 2026 as the next regular meeting.",
+      "rules": [
+        {
+          "ordinal": 4,
+          "weekday": "thursday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "time": "16:00",
+          "timezone": "America/Los_Angeles",
+          "label": "TFHD Board of Directors Meeting"
+        },
+        {
+          "ordinal": 3,
+          "weekday": "thursday",
+          "months": [
+            11,
+            12
+          ],
+          "time": "16:00",
+          "timezone": "America/Los_Angeles",
+          "label": "TFHD Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ovpsd",
+    "name": "Olympic Valley Public Service District — Board of Directors",
+    "shortName": "OVPSD",
+    "page": {
+      "slug": "olympic-valley-public-service-district-board",
+      "name": "Olympic Valley Public Service District Board"
+    },
+    "aliases": [
+      "Olympic Valley Public Service District",
+      "Olympic Valley PSD",
+      "Olympic Valley Fire Department",
+      "OVPSD Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://ovpsd.org/",
+    "sourceUrl": "https://ovpsd.org/your-district/board/board-committee-meetings/",
+    "discovery": {
+      "type": "meeting-post-feed",
+      "indexUrl": "https://ovpsd.org/wp-json/wp/v2/agenda?per_page=100&_fields=id,date,link,title",
+      "bodyPattern": "\\bBoard Meeting\\b",
+      "title": "OVPSD Board of Directors Meeting"
+    },
+    "staffReports": {
+      "rule": "ordered-list-item-reports"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's Board + Committee Meetings page (checked 2026-11-13): the board meets on the last Tuesday of each month at 8:30 a.m., and in November and December 2026 in the third week (November 17 and December 15), as in 2025.",
+      "rules": [
+        {
+          "ordinal": "last",
+          "weekday": "tuesday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "time": "08:30",
+          "timezone": "America/Los_Angeles",
+          "label": "OVPSD Board of Directors Meeting"
+        },
+        {
+          "ordinal": 3,
+          "weekday": "tuesday",
+          "months": [
+            11,
+            12
+          ],
+          "time": "08:30",
+          "timezone": "America/Los_Angeles",
+          "label": "OVPSD Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

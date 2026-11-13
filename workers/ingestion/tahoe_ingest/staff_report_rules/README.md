@@ -36,6 +36,7 @@ when reports exist but can't be reached or attached yet, or just a `note` when t
 | `ndep-material-packet` | Nevada water projects board: project sections of the "Material" packet | |
 | `ntpud-packet` | North Tahoe PUD: the packet's own agenda prints each item's page range | |
 | `order-of-business-item-files` | "Order of Business" meeting page (State Lands Commission): the item row's report PDF, named for the meeting date and item number, headed "Staff Report 11" | |
+| `ordered-list-item-reports` | Ordered-list agenda page (Olympic Valley PSD): the PDF an item's entry links, named for the item number, a "BOARD REPORT" headed "EXHIBIT: F-2" | `header` (default `^\s*BOARD REPORT\s*$`), `heading` (default `(?i)\bEXHIBIT:\s*{n}\b`) |
 | `pctpa-packet` | PCTPA: the agenda's "Pg." stamp opens a memo in the packet | |
 | `slt-commission-report` | South Lake Tahoe commissions and the South Tahoe Transit JPA: the linked "Report to <body>" staff report | `body`, `heading` (default `Report to\s+{body}`) |
 | `slt-executive-summary` | South Lake Tahoe City Council: the linked "Item N- Executive Summary.pdf" | |

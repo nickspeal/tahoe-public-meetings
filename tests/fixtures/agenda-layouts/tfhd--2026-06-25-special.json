@@ -1,0 +1,53 @@
+{
+  "agency": "tfhd",
+  "source": "https://www.tfhd.com/wp-content/uploads/2026/06/2026-06-25-SPECIAL-Meeting-of-the-Board-of-Directors_FINAL-Agenda.pdf",
+  "note": "TFHD special board agenda: one page, the same numbering, its closed session heading printed CLOSED SESSON",
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "SPECIAL MEETING OF THE\n                                                        BOARD OF DIRECTORS\n                                                                           AGENDA\n                                               Thursday, June 25, 2026, at 4:00 p.m.\n                                              Tahoe Forest Hospital – Eskridge Conference Room\n                                                   10121 Pine Avenue, Truckee, CA 96161\n\n\n1. CALL TO ORDER\n\n2. ROLL CALL\n\n3. DELETIONS/CORRECTIONS TO THE POSTED AGENDA\n\n4. INPUT AUDIENCE\n     This is an opportunity for members of the public to comment on any closed session item appearing before the Board on this\n     agenda. Please state your name for the record. Comments are limited to three minutes. Written comments should be submitted\n     to the Clerk of the Board 24 hours prior to the meeting to allow for distribution.\n\n5. CLOSED SESSON\n   5.1. Conference with Real Property Negotiator (Gov. Code § 54956.8)\n        Property Parcel Number: 019-670-016\n        Agency Negotiator: Anna Roth\n        Negotiating Party: Hidden Lake Properties Inc.\n        Under Negotiation: Price & Terms of Payment\n\n6. OPEN SESSION – CALL TO ORDER\n\n7. REPORT OF ACTIONS TAKEN IN CLOSED SESSION\n\n8. ADJOURN\n\nThe next regularly scheduled meeting of the Board of Directors of Tahoe Forest Hospital District is June 25, 2026 at Tahoe Forest\nHospital – Eskridge Conference Room, 10121 Pine Avenue, Truckee, CA, 96161. A copy of the board meeting agenda is posted on the\nDistrict’s web site (www.tfhd.com) at least 72 hours prior to the meeting or 24 hours prior to a Special Board Meeting. Materials\nrelated to an item on this Agenda submitted to the Board of Directors, or a majority of the Board, after distribution of the agenda are\navailable for public inspection in the Administration Office, 10800 Donner Pass Rd, suite 200, Truckee, CA 96161, during normal\nbusiness hours.\n\n*Denotes material (or a portion thereof) may be distributed later.\nNote: It is the policy of Tahoe Forest Hospital District to not discriminate in admissions, provisions of services, hiring, training and employment practices on the basis\nof color, national origin, sex, religion, age or disability including AIDS and related conditions. Equal Opportunity Employer. The telephonic meeting location is accessible\nto people with disabilities. Every reasonable effort will be made to accommodate participation of the disabled in all of the District’s public meetings. If particular\naccommodations for the disabled are needed or a reasonable modification of the teleconference procedures are necessary (i.e., disability-related aids or other services),\nplease contact the Clerk of the Board at (530) 582-3583 at least 24 hours in advance of the meeting.\n\n\n                                                                             Page 1 of 1\n Denotes Action Item"
+    }
+  ],
+  "expected": [
+    [
+      "1",
+      null,
+      "CALL TO ORDER"
+    ],
+    [
+      "2",
+      null,
+      "ROLL CALL"
+    ],
+    [
+      "3",
+      null,
+      "DELETIONS/CORRECTIONS TO THE POSTED AGENDA"
+    ],
+    [
+      "4",
+      null,
+      "INPUT AUDIENCE"
+    ],
+    [
+      "5.1",
+      "Closed Sesson",
+      "Conference with Real Property Negotiator (Gov. Code § 54956.8)"
+    ],
+    [
+      "6",
+      null,
+      "OPEN SESSION – CALL TO ORDER"
+    ],
+    [
+      "7",
+      null,
+      "REPORT OF ACTIONS TAKEN IN CLOSED SESSION"
+    ],
+    [
+      "8",
+      null,
+      "ADJOURN"
+    ]
+  ]
+}

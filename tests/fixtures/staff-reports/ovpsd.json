@@ -1,0 +1,235 @@
+{
+ "note": "Olympic Valley Public Service District, October 27, 2026 regular board meeting. The agenda page is the meeting's agenda post (fetched 2026-11-13), trimmed to its agenda list and the page's own list style. Downloads are the first three pages of the three board reports and the first lines of the other two files (the rule reads only the header of a file that is not a board report; the check register's payees are left out), read with pdftotext; page_count is each file's real count. Items: the T-TSA summary (B-1) and check register (D-1), which print an exhibit label but are not board reports; approval of minutes (E-1, procedural); two action items and a status report with board reports (F-2, F-5, G-2); and a verbal report with no file (G-6).",
+ "meeting": {
+  "id": "ovpsd:2026-10-27",
+  "agency_id": "ovpsd",
+  "title": "OVPSD Board of Directors Meeting",
+  "local_date": "2026-10-27",
+  "official_url": "https://ovpsd.org/agenda/regular-board-meeting-tuesday-october-27-2026-830-a-m/"
+ },
+ "items": [
+  {
+   "id": "ovpsd:2026-10-27:B-1",
+   "number": "B-1",
+   "title": "Tahoe-Truckee Sanitation Agency",
+   "section": "Community Informational Items",
+   "fingerprint": "f0c5d16f79b6c0a3ff8564978f6f138309276c2fba25670d74204a0787894a39",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Tahoe-Truckee Sanitation Agency",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  },
+  {
+   "id": "ovpsd:2026-10-27:D-1",
+   "number": "D-1",
+   "title": "Operating Account Check Register",
+   "section": "Financial Consent Agenda",
+   "fingerprint": "26f417394a9beed445d7d5a758ab6eb5ebe09599e912b320f6a5fcaa7f391113",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Operating Account Check Register",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  },
+  {
+   "id": "ovpsd:2026-10-27:E-1",
+   "number": "E-1",
+   "title": "Minutes for the Regular Board of Directors meeting of September 29th, 2026",
+   "section": "Approve Minutes",
+   "fingerprint": "d814e40d616ed844955eea4a810732b2e50193c3a26908fa38808e26332bc3ca",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Minutes for the Regular Board of Directors meeting of September 29th, 2026",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  },
+  {
+   "id": "ovpsd:2026-10-27:F-2",
+   "number": "F-2",
+   "title": "Bike Trail Snow Removal Contract",
+   "section": "Old and New Business",
+   "fingerprint": "412b4e6df34f37d5bed1df07f3baeb029a70e13eaac559d0c783fb0583e63ba6",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Bike Trail Snow Removal Contract",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  },
+  {
+   "id": "ovpsd:2026-10-27:F-5",
+   "number": "F-5",
+   "title": "Annual Review of the Investment Policy",
+   "section": "Old and New Business",
+   "fingerprint": "b96172d08a1d4f90d5eefeef94e3dd445f2a361271549f8de0bbd5af2d39ed40",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Annual Review of the Investment Policy",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  },
+  {
+   "id": "ovpsd:2026-10-27:G-2",
+   "number": "G-2",
+   "title": "Water & Sewer Operations Report",
+   "section": "Management Status Reports",
+   "fingerprint": "8943f1641109e572d886f9274c56b4350f043a84acbb5f7492c93414caea4af8",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Water & Sewer Operations Report",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  },
+  {
+   "id": "ovpsd:2026-10-27:G-6",
+   "number": "G-6",
+   "title": "Legal Report (verbal)",
+   "section": "Management Status Reports",
+   "fingerprint": "f83c653eba15b1f0eada109d0c40472f3418beb43fc5882708124c6f13bda744",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Legal Report (verbal)",
+     "documentId": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "ovpsd:2026-10-27:ovpsd-agenda-html:4c58aaf286ba5c21",
+   "source_document_id": "ovpsd-agenda-html",
+   "title": "Official agenda (HTML)",
+   "url": "https://ovpsd.org/agenda/regular-board-meeting-tuesday-october-27-2026-830-a-m/",
+   "sha256": "4c58aaf286ba5c212441882cf3155cce90a31bf06a0bd13e56dfbaafbaac19c9",
+   "page_count": 1,
+   "media_type": "text/html"
+  }
+ ],
+ "stored": {},
+ "downloads": {
+  "https://ovpsd.org/wp-content/uploads/2026/10/B-1_TTSA-October-2026.pdf": {
+   "sha256": "d83e94ff4bf0234cde541de6b629074e1265acc9bbffe0a8625fa83b7f7b3830",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "Exhibit B-1\n                         T-TSA BOARD MEETING SUMMARY\n                                                                                                                   2 pages\n                                     10/21/2026 Regular Board Meeting\n\n\n1) The October 21st, 2026, Regular Meeting was held in person.\n     Board Meeting Agendas, Minutes, & Videos: https://ttsa.portal.civicclerk.com\n     Board Meeting Videos are also still available on YouTube (link): www.youtube.com/@TTSABoardVideos"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://ovpsd.org/wp-content/uploads/2026/10/D-1-Check-Register-October-Meeting.pdf": {
+   "sha256": "1457b361a9d4a741abf05c664e67b9b5d2d44b03515789518b6933daca2c74b7",
+   "page_count": 2,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "EXHIBIT D-1\n                                                                                                                        2 Pages\n\n\n\n                                                 OLYMPIC VALLEY PUBLIC SERVICE DISTRICT\n                                                            Operating Account Check Register\n                                                                    Ocotber 31, 2026\n                                                                    Check Register for Board Packet:"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://ovpsd.org/wp-content/uploads/2026/10/F-2_2026-10-27_Bike-Trail-Snow-Removal-Contract_Compiled-1.pdf": {
+   "sha256": "ea9a87eaeafeaff969ff2acc23aee9464083415e0eaa66c55f301ed8d70bfc79",
+   "page_count": 13,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "OLYMPIC VALLEY\n                             PUBLIC SERVICE DISTRICT\n                                    BOARD REPORT\n\n\n SUBJECT:     Bike Trail Snow Removal Services Contract      EXHIBIT:             F-2, 13 Pages\n\n AUTHOR: Charley Miller, General Manager                     MEETING DATE:        October 27, 2026\n\n\nRECOMMENDED ACTION: Authorize staff to execute the snow removal services contract\nbetween Placer County and the Olympic Valley Public Service District for the Bike Trail Snow\nRemoval Program in the amount not to exceed $48,565.\n\nDISCUSSION: The District has provided snow removal services on 2.3 miles of bike trail since\n2011-2012. Since the 2013-2014 season, this work has been performed using District staff and\nequipment. Snow removal is performed as needed between November 1st and April 30th.\nServices include snow removal, trail inspection, sanding for traction control, sweeping,\ninstallation and removal of snow poles and signage, litter pick-up, equipment maintenance, and\ntrail maintenance, including springtime trail resurfacing (e.g., patch paving).\n\nThe program complies with the provisions of a Placer County Encroachment Permit issued by\nthe County’s Department of Facilities Services. Placer County’s Department of Agriculture,\nParks & Natural Resources administers the contract with support from their Procurement\nServices Division.\n\nPlacer County staff have confirmed their desire to renew the agreement for the 2026-27 winter\nseason under terms substantially similar to prior years. The contract amount is $48,565, a 2.5%\nincrease from last year, and reflects the projected labor, equipment, and materials costs under\ntypical snowfall conditions. Actual expenses may vary depending on snow volume and timing.\n\nFISCAL/RESOURCE IMPACTS: Funds provided by Placer County for the contract come from\nTransient Occupancy Taxes (TOT).\n\nSTRATEGIC PLAN ALIGNMENT:\nFocus Area: Stewardship | Goal: Advocate for Community Needs\n\nATTACHMENTS: Olympic Valley Bike Trail Snow Removal Services Contract between Placer\nCounty and the Olympic Valley PSD for the 2026-2027 winter\n\nDATE PREPARED: October 21, 2026\n\n\n\n\n305 Olympic Valley Road                   P.O. Box 2026                    Olympic Valley, CA 96146\nwww.ovpsd.org                               p. 1 of 1                               (530) 583-4692"
+    },
+    {
+     "page_number": 2,
+     "text": "Page 1 of 12\n\n                                             AGREEMENT\n\n\nAdministering Agency:            Placer County Department of Agriculture, Parks, & Natural Resources\n\nContract No.                     SCN109369\n\nContract Description:            Snow Removal      Olympic Valley Pedestrian & Bike Trail\n\n\n    THIS AGREEMENT is made into this 1st day of November 2026 by and between the County of\nPlacer (“County”), and the Olympic Valley Public Service District (“OVPSD”), who agree as follows:\n\n\n   1. Services. Subject to the terms and conditions set forth in this Agreement, OVPSD shall provide\n      snow removal services on the trails specified in Exhibit A, as described therein.\n\n   2. Term. The term of this agreement shall run from November 1, 2026, through April 30, 2027.\n\n   3. Payment. County shall pay OVPSD for services rendered pursuant to this Agreement at the time\n      and in the amount set forth in Exhibit B. The payment specified in Exhibit B shall be the only\n      payment made to OVPSD for services rendered pursuant to this Agreement. OVPSD shall submit\n      all billings for said service to the County in the manner specified therein, or, if no manner is\n      specified, then according to the usual and customary procedures which OVPSD uses for billing\n      clients similar to the County.\n\n   4. Facilities, Equipment and Other Obligations of County. Unless otherwise specified in Exhibit C,\n      OVPSD shall, at its sole cost and expense, furnish all facilities, equipment, and other materials\n      which may be required for furnishing services pursuant to this Agreement.\n\n   5. Exhibits. All exhibits referred to herein will be attached hereto and by this reference incorporated\n      herein.\n\n   6. Time for Performance. Time is of the essence. Failure of OVPSD to perform any services within\n      the time limits set forth in Exhibit A shall constitute a material breach of this Agreement.\n\n   7. Independent Contractor. OVPSD agrees and understands that the work/services performed under this\n      Agreement are performed as an independent contractor and not as an employee of County and that neither\n      OVPSD nor its employees or agents acquire any of the rights, privileges, powers, or advantages of County\n      employees.\n\n       OVPSD and County agree that:\n       (a) OVPSD is free from the control and direction of County in connection with the performance of the\n       services rendered pursuant to this Agreement;\n       (b) OVPSD is providing services directly to County;\n       (c) OVPSD maintains a business location that is separate from County;\n       (d) OVPSD is customarily engaged in an independently established business of the same nature as that\n       involved in the work performed hereunder;\n       (e) OVPSD actually contracts with other businesses to provide the same or similar services and maintains\n       a clientele without restrictions from County;\n       (f) OVPSD advertises and holds itself out to the public as available to provide the same or similar services;\n       (g) OVPSD provides its own tools, vehicles, and equipment to perform the services;\n       (h) OVPSD has negotiated its own rates;\n       (i) Consistent with the nature of the work, OVPSD sets its own hours and location of work; and\n       (j) Contractor has the sole right to control the manner and means of accomplishing the result desired under\n       this Agreement and exercises its own discretion and independent judgement."
+    },
+    {
+     "page_number": 3,
+     "text": "Page 2 of 12\n\n\n8. License, Permits, Etc. OVPSD represents and warrants to County that it has all licenses, permits,\n   qualifications, and approvals of whatsoever nature, which are legally required for OVPSD to\n   provide these services. OVPSD represents and warrants to County that OVPSD shall, at its sole\n   cost and expense, keep in effect or obtain at all times during the term of this Agreement, any\n   licenses, permits, and approvals which are legally required for OVPSD to practice its profession\n   at the time the services are performed.\n\n9. Time. OVPSD shall devote such time to the performance of services pursuant to this Agreement\n   as may be reasonably necessary for the satisfactory performance of OVPSD’s obligations\n   pursuant to this Agreement. Neither party shall be considered in default of this Agreement to the\n   extent performance is prevented or delayed by any cause, present or future, which is beyond the\n   reasonable control of the party.\n\n10. Hold Harmless and Indemnification Agreement. At all times during the performance of this\n    agreement, OVPSD agrees to protect, defend, and indemnify County in accordance with the\n    provisions contained in Exhibit D.\n\n\n11. Insurance. OVPSD shall file with County concurrently herewith a Certificate of Insurance, in\n    companies acceptable to County, for the coverage shown in Exhibit D. All costs of complying\n    with these insurance requirements shall be included in OVPSD's fee(s). These costs shall not be\n    considered a \"reimbursable\" expense under any circumstances.\n\n\n12. Contractor Not Agent. Except as County may specify in writing, OVPSD shall have no authority,\n    express or implied, to act on behalf of County in any capacity whatsoever as an agent. OVPSD\n    shall have no authority, express or implied, pursuant to this Agreement to bind County to any\n    obligation whatsoever.\n\n13. Assignment Prohibited. OVPSD may assign its rights and obligations under this Agreement only\n    upon the prior written approval of County, said approval to be in the sole discretion of County.\n\n14. Personnel.\n    A. OVPSD warrants that all personnel assigned by the OVPSD to perform the services are duly\n        trained and qualified to perform the work. OVPSD shall assign only competent personnel to\n        perform services pursuant to this Agreement. In the event that County, in its sole discretion,\n        at any time during the term of this Agreement, desires the removal of any person or persons\n        assigned by OVPSD to perform services pursuant to this Agreement, including those\n        members of the Project Team as explained below, OVPSD shall remove any such person\n        immediately upon receiving notice from County to that effect.\n\n    B. Notwithstanding the foregoing, if specific persons are designated as the \"Project Team\" in\n       Exhibit A, OVPSD agrees to perform the work under this Agreement with those individuals\n       identified. Reassignment or substitution of individuals or subcontractors named in the Project\n       Team by OVPSD without the prior written consent of County shall be grounds for\n       cancellation of the Agreement by County, and payment shall be made pursuant to Section 16\n       (Termination) of this Agreement only for that work performed by Project Team members."
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://ovpsd.org/wp-content/uploads/2026/10/F-5-Annual-Review-of-Investment-Policy.pdf": {
+   "sha256": "fe0a98672fff5b1ed34882863c6ebc771ada97b1f8d01fa7010b7cb4488b0303",
+   "page_count": 3,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "OLYMPIC VALLEY\n                            PUBLIC SERVICE DISTRICT\n                                    BOARD REPORT\n\n\n SUBJECT:     Annual Review of Investment Policy           EXHIBIT:         F-5, 3 Pages\n\n AUTHOR: Danielle Mueller, CFO                             MEETING DATE:       October 27, 2026\n\n\nRECOMMENDED ACTION: Staff recommends approving the District Investment Policy with\nminor administerial changes.\n\nDISCUSSION: The District’s Investment Policy, originally adopted in 1989, is reviewed annually\nby the Board of Directors. The policy provides a framework for the prudent investment of the\nDistrict’s funds, prioritizing safety, liquidity, and yield, in that order.\n\nThe investment policy reflects conservative investment principles emphasizing earning\nmaximum returns while safeguarding public funds. No significant changes to market\nconditions, legislative updates, or operational needs have arisen that would necessitate\nrevisions to the policy. Staff have reviewed current practices and determined that the existing\npolicy remains effective in achieving the District’s financial goals. As such, there are no\nsubstantive changes proposed. The only change proposed is considered administerial to reflect\nrecent title changes.\n\nFISCAL/RESOURCE IMPACTS: The investment policy establishes a disciplined approach to\ninvestment decisions, ensuring long-term stability, and effective management of public funds.\nBy prioritizing safety, liquidity, and yield the policy minimizes the risk of economic loss and\nprovides transparency in fiscal management. Without this framework, the District would face\ngreater exposure to financial risks and potential loss of public trust.\n\nSTRATEGIC PLAN ALIGNMENT:\nFocus Area: Finance | Goal: Maintain excellence in financial management and reporting.\n\nATTACHMENTS: District Investment Policy (2 pages)\n\nDATE PREPARED: October 9, 2026\n\n\n\n\n305 Olympic Valley Road                   P.O. Box 2026                    Olympic Valley, CA 96146\nwww.ovpsd.org                                p. 1 of 1                              (530) 583-4692"
+    },
+    {
+     "page_number": 2,
+     "text": "SERIES 2000 – FINANCIAL\n\nPolicy 2010 Investment\nThe Investment Policy of the District is reviewed by staff on a continual basis and submitted\nannually (with suggested changes, if appropriate) to the Board of Directors for approval.\nGeneral Investment Policy Statement\nThis policy statement is intended to provide guidelines for the prudent investment of the District's cash\nfor which no immediate need is anticipated. The District has chosen to abide by a uniformly\nconservative policy in the investment of temporarily idle funds.\n\nThe District follows the \"prudent person rule\" outlined in the Civil Code, §2261, et seq., which states in\nessence that in investing, a trustee shall exercise the judgment and care, under the circumstances\nthen prevailing, which persons of prudence, discretion, and intelligence exercise in the management\nof their own affairs. The District is further restricted by provisions of the Government Code, §53600, et\nseq.\n\nThe District considers investments based on, in order of importance, safety, liquidity and yield when\nchoosing investment options. The District attempts to obtain the highest yield obtainable, as long as\ninvestments meet the criteria established for safety and liquidity. The District only operates in those\ninvestments that are considered safe. Liquidity of funds is considered in terms of expected and\nunexpected need for the funds based on known encumbrances and historical experience. As a\nminimum the District shall maintain reserve balances consistent with the District’s current Financial\nReserves Policy.\n\nLocal Agency Investment Fund\nThe Local Agency Investment Fund (LAIF) has established a maximum limit of seventy-five million\ndollars in investments from any singular local agency. The District maintains a balance ranging from\n$20,000 to $10,000,000 with LAIF. There is no set maturity date of these investments. They may be\nwithdrawn at any time without penalty. The LAIF interest rates should be reviewed along with U.S.\nTreasury Bills (T-Bills) and Certificates of Deposit (CD's) issued by local banks or savings associations\nwhen determining best investment strategies.\n\nCalifornia Cooperative Liquid Assets Securities System (Cal CLASS)\nThe District periodically will deposit monies into the Cal CLASS investment pool. There is no set\nmaturity date of these investments. They may be withdrawn at any time without penalty. The interest\nrates should be reviewed along with U.S. Treasury Bills (T-Bills) and Certificates of Deposit (CD's)\nissued by local banks or savings associations when determining best investment strategies.\n\nU.S. Treasury Bills\nThe District generally does not maintain or intend to maintain a balance in U.S. Treasury Bills for which\nthe faith and credit of the United States are pledged for the payment of principal and interest due to\nlack of a full-time person to control these investments.\n\n\n\n\n [Company]                                                                                        [Title]\n Revision Date:                                 Page 26                                       Series 1000\n 5/30/2023                                                                         Policy 2010 Investment"
+    },
+    {
+     "page_number": 3,
+     "text": "Certificates of Deposit\nThe District may enter into any contract with a depository relating to any deposit which in the\nTreasurer's judgment is to the public advantage with certain restrictions.\n\nIt is the District's policy not to restrict idle funds in excess of thirty percent (30%) of the total of the\nDistrict's temporarily idle funds.\n\nAny deposit to a savings association or bank shall not exceed a level of such that is insured or secured\nas required by law.\n\nA depository and the agent of the depository are responsible for securing monies with eligible securities\nin securities pools which have a market value of at least ten percent (10%) in excess of the total amount\nof all deposits of a depository if the securities are promissory notes secured by first mortgages and first\ntrust deeds. The District requires certification by the depository and the agent of the depository that\nthere are securities in the pool in the amounts required to secure all deposits.\n\nSecurities must comply with §53651.2 of the Government Code, which defines eligible security.\n\nPlacer County Tax Collector\nProperty taxes are collected by Placer County and held until requested by the District. These funds are\ninvested according to the Placer County Treasurer's Investment Policy.\n\n115 Trusts\nThe District supports a diversified strategic asset allocation which allows for higher earning potential\nthan the County funds. As such, the District may invest in 115 trusts as a prefunding tool which is to be\nused solely for pension or other post-employment benefit obligations. It is the District’s policy not to\nrestrict idle funds in excess of thirty percent (30%) of the total of the District’s temporary idle funds.\n\nThe District’s objective is to protect principal. Exposing investments to undue risk is to be avoided;\nhowever, the assumption of an appropriate level of risk, commensurate with the yield objective, is\nwarranted in pursuit of long-term investment goals. District staff and the Board further recognize that\nfinancial assets fluctuate in value and that near-term results can diverge from stated long-term goals.\nThe General Manager and Finance ManagerChief Financial Officer (CFO) will seek to minimize risk\nthrough diversification. The General Manager or Finance ManagerCFO will advise the Board from time\nto time on the reasonableness of their objectives in light of capital market conditions.\n\nSee specific Pension and OPEB funding polices for further information.\n\nInter-District Loans\nLoans between District departments and accounts may be approved by the Board of Directors. Such\nloans would provide funds to the borrower at an interest rate equal to or better than the rate available\nfrom the depository from which the funds are withdrawn.\n\n(Adopted 05-25-89; Reviewed 04-19-90, Reviewed 07-30-92; Revised 01-25-95; Reviewed 02-29-96 Reviewed 02-27-97; Reviewed\n01-29-98; Reviewed 01-28-99; Revised 01-27-00; Reviewed 01-23-01; Revised 01-24-02; Reviewed 01-28-03; Reviewed 01-27-04;\nReviewed 01-31-06; Revised 01-30-07; 12-23-09; Reviewed 01-25-11; Reviewed 1-31-12; Revised 05-30-13; Reviewed 05-27-14,\nReviewed 05-26-15, Revised 3-29-16, Revised 1-31-17, Revised 2-27-18, Reviewed 05-28-19, Revised 5-26-20, Revised 5-25-21,\nRevised 02-22-22, Revised 5-30-23, Reviewed 10-31-23, Reviewed 01-28-25, Reviewed 09-30-25)\n\n\n\n\n [Company]                                                                                                       [Title]\n Revision Date:                                         Page 27                                            Series 1000\n 5/30/2023                                                                                      Policy 2010 Investment"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  },
+  "https://ovpsd.org/wp-content/uploads/2026/10/G-2_2026-10_Ops-Status-Report.pdf": {
+   "sha256": "909daad77ccc94b501392dfdcf72524a8135a52ab500d68cd92e366a1048180a",
+   "page_count": 5,
+   "pages": [
+    {
+     "page_number": 1,
+     "text": "OLYMPIC VALLEY\n                                             PUBLIC SERVICE DISTRICT\n                                                       BOARD REPORT\n\n\n SUBJECT: September Water & Sewer Operations Report                                    EXHIBIT:              G-2, 5 Pages\n                              John Tuscher, Interim Operations                                               October 27,\n AUTHOR:                                                                               MEETING DATE:\n                              Superintendent                                                                 2026\n\nRECOMMENDED ACTION: This report is informational only; no action is requested from the\n         Board.\n\nDISCUSSION: This report provides information from the District’s management on current\n            projects and activities that are not the subject of a separate report. This report\n            is prepared to provide new information and recent progress only.\n\n                               Flow Report – September 2026\n\n                               Water Production:                                              9.96 MG\n                               Comparison:                                                    0.28 MG more than 2025\n\n\n\n                                           MONTHLY WATER PRODUCTION\n                         16\n\n                         14\n\n                         12\n       MILLION GALLONS\n\n\n\n\n                         10\n\n                         8\n\n                         6\n\n                         4\n\n                         2\n\n                         0\n                               JAN   FEB   MAR   APR    MAY      JUN     JUL     AUG    SEP     OCT   NOV    DEC\n\n                                                       2024       2025         2026\n\n\n\n\n305 Olympic Valley Road                                       P.O. Box 2026                           Olympic Valley, CA 96146\nwww.ovpsd.org                                                   p. 1 of 5                                      (530) 583-4692"
+    },
+    {
+     "page_number": 2,
+     "text": "Sewer Collection:                                                         3.91 MG\n                                                   Comparison:                                                               0.3 MG more than 2025\n\n\n                                                                        MONTHLY SEWER COLLECTION\n                                        16\n\n                                        14\n\n                                        12\n                      MILLION GALLONS\n\n\n\n\n                                        10\n\n                                        8\n\n                                        6\n\n                                        4\n\n                                        2\n\n                                        0\n                                                   JAN     FEB    MAR    APR     MAY       JUN      JUL       AUG      SEP     OCT    NOV    DEC\n\n\n                                                                                   2024          2025         2026\n\n\n\n\n                                                   Aquifer Level:              October 1, 2026:                                      6,178.3'\n                                                                               October 1, 2025:                                      6,182.2'\n\n\n                                                                                    Aquifer Level\n                     6195\n                                                                               Highest Recorded Aquifer Level\n\n\n                     6190\n  Elevation (Feet)\n\n\n\n\n                     6185\n                                                                  Washehu Creek Bed Elevation\n\n\n                     6180\n\n\n                     6175\n\n                                                                                                          Lowest Recorded 6174'\n\n                     6170\n                                             Jan         Feb     Mar     Apr      May       Jun         Jul      Aug         Sep     Oct    Nov      Dec\n\n                                                                          2001           2024           2025           2026\n\n\n\n\n305 Olympic Valley Road                                                                 P.O. Box 2026                                 Olympic Valley, CA 96146\nwww.ovpsd.org                                                                             p. 2 of 5                                               (530) 583-4692"
+    },
+    {
+     "page_number": 3,
+     "text": "Precipitation:           September 2026:                       0.17”\n                                         Season to date total:                 63.86”\n                                         Season to date average:               53.61”\n                                         % to year to date average:            119.11%\nFlow Report Notes:\n                  •       The Highest Recorded Aquifer Level represents a rough average of the highest\n                          levels measured in the aquifer during spring melt period.\n                    •     The Lowest Recorded Aquifer Level is the lowest level recorded in the aquifer\n                          at 6,174.0 feet above mean sea level on October 5, 2001. This level is not\n                          necessarily indicative of the total capacity of the aquifer.\n                    •     The Creek Bed Elevation (per Kenneth Loy, West Yost Associates) near Well 2\n                          is 6,186.9 feet.\n                    •     Precipitation Season Total is calculated from October 2025 through\n                          September 2026.\n                    •     The true Season-to-date Average could be higher or lower than the reported\n                          value due to the uncertainty of the Old Fire Station precipitation\n                          measurement during the period 1994 to 2004.\n                    •     In October 2011 the data acquisition point for the aquifer was changed from\n                          Well 2 to Well 2R.\n\n                Leaks and Repairs\n                Water\n                   • The District issued two leak/high usage notifications.\n                   • Responded to one after-hours customer service call.\n                Sewer\n                   • Responded to zero after-hours customer service calls.\n\n                Vehicles and Equipment\n                Vehicles\n                   • Cleaned vehicles and checked inventory.\n                Equipment\n                   • Cleaned equipment.\n\n                Operations and Maintenance Projects\n                1810 Olympic Valley Road (Old Fire Station)\n                   • Inspected and tested the generator. Generator serviced by ARC generator.\n                   • General housekeeping.\n\n                305 Olympic Valley Road (Administration and Fire Station Building)\n                   • Inspected and tested the generator.\n\n\n\n\n305 Olympic Valley Road                       P.O. Box 2026                      Olympic Valley, CA 96146\nwww.ovpsd.org                                    p. 3 of 5                                (530) 583-4692"
+    }
+   ],
+   "links": [],
+   "boxes": []
+  }
+ },
+ "html": {
+  "https://ovpsd.org/agenda/regular-board-meeting-tuesday-october-27-2026-830-a-m/": "<html><head><style type=\"text/css\" id=\"fusion-builder-page-css\">ol {\n  list-style-type: upper-alpha;\n}\n\nol li {\nmargin-top: 15px;\n}\n\nol > li::marker {\n  font-weight: bold;\n}\n\nol ol li {\nlist-style: none;\nmargin-top: 0;\n}\n\nh1 {\nfont-size: 34px !important;\n}</style></head><body>\n<div class=\"fusion-text fusion-text-4\"><ol>\n<li><strong>Call to Order, Roll Call &amp; Pledge of Allegiance</strong></li>\n<li><strong>Community Informational Items</strong>. These non-action agenda items are dedicated to facilitate communications and share information within the Olympic Valley.  The organizations include, but are not limited to:\n<ol>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/B-1_TTSA-October-2026.pdf\">B-1     Tahoe-Truckee Sanitation Agency</a></li>\n<li>B-2     Olympic Valley Mutual Water Company</li>\n<li>B-3     Olympic Valley Firewise Community</li>\n<li>B-4     Olympic Valley Design Review</li>\n<li>B-5     Olympic Valley Municipal Advisory Council / Olympic Valley Supervisor Forum</li>\n</ol>\n</li>\n<li><strong>Public Comment / Presentation</strong>.  Members of the public may address the board on items not on this agenda for up to three minutes; however, any matter that requires action by the governing body will, unless an emergency exists, be referred to staff for a report and possible action at a subsequent Board meeting.</li>\n<li><strong>Financial Consent Agenda</strong>.  All items listed under this agenda item will be approved by one motion.  These items are routine, non-controversial, and the finance-related items have been reviewed by the Finance Committee.  There will be no separate discussion of these items unless a member of the audience, board, or staff requests the removal of an item for separate consideration.  Any item removed for discussion will be considered after approval of the remaining Consent Agenda items.\n<ol>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-1-Check-Register-October-Meeting.pdf\"><strong>D-1</strong>     Operating Account Check Register</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-2-Operations-Rev.-vs-Expenses-and-Balance-Sheet-September-2026-1.pdf\"><strong>D-2</strong>     Operations Enterprise Fund, Revenue vs. Expenditure/Balance Sheet</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-3-Fire-Rev.-vs-Expenses-and-Balance-Sheet-September-2026-1.pdf\"><strong>D-3     </strong>Fire Government Fund, Revenue vs. Expenditure/Balance Sheet</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-4-Combined-Rev.-vs-Expenses-and-Balance-Sheet-September-2026-1.pdf\"><strong>D-4     </strong>Combined Revenues/Expenditures/Balance Sheet</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-5-Fund-Balance-Statement-September-2026.pdf\"><strong>D-5     </strong>Fund Balance Statement</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-6-Capital-Improvement-Financial-Progress-Report.pdf\"><strong>D-6     </strong>Capital Improvement Financial Progress – Quarterly</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-7_Progress-Payment-Pathways-Consulting-LLC.pdf\"><strong>D-7     </strong>Progress Payment – Pathways Consulting – Leadership Development</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-8_Progress-Payments-Ridgeline-Municipal-Strategies.pdf\"><strong>D-8     </strong>Progress Payment – Ridgeline Municipal Strategies – Annexation Financial Analysis</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-9_Progress-Payment-Feather-River-Forestry-LLC.pdf\"><strong>D-9     </strong>Progress Payment – Feather River Forestry – OV-2 Fuel Reduction Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-10_Progress-Payment-Feather-River-Forestry-LLC.pdf\"><strong>D-10     </strong>Progress Payment – Feather River Forestry – OV-5 Fuel Reduction Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-11_Progress-Payment-DOWL-LLC.pdf\"><strong>D-11</strong>     Progress Payment – DOWL – Water System and Resource Plan</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-12_Progress-Payment-DOWL-LLC.pdf\"><strong>D-12</strong>     Progress Payment – DOWL – 2026 Sewer Rehabilitation Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-13_Progress-Payment-CME-Inc.pdf\"><strong>D-13     </strong>Progress Payment – CME – 2026 Sewer Rehabilitation Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-14_Progress-Payment-DOWL-LLC.pdf\"><strong>D-14</strong>     Progress Payment – DOWL – 2027 Backyard Sewer Replacement Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-15_Progress-Payment-Hydros-Engineering-Inc.pdf\"><strong>D-15</strong>     Progress Payment – Hydros – Chlorination Study</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-16_Progress-Payment-UES.pdf\"><strong>D-16     </strong>Progress Payment – UES – Washeshu Creek Stream Gage Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-17_Progress-Payment-Stephens-Construction-Inc.pdf\"><strong>D-17</strong>     Progress Payment – Stephens Construction – 305 Boiler &amp; Controls Replacement Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-18_Progress-Payment-AAME.pdf\"><strong>D-18</strong>     Progress Payment – AA-ME – 305 Boiler &amp; Controls Replacement Project</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/D-19_Progress-Payment-UNVC.pdf\"><strong>D-19</strong>     Progress Payment – UNVC – 305 Boiler &amp; Controls Replacement Project</a></li>\n</ol>\n</li>\n<li><strong>Approve Minutes </strong>\n<ol>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/E-1_2026-09-29_RegularMeetingMinutes_DRAFT.pdf\"><strong>E-1     Minutes for the Regular Board of Directors meeting of September 29<sup>th</sup>, 2026.</strong></a></li>\n</ol>\n</li>\n<li><strong>Old </strong><strong>and New Business. </strong>Members of the public may address the board on each agenda item, up to three minutes or longer based on direction from the Board President.\n<ol>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-1_2026-10-27_LAFCO-Nomination.pdf\"><strong><strong><strong>F-1     </strong></strong></strong></a><strong><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-1_2026-10-27_LAFCO-Nomination.pdf\">Placer County Local Area Formation Commission (LAFCo) Call for Nominations</a><br />\n</strong>Proposed Action: Review item, accept public comment, and nominate a candidate if desired.</li>\n<li><strong><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-2_2026-10-27_Bike-Trail-Snow-Removal-Contract_Compiled-1.pdf\">F-2     Bike Trail Snow Removal Contract.</a><br />\n</strong>Proposed Action: Review item, accept public comment, approve bike trail snow removal contract in an amount not-to-exceed $48,565, and authorize the General Manager to execute agreement.</li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-3-Annual-Review-of-Bike-Trail-Financial-Reserve-Policy.pdf\"><strong>F-3     </strong></a><strong><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-3-Annual-Review-of-Bike-Trail-Financial-Reserve-Policy.pdf\">Annual Review of the Bike Trail Snow Removal Financial Reserves Policy.</a><br />\n</strong>Proposed Action: Review item, accept public comment, and approve the District’s Bike Trail Snow Removal Financial Reserves Policy.</li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-4-Annual-Review-of-Finacial-Reserves-Policy.pdf\"><strong>F-4     Annual Review of the Financial Reserves Policy<br />\n</strong></a>Proposed Action: Review item, accept public comment, and adopt Resolution 2026-23 approving revisions to the District’s Financial Reserves Policy.</li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-5-Annual-Review-of-Investment-Policy.pdf\"><strong>F-5     Annual Review of the Investment Policy<br />\n</strong></a>Proposed Action: Review item, accept public comment, and approve the District’s Investment Policy.</li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-6-Annual-Report-Pension-115-Trust.pdf\"><strong>F-6     Annual Review of the Pension 115 Trust Funding Policy<br />\n</strong></a>Proposed Action: Review item, accept public comment, approve the District’s Pension 115 Trust Funding Policy, and authorize staff to act in accordance with the policy.</li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/F-7-Annual-Report-OPEB-115-Trust-Fund.pdf\"><strong>F-7     Annual Review of Other Post-Employment Benefit (OPEB) 115 Trust Funding Policy<br />\n</strong></a>Proposed Action: Review item, accept public comment, approve the District’s OPEB 115 Trust Funding Policy, and authorize staff to act in accordance with the policy.</li>\n</ol>\n</li>\n<li><strong>Management Status Reports</strong>\n<ol>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/G-1_FD-Status-Report_2026-10.pdf\">G-1     Fire Department Report</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/G-2_2026-10_Ops-Status-Report.pdf\">G-2     Water &amp; Sewer Operations Report</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/G-3_EngRpt_Oct-2026.pdf\">G-3     Engineering Report</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/G-4_AdminReport_2026-10_rev.pdf\">G-4     Administration &amp; Office Report</a></li>\n<li><a href=\"https://ovpsd.org/wp-content/uploads/2026/10/G-5_GM-Report_2026-10.pdf\">G-5     General Manager Report</a></li>\n<li>G-6     Legal Report (verbal)</li>\n<li>G-7     Directors Comments (verbal)</li>\n</ol>\n</li>\n<li><strong>Adjourn</strong></li>\n</ol>\n</div>\n</body></html>"
+ },
+ "expected": {
+  "B-1": null,
+  "D-1": null,
+  "E-1": null,
+  "G-6": null,
+  "F-2": {
+   "page_start": 1,
+   "page_end": 13,
+   "url_end": "F-2_2026-10-27_Bike-Trail-Snow-Removal-Contract_Compiled-1.pdf",
+   "heading": "EXHIBIT:             F-2"
+  },
+  "F-5": {
+   "page_start": 1,
+   "page_end": 3,
+   "url_end": "F-5-Annual-Review-of-Investment-Policy.pdf",
+   "heading": "EXHIBIT:         F-5"
+  },
+  "G-2": {
+   "page_start": 1,
+   "page_end": 5,
+   "url_end": "G-2_2026-10_Ops-Status-Report.pdf",
+   "heading": "EXHIBIT:              G-2"
+  }
+ }
+}

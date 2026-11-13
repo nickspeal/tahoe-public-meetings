@@ -309,6 +309,16 @@
       "start": "^(?:UPDATED |REVISED )?AGENDA\\b",
       "stop": ["^CLOSED SESSION", "^This is an opportunity"]
     },
+    "tfhd-board": {
+      "label": "TFHD Board agenda",
+      "cover": ["(?i)(?:REGULAR|SPECIAL) MEETING OF THE\\s+BOARD OF DIRECTORS", "(?i)Tahoe Forest Hospital", "AGENDA"],
+      "levels": ["NUM", {"kind": "free", "pattern": "(?P<p>\\d{1,2})\\.(?P<v>\\d{1,2})\\.(?=\\s)"},
+                 {"kind": "free", "pattern": "\\d{1,2}\\.(?P<p>\\d{1,2})\\.(?P<v>\\d{1,2})\\.(?=\\s)", "item": false}],
+      "firstPages": 6,
+      "skip": "^Page(?: -)? \\d+(?: -)? of \\d+$|Denotes Action Item$|^(?:Regular|Special) Meeting of the Board of Directors of Tahoe Forest Hospital District$|AGENDA – Continued$",
+      "suffix": "\\s*\uf0b3?\\s*\\.{3,}\\s*ATTACHMENT\\*?\\s*$|\\s*\uf0b3\\s*$",
+      "stop": "^[A-Z][A-Za-z ]{2,30}:\\s"
+    },
     "tnt-tma-board": {
       "label": "TNT/TMA Board agenda",
       "cover": ["TRUCKEE NORTH TAHOE TRANSPORTATION MANAGEMENT ASSOCIATION", "BOARD MEETING AGENDA"],

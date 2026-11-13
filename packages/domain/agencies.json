@@ -1865,6 +1865,11 @@
     "follow": true,
     "officialUrl": "https://truckeetahoeairport.com/",
     "sourceUrl": "https://truckeetahoeairport.com/administration/board/meetings",
+    "participation": {
+      "watchUrl": "https://www.ttusd.org/community/tahoetruckeemedia/live-meetings/truckee-tahoe-airport-district",
+      "sourceUrl": "https://www.ttusd.org/community/tahoetruckeemedia/live-meetings/truckee-tahoe-airport-district",
+      "checkedOn": "2026-11-13"
+    },
     "discovery": {
       "type": "meeting-files",
       "indexUrl": "https://truckeetahoeairport.com/administration/board/meetings",
@@ -2183,6 +2188,11 @@
     "officialUrl": "https://www.ttusd.org/our-district/board-of-education",
     "sourceUrl": "https://ttusdpub.ic-board.com/",
     "coverageNote": "The district's agenda site blocks automatic collection, so meetings, agendas, items, and summaries aren't shown. Check the district's board page for meetings.",
+    "participation": {
+      "watchUrl": "https://www.ttusd.org/community/tahoetruckeemedia/live-meetings/tahoe-truckee-unified-school-district",
+      "sourceUrl": "https://www.ttusd.org/our-district/board-of-education",
+      "checkedOn": "2026-11-13"
+    },
     "staffReports": {
       "note": "Blocked: the district's agenda site answers HTTP 403 to the project's user agent."
     }

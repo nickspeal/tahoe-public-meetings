@@ -45,10 +45,12 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'simbli':{'title'},
        'wordpress-media':{'title','idPrefix','search','noticeUrl'},
        'file-links':{'title','idPrefix'},
-       'tribe-events':{'title','horizonDays'}}
-# Rows of these types state no meeting date, so a scheduled run cannot window them before
-# reading, and each costs a page fetch: it bounds them by count instead.
-UNDATED_TYPES=frozenset({'wordpress-meetings'})
+       'tribe-events':{'title','horizonDays'},
+       'dated-paragraphs':{'title','idPrefix','documentPattern'},
+       'squarespace-blog':{'title','documentPattern'}}
+# Rows of these types often state no meeting date, so a scheduled run cannot window them before
+# capture reads the date from the agenda, and each costs downloads: it bounds them by count instead.
+UNDATED_TYPES=frozenset({'wordpress-meetings','squarespace-blog'})
 
 
 def validate_discovery(agency):
@@ -298,9 +300,12 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind=='granicus-row-ids':return granicus_row_ids(agency,config,limit=limit,fetch=fetch)
     if kind=='municode':return municode(agency,config,limit)
     if kind=='meeting-post-feed':return meeting_post_feed(agency,config,limit,fetch)
-    if kind in {'dated-page-links','dated-sections'}:
+    if kind in {'dated-page-links','dated-sections','dated-paragraphs'}:
         from . import page_discovery  # imports this module's helpers
         return getattr(page_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
+    if kind=='squarespace-blog':
+        from . import blog_discovery  # imports this module's helpers
+        return blog_discovery.squarespace_blog(agency,config,limit,fetch)
     if kind in {'wordpress-media','file-links','tribe-events'}:
         from . import file_discovery  # imports this module's helpers
         return getattr(file_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
@@ -965,6 +970,9 @@ def discover_configured_range(agency, config, *, since, until, fetch=fetch_text,
     if kind in {'wordpress-media','tribe-events'}:
         from . import file_discovery
         return (*getattr(file_discovery,kind.replace('-','_')+'_range')(agency,config,since,until,fetch),kind=='tribe-events')
+    if kind=='squarespace-blog':
+        from . import blog_discovery
+        return (*blog_discovery.squarespace_blog_range(agency,config,since,until,fetch),False)
     template=config.get('indexUrlTemplate')
     if template and '{year}' in template:
         rows=[]

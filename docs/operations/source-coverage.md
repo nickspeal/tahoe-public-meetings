@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **54 entries**. **47 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **39** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **56 entries**. **49 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **41** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -21,6 +21,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | --- | --- | --- | --- | --- |
 | `ivgid` | `civicclerk` | [ivgid.portal.civicclerk.com](https://ivgid.portal.civicclerk.com/) | `Trustees` | `ivgid-board` |
 | `ctc` | `dated-page-links` | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) | every row | `ctc-board` |
+| `truckee-fire` | `dated-paragraphs` | [www.truckeefire.org](https://www.truckeefire.org/board-meeting-archive) | every row | `truckee-fire-board` |
 | `california-state-parks` | `dated-sections` | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) | `Commission Meeting` | `ohmvr-commission`, `state-park-commission` |
 | `california-fish-game` | `dated-table` | [fgc.ca.gov](https://fgc.ca.gov/Meetings/2026) | `Commission\|Committee` | `fish-game-commission` |
 | `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | `lahontan-board` |
@@ -50,6 +51,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | `truckee` | `municode` | [meetings.municode.com](https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA) | `Town Council` | `truckee-council` |
 | `ntpud` | `rss` | [ntpud.org](https://ntpud.org/category/meetings/feed/) | `Board of Directors` | `ntpud-board` |
 | `ltusd` | `simbli` | [simbli.eboardsolutions.com](https://simbli.eboardsolutions.com/SB_Meetings/SB_MeetingListing.aspx?S=36030287) | `^Board of Education\b` | — |
+| `north-tahoe-fire` | `squarespace-blog` | [www.ntfire.net](https://www.ntfire.net/board-minutes) | `^(?:Regular\|Special)\b` | `north-tahoe-fire-board` |
 | `ltva` | `tribe-events` | [ltva.org](https://ltva.org/wp-json/tribe/events/v1/events) | `^(?:CANCELL?ED\b.*?[–—-]\s*)?Lake Tahoe Visitors Authority Board of Directors\b` | `ltva-board` |
 | `ltva-msc` | `tribe-events` | [ltva.org](https://ltva.org/wp-json/tribe/events/v1/events) | `^(?:CANCELL?ED\b.*?[–—-]\s*)?Lake Tahoe Visitors Authority Marketing Services Committee\b` | — |
 | `trpa-advisory` (extends `trpa-governing`) | `trpa` | [www.trpa.gov](https://www.trpa.gov/meeting-materials/) | `Advisory Planning Commission` | `trpa-apc` |
@@ -131,6 +133,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 <!-- generated: staff-reports -->
 | Rule | Registry IDs |
 | --- | --- |
+| `agenda-item-memo-links` | `north-tahoe-fire` |
 | `airport-tab-files` | `truckee-tahoe-airport` |
 | `civicclerk-packet` | `ivgid` |
 | `douglas-packet` | `douglas-commissioners`, `douglas-planning` (extends `douglas-commissioners`), `douglas-transportation` |
@@ -168,6 +171,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |
 | `ltva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
 | `tdva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
+| `truckee-fire` | published, not attached yet | Staff reports are attachments in the single agenda packet, headed by their agenda title without an item number; no rule reads them yet. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

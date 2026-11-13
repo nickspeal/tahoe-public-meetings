@@ -26,6 +26,7 @@ when reports exist but can't be reached or attached yet, or just a `note` when t
 
 | Rule | Format | Parameters |
 | --- | --- | --- |
+| `agenda-item-memo-links` | An agenda PDF whose items link memos named for the item number ("11-CL-....pdf"), headed "AGENDA ITEM #11" (North Tahoe Fire) | |
 | `airport-tab-files` | Truckee Tahoe Airport District: one file per agenda TAB on the meeting's attachments page | |
 | `civicclerk-packet` | CivicClerk packet (Incline Village GID): "ITEM G.1." stamps on dated memos | |
 | `douglas-packet` | Douglas County Granicus packet: an item cover page before each item's attachments | `maxMegabytes` (default 300), `maxPages` (default 2000): the packet download limits |

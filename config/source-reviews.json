@@ -1233,6 +1233,68 @@
         "resolvedAt": "2026-11-09",
         "note": "The maintainer chose to list the board with a note, as for Placer County, rather than leave it out."
       }
+    },
+    {
+      "id": "SR-046",
+      "agencyId": "truckee-fire",
+      "name": "Truckee Fire Protection District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The Truckee Fire Protection District (fire protection, wildfire prevention, evacuation, fire code, and development fees for Truckee and parts of Nevada and Placer counties) posts each board agenda packet on its Squarespace website. Its board meeting archive page prints one paragraph per meeting, the meeting date followed by \"Agenda\" and \"Minutes\" links, and its board meetings page links only the current agenda.",
+      "nextStep": "Keep live discovery from the archive page. The archive row for a meeting appeared with its agenda for every 2026 meeting checked, but the November 17, 2026 agenda was not yet posted on 2026-11-13, so how soon a new row appears is not yet observed; if upcoming agendas show up only on the board meetings page, read that page's current agenda link as well. The board meetings page lists no livestream or recordings, so no recording feed is configured.",
+      "links": [
+        {
+          "label": "Board meetings page",
+          "url": "https://www.truckeefire.org/board-meetings"
+        },
+        {
+          "label": "Board meeting archive",
+          "url": "https://www.truckeefire.org/board-meeting-archive"
+        },
+        {
+          "label": "October 20, 2026 agenda packet",
+          "url": "https://www.truckeefire.org/s/TFPD_-Regular-Meeting-Agenda-Packet-10-20-26.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The archive page and its agenda files answered the project's user agent on 2026-11-13 (the files redirect to static1.squarespace.com). It lists 11 meetings in 2026, including two canceled ones (February 17 and May 19, each linking its notice) and a February 20 special session. Live captures of the June 16 to October 20, 2026 meetings read 32 to 49 items each. The board meetings page gives the schedule: the third Tuesday at 5:30 PM in the Truckee Sanitary District board room, 12304 Joerger Drive; every 2026 meeting fits (a 2024 agenda and a news report of a Thursday schedule are out of date)."
+      },
+      "implementation": "A new `dated-paragraphs` discovery type (tahoe_ingest/page_discovery.py) reads each paragraph that opens with a date, takes its link labeled \"Agenda\" as the document and \"Minutes\" as its minutes, ignores the stray empty links the page editor left in most paragraphs, gives a special session its own ID, and marks a paragraph saying \"Cancelled\" as a canceled meeting whose official URL is the notice. The `truckee-fire-board` layout reads the agenda pages at the front of the packet (numbered sections, lettered items, attachment numbers in a right-hand column). Staff reports are attachments in the packet, headed by agenda title with no item number; no rule reads them yet."
+    },
+    {
+      "id": "SR-047",
+      "agencyId": "north-tahoe-fire",
+      "name": "North Tahoe Fire Protection District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The North Tahoe Fire Protection District (Tahoe City, Kings Beach, Alpine Meadows, and the West Shore, including the former Meeks Bay Fire Protection District, annexed January 1, 2025) now runs ntfire.net on Squarespace; its /wp-json answers HTTP 404, so no WordPress discovery type applies. Its board agendas page is a Squarespace blog with one post per meeting, titled \"Regular Meeting 10-2026\" (a month, not a date) and linking the agenda PDF and, once approved, the minutes. Posts for every 2026 meeting through the canceled November 3 meeting are there.",
+      "nextStep": "Keep live discovery from the blog's JSON. A post's title gives only the month, so capture dates each meeting from its agenda's first page, as for WordPress meeting posts. The Meeks Bay board's archive page (to December 2024) is not read, and the board agendas page lists no livestream or recordings.",
+      "links": [
+        {
+          "label": "Board agendas and minutes",
+          "url": "https://www.ntfire.net/board-minutes"
+        },
+        {
+          "label": "Collection JSON",
+          "url": "https://www.ntfire.net/board-minutes?format=json"
+        },
+        {
+          "label": "October 27, 2026 agenda",
+          "url": "https://www.ntfire.net/s/AgendaOctober-2026LINKED.pdf"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The collection JSON and agenda files answered the project's user agent on 2026-11-13 (the files redirect to static1.squarespace.com). Live captures of the July 28, August 25, September 22, and October 27, 2026 meetings took their dates from the agendas and read 7 to 28 items; the November 3 cancellation notice dated the canceled meeting. The staff report rule linked 19 items of those meetings to their memos. The board agendas page gives the 2026 schedule: the fourth Tuesday at 3:00 PM, except May (third Tuesday), November (first Tuesday), and December (second Tuesday), at Station 51, 222 Fairway Drive, Tahoe City; the October agenda's \"Next Board Meeting\" memo lists December 8, 2026 and January 26, 2027."
+      },
+      "implementation": "A new `squarespace-blog` discovery type (tahoe_ingest/blog_discovery.py) reads the collection's `?format=json` pages, one candidate per post with its linked agenda or cancellation notice and minutes; posts without a full date are bounded by count in scheduled runs (`UNDATED_TYPES`). The `north-tahoe-fire-board` layout reads numbered items, \"13.1\" report sub-items, and lettered parts. A new `agenda-item-memo-links` staff report rule follows the LINKED agenda's link annotations to files named for the item number and checks the memo's \"AGENDA ITEM #N\" subject line."
     }
   ]
 }

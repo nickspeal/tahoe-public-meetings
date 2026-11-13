@@ -2416,6 +2416,137 @@
     }
   },
   {
+    "id": "truckee-fire",
+    "name": "Truckee Fire Protection District — Board of Directors",
+    "shortName": "Truckee Fire",
+    "page": {
+      "slug": "truckee-fire-protection-district-board",
+      "name": "Truckee Fire Protection District Board"
+    },
+    "aliases": [
+      "Truckee Fire Protection District",
+      "Truckee Fire",
+      "TFPD"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.truckeefire.org/board-meetings",
+    "sourceUrl": "https://www.truckeefire.org/board-meeting-archive",
+    "discovery": {
+      "type": "dated-paragraphs",
+      "indexUrl": "https://www.truckeefire.org/board-meeting-archive",
+      "title": "Truckee Fire Board of Directors Meeting"
+    },
+    "agenda": {
+      "layouts": [
+        "truckee-fire-board"
+      ]
+    },
+    "staffReports": {
+      "published": true,
+      "note": "Staff reports are attachments in the single agenda packet, headed by their agenda title without an item number; no rule reads them yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's board meetings page (checked 2026-11-13): the board meets at 5:30 PM on the third Tuesday of each month in the Truckee Sanitary District board room; every 2026 meeting on the archive page fits.",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "tuesday",
+          "time": "17:30",
+          "timezone": "America/Los_Angeles",
+          "label": "Truckee Fire Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "north-tahoe-fire",
+    "name": "North Tahoe Fire Protection District — Board of Directors",
+    "shortName": "North Tahoe Fire",
+    "page": {
+      "slug": "north-tahoe-fire-protection-district-board",
+      "name": "North Tahoe Fire Protection District Board"
+    },
+    "aliases": [
+      "North Tahoe Fire Protection District",
+      "North Tahoe Fire",
+      "NTFPD",
+      "Meeks Bay Fire Protection District"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.ntfire.net/",
+    "sourceUrl": "https://www.ntfire.net/board-minutes",
+    "discovery": {
+      "type": "squarespace-blog",
+      "indexUrl": "https://www.ntfire.net/board-minutes",
+      "bodyPattern": "^(?:Regular|Special)\\b",
+      "title": "North Tahoe Fire Board of Directors Meeting",
+      "documentPattern": "Agenda|Notice of Cancell?ation"
+    },
+    "agenda": {
+      "layouts": [
+        "north-tahoe-fire-board"
+      ]
+    },
+    "staffReports": {
+      "rule": "agenda-item-memo-links"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's board agendas page (checked 2026-11-13): 2026 regular meetings are at 3:00 PM on the fourth Tuesday, except May (third Tuesday), November (first Tuesday), and December (second Tuesday), at Station 51, 222 Fairway Drive, Tahoe City.",
+      "rules": [
+        {
+          "ordinal": 4,
+          "weekday": "tuesday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "North Tahoe Fire Board of Directors Meeting"
+        },
+        {
+          "ordinal": 3,
+          "weekday": "tuesday",
+          "months": [
+            5
+          ],
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "North Tahoe Fire Board of Directors Meeting"
+        },
+        {
+          "ordinal": 1,
+          "weekday": "tuesday",
+          "months": [
+            11
+          ],
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "North Tahoe Fire Board of Directors Meeting"
+        },
+        {
+          "ordinal": 2,
+          "weekday": "tuesday",
+          "months": [
+            12
+          ],
+          "time": "15:00",
+          "timezone": "America/Los_Angeles",
+          "label": "North Tahoe Fire Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

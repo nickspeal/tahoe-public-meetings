@@ -1,0 +1,304 @@
+{
+ "_comment": "https://www.ntfire.net/board-minutes?format=json on 2026-11-13: pagination and each post's fields that discovery reads; post bodies reduced to their links.",
+ "collection": {
+  "id": "6705b893b2f6d61f2f1136c4",
+  "title": "BOARD AGENDA AND MINUTES",
+  "fullUrl": "/board-minutes"
+ },
+ "pagination": {
+  "nextPage": true,
+  "nextPageOffset": 1744910801566,
+  "nextPageUrl": "/board-minutes?offset=1744910801566",
+  "pageSize": 20
+ },
+ "items": [
+  {
+   "id": "6ae37ba3e082b1785e9ba0dc",
+   "title": "Regular Meeting 11-2026 - Canceled",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8-89ajj-k5nsj-2bmd3",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8-89ajj-k5nsj-2bmd3",
+   "publishOn": 1793293356656,
+   "addedOn": 1793293356656,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/Notice-of-CancelationNovember-2026.pdf\">Notice of Cancelation</a></p>"
+  },
+  {
+   "id": "6ad94f679afb5f265256a341",
+   "title": "Regular Meeting 10-2026",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8-89ajj-k5nsj",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8-89ajj-k5nsj",
+   "publishOn": 1792698082597,
+   "addedOn": 1792698082597,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaOctober-2026LINKED.pdf\">Agenda</a></p><p>Minutes</p>"
+  },
+  {
+   "id": "6aac24e224297719056fb9df",
+   "title": "Regular Meeting 09-2026",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8-89ajj",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8-89ajj",
+   "publishOn": 1789679927798,
+   "addedOn": 1789679927798,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaSeptember-2026LINKED.pdf\">Agenda</a></p><p><a href=\"/s/3-MinutesSeptember-2026approved-20261027.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6a84b51083fbf5531154ecbd",
+   "title": "Regular Meeting 08-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9-ndcd8",
+   "publishOn": 1787248996493,
+   "addedOn": 1787248996493,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaAugust-2026LINKED.pdf\">Agenda</a></p><p><a href=\"/s/2-MinutesAugust-2026approved-092226.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6a626ca8d933714b4d16019d",
+   "title": "Regular Meeting 07-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w-zpgg9",
+   "publishOn": 1784835316374,
+   "addedOn": 1784835316374,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaJuly-2026Final.pdf\">Agenda</a></p><p><a href=\"/s/1-MinutesJuly-2026approved-082526.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6a344e158484fe248488cc31",
+   "title": "Regular Meeting 06-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c-66m9w",
+   "publishOn": 1781814367831,
+   "addedOn": 1781814367831,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaJune-2026LINKED.pdf\">Agenda</a></p><p><a href=\"/s/10-MinutesJune-2026approved-082526.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6a063acb3f65db4f976f402e",
+   "title": "Regular Meeting 05-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn-h336c",
+   "publishOn": 1778795216775,
+   "addedOn": 1778795216775,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaMay-2026LINKED.pdf\">Agenda</a></p><p><a href=\"/s/9-MinutesMay-2026approved-062326.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "69ea51b0d857433cc057123b",
+   "title": "Regular Meeting 04-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp-eyhxn",
+   "publishOn": 1776983501397,
+   "addedOn": 1776983501397,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaApril-2026LINKED.pdf\">Agenda</a></p><p><a href=\"/s/8-MinutesApril-2026approved-051926.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "69bc3e7f199d50263e86cfd3",
+   "title": "Regular Meeting 03-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj-rljjp",
+   "publishOn": 1773945853928,
+   "addedOn": 1773945853928,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaMarch-2026LINKED.pdf\">Agenda</a></p><p><a href=\"/s/7-MinutesMarch-2026approved-042826.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6997656d9ba69e476b5709b1",
+   "title": "Regular Meeting 02-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy-hnfwj",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy-hnfwj",
+   "publishOn": 1771535703385,
+   "addedOn": 1771535703385,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaFebruary-2026LINKED-dend.pdf\">Agenda</a></p><p><a href=\"/s/6-MinutesFebruary-2026approved-032426.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6972985754fa7e2c8f1536c7",
+   "title": "Regular Meeting 01-2026 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-h6edy",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-h6edy",
+   "publishOn": 1769122690479,
+   "addedOn": 1769122690479,
+   "categories": [
+    "2024"
+   ],
+   "tags": [
+    "2026"
+   ],
+   "body": "<p><a href=\"/s/AgendaJanuary-2026LINKED-6bnc.pdf\">Agenda</a></p><p><a href=\"/s/5-MinutesJanuary-2026approved-022426.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6931b375e67de93b206b71ad",
+   "title": "Regular Meeting 12-2025 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j-2xh9f-6c2jm-tsymx",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j-2xh9f-6c2jm-tsymx",
+   "publishOn": 1764896197184,
+   "addedOn": 1764896197184,
+   "categories": [
+    "2025"
+   ],
+   "tags": [
+    "2025"
+   ],
+   "body": "<p><a href=\"/s/AgendaDecember-2025LINKED-5far.pdf\">Agenda</a></p><p><a href=\"/s/4-MinutesDecember-2025approved-012726.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "6903cbdb78c66b6585a92e26",
+   "title": "Regular Meeting 11-2025",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j-2xh9f-6c2jm",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j-2xh9f-6c2jm",
+   "publishOn": 1761858169757,
+   "addedOn": 1761858169757,
+   "categories": [
+    "2025"
+   ],
+   "tags": [
+    "2025"
+   ],
+   "body": "<p><a href=\"/s/AgendaNovember-2025LINKED.pdf\">Agenda</a></p><p><a href=\"/s/3-MinutesNovember-2025approved-120925.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "68fa48bae4114c20d228ac9f",
+   "title": "Regular Meeting 10-2025 - Canceled",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-jyxhj",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-jyxhj",
+   "publishOn": 1761233643462,
+   "addedOn": 1761233643462,
+   "categories": [
+    "2025"
+   ],
+   "tags": [
+    "2025"
+   ],
+   "body": "<p><a href=\"/s/NTF-Notice-of-CancellationOctober-2025.pdf\">Notice of Cancellation</a></p>"
+  },
+  {
+   "id": "68cc271d9ac11f3627cea8c1",
+   "title": "Regular Meeting 09-2025",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j-2xh9f",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j-2xh9f",
+   "publishOn": 1758221622747,
+   "addedOn": 1758221622747,
+   "categories": [
+    "2025"
+   ],
+   "tags": [],
+   "body": "<p><a href=\"/s/AgendaSeptember-2025LINKED.pdf\">Agenda</a></p><p><a href=\"/s/2-MinutesSeptember-2025approved-110425.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "68a758c8bca84b0fbc1dd5a5",
+   "title": "Regular Meeting 08-2025 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e-5bj4j",
+   "publishOn": 1755816806378,
+   "addedOn": 1755816806378,
+   "categories": [
+    "2025"
+   ],
+   "tags": [],
+   "body": "<p><a href=\"/s/AgendaAugust-2025LINKED-t4fh.pdf\">Agenda</a></p><p><a href=\"/s/1-MinutesAugust-2025approved-092325.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "687faefe5ebc2f6560924c8a",
+   "title": "Regular Meeting 07-2025 - Canceled",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2-j7w9e",
+   "publishOn": 1753198443201,
+   "addedOn": 1753198443201,
+   "categories": [
+    "2025"
+   ],
+   "tags": [],
+   "body": "<p><a href=\"/s/NTF-AgendaJuly-2025Cancelation.pdf\">Notice of Cancellation</a></p>"
+  },
+  {
+   "id": "6853104204937f6feb247b51",
+   "title": "Regular Meeting 06-2025 ",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh-4jta2",
+   "publishOn": 1750367388679,
+   "addedOn": 1750367388679,
+   "categories": [
+    "2025"
+   ],
+   "tags": [],
+   "body": "<p><a href=\"/s/AgendaJune-2025LINKED-62ep.pdf\">Agenda</a></p><p><a href=\"/s/5-CL-Approval-of-Minutes-June-2025approved-082625.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "68265b543f6c160380e04dbb",
+   "title": "Regular Meeting 05-2025",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl-fa5jh",
+   "publishOn": 1747345135511,
+   "addedOn": 1747345135511,
+   "categories": [
+    "2025"
+   ],
+   "tags": [],
+   "body": "<p><a href=\"/s/AgendaMay-2025FINAL-amcc.pdf\">Agenda</a></p><p><a href=\"/s/5-CL-Approval-of-Minutes-May-2025approved-062425.pdf\">Minutes</a></p>"
+  },
+  {
+   "id": "680135766ab82932eccd85af",
+   "title": "Regular Meeting 04-2025",
+   "urlId": "regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl",
+   "fullUrl": "/board-minutes/regular-meeting-10-2024-eh4b6-y4bdg-2a6r2-tj59g-3pnhl",
+   "publishOn": 1744910801566,
+   "addedOn": 1744910801566,
+   "categories": [
+    "2025"
+   ],
+   "tags": [],
+   "body": "<p><a href=\"/s/AgendaApril-2025LINKED.pdf\">Agenda</a></p><p><a href=\"/s/MinutesApril-2025FINAL.pdf\">Minutes</a></p>"
+  }
+ ]
+}

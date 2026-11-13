@@ -203,6 +203,32 @@ def test_cover_sheet_numbers_read_8_0_as_item_8_and_titles_run_to_the_blank_line
     assert cover_label("Item #:           .2 – AP Check Registers") is None
 
 
+def _memo_pages(data):
+    return data["stored"][data["documents"][1]["version_id"]]
+
+
+def test_item_memo_dated_another_meeting_is_neither_a_start_nor_an_end():
+    data = load("tdpud")
+    pages = _memo_pages(data)
+    # An earlier meeting's memo for item 9, kept as an attachment inside item 8's memo.
+    pages["24"] = pages["26"].replace("October 7, 2026", "August 5, 2026")
+    found, _, _ = run_rule(data)
+    assert (found["8"].page_start, found["8"].page_end) == (23, 25)
+    assert (found["9"].page_start, found["9"].page_end) == (26, 41)
+    assert found["8"].evidence["meetingDate"] == "2026-10-07"
+
+
+def test_item_memo_for_another_subject_or_without_a_date_is_not_stored():
+    data = load("tdpud")
+    pages = _memo_pages(data)
+    pages["55"] = pages["55"].replace("Recruiting Services Contract for", "Snow Removal Equipment Purchase for", 1)
+    pages["58"] = pages["58"].replace("MEETING DATE: October 7, 2026", "MEETING DATE:")
+    found, ctx, _ = run_rule(data)
+    assert found["12"] is None and ctx.skipped["tdpud:178:12"] == "memo subject differs from the agenda item"
+    assert found["13"] is None and ctx.skipped["tdpud:178:13"] == "memo prints no meeting date"
+    assert (found["10"].page_start, found["10"].page_end) == (42, 44)  # the undated header still ends item 12's run
+
+
 def test_lahontan_report_for_another_meeting_is_not_stored():
     data = load("lahontan-board")
     url = next(u for u in data["downloads"] if u.endswith("item6.pdf"))

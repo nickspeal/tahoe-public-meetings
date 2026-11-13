@@ -368,6 +368,31 @@ def test_civicplus_category_keeps_the_board_and_not_its_committees():
     assert len(every)==21 and '2026-01-14' in {r['source_id'] for r in every}
 
 
+def test_civicclerk_horizon_stops_the_event_list_before_next_years_placeholders(monkeypatch):
+    from datetime import date
+    from tahoe_ingest import source_discovery
+    monkeypatch.setattr(source_discovery,'_local_today',lambda:date(2026,11,13))
+    events=_fixture('tdpud-civicclerk-events-2026-11-13.json')
+    asked=[]
+    def fetch(url):
+        asked.append(url)
+        return '<html><body>CivicClerk portal</body></html>' if 'portal' in url else events
+    rows=discover_configured('tdpud',_live_config('tdpud'),limit=20,fetch=fetch)
+    # Newest first: without toDate the first page would hold only 2027 placeholder meetings.
+    assert asked[1]=="https://tdpud.api.civicclerk.com/v1/Events/GetEventsList(fromDate='',toDate='2027-03-13',categoryIds=[],skip=0,sortDescending=true,cursorId=0)"
+    by_id={r['source_id']:r for r in rows}
+    assert '1215' not in by_id  # the Financing Corporation is another body
+    assert len(rows)==14 and by_id['1202']['status']=='canceled'  # "CANCELLED Special Board Meeting"
+    assert (by_id['1216']['date'],by_id['1216']['start_time'],by_id['1216']['title'])==('2026-10-14','09:00','Special Board Meeting')
+    assert [d['id'] for d in by_id['179']['documents']]==['tdpud-agenda','tdpud-agenda-packet']
+    assert by_id['179']['official_url']=='https://tdpud.portal.civicclerk.com/event/179/overview'
+    assert by_id['172']['documents']==[]  # a calendared meeting whose agenda is not posted yet is a notice
+    # Without horizonDays the list is not bounded (IVGID's configuration).
+    asked.clear()
+    discover_configured('tdpud',{k:v for k,v in _live_config('tdpud').items() if k!='horizonDays'},limit=20,fetch=fetch)
+    assert "toDate=''" in asked[1]
+
+
 def test_ndep_table_reads_two_digit_years_and_the_second_table_of_abbreviated_dates_but_not_far_future_placeholders(monkeypatch):
     from datetime import datetime as real
     from tahoe_ingest import source_discovery

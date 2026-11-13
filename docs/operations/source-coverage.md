@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **56 entries**. **49 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **40** have live discovery, **3** are blocked by a skipped endpoint, and **6** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **56 entries**. **49 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **41** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -20,6 +20,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | Registry ID | Type | Index | Body filter | Agenda layouts |
 | --- | --- | --- | --- | --- |
 | `ivgid` | `civicclerk` | [ivgid.portal.civicclerk.com](https://ivgid.portal.civicclerk.com/) | `Trustees` | `ivgid-board` |
+| `tdpud` | `civicclerk` | [tdpud.portal.civicclerk.com](https://tdpud.portal.civicclerk.com/) | `Board Meeting` | `tdpud-board` |
 | `tdrpd` | `civicplus` | [www.tdrpd.org](https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2) | `^(?!.*(?:Committee\|\bFCA\b)).*(?:\bBoard\b\|\bWorkshop\b\|\bSpecial Meeting\b)` | `tdrpd-board` |
 | `ctc` | `dated-page-links` | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) | every row | `ctc-board` |
 | `california-state-parks` | `dated-sections` | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) | `Commission Meeting` | `ohmvr-commission`, `state-park-commission` |
@@ -71,6 +72,7 @@ Notes on particular sources:
 - Legistar (El Dorado, Washoe): only meetings the county has made public appear (unpublished future rows are "not viewable"). Cancellations are read from the calendar.
 - Link indexes (`south-shore-tma`, `stpud`, `placer-transportation`, `truckee-north-shore-tma`, `trcd`, `ntcd`): cancelled meetings and meetings without a posted agenda are not discovered. NTCD's index is a published Google Sheet.
 - `ntpud`: the category RSS feed, filtered to the Board of Directors. Special meetings get their own IDs.
+- `tdpud`: the district's "current agenda" link opens its CivicClerk portal. The event API lists events newest first and already holds first- and third-Wednesday placeholders for all of 2027, so `horizonDays` (120) bounds the list; calendared meetings inside that window, such as the December 16, 2026 third-Wednesday meeting, arrive as notices until their agendas post. The body filter keeps "Board Meeting" events and leaves out the Financing Corporation's. Each meeting's agenda and packet are captured (the agenda is read for items, `agendaBeforePacket`), and minutes come from the API. Recordings come from the district's YouTube channel.
 - `tdrpd`: one CivicPlus Agenda Center category holds the Truckee-Donner Recreation and Park District board and its Budget & Finance and Facility Condition Assessment ("FCA") committees; the body filter keeps rows whose title names the board, a workshop, or a special meeting and no committee. Each row's title link and its "Agenda" download link open the same file, which counts once. Special meetings and workshops get their own IDs (`qualifySpecial`, read from the row title). Regular meetings post the whole board packet as the agenda; the agenda's printed start time (4:00 PM in September and October 2026, though the board page says 6:00 PM) is used at export.
 - `ndep`: Board for Financing Water Projects meetings in a dated table (two-digit years). Dates are listed before agendas; placeholders more than 120 days ahead are ignored.
 - `truckee-tahoe-airport`: a dated table plus the "next meeting" block, each linking to a per-meeting file list from which the agenda is read.
@@ -108,13 +110,11 @@ These have no live discovery, so no new meetings arrive for them. Meetings store
 | `nevada-state-parks` | Nevada State Parks | meetings | [parks.nv.gov](https://parks.nv.gov/news) |
 | `tahoe-usfs` | Tahoe USFS | comment periods only | [www.fs.usda.gov](https://www.fs.usda.gov/r05/tahoe/newsroom) |
 | `ttusd` | TTUSD — Board of Education | meetings | [ttusdpub.ic-board.com](https://ttusdpub.ic-board.com/) |
-| `tdpud` | TDPUD — Board of Directors | meetings | [www.tdpud.org](https://www.tdpud.org/board-meetings) |
 <!-- /generated: no-discovery -->
 
 Why there is no discovery:
 
 - `nevada-state-parks`: the Division holds no regular public meetings. Its only record was one statewide regulation hearing (October 28, 2026, Carson City), whose notice page now answers 404. Workshops and hearings appear as posts in the "Public Comment Workshops" category of the [news page](https://parks.nv.gov/news), which is filtered by a form post and has no feed, and the posts carry a publication date rather than a meeting date, so no discovery type reads them. Checked November 3, 2026. Recommendation: keep following for occasional hearings (the coverage note says they are not collected), or stop following; the maintainer decides.
-- `tdpud`: the district's "current agenda" link redirects to its CivicClerk portal (`tdpud.portal.civicclerk.com`), the format IVGID's `civicclerk` discovery already reads. The portal and its event API were not reachable from the sandbox where the entry was added on November 13, 2026 (its network proxy refused both hosts; the district did not block anything), so no discovery block was added without checking the board's event names. Next: from a network that reaches CivicClerk, try `{"type": "civicclerk", "indexUrl": "https://tdpud.portal.civicclerk.com/", "apiUrl": "https://tdpud.api.civicclerk.com/v1", "portalUrl": "https://tdpud.portal.civicclerk.com"}` with `worker discover tdpud`, set `bodyPattern` from the event names, and add a layout ([SR-047](source-review.md)). Its YouTube recordings feed is already configured.
 
 `ctc` and `california-state-parks` gained live discovery on November 3, 2026 (see the notes above); their earlier records were the October 20 snapshots.
 
@@ -140,6 +140,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `cover-sheet-packet` | `tdrpd` |
 | `douglas-packet` | `douglas-commissioners`, `douglas-planning` (extends `douglas-commissioners`), `douglas-transportation` |
 | `fish-game-staff-summaries` | `california-fish-game` |
+| `item-memo-packet` | `tdpud` |
 | `lahontan-item-files` | `lahontan-board` |
 | `legistar` | `el-dorado-supervisors`, `el-dorado-planning`, `washoe-commissioners`, `washoe-planning` |
 | `ndep-material-packet` | `ndep` |
@@ -168,7 +169,6 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `placer-planning` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-supervisors` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
 | `placer-tahoe-design-review` | not known | Blocked: the county site answers HTTP 403 (SOURCE-001). |
-| `tdpud` | not known | Not checked: the district's agendas are on its CivicClerk portal, which was not reachable when this entry was added. |
 | `ttusd` | not known | Blocked: the district's agenda site answers HTTP 403 to the project's user agent. |
 | `ctc` | published, not attached yet | Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet. |
 | `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |

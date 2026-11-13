@@ -300,6 +300,19 @@
       "wrap": "none",
       "capsLead": true
     },
+    "tdpud-board": {
+      "label": "TDPUD Board agenda",
+      "cover": ["(?:REGULAR|SPECIAL) BOARD MEETING", "AGENDA", "www\\.tdpud\\.org"],
+      "coverPages": 1,
+      "levels": ["NUM"],
+      "firstPages": 4,
+      "start": "^\\s*AGENDA\\b",
+      "end": "^ADJOURNMENT$",
+      "skip": "^11570 Donner Pass Road, Truckee, CA 96161",
+      "headings": "@CAPS_HEADING",
+      "stop": "^(?:[A-Za-z]\\.\\)?\\s+)?(?:Approve|Adopt|Adoption|Affirm|Accept|Appoint|Authorize|Conduct|Consider approval|Receive|Schedule a|Direct staff|Provide|The Board of Directors will)\\b",
+      "titleCleanup": [["^(Public Comment)\\s*[–-]\\s*This is time set aside.*$", "\\1"]]
+    },
     "tdrpd-board": {
       "label": "TDRPD Board agenda",
       "cover": ["(?:Regular|Special) Meeting Notice", "Board of Directors welcomes you to its meeting", "www\\.tdrpd\\.org"],

@@ -31,6 +31,7 @@ when reports exist but can't be reached or attached yet, or just a `note` when t
 | `cover-sheet-packet` | Agenda packet whose item reports each open with a cover sheet, "Item #: 6.1 – title" (Truckee-Donner Recreation and Park District); a report runs to the next cover sheet | `heading` (default `BOARD AGENDA ITEM COVER SHEET`): the cover sheet's heading |
 | `douglas-packet` | Douglas County Granicus packet: an item cover page before each item's attachments | `maxMegabytes` (default 300), `maxPages` (default 2000): the packet download limits |
 | `fish-game-staff-summaries` | Fish and Game Commission: "Staff Summary" files linked from the meeting documents index | |
+| `item-memo-packet` | Agenda packet whose staff memos each open with "AGENDA ITEM #8", "MEETING DATE:", and "SUBJECT:" (Truckee Donner PUD, on CivicClerk); a memo runs to the next header dated this meeting | |
 | `lahontan-item-files` | Water board agenda linking `itemN.pdf`, headed "ITEM N" | |
 | `legistar` | Legistar Web API: the item's file, attachments, or legislation text | `client`, `body`, `report` |
 | `ndep-material-packet` | Nevada water projects board: project sections of the "Material" packet | |

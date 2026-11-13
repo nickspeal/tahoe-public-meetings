@@ -35,7 +35,7 @@ TYPES={'civicplus':{'title','idPrefix','qualifySpecial'}|_PAGE,
        'granicus':{'title','titlePrefix'}|_PAGE,
        'meeting-files':{'title','filesLabel'}|_PAGE,
        'rss':{'titlePrefix'}|_PAGE,
-       'civicclerk':{'apiUrl','portalUrl'},
+       'civicclerk':{'apiUrl','portalUrl','horizonDays'},
        'municode':set(),
        'granicus-row-ids':set(),
        'wordpress-meetings':{'documentIdPrefix'},
@@ -651,7 +651,10 @@ def meeting_files(agency, row, fetch):
 def civicclerk(agency, config, markup, limit, fetch):
     api=config.get('apiUrl') or 'https://'+urllib.parse.urlparse(config['indexUrl']).hostname.split('.')[0]+'.api.civicclerk.com/v1'
     if markup.lstrip().startswith('<'):
-        markup=fetch(api+"/Events/GetEventsList(fromDate='',toDate='',categoryIds=[],skip=0,sortDescending=true,cursorId=0)")
+        # Newest first, so a portal that already lists next year's placeholder meetings would fill the page with
+        # them: `horizonDays` stops the list that many days ahead.
+        until=(_local_today()+timedelta(days=config['horizonDays'])).isoformat() if config.get('horizonDays') else ''
+        markup=fetch(api+f"/Events/GetEventsList(fromDate='',toDate='{until}',categoryIds=[],skip=0,sortDescending=true,cursorId=0)")
     data=json.loads(markup)
     records=data.get('value',data.get('items',[])) if isinstance(data,dict) else data
     rows=[]

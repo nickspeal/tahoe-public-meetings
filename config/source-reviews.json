@@ -1269,20 +1269,24 @@
       "id": "SR-047",
       "agencyId": "tdpud",
       "name": "Truckee Donner Public Utility District Board of Directors",
-      "status": "deferred",
+      "status": "resolved",
       "group": "Added meeting body",
       "flags": [],
       "owner": "Maintainer",
-      "issue": "The district's website (tdpud.org) has no agenda list: its \"current agenda\" link redirects to the district's CivicClerk portal (tdpud.portal.civicclerk.com), where agendas, packets, and minutes are published. That portal and its public event API (tdpud.api.civicclerk.com) could not be reached from the sandbox where this entry was added (the sandbox's network proxy refused both hosts; this is not a block by the district), so discovery, the agenda format, and the CivicClerk event names were not checked. The district's YouTube channel carries a livestream of each 2026 board meeting, titled \"TDPUD Board of Directors | <date>\".",
-      "nextStep": "From a network that reaches CivicClerk, run `worker discover tdpud` with a `civicclerk` discovery block on https://tdpud.portal.civicclerk.com/ (apiUrl https://tdpud.api.civicclerk.com/v1, as for IVGID), confirm the board's event names for `bodyPattern`, then add an agenda layout and check whether the `civicclerk-packet` staff report rule fits.",
+      "issue": "The district's website (tdpud.org) has no agenda list: its \"current agenda\" link redirects to the district's CivicClerk portal, where each meeting's agenda, packet, and minutes are published. The portal's event API lists the board's meetings (\"Regular Board Meeting- First\", \"Regular Board Meeting - Third Wednesday\", \"Special Board Meeting\", \"CANCELLED ...\") beside the separate Financing Corporation's, newest first, and already holds first- and third-Wednesday placeholders for all of 2027. The district's YouTube channel carries a livestream of each 2026 board meeting.",
+      "nextStep": "Keep live discovery. Recheck the schedule when 2027 shows whether the third-Wednesday placeholders are held. The Financing Corporation is left out; add it as its own body if the maintainer wants it.",
       "links": [
         {
           "label": "Board meetings page",
           "url": "https://www.tdpud.org/board-meetings"
         },
         {
-          "label": "Current agenda (redirects to CivicClerk)",
-          "url": "https://www.tdpud.org/current-agenda"
+          "label": "CivicClerk portal",
+          "url": "https://tdpud.portal.civicclerk.com/"
+        },
+        {
+          "label": "November 4, 2026 meeting",
+          "url": "https://tdpud.portal.civicclerk.com/event/179/overview"
         },
         {
           "label": "Meeting videos (YouTube channel)",
@@ -1290,10 +1294,11 @@
         }
       ],
       "resolution": {
-        "decision": "add and follow; discovery pending",
+        "decision": "add and follow",
         "resolvedAt": "2026-11-13",
-        "note": "The entry carries the board's page, standing participation details from tdpud.org, a configured first-Wednesday schedule, and the YouTube channel in meeting-records.json, but no discovery block, so no meetings arrive until one is added and verified."
-      }
+        "note": "The portal and its event API answered the project's fetcher on 2026-11-13. Discovery, bounded 120 days ahead, listed 14 board events from August 5, 2026 to March 3, 2027 (the canceled September 16 special meeting among them) and left out the Financing Corporation. Live captures of the September 2, October 7, and November 4 regular meetings and the October 14 special meeting read 23, 18, 17, and 10 items, and the item memo rule mapped 31 items of the three packets to their memos. Every 2026 regular meeting from February to November was on the first Wednesday at 6:00 PM."
+      },
+      "implementation": "The existing `civicclerk` discovery type now takes `horizonDays`, which bounds the event list (`toDate`), because the portal lists 2027 placeholders first. The `tdpud-board` layout reads the agenda; a new `item-memo-packet` staff report rule maps items to the packet's \"AGENDA ITEM #N\" memos (the IVGID `civicclerk-packet` rule reads a different memo stamp)."
     }
   ]
 }

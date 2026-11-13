@@ -1233,6 +1233,37 @@
         "resolvedAt": "2026-11-09",
         "note": "The maintainer chose to list the board with a note, as for Placer County, rather than leave it out."
       }
+    },
+    {
+      "id": "SR-046",
+      "agencyId": "tdrpd",
+      "name": "Truckee-Donner Recreation and Park District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The district (parks, trails, recreation, and Quimby park fees in Truckee) posts agendas in one CivicPlus Agenda Center category, \"Board Meetings & Agendas\", which also holds its Budget & Finance and Facility Condition Assessment committees. Regular meetings post the whole board packet as the agenda; special meetings and workshops post a one-page notice. No minutes are listed beside the agendas, and the district's YouTube channel carries promotional videos, not meetings.",
+      "nextStep": "Keep live discovery. Committee meetings are left out; add them as their own bodies if the maintainer wants them.",
+      "links": [
+        {
+          "label": "Agenda Center category",
+          "url": "https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2"
+        },
+        {
+          "label": "Board of Directors page",
+          "url": "https://www.tdrpd.org/154/Board-of-Directors"
+        },
+        {
+          "label": "October 22, 2026 board packet",
+          "url": "https://www.tdrpd.org/AgendaCenter/ViewFile/Agenda/_10222026-290"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The Agenda Center answered the project's fetcher on 2026-11-13. Discovery listed 14 board meetings in 2026 (three special meetings and workshops among them, and the canceled April 23 meeting) and left out 7 committee rows. Live captures of the August 27, September 24, and October 22, 2026 packets read 27, 29, and 32 items, and the cover sheet rule mapped 36 of their items to their reports."
+      },
+      "implementation": "The existing `civicplus` discovery type now applies `bodyPattern` to each row's title link (one row per agenda URL) and takes `qualifySpecial`, read from that title. The `tdrpd-board` layout reads the numbered agenda; a new `cover-sheet-packet` staff report rule maps items to the packet's \"BOARD AGENDA ITEM COVER SHEET\" pages."
     }
   ]
 }

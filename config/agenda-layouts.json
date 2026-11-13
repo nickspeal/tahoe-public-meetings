@@ -300,6 +300,17 @@
       "wrap": "none",
       "capsLead": true
     },
+    "tdrpd-board": {
+      "label": "TDRPD Board agenda",
+      "cover": ["(?:Regular|Special) Meeting Notice", "Board of Directors welcomes you to its meeting", "www\\.tdrpd\\.org"],
+      "coverPages": 1,
+      "levels": ["NUM", {"kind": "free", "pattern": "(?P<p>\\d{1,2})\\.(?P<v>\\d{1,2})(?=\\s)"}],
+      "firstPages": 3,
+      "skip": "^10981 Truckee Way|^Agenda Item Process|^\\d\\.\\s+(?:Item is presented|Questions from the board|Public comment|Discussion by Board|Board action)",
+      "wrap": "any",
+      "maxTitleLines": 5,
+      "titleCleanup": [["^(PUBLIC COMMENT)\\s*-\\s*This is the opportunity.*$", "\\1"]]
+    },
     "tdva-board": {
       "label": "TDVA Board agenda",
       "cover": ["Board of Directors Meeting", "tahoedouglasva\\.org"],

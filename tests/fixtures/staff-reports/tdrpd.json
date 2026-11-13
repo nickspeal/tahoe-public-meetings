@@ -1,0 +1,577 @@
+{
+ "note": "Truckee-Donner Recreation and Park District regular meeting of 2026-10-22: the October 2026 board packet. Kept: the agenda pages, every cover sheet, and the first attachment page of item 6.1; other pages trimmed (page_count is the real count). 6.4 is skipped because its cover sheet names another grant title, 8 because \"Financial Reports\" shares half of \"FINANCIAL REPORT\"'s words as printed.",
+ "meeting": {
+  "id": "tdrpd:2026-10-22",
+  "agency_id": "tdrpd",
+  "title": "Truckee-Donner Recreation and Park District Board of Directors Meeting",
+  "local_date": "2026-10-22",
+  "official_url": "https://www.tdrpd.org/AgendaCenter/ViewFile/Agenda/_10222026-290"
+ },
+ "items": [
+  {
+   "id": "tdrpd:2026-10-22:1",
+   "number": "1",
+   "title": "OPEN MEETING",
+   "section": null,
+   "fingerprint": "13d6b57c3f9c3c8010bda80fc37df3340df92066e02ec0f839d0d9253dd9f99e",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "OPEN MEETING",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:2",
+   "number": "2",
+   "title": "ROLL CALL",
+   "section": null,
+   "fingerprint": "f0023c48e3cae414389d3ee45e53ee68afce46899d6ae37be63f1b04151268c7",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "ROLL CALL",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:3",
+   "number": "3",
+   "title": "PUBLIC COMMENT",
+   "section": null,
+   "fingerprint": "cfdbf733aee149cd6455fb4f0dc3e3d6f6a8843abef31cb3876703f8431857a3",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "PUBLIC COMMENT - This is the opportunity for members of the public to address the board on any\nmatter not on the agenda. Please state your name for the record. Comments are limited to three minutes\nin order for all interested parties to have an opportunity to speak. No action shall be taken by the b",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:4.1",
+   "number": "4.1",
+   "title": "Government Code Section 54956.9(d)(4) - Deciding whether to initiate litigation, one case",
+   "section": "Closed Session",
+   "fingerprint": "693b63b52edc237ab4ad5a3f619138ca8835917601aa7db97aee57acdb2d55a3",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Government Code Section 54956.9(d)(4) - Deciding whether to initiate litigation, one case",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:5.1",
+   "number": "5.1",
+   "title": "Introduction of New Employees",
+   "section": "Presentations",
+   "fingerprint": "0c7e596130966cae06dd078aaa89faa706a8fd85fada682f5856721d94f71239",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Introduction of New Employees",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:5.2",
+   "number": "5.2",
+   "title": "Potential Downtown Assessment District",
+   "section": "Presentations",
+   "fingerprint": "55564e600127d28e27834fd334d79799be891f37e832b723252ef0e8eb21840c",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Potential Downtown Assessment District",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:5.3",
+   "number": "5.3",
+   "title": "Scholarship Program",
+   "section": "Presentations",
+   "fingerprint": "b5b72a8275d1af29b4b686d2fa7b1201146095f0fb8abdaf0680f4023a087920",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Scholarship Program",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:5.4",
+   "number": "5.4",
+   "title": "Appreciation of Outgoing Board Members",
+   "section": "Presentations",
+   "fingerprint": "cd7af1fff6115897c8549ee592d627cdaafc24e1702c91340a19b4035231021f",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Appreciation of Outgoing Board Members",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:6.1",
+   "number": "6.1",
+   "title": "Discussion / Possible Action Adopting a new Policy #247 – Boundaries for Employees and Volunteers Interacting with Minors",
+   "section": "New Business",
+   "fingerprint": "ea72630d20a3d2a25ea20bb225ecddfc58ef286791e256c881154d8e315eb21b",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Discussion / Possible Action Adopting a new Policy #247 – Boundaries for Employees and\n   Volunteers Interacting with Minors",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:6.2",
+   "number": "6.2",
+   "title": "Discussion / Possible Action Adopting a new Policy #248 – Bereavement Leave and Reproductive Loss Leave",
+   "section": "New Business",
+   "fingerprint": "0333ddee2caad309e1848f022c40aeb3a7c171b8b12801a07cbf34bcc90ab813",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Discussion / Possible Action Adopting a new Policy #248 – Bereavement Leave and Reproductive\n   Loss Leave",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:6.3",
+   "number": "6.3",
+   "title": "Discussion / Possible Action Updating the District Wage Schedule for FY 2026-2027",
+   "section": "New Business",
+   "fingerprint": "0d1a40fb7741a4b300aa56780959bb36594b9a20c340155f1238cb6ffbd36da2",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Discussion / Possible Action Updating the District Wage Schedule for FY 2026-2027",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:6.4",
+   "number": "6.4",
+   "title": "Discussion / Possible Action Adopting Resolution #2026-363 Authorizing Signatories for CalOES Cybersecurity Grant",
+   "section": "New Business",
+   "fingerprint": "51e46d0bb14f2eab7ad0918096b23f0119696834e6eb13cf654a1550125c192c",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Discussion / Possible Action Adopting Resolution #2026-363 Authorizing Signatories for CalOES\n         Cybersecurity Grant",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:7.1",
+   "number": "7.1",
+   "title": "Approval of the minutes of the special Board meeting of August 13, 2026",
+   "section": "Consent Calendar",
+   "fingerprint": "39167ce8805538fdebc7afa20fe8dcd8f14edee13baec2def0d82b8682fb6fdc",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approval of the minutes of the special Board meeting of August 13, 2026",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:7.2",
+   "number": "7.2",
+   "title": "Approval of the minutes of the regular Board meeting of September 24, 2026",
+   "section": "Consent Calendar",
+   "fingerprint": "2136e75d6096a749a4948e73036a3b2455f64d80e32bc8d6167b7ac9dda85fde",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approval of the minutes of the regular Board meeting of September 24, 2026",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:7.3",
+   "number": "7.3",
+   "title": "Approval of the District check registers for September 3, 17, and 30, 2026",
+   "section": "Consent Calendar",
+   "fingerprint": "323db8b2aa754e6d92b44411b9e3b5d70093120e790a55745fb60d41820a935b",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Approval of the District check registers for September 3, 17, and 30, 2026",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:7.4",
+   "number": "7.4",
+   "title": "Adoption of an update to Policy #206 – Sick Leave",
+   "section": "Consent Calendar",
+   "fingerprint": "da7b0857c4629b314f0d6f92a1dccd8354c6cb92614345d5f023b5340f463dee",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Adoption of an update to Policy #206 – Sick Leave",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:7.5",
+   "number": "7.5",
+   "title": "Adoption of an update to Policy #306 - Reserve Fund Policy",
+   "section": "Consent Calendar",
+   "fingerprint": "b5dc0c2771bc567ea8728f49e67298be37fbe013a5701ff64b7640bcc23782f9",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Adoption of an update to Policy #306 - Reserve Fund Policy",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:8",
+   "number": "8",
+   "title": "FINANCIAL REPORT",
+   "section": null,
+   "fingerprint": "886abeada74185447976be76c4ae255b4f4801afe54ffeae88d8a2c01862df17",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "FINANCIAL REPORT",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.1",
+   "number": "9.1",
+   "title": "Park Division Update",
+   "section": "Division Reports",
+   "fingerprint": "104970b6d55815c23b3fc58c7a55715285b2a36c63a6330da34197d4e68598a9",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Park Division Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.2",
+   "number": "9.2",
+   "title": "Recreation Division Update",
+   "section": "Division Reports",
+   "fingerprint": "3fa17e5704319a0cf01e0a07df0a073c46363443ce61937a4638e5d17dcd8c7d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Recreation Division Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.3",
+   "number": "9.3",
+   "title": "Marketing Update",
+   "section": "Division Reports",
+   "fingerprint": "e1472971591374513739be3071cd945de682945bac50c1043180667d6b71cf52",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Marketing Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.4",
+   "number": "9.4",
+   "title": "Accounting & Office Division Update",
+   "section": "Division Reports",
+   "fingerprint": "55bb6b15420d57fcc450b94ae220167ff3979852d4ff50281afb9c054e88d7eb",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Accounting & Office Division Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.5",
+   "number": "9.5",
+   "title": "Information Technology Division Update",
+   "section": "Division Reports",
+   "fingerprint": "cfadb9a4fb63c103511843af068bd5a519a217f883f7829576a7cc740e5a9c72",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Information Technology Division Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.6",
+   "number": "9.6",
+   "title": "Human Resources Division Update",
+   "section": "Division Reports",
+   "fingerprint": "b09f101581e9e2524992717b623784facda03e2a5645a7065ff7d73f06ece437",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Human Resources Division Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:9.7",
+   "number": "9.7",
+   "title": "General Manager’s Update",
+   "section": "Division Reports",
+   "fingerprint": "6bafdf3c62572da3ca627e1d9006ad8f4b5c8b1883679c38c58e594084c0185d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "General Manager’s Update",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:10.1",
+   "number": "10.1",
+   "title": "Budget and Finance Committee (Wasley & Hansford)",
+   "section": "Board Committee Reports",
+   "fingerprint": "3ab457d193558e24b8ffcd696c8037889573508b9dbebb3ac18d1106cb582e22",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Budget and Finance Committee (Wasley & Hansford)",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:10.2",
+   "number": "10.2",
+   "title": "Facility Condition Assessment Committee (Tanner & Marquette)",
+   "section": "Board Committee Reports",
+   "fingerprint": "30e5b815e5fd6885eaffd77586b0cc6f6f5cad08e0986807f5c6dc2e13275d83",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Facility Condition Assessment Committee (Tanner & Marquette)",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:10.3",
+   "number": "10.3",
+   "title": "Truckee Recreation & Park Foundation Liaison (Smith)",
+   "section": "Board Committee Reports",
+   "fingerprint": "6c4fff6b6d815e16af167d0eaab3b62c637331bb70f042278d6f676ebd88b5e0",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Truckee Recreation & Park Foundation Liaison (Smith)",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:11.1",
+   "number": "11.1",
+   "title": "Government Code Section 54956.8 – Conference with Real Property Negotiators. Property: Nevada County Assessor’s Parcel Numbers: 019-441-004-000 and 019-450-077-000. Agency Negotiators: Sven Leff (General Manager) and Jason Hansford (Board member). Under Negotiation: Price and Terms.",
+   "section": "Closed Session",
+   "fingerprint": "61d11d4a5447aba19d7856331bb425d3d24ff7070539d9b37e1a0741e0255a38",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Government Code Section 54956.8 – Conference with Real Property Negotiators. Property:\n          Nevada County Assessor’s Parcel Numbers: 019-441-004-000 and 019-450-077-000. Agency\n          Negotiators: Sven Leff (General Manager) and Jason Hansford (Board member). Under\n          Negotiation: Pri",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:11.2",
+   "number": "11.2",
+   "title": "Government Code Section 54957 - Public Employee Performance Evaluation: General Manager",
+   "section": "Closed Session",
+   "fingerprint": "7749167cfbbef0fe4167b6e54364182153c71ff8e30afd1ceea7925eabe0bf17",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Government Code Section 54957 - Public Employee Performance Evaluation: General Manager",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:12",
+   "number": "12",
+   "title": "ADDITIONAL MATTERS OF INTEREST TO BOARD MEMBERS",
+   "section": null,
+   "fingerprint": "a0a16b58b5ae82566ecb975fed6f15f3b98b4975c5a55fc4fbbec50ebc1330a4",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "ADDITIONAL MATTERS OF INTEREST TO BOARD MEMBERS",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  },
+  {
+   "id": "tdrpd:2026-10-22:13",
+   "number": "13",
+   "title": "ADJOURN",
+   "section": null,
+   "fingerprint": "450981eaeaf4ba6b1e8f68ee88db81434a29560d7da871fdf9c010c7c389bc79",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "ADJOURN",
+     "documentId": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0",
+   "source_document_id": "tdrpd-agenda-packet",
+   "title": "October 2026 Board Packet",
+   "url": "https://www.tdrpd.org/AgendaCenter/ViewFile/Agenda/_10222026-290",
+   "sha256": "b9fbf7df2595fec0b8b3cfe67019893d52567db05ac33aca7e58ffb4be305f12",
+   "page_count": 94,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "tdrpd:2026-10-22:tdrpd-agenda-packet:b9fbf7df2595fec0": {
+   "1": "Regular Meeting Notice\n                   Truckee-Donner Recreation and Park District Board of Directors\n                              Thursday, October 22, 2026, 4:00 P.M.\n                  Steve Randall Community Recreation Center, 10981 Truckee Way\n\nThe Board of Directors welcomes you to its meeting. Your interest is encouraged and appreciated.\nCopies of the agenda and correspondence may be obtained at the District office.\n\n1. OPEN MEETING\n\n2. ROLL CALL\n\n3. PUBLIC COMMENT - This is the opportunity for members of the public to address the board on any\nmatter not on the agenda. Please state your name for the record. Comments are limited to three minutes\nin order for all interested parties to have an opportunity to speak. No action shall be taken by the board\non items not appearing on the agenda (Government Code Section 54954.2 – Brown Act). The board may\nchoose to acknowledge the comment or, where appropriate, briefly answer a question, refer the matter to\nstaff, or set the item for discussion at a future meeting.\n\n\n     Agenda Item Process – The board will follow the process below on each agenda item:\n     1. Item is presented by staff or applicant.\n     2. Questions from the board to the staff or applicant.\n     3. Public comment – Limited to three minutes.\n     4. Discussion by Board.\n     5. Board action (if action needs to be taken).\n\n4. CLOSED SESSION\n    4.1 Government Code Section 54956.9(d)(4) - Deciding whether to initiate litigation, one case\n5. PRESENTATIONS\n    5.1 Introduction of New Employees\n    5.2 Potential Downtown Assessment District\n    5.3 Scholarship Program\n    5.4 Appreciation of Outgoing Board Members\n\n6. NEW BUSINESS\n   6.1 Discussion / Possible Action Adopting a new Policy #247 – Boundaries for Employees and\n   Volunteers Interacting with Minors\n   6.2 Discussion / Possible Action Adopting a new Policy #248 – Bereavement Leave and Reproductive\n   Loss Leave\n   6.3 Discussion / Possible Action Updating the District Wage Schedule for FY 2026-2027\n\n\n 10981 Truckee Way, Truckee, California 96161 | Phone: (530) 582-7720 | Fax: (530) 582-7724 | www.tdrpd.org",
+   "2": "6.4 Discussion / Possible Action Adopting Resolution #2026-363 Authorizing Signatories for CalOES\n         Cybersecurity Grant\n\n7. CONSENT CALENDAR\n     7.1 Approval of the minutes of the special Board meeting of August 13, 2026\n     7.2 Approval of the minutes of the regular Board meeting of September 24, 2026\n     7.3 Approval of the District check registers for September 3, 17, and 30, 2026\n     7.4 Adoption of an update to Policy #206 – Sick Leave\n     7.5 Adoption of an update to Policy #306 - Reserve Fund Policy\n\n8. FINANCIAL REPORT\n\n9. DIVISION REPORTS\n     9.1 Park Division Update\n     9.2 Recreation Division Update\n     9.3 Marketing Update\n     9.4 Accounting & Office Division Update\n     9.5 Information Technology Division Update\n     9.6 Human Resources Division Update\n     9.7 General Manager’s Update\n\n10. BOARD COMMITTEE REPORTS\n     10.1 Budget and Finance Committee (Wasley & Hansford)\n     10.2 Facility Condition Assessment Committee (Tanner & Marquette)\n     10.3 Truckee Recreation & Park Foundation Liaison (Smith)\n\n11. CLOSED SESSION\n     11.1 Government Code Section 54956.8 – Conference with Real Property Negotiators. Property:\n          Nevada County Assessor’s Parcel Numbers: 019-441-004-000 and 019-450-077-000. Agency\n          Negotiators: Sven Leff (General Manager) and Jason Hansford (Board member). Under\n          Negotiation: Price and Terms.\n     11.2 Government Code Section 54957 - Public Employee Performance Evaluation: General Manager\n\n12. ADDITIONAL MATTERS OF INTEREST TO BOARD MEMBERS\n         Board members may make a brief announcement or report\n\n13. ADJOURN\n\nAgenda posted and mailed on October 16, 2026\n\n___________________________________\nDavid Faris, HR Manager/District Clerk\nNOTE: In compliance with the American with Disabilities Act, if you need special assistance to participate in this meeting, please\ncontact David Faris, District Clerk, at 530-582-7720. Notification 48 hours prior to the meeting will enable TDRPD to make\nreasonable arrangements to ensure accessibility to this meeting. (28 CFR 35.102-35.104 ADA Title II)\n\n\n\n 10981 Truckee Way, Truckee, California 96161 | Phone: (530) 582-7720 | Fax: (530) 582-7724 | www.tdrpd.org",
+   "3": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          6.1 – Adoption Policy #247 - Boundaries for\n                 Employees and Volunteers Interacting with Minors\n\nPresenter:       David Faris, Human Resources Manager/ District Clerk\n\nRecommendation:\n\n       Adopt the new District policy\n\n\nBackground:\n\n  • During the District's most recent Biannual CAPRI visit in May\n    2026, staff was asked to create a policy that addresses\n    employees and volunteers interacting with minors.\n  • Staff reviewed comments made by Board members and\n    believe the policy is correctly written.\n\n\n\n\nA Draft version of the policy is attached.\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "4": "Truckee-Donner Recreation and Park District\n                        Policy Handbook\n\n\nPOLICY TITLE:                Boundaries for Employees and Volunteers Interacting\n                             with Minors\n\nPOLICY NUMBER:               247\n\n\n247.10       This policy applies to all permanent full-time employees, part-time\nbenefited employees, seasonal/part-time employees, and volunteers who work directly\nwith minors. A minor is defined as a person who is under the legal age of an adult, or\nanyone under the age of 18 years of age.\n\n247.20        Boundaries are defined to guide Recreation and Park staff in conducting\nthemselves in a way that reflects the high standards of behavior and professionalism\nrequired of employees and volunteers and to specify boundaries between minors and\nstaff. The term “Boundaries” is defined as acceptable professional behavior by\nemployees and volunteers while interacting with minors. Trespassing beyond the\nBoundaries of a minor and employee/volunteer relationship is deemed an abuse of\npower and a betrayal of public trust.\n\n247.30         This policy attempts to clearly define the boundaries, so everyone\nunderstands the expectations and the consequences of not obeying them. Staff shall\nrespect the individual rights of minors and act in their best interest. Minors shall not be\ndiscriminated against regardless of their race, ethnicity, gender, sexual orientation,\nreligion, socioeconomic status, or disability. The District shall have zero tolerance for\nharassment or abuse.\n\n247.40        Some activities may seem innocent from an employee’s perspective, but\nsome of these can be perceived as flirtation or sexual insinuation from a minor or\nparental point of view. The purpose of the following lists of acceptable and\nunacceptable behaviors is not to restrain innocent, positive relationships between\nemployees and minors but to prevent relationships that could lead to, or may be\nperceived as, misconduct.\n\n247.50        The following is an illustrative list of unacceptable behavior, which\nincludes but is not limited to:\n\n   •   Remarks about the physical attributes or physiological development of anyone.\n   •   Excessive attention toward a particular minor.\n   •   Sending e-mails, text messages, instant messages, social media messages, or\n       letters to minors if the content is not about park and recreation activities and not\n       in accordance with applicable District policies or in violation of the District’s\n       Social Media and/or Technology Policy.\n\n                                 T-D.R.P.D. POLICY HANDBOOK\n          Policy #247 - “Boundaries for Employees and Volunteers Interacting with Minors”\n                                    Approved October 22, 2026",
+   "8": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          6.2 – Adoption Policy #248 - Bereavement Leave and\n                 Reproductive Loss Leave\n\nPresenter:       David Faris, Human Resources Manager/ District Clerk\n\nRecommendation:\n\n       Adopt the new District policy\n\n\nBackground:\n\n  • TDRPD currently does not have a policy that speaks to\n    bereavement or reproductive loss leaves that have passed in\n    California.\n\n\n\n\nA Draft version of the policy is attached.\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "11": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #: 6.3 – Discussion / Possible Action Adopting an update to the\nDistrict Wage Schedule for Fiscal Year 2026-2027\n\nPresenter:    David Faris, Human Resources Manager / District Clerk\n\nRecommendation:\n\n      Approved updated Wage Schedule\n\n\nBackground:\n\n      The FY 2026-2027 Wage Schedule was approved at the September 2026 Board\n      meeting that included a 3.4% Cost of Living Adjustment (COLA). With this\n      change, staff realized that Range 5 and 4 could have an additional step added\n      and still be above California minimum wage ($16.90 per hour).\n\n\n\n\n       10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "13": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #: 6.4 - Resolution #2026-363 Designating District Agents for the FFY 2024 State\nand Local Cybersecurity Grant Program\n\nPresenter: Brian Compton, IT Administrator\n\nRecommendation:\n     Approve Resolution #2026-363 designating the General Manager, Accounting\n     Manager, and IT Administrator as Authorized Agents of the District for the\n     Federal Fiscal Year 2024 State and Local Cybersecurity Grant Program and\n     authorizing those agents to execute and submit the documents required by the\n     Cal OES.\n\nBackground:\n     In March 2026, the Truckee-Donner Recreation and Park District submitted a\n     proposal to the California Governor's Office of Emergency Services for funding\n     through the Federal Fiscal Year 2024 State and Local Cybersecurity Grant\n     Program. The District's proposal was subsequently selected for funding.\n\n       The proposed Secure Cloud Transition and Cyber Resilience Program is\n       intended to improve the District's cybersecurity governance, identity and device\n       management, cloud security, threat detection and response, data protection,\n       recovery capabilities, network security, and employee cybersecurity awareness.\n       The project supports the District's transition from legacy on-premises technology\n       to modern cloud services and related cybersecurity controls.\n\n       The District requested $249,941.33 in federal funding. The proposed project\n       includes a required 30% local match of $107,117.71, resulting in a total\n       estimated project cost of $357,059.04. The anticipated project period is July 1,\n       2026 through August 31, 2028.\n\n       As part of the post-award process, Cal OES requires the District to adopt a\n       Governing Body Resolution identifying the positions authorized to act on behalf\n       of the District. Cal OES recommends identifying more than one Authorized\n       Agent, and all required grant documents must be signed by an Authorized Agent\n       whose position matches the Governing Body Resolution.\n\n\n\n   10981 Truckee Way, Truckee, CA 96161 | Phone: (530) 582-7720 | Fax: (530) 582-7724 | www.tdrpd.org",
+   "18": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          7.1 – Approval of the minutes of the Special\n                 Board meeting of August 13, 2026\n\nPresenter:       David Faris, Human Resources Manager/District Clerk\n\nRecommendation:\n\n      Approve minutes\n\n\nBackground:\n\n      Attached are the minutes from the August 13, 2026\n      Special Board Meeting for Truckee-Donner Recreation and\n      Park District\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "20": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          7.2 – Approval of the minutes of the Regular\n                 Board meeting of September 24, 2026\n\nPresenter:       David Faris, Human Resources Manager/District Clerk\n\nRecommendation:\n\n      Approve minutes\n\n\nBackground:\n\n      Attached are the minutes from the September 24, 2026\n      Regular Board Meeting for Truckee-Donner Recreation\n      and Park District\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "26": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          7.3 – AP Check Registers\n\nPresenter:       Teresa McNamara, Accounting Manager\n\nRecommendation:\n\n                 Approve the following check registers and EFT transactions:\n\n                 09/03/2026 - $126,283.53\n                 09/17/2026 - $605,212.71\n                 09/30/2026 - $188,045.41\n                 August EFT Transactions - $87,709.32\n\n\nBackground:\n\n                 Accounts Payable checks are paid every two weeks. Provided are the\n                 registers for the three check runs in September 2026. There are also\n                 payments made to several vendors via Electronic Funds Transfer. A\n                 register of these EFTs for the month of September is included. Also\n                 included is Cal Card and District Credit Card payment detail for #2341 and\n                 #2403.\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "46": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          7.4 – Adoption of an update to Policy #206 - Sick Leave\n\n\nPresenter:       David Faris, Human Resources Manager/ District Clerk\n\nRecommendation:\n\n       Adopt the updated policy.\n\n\nBackground:\n\nThe current version of Policy #206 - Sick Leave was adopted in January\n2024. As part of our policy updating project, the policy was reviewed by\nmanagement staff and the following changes are recommended for the\npolicy:\n   •   CAPRI reviewed and made edits/comments.\n   •   Differentiating how sick time is used for a Exempt and a Non-\n       Exempt employee. Staff plans to bring the policy back next year\n       to discuss the sick buy back and sick max accrual.\n\n\n\n\nA final version of the policy revision is attached, and a red-lined version of the current\npolicy follows.\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "54": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #: 7.5 Policy #306 – Reserve Fund Policy\n\n\nPresenter: Teresa McNamara, Accounting Manager\n\n\nRecommendation: Adopt the Updated Reserve Fund Policy\n\n\n\n\nBackground: Per the required annual review of TDRPD’s Reserve Fund Policy by the\nGeneral Manager and Accounting Manager, identification of the fund reserve or\nrestricted fund types held, as well as any updated fund reserve/restricted amounts are\nshown. The current policy with red line updates and the updated policy with the\nrecommended changes are both included. Both the General Manager and Accounting\nManager recommend adopting the updated policy.\n\n\n\n\nA final version of the policy revision is attached, and a red-lined version of the\ncurrent policy follows.\n\n\n       10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "66": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          8.0 – Financial Reports\n\nPresenter:       Teresa McNamara, Accounting Manager\n\nRecommendation:\n\n                 Review – Q/A\n\nBackground:\n\n                 Financial Reports –September 2026\n                 Financial Data Pie Chart –September 2026\n                 Financial Data Graph –September 2026\n                 Financial Data Bar Chart –September 2026\n                 Notes to Monthly Financial Reports –September 2026\n                 Fund and Cash Balance Report –September 2026\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "77": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          9.1 – Park Division Update\n\nPresenter:       John Shaffer, Park Superintendent\n\nRecommendation:\n\n      Review – Q/A\n\n\nBackground:\n\n      Monthly Report for Park Department\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "81": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          9.2 – Recreation Division Update\n\nPresenter:       Pete Kristian, Recreation Superintendent\n\nRecommendation:\n\n      Review – Q/A\n\n\nBackground:\n\n      Monthly Report for Recreation Department\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "87": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          9.3 – Marketing Division Update\n\nPresenter:       Kyle Jost, Marketing Manager\n\nRecommendation:\n\n      Review – Q/A\n\n\nBackground:\n\n      Monthly Report for Marketing\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "89": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          9.4 – Accounting and Office Division Update\n\nPresenter:       Teresa McNamara, Accounting Manager\n\nRecommendation:\n\n                 Review – Q/A\n\nBackground:\n\n                 Monthly Accounting and Front Office Report – September 2026\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "92": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #:          9.5 – IT Division Update\n\nPresenter: Brian Compton, IT Admin\n\nRecommendation:\n\n      Review – Q/A\n\n\nBackground:\n\n      Monthly Report for IT Department\n\n\n\n\n          10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720",
+   "94": "BOARD AGENDA ITEM COVER SHEET\n\n\nItem #: 9.7 – General Manager’s Update\n\nPresenter:    Sven Leff, General Manager\n\nRecommendation:\n\n              Information Only\n\n\n\nBackground:\n\n\n         1.   Master Plan Progress Update\n         2.   Donner Lake Boat Launch Project\n         3.   Library\n         4.   Polaris Disc Golf Course\n\n\n\n\n       10981 Truckee Way, Truckee, CA 96161 | info@tdrpd.org | www.tdrpd.org | (530) 582-7720"
+  }
+ },
+ "downloads": {},
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4.1": null,
+  "5.1": null,
+  "5.2": null,
+  "5.3": null,
+  "5.4": null,
+  "6.1": {
+   "page_start": 3,
+   "page_end": 7,
+   "heading": "Item #:          6.1"
+  },
+  "6.2": {
+   "page_start": 8,
+   "page_end": 10,
+   "heading": "Item #:          6.2"
+  },
+  "6.3": {
+   "page_start": 11,
+   "page_end": 12,
+   "heading": "Item #: 6.3"
+  },
+  "6.4": null,
+  "7.1": null,
+  "7.2": null,
+  "7.3": {
+   "page_start": 26,
+   "page_end": 45,
+   "heading": "Item #:          7.3"
+  },
+  "7.4": {
+   "page_start": 46,
+   "page_end": 53,
+   "heading": "Item #:          7.4"
+  },
+  "7.5": {
+   "page_start": 54,
+   "page_end": 65,
+   "heading": "Item #: 7.5"
+  },
+  "8": null,
+  "9.1": {
+   "page_start": 77,
+   "page_end": 80,
+   "heading": "Item #:          9.1"
+  },
+  "9.2": {
+   "page_start": 81,
+   "page_end": 86,
+   "heading": "Item #:          9.2"
+  },
+  "9.3": {
+   "page_start": 87,
+   "page_end": 88,
+   "heading": "Item #:          9.3"
+  },
+  "9.4": {
+   "page_start": 89,
+   "page_end": 91,
+   "heading": "Item #:          9.4"
+  },
+  "9.5": {
+   "page_start": 92,
+   "page_end": 93,
+   "heading": "Item #:          9.5"
+  },
+  "9.6": null,
+  "9.7": {
+   "page_start": 94,
+   "page_end": 94,
+   "heading": "Item #: 9.7"
+  },
+  "10.1": null,
+  "10.2": null,
+  "10.3": null,
+  "11.1": null,
+  "11.2": null,
+  "12": null,
+  "13": null
+ }
+}

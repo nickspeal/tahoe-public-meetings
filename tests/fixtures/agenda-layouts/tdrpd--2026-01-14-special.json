@@ -1,0 +1,38 @@
+{
+ "agency": "tdrpd",
+ "source": "https://www.tdrpd.org/AgendaCenter/ViewFile/Agenda/_01142026-271",
+ "note": "a one-page special meeting notice for a board workshop, with the start time on the first item",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "Special Meeting Notice\n                                      TDRPD Master Plan Workshop\n                                Wednesday, January 14, 2026, 4:00 P.M.\n                      Steve Randall Community Recreation Center, 10981 Truckee Way\n\nThe Board of Directors welcomes you to its meetings; your interest is encouraged and appreciated.\nCopies of the agenda and correspondence may be obtained at the District office.\n\n1. OPEN MEETING – 4:00 PM\n\n2. ROLL CALL\n\n3. PUBLIC COMMENT - This is the opportunity for members of the public to address the board on any\nmatter not on the agenda. Please state your name for the record. Comments are limited to three minutes\nin order for all interested parties to have an opportunity to speak. No action shall be taken by the board on\nitems not appearing on the agenda (Government Code Section 54954.2 – Brown Act). The board may\nchoose to acknowledge the comment or, where appropriate, briefly answer a question, refer the matter to\nstaff, or set the item for discussion at a future meeting.\n\n\n     Agenda Item Process – The board will follow the process below on each agenda item:\n       1.   Item is presented by staff or applicant.\n       2.   Questions from the board to the staff or applicant.\n       3.   Public comment – Limited to three minutes.\n       4.   Discussion by Board.\n       5.   Board action (if action needs to be taken).\n\n\n\n4. Master Plan Workshop\n\n5. ADJOURN\n\nAgenda posted and mailed on January 13, 2026.\n\n\n\n\n_____________________________________\nDavid Faris, HR Manager/District Clerk\n\nNOTE: In compliance with the American with Disabilities Act, if you need special assistance to participate in this meeting, please\ncontact David Faris, District Clerk, at 530-582-7720. Notification 48 hours prior to the meeting will enable TDRPD to make\nreasonable arrangements to ensure accessibility to this meeting. (28 CFR 35.102-35.104 ADA Title II)\n\n\n\n\n 10981 Truckee Way, Truckee, California 96161 | Phone: (530) 582-7720 | Fax: (530) 582-7724 | www.tdrpd.org"
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   null,
+   "OPEN MEETING – 4:00 PM"
+  ],
+  [
+   "2",
+   null,
+   "ROLL CALL"
+  ],
+  [
+   "3",
+   null,
+   "PUBLIC COMMENT"
+  ],
+  [
+   "4",
+   null,
+   "Master Plan Workshop"
+  ],
+  [
+   "5",
+   null,
+   "ADJOURN"
+  ]
+ ]
+}

@@ -2404,6 +2404,71 @@
     }
   },
   {
+    "id": "tdrpd",
+    "name": "TDRPD — Board of Directors",
+    "shortName": "TDRPD",
+    "page": {
+      "slug": "truckee-donner-recreation-and-park-district-board",
+      "name": "Truckee-Donner Recreation and Park District Board"
+    },
+    "aliases": [
+      "Truckee-Donner Recreation and Park District",
+      "Truckee Donner Recreation and Park District",
+      "Truckee-Donner Recreation & Park District",
+      "Truckee Donner Rec and Park",
+      "TDRPD Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.tdrpd.org/",
+    "sourceUrl": "https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2",
+    "coverageNote": "The district does not post meeting recordings, and its Agenda Center lists no minutes; approved minutes appear in the next meeting's packet.",
+    "participation": {
+      "email": "board@tdrpd.org",
+      "instructions": "Board meetings are open to the public. Questions or comments can be emailed to the Board of Directors.",
+      "sourceUrl": "https://www.tdrpd.org/154/Board-of-Directors",
+      "checkedOn": "2026-11-13"
+    },
+    "discovery": {
+      "type": "civicplus",
+      "indexUrl": "https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2",
+      "bodyPattern": "^(?!.*(?:Committee|\\bFCA\\b)).*(?:\\bBoard\\b|\\bWorkshop\\b|\\bSpecial Meeting\\b)",
+      "title": "Truckee-Donner Recreation and Park District Board of Directors Meeting",
+      "qualifySpecial": true
+    },
+    "agenda": {
+      "layouts": [
+        "tdrpd-board"
+      ]
+    },
+    "staffReports": {
+      "rule": "cover-sheet-packet"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's Board of Directors page (checked 2026-11-13): \"4th Thursday of every month, 6:00 pm, Community Recreation Center\". Every 2026 regular meeting through October fell on the fourth Thursday, but the September and October agendas start at 4:00 PM, so no time is set. November and December are left out: the January 22, 2026 agenda approves minutes of a December 11, 2025 regular meeting (the second Thursday), and November's fourth Thursday is Thanksgiving.",
+      "rules": [
+        {
+          "ordinal": 4,
+          "weekday": "thursday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "timezone": "America/Los_Angeles",
+          "label": "Truckee-Donner Recreation and Park District Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

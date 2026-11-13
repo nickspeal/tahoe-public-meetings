@@ -28,6 +28,7 @@ when reports exist but can't be reached or attached yet, or just a `note` when t
 | --- | --- | --- |
 | `airport-tab-files` | Truckee Tahoe Airport District: one file per agenda TAB on the meeting's attachments page | |
 | `civicclerk-packet` | CivicClerk packet (Incline Village GID): "ITEM G.1." stamps on dated memos | |
+| `cover-sheet-packet` | Agenda packet whose item reports each open with a cover sheet, "Item #: 6.1 – title" (Truckee-Donner Recreation and Park District); a report runs to the next cover sheet | `heading` (default `BOARD AGENDA ITEM COVER SHEET`): the cover sheet's heading |
 | `douglas-packet` | Douglas County Granicus packet: an item cover page before each item's attachments | `maxMegabytes` (default 300), `maxPages` (default 2000): the packet download limits |
 | `fish-game-staff-summaries` | Fish and Game Commission: "Staff Summary" files linked from the meeting documents index | |
 | `lahontan-item-files` | Water board agenda linking `itemN.pdf`, headed "ITEM N" | |

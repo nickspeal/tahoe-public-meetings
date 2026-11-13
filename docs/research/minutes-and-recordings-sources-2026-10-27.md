@@ -39,7 +39,7 @@ Match a video to a meeting by a per-body title pattern plus the date parsed from
 | TRPA Governing Board | YouTube `UCTfd_gYe2i9nBOfY53lCnLA`, playlist `PLKbZed26aeuA8fh-HWQcwdhIwQM6uFTdL`; also linked from the meeting page | Final minutes linked from the meeting page, about 1 month | |
 | TRPA APC | Playlist `PLKbZed26aeuC-_H0pVaaKhTScREvsGH-k` | Draft only, next packet | |
 | STPUD | YouTube `UCCTZ5fNgs42NvLIseQd7OIw`, titles `M/D/YYYY [Special ]Board Meeting` | "Minutes" link in the same row, 2–6 weeks | |
-| Truckee Tahoe Airport | YouTube, Tahoe Truckee Media playlist `PLr_DSJ6rtN1YYUKFqxioyQ-kNF1N0q_Qr` | Draft only, as a "TAB nn" attachment of the next meeting, about 1 month | Configured meetings index returned 404 on 2026-10-27 |
+| Truckee Tahoe Airport | YouTube, Tahoe Truckee Media playlist `PLr_DSJ6rtN1YYUKFqxioyQ-kNF1N0q_Qr` | Draft only, as a "TAB nn" attachment of the next meeting, about 1 month | Configured meetings index returned 404 on 2026-10-27 (still 404 on 2026-11-13; discovery now reads the district calendar, see [source coverage](../operations/source-coverage.md)) |
 | Lahontan Water Board | "Meeting Video" link in the same row, mostly CAL-SPAN | Same row once approved, about 2 months | CAL-SPAN is behind Cloudflare: link, never fetch |
 | Fish and Game Commission | Committees: row YouTube link or `UCTrLyrErKM3UNqI-3gBWLSg`; full Commission: generic CAL-SPAN folder only | None published | Some row links are wrapped in Outlook SafeLinks |
 | NTCD | None (Teams) | Sheet Minutes column, under 1 month; use the row date | |

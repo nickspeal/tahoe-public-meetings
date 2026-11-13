@@ -1864,7 +1864,7 @@
     ],
     "follow": true,
     "officialUrl": "https://truckeetahoeairport.com/",
-    "sourceUrl": "https://truckeetahoeairport.com/administration/board/meetings",
+    "sourceUrl": "https://truckeetahoeairport.com/administration/calendar",
     "participation": {
       "watchUrl": "https://www.ttusd.org/community/tahoetruckeemedia/live-meetings/truckee-tahoe-airport-district",
       "sourceUrl": "https://www.ttusd.org/community/tahoetruckeemedia/live-meetings/truckee-tahoe-airport-district",
@@ -1872,8 +1872,10 @@
     },
     "discovery": {
       "type": "meeting-files",
-      "indexUrl": "https://truckeetahoeairport.com/administration/board/meetings",
-      "title": "Truckee Tahoe Airport District Regular Board Meeting"
+      "indexUrl": "https://truckeetahoeairport.com/administration/calendar",
+      "title": "Truckee Tahoe Airport District Regular Board Meeting",
+      "eventLabel": "\\bBoard Meeting\\b",
+      "filesLabel": "Meeting Files"
     },
     "agenda": {
       "layouts": [

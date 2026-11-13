@@ -3,10 +3,12 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import ssl
 import subprocess
 import tempfile
 import urllib.error
+import urllib.parse
 
 import pytest
 
@@ -389,11 +391,15 @@ def test_section_titles_give_same_day_rows_of_another_section_their_own_id():
     assert {r['title'] for r in discover_configured('example',plain,limit=None,fetch=lambda _:markup)}=={'Board Meeting'}
 
 
-def test_airport_meeting_files_pages_supply_the_agenda_and_special_label():
+def test_meeting_files_table_layout_supplies_the_agenda_and_special_label():
+    # The airport's former meetings page (404 since late October 2026): a dated table and a "next meeting"
+    # block, each row linking its file list directly.
     pages={'/administration/board/meetings':_fixture('truckee-tahoe-airport-board-meetings.html'),
            '/board_meetings/417/attachments':_fixture('truckee-tahoe-airport-meeting-417-files.html')}
     plain='<h1>TTAD Board Meeting 2026-10-21</h1>'
-    rows=discover_configured('truckee-tahoe-airport',_live_config('truckee-tahoe-airport'),limit=10,
+    config={'type':'meeting-files','indexUrl':'https://truckeetahoeairport.com/administration/board/meetings',
+            'title':_live_config('truckee-tahoe-airport')['title']}
+    rows=discover_configured('truckee-tahoe-airport',config,limit=10,
         fetch=lambda u:next((v for k,v in pages.items() if u.endswith(k)),plain))
     by_id={r['source_id']:r for r in rows}
     assert set(by_id)=={'412','418','409','417','416'}
@@ -401,6 +407,55 @@ def test_airport_meeting_files_pages_supply_the_agenda_and_special_label():
     assert by_id['417']['title'].endswith('Special Board Meeting') and by_id['409']['title'].endswith('Regular Board Meeting')
     assert by_id['417']['documents'][0]['url'].endswith('file=agenda+september+23+2026+s.pdf')
     assert by_id['412']['documents']==[] and by_id['412']['warnings']==[]  # no agenda yet: state, not a warning
+
+
+def _airport_calendar_pages():
+    return {'/administration/calendar':_fixture('truckee-tahoe-airport-calendar-2026-11-13.html'),
+            '/administration/calendar/21313928-ttad-board-meeting':_fixture('truckee-tahoe-airport-calendar-event-411-2026-11-13.html'),
+            '/board_meetings/411/attachments':_fixture('truckee-tahoe-airport-meeting-411-files-2026-11-13.html'),
+            '/board_meetings/418/attachments':_fixture('truckee-tahoe-airport-meeting-418-files-2026-11-13.html')}
+
+
+def _serve(pages):
+    seen=[]
+    def fetch(url):
+        seen.append(url)
+        return pages[urllib.parse.urlparse(url).path]
+    return fetch,seen
+
+
+def test_airport_calendar_events_lead_to_the_meeting_file_list():
+    config=_live_config('truckee-tahoe-airport')
+    assert config['indexUrl']=='https://truckeetahoeairport.com/administration/calendar'
+    fetch,seen=_serve(_airport_calendar_pages())
+    rows=discover_configured('truckee-tahoe-airport',config,limit=10,fetch=fetch)
+    # The file list's number stays the source ID, as when the meetings page linked it directly; the nav's
+    # "Board of Directors" link and the footer's weather time ("2026.11.13") are not meetings.
+    assert [(r['source_id'],r['date'],r['start_time'],r['official_url'],r['documents'],r['warnings']) for r in rows]==[
+        ('411','2026-12-02','16:30','https://truckeetahoeairport.com/board_meetings/411/attachments',[],[])]
+    assert rows[0]['title']=='Truckee Tahoe Airport District Regular Board Meeting'
+    assert seen==['https://truckeetahoeairport.com/administration/calendar',
+                  'https://truckeetahoeairport.com/administration/calendar/21313928-ttad-board-meeting',
+                  'https://truckeetahoeairport.com/board_meetings/411/attachments']
+
+
+def test_airport_calendar_reads_each_event_and_skips_one_without_a_file_list():
+    pages=_airport_calendar_pages()
+    event=pages['/administration/calendar/21313928-ttad-board-meeting']
+    # Two more entries in the same markup: a special meeting whose event page links file list 418, and one
+    # whose event page has no "Meeting Files" link yet, which has no file-list number to key it by.
+    entry=re.search(r'<div class="row event-row">.*?</h3>\s*</div>\s*</div>',pages['/administration/calendar'],re.S)[0]
+    special=entry.replace('Wed Dec 02 2026','Fri Oct 16 2026').replace('16:30','13:00').replace('21313928-ttad-board-meeting','1-special')
+    bare=entry.replace('Wed Dec 02 2026','Wed Jan 27 2027').replace('21313928-ttad-board-meeting','2-board')
+    pages['/administration/calendar']=pages['/administration/calendar'].replace(entry,entry+special+bare)
+    pages['/administration/calendar/1-special']=event.replace('/board_meetings/411/','/board_meetings/418/')
+    pages['/administration/calendar/2-board']=event.replace('Meeting Files','Directions')
+    fetch,_=_serve(pages)
+    rows=discover_configured('truckee-tahoe-airport',_live_config('truckee-tahoe-airport'),limit=10,fetch=fetch)
+    assert [(r['source_id'],r['date'],r['start_time']) for r in rows]==[('411','2026-12-02','16:30'),('418','2026-10-16','13:00')]
+    assert rows[1]['title']=='Truckee Tahoe Airport District Special Board Meeting'
+    assert rows[1]['documents']==[{'id':'truckee-tahoe-airport-agenda','title':'AGENDA OCTOBER 16 2026 S.pdf',
+        'url':'https://truckeetahoeairport.com/board_meetings/418/view_file?file=agenda+october+16+2026+s.pdf'}]
 
 
 def test_streamed_download_matches_the_in_memory_fetch(monkeypatch,tmp_path):

@@ -33,7 +33,7 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'dated-table':{'title','datePattern','sectionTitles'}|_PAGE,
        'legistar':{'title','legistarClient'}|_PAGE,
        'granicus':{'title','titlePrefix'}|_PAGE,
-       'meeting-files':{'title','filesLabel'}|_PAGE,
+       'meeting-files':{'title','filesLabel','eventLabel'}|_PAGE,
        'rss':{'titlePrefix'}|_PAGE,
        'civicclerk':{'apiUrl','portalUrl'},
        'municode':set(),
@@ -451,16 +451,24 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
         if kind=='link-index' and config.get('minutesLinks'):
             extras.extend(index_minutes(agency,tree,url,rows))
     elif kind=='meeting-files':
-        # Dated meetings (table rows or a "next meeting" paragraph), each with a link to a
-        # page listing that meeting's files. Documents are read from those pages below.
+        # Dated meetings (table rows, a "next meeting" paragraph, or calendar entries), each with a
+        # link to a page listing that meeting's files: on the index itself, or with `eventLabel` on
+        # the event page the entry links. Documents are read from the file lists below.
         label=re.compile(config.get('filesLabel','View Files'),re.I)
-        for node in [*tree.find('tr'),*tree.find('p')]:
-            if any(node.find('tr')):continue
-            files=[urllib.parse.urljoin(url,a.attrs.get('href','')) for a in node.find('a') if label.search(a.text())]
-            day=date_in(node.text())
-            if len(files)!=1 or not day:continue
-            sid=urllib.parse.urlparse(files[0]).path.strip('/').split('/')
-            row=candidate(agency,sid[1] if len(sid)>1 and sid[1].isdigit() else day,config.get('title') or agency.replace('-',' ').title()+' Meeting',day,files[0],[],node.text())
+        event=re.compile(config['eventLabel'],re.I) if config.get('eventLabel') else None
+        for node,day,link in dated_links(tree,event or label):
+            files=urllib.parse.urljoin(url,link)
+            if event:
+                # The event page's files link names the meeting's file list, whose number is the
+                # source ID; an event without one yet has nothing to key it by, so it waits.
+                page=fetch(files)
+                found=[urllib.parse.urljoin(files,a.attrs.get('href','')) for a in document(page).find('a') if label.search(a.text())]
+                if not found:continue
+                files=found[0]
+            sid=urllib.parse.urlparse(files).path.strip('/').split('/')
+            row=candidate(agency,sid[1] if len(sid)>1 and sid[1].isdigit() else day,config.get('title') or agency.replace('-',' ').title()+' Meeting',day,files,[],node.text())
+            if not row['start_time'] and (clock:=re.search(r'(?<![\d:.])([01]\d|2[0-3]):([0-5]\d)(?![\d:])',node.text())):
+                row['start_time']=f'{clock[1]}:{clock[2]}'  # a calendar's 24-hour "16:30"
             rows.append(row)
     elif kind=='rss':
         # Use a category-specific feed; do not silently accept unrelated bodies.
@@ -624,6 +632,18 @@ def legistar_links(client, events, rows, agency=None):
     return [records_entry(agency,day,f"{same[0].get('EventBodyName') or 'Meeting'} {day}",links)
             for day,same in sorted(by_day.items()) if agency and day and day not in shown and len(same)==1
             and (links:=event_links(client,same[0]))]
+
+
+def dated_links(node, label):
+    """(element, date, href) for each innermost element whose text gives a date and that holds exactly one link
+    whose text matches ``label``: a table row, a "next meeting" paragraph, or a calendar entry's block."""
+    found=[]
+    for child in node.children:
+        if not isinstance(child,str):found.extend(dated_links(child,label))
+    if found or node.tag in {'a','body','html','document'}:return found  # never the whole page's dates
+    links=[a.attrs.get('href','') for a in node.find('a') if label.search(a.text())]
+    day=len(links)==1 and date_in(node.text())
+    return [(node,day,links[0])] if day else []
 
 
 def meeting_files(agency, row, fetch):

@@ -2404,6 +2404,96 @@
     }
   },
   {
+    "id": "ttsa",
+    "name": "T-TSA — Board of Directors",
+    "shortName": "T-TSA",
+    "page": {
+      "slug": "tahoe-truckee-sanitation-agency-board",
+      "name": "Tahoe-Truckee Sanitation Agency Board of Directors"
+    },
+    "aliases": [
+      "Tahoe-Truckee Sanitation Agency",
+      "Tahoe Truckee Sanitation Agency",
+      "TTSA"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.ttsa.ca.gov/1204/Board-of-Directors",
+    "sourceUrl": "https://ttsa.portal.civicclerk.com/",
+    "discovery": {
+      "type": "civicclerk",
+      "indexUrl": "https://ttsa.portal.civicclerk.com/",
+      "bodyPattern": "Board of Directors",
+      "apiUrl": "https://ttsa.api.civicclerk.com/v1",
+      "portalUrl": "https://ttsa.portal.civicclerk.com"
+    },
+    "agenda": {
+      "layouts": [
+        "ttsa-board",
+        "ttsa-special"
+      ]
+    },
+    "staffReports": {
+      "published": true,
+      "note": "Staff memos in the board packet name their agenda item (\"Item: VI.1.\"); no rule reads them yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "The Agency's Board of Directors page (checked 2026-11-13): regular meetings on the third Wednesday of each month at 9:00 a.m. in the Agency office Board Room; the CivicClerk calendar lists the same dates through May 2027.",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "wednesday",
+          "time": "09:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "northstar-csd",
+    "name": "Northstar CSD — Board of Directors",
+    "shortName": "Northstar CSD",
+    "page": {
+      "slug": "northstar-community-services-district-board",
+      "name": "Northstar Community Services District Board of Directors"
+    },
+    "aliases": [
+      "Northstar Community Services District",
+      "NCSD"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.northstarcsd.org/board-of-directors",
+    "sourceUrl": "https://www.northstarcsd.org/meetingdashboard",
+    "discovery": {
+      "type": "evogov-meetings",
+      "indexUrl": "https://www.northstarcsd.org/meetingdashboard",
+      "bodyPattern": "\\b(?:Board|Special Meeting|Workshop)\\b"
+    },
+    "agenda": {
+      "layouts": [
+        "northstar-csd-board"
+      ]
+    },
+    "staffReports": {
+      "published": true,
+      "note": "The complete board packet opens each item with an \"AGENDA ITEM #5\" cover page; no rule reads it yet."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "The district's 2026 meeting calendar (checked 2026-11-13) lists each regular board meeting on the third Wednesday at 9:00 AM at 900 Northstar Drive; special meetings and workshops fall on other days.",
+      "rules": [
+        {
+          "ordinal": 3,
+          "weekday": "wednesday",
+          "time": "09:00",
+          "timezone": "America/Los_Angeles",
+          "label": "Board Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

@@ -1,0 +1,23 @@
+{
+ "agency": "northstar-csd",
+ "source": "https://evogov.s3.us-west-2.amazonaws.com/meetings/186/agendas/e2ef95fed7f5425dad0341de8b3e7a7d.pdf",
+ "note": "Board workshop notice with a single item (minItems 2 counts the adjournment); the contact line is omitted",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "NORTHSTAR COMMUNITY SERVICES DISTRICT\n                                  NOTICE OF A WORKSHOP\n                                OF THE BOARD OF DIRECTORS\n\nDATE: JUNE 5, 2026\nTIME:  9:00 A.M. – 4:00 P.M.\nPLACE: 900 NORTHSTAR DRIVE\n\nCALL TO ORDER, PLEDGE OF ALLEGIANCE, ROLL CALL\n\nPUBLIC COMMENT\nAny member of the public may address the Board after roll call on any topic related to the District that\nis not on the agenda.\n\nAny member of the public on the videoconference may speak during Public Comment or may email\npublic, subject to generally applicable time limitations. For members of the public in attendance via\nvideo conference, Northstar Community Services District will use best efforts to swiftly resolve\nrequests for reasonable modifications or accommodations with individuals with disabilities, consistent\nwith the Americans with Disabilities Act, and resolving any doubt whatsoever in favor of accessibility.\n\n\nNEW BUSINESS\n  1. NCSD Strategic Plan Retreat – Discussion Only\n\n\nADJOURNMENT\n\nItems may not be taken in the order listed above.\n\nIn compliance with the Americans with Disabilities Act, if you are a disabled person and you need a\ndisability-related modification or accommodation to participate in this meeting, then please contact\nJulie Zangara at (530) 550-6127 or (530) 562-1505 (fax). Requests must be made as early as possible\nand at least one full business day before the start of the meeting. NCSD will endeavor to accommodate\nrequests made with less notice than that."
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   "New Business",
+   "NCSD Strategic Plan Retreat – Discussion Only"
+  ],
+  [
+   null,
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
+}

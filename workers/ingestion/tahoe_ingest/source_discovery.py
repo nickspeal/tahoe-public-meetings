@@ -45,7 +45,8 @@ TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
        'simbli':{'title'},
        'wordpress-media':{'title','idPrefix','search','noticeUrl'},
        'file-links':{'title','idPrefix'},
-       'tribe-events':{'title','horizonDays'}}
+       'tribe-events':{'title','horizonDays'},
+       'evogov-meetings':{'title'}}
 # Rows of these types state no meeting date, so a scheduled run cannot window them before
 # reading, and each costs a page fetch: it bounds them by count instead.
 UNDATED_TYPES=frozenset({'wordpress-meetings'})
@@ -301,7 +302,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     if kind in {'dated-page-links','dated-sections'}:
         from . import page_discovery  # imports this module's helpers
         return getattr(page_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
-    if kind in {'wordpress-media','file-links','tribe-events'}:
+    if kind in {'wordpress-media','file-links','tribe-events','evogov-meetings'}:
         from . import file_discovery  # imports this module's helpers
         return getattr(file_discovery,kind.replace('-','_'))(agency,config,limit,fetch)
     if kind=='simbli':
@@ -641,16 +642,36 @@ def meeting_files(agency, row, fetch):
     return docs
 
 
+CIVICCLERK_PAGES=6  # Event-list pages (15 events each) a scheduled run reads inside its date window.
+
+
+def civicclerk_window(api, fetch):
+    """Events dated in the scheduled window (60 days back, 120 ahead), newest first.
+
+    Unwindowed, the list starts at the portal's furthest-future event, and some portals post a year of placeholder
+    meetings and office holidays ahead, so its first page would hold nothing near today.
+    """
+    today=_local_today()
+    early,late=(today-timedelta(days=YEAR_PAGE_PAST_DAYS)).isoformat(),(today+timedelta(days=YEAR_PAGE_FUTURE_DAYS)).isoformat()
+    records=[]
+    for _ in range(CIVICCLERK_PAGES):
+        data=json.loads(fetch(api+f"/Events/GetEventsList(fromDate='{early}',toDate='{late}',categoryIds=[],skip={len(records)},sortDescending=true,cursorId=0)"))
+        page=data.get('value',data.get('items',[])) if isinstance(data,dict) else data
+        records+=page
+        if not page or not (isinstance(data,dict) and data.get('hasMore')):break
+    return json.dumps({'items':records})
+
+
 def civicclerk(agency, config, markup, limit, fetch):
     api=config.get('apiUrl') or 'https://'+urllib.parse.urlparse(config['indexUrl']).hostname.split('.')[0]+'.api.civicclerk.com/v1'
     if markup.lstrip().startswith('<'):
-        markup=fetch(api+"/Events/GetEventsList(fromDate='',toDate='',categoryIds=[],skip=0,sortDescending=true,cursorId=0)")
+        markup=civicclerk_window(api,fetch)
     data=json.loads(markup)
     records=data.get('value',data.get('items',[])) if isinstance(data,dict) else data
     rows=[]
     portal=config.get('portalUrl') or config['indexUrl']
     for event in records:
-        title=event.get('eventName') or event.get('name') or event.get('title') or ''
+        title=' '.join((event.get('eventName') or event.get('name') or event.get('title') or '').split()).strip(' -–—')
         if not re.search(config.get('bodyPattern','.'),title,re.I):continue
         raw=event.get('eventDate') or event.get('date') or event.get('startDate') or ''
         day=date_in(raw);eid=event.get('id') or event.get('eventId')
@@ -667,7 +688,9 @@ def civicclerk(agency, config, markup, limit, fetch):
         minutes=[f for f in event.get('publishedFiles',[]) if f.get('type')=='Minutes' and f.get('fileId')]
         if minutes:
             row.update(listing_minutes(api+f"/Meetings/GetMeetingFileStream(fileId={minutes[-1]['fileId']},plainText=false)",minutes[-1].get('name') or ''))
-        if event.get('hasMedia'):row['recording_url']=portal.rstrip('/')+f'/event/{eid}/media'
+        # A recording hosted elsewhere (a YouTube video) is linked directly; the portal's media page otherwise.
+        if external:=recording_link(event.get('externalMediaUrl') or ''):row['recording_url']=external
+        elif event.get('hasMedia'):row['recording_url']=portal.rstrip('/')+f'/event/{eid}/media'
         # The API writes the local wall-clock time with a "Z" ("2026-10-14T16:00:00Z" is 4:00 p.m. in Incline
         # Village, as the agenda says), so the digits are read as local time and the "Z" is ignored. Midnight means
         # no time was entered. A different time printed on the agenda still wins at export (decision 0038).
@@ -942,9 +965,9 @@ def discover_configured_range(agency, config, *, since, until, fetch=fetch_text,
     if kind=='civicclerk':
         found,earliest=civicclerk_range(agency,config,since,until,fetch=fetch)
         return found,earliest,False
-    if kind in {'wordpress-media','tribe-events'}:
+    if kind in {'wordpress-media','tribe-events','evogov-meetings'}:
         from . import file_discovery
-        return (*getattr(file_discovery,kind.replace('-','_')+'_range')(agency,config,since,until,fetch),kind=='tribe-events')
+        return (*getattr(file_discovery,kind.replace('-','_')+'_range')(agency,config,since,until,fetch),kind!='wordpress-media')
     template=config.get('indexUrlTemplate')
     if template and '{year}' in template:
         rows=[]

@@ -1,0 +1,82 @@
+{
+ "agency": "ttsa",
+ "source": "https://ttsa.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=7730,plainText=false)",
+ "note": "Roman-numbered sections (one OCR-like 'Ill.') with numbering restarting under each; the teleconference and contact lines are omitted",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "TAHOE-TRUCKEE SANITATION AGENCY\n                                              Mailing: P.O. Box 669, Truckee, CA 96160\n                                           Physical: 13720 Butterfield Drive, Truckee, CA 96161\n                                             Phone: (530) 587-2525 • Web: www.ttsa.ca.gov\n\n\n\n\n                                                BOARD OF DIRECTORS MEETING\n                                                    NOTICE AND AGENDA\n\nDate: October 21, 2026\nTime: 9:00 AM\nPlace: Board Room, Tahoe-Truckee Sanitation Agency, 13720 Butterfield Drive, Truckee, California\n\nThe Board will accept public comments on any item not listed on the agenda until the close of the public comment period. These\n96160. The final mail collection will be on Monday, prior to the meeting, at 3:00 p.m.\n\nMembers of the public will have the opportunity to directly address the Agency Board of Directors concerning any item listed on the\nagenda below before or during consideration of that item. To better accommodate members of the public and staff, some Agenda items\nmay be considered in a different order from that listed below.\n\n\nI.     CALL TO ORDER\n       Call to Order, Roll Call, and Pledge of Allegiance. At this time, please silence phones and other electronic devices to avoid\n       disrupting the meeting.\n\n\nII.    PUBLIC COMMENT\n       This time is reserved for members of the public to address the Board on items not listed on the agenda. Speakers must state\n       their name for the record and are limited to five (5) minutes. The Board cannot take action on non-agenda items but may\n       acknowledge comments, provide brief responses, refer matters to staff, or schedule them for future consideration. Written\n       statements may be submitted to the Board Clerk for inclusion in the official record.\n\n\nIll.   REVIEW AND ADOPT AGENDA\n       By a majority vote of the Board, items may be removed from the agenda or addressed outside their listed order.\n\nIV.    PROFESSIONAL ACHIEVEMENTS, AWARDS, ANNIVERSARIES, AND STAFF ACKNOWLEDGMENTS\n       1.     Professional Achievements - Promotions\n\nV.     CONSENT CALENDAR\n       The Consent Calendar consists of routine and recurring items that can be approved all at once with a single motion and vote.\n       A Director may request that any item be removed and placed on the Regular Agenda for discussion or separate\n       consideration.\n       1.     Review and Approval of the Board Meeting Minutes from the Previous Month\n       2.     Ratification of the Payment of General Fund Warrants\n\nVI.    REGULAR AGENDA\n       1.  Review and Approval of Agency Investment Policy\n       2.     Discussion and Review of the Agency Public Outreach Program\n       3.     Approval of Resolution No. 11-2026, for Commendation of Director Dale Cox for His Dedicated Service\n              to the Board\n       4.     Review and Comment on the Agency Board and Committee Meeting Calendar through 2027\n\n                                                                                                                                    Page 1 of 2\n                                                                                                                               October 21, 2026\n                                                                                                                          Board Meeting Agenda"
+  },
+  {
+   "page_number": 2,
+   "text": "VII. DEPARTMENT REPORTS\n       Informational Updates for the Board of Directors.\n\n       1.     Operations Department Report\n       2.     Maintenance Department Report\n       3.     Technical Services Department Report\n       4.     Administration Department Report\n       5.     General Manager's Report\n\nVIII. BOARD OF DIRECTORS COMMENTS\n       This is an opportunity for Directors to ask questions for clarification, make brief announcements or reports, provide information\n       to staff, request staff to report back on a matter, or direct staff to place a matter on a subsequent agenda.\n\n\nIX.    ADJOURNMENT\n       The next regular Board of Directors Meeting is Wednesday, November 18, 2026.\n\n\n\n\nThe agenda is available for review at the T-TSA Administrative Office and the Agency website.\n\nEmailed and Posted: 10/15/2026\n\n\nRoshelle Chavez\nExecutive Assistant/Board Clerk\n\n\nIn compliance with the Americans with Disabilities Act, if you are a disabled person and need a disability-related modification or\naccommodation to participate in this meeting, please email Roshelle Chavez or call 530-587-2525. Requests must be made as early as\npossible and at least one full business day before the start of the meeting.\n\nDocuments and materials relating to an open session agenda item provided to the T-TSA Board of Directors less than 72 hours prior to a\nregular meeting will be available for public inspection and copying at the Agency's office, located at 13720 Butterfield Drive, Truckee, CA.\n\n\n\n\n                                                                                                                                   Page 2 of 2\n                                                                                                                              October 21, 2026\n                                                                                                                         Board Meeting Agenda"
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   "Professional Achievements, Awards, Anniversaries, And Staff Acknowledgments",
+   "Professional Achievements - Promotions"
+  ],
+  [
+   "1",
+   "Consent Calendar",
+   "Review and Approval of the Board Meeting Minutes from the Previous Month"
+  ],
+  [
+   "2",
+   "Consent Calendar",
+   "Ratification of the Payment of General Fund Warrants"
+  ],
+  [
+   "1",
+   "Regular Agenda",
+   "Review and Approval of Agency Investment Policy"
+  ],
+  [
+   "2",
+   "Regular Agenda",
+   "Discussion and Review of the Agency Public Outreach Program"
+  ],
+  [
+   "3",
+   "Regular Agenda",
+   "Approval of Resolution No. 11-2026, for Commendation of Director Dale Cox for His Dedicated Service to the Board"
+  ],
+  [
+   "4",
+   "Regular Agenda",
+   "Review and Comment on the Agency Board and Committee Meeting Calendar through 2027"
+  ],
+  [
+   "1",
+   "Department Reports",
+   "Operations Department Report"
+  ],
+  [
+   "2",
+   "Department Reports",
+   "Maintenance Department Report"
+  ],
+  [
+   "3",
+   "Department Reports",
+   "Technical Services Department Report"
+  ],
+  [
+   "4",
+   "Department Reports",
+   "Administration Department Report"
+  ],
+  [
+   "5",
+   "Department Reports",
+   "General Manager's Report"
+  ],
+  [
+   null,
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
+}

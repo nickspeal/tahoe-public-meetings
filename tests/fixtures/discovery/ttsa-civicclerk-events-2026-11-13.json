@@ -1,0 +1,291 @@
+{
+ "source": "https://ttsa.api.civicclerk.com/v1/Events/GetEventsList(fromDate='2026-09-14',toDate='2027-03-13',categoryIds=[],skip=N,sortDescending=true,cursorId=0)",
+ "note": "T-TSA's CivicClerk event list for the scheduled window on 2026-11-13, the pages at skip=0 and skip=15, trimmed to the fields discovery reads",
+ "pages": [
+  {
+   "hasMore": true,
+   "items": [
+    {
+     "id": 304,
+     "eventName": "Finance Committee Meeting",
+     "eventDate": "2027-03-09T09:00:00Z",
+     "startDateTime": "2027-03-09T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 290,
+     "eventName": "Board of Directors Meeting",
+     "eventDate": "2027-02-17T09:00:00Z",
+     "startDateTime": "2027-02-17T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1316,
+     "eventName": "Holiday: President's Day - Office Closed (All Day)",
+     "eventDate": "2027-02-15T06:00:00Z",
+     "startDateTime": "2027-02-15T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 303,
+     "eventName": "Finance Committee Meeting",
+     "eventDate": "2027-02-09T09:00:00Z",
+     "startDateTime": "2027-02-09T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 289,
+     "eventName": "Board of Directors Meeting",
+     "eventDate": "2027-01-20T09:00:00Z",
+     "startDateTime": "2027-01-20T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1315,
+     "eventName": "Holiday: Martin Luther King Jr. Day - Office Closed (All Day)",
+     "eventDate": "2027-01-18T06:00:00Z",
+     "startDateTime": "2027-01-18T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 302,
+     "eventName": "Finance Committee Meeting",
+     "eventDate": "2027-01-12T09:00:00Z",
+     "startDateTime": "2027-01-12T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1314,
+     "eventName": "Holiday: New Year's Day - Office Closed (All Day)",
+     "eventDate": "2027-01-01T06:00:00Z",
+     "startDateTime": "2027-01-01T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1313,
+     "eventName": "Holiday: Christmas Day - Office Closed (All Day)",
+     "eventDate": "2026-12-25T06:00:00Z",
+     "startDateTime": "2026-12-25T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1312,
+     "eventName": "Holiday: Christmas Eve - Office Closed (All Day)",
+     "eventDate": "2026-12-24T06:00:00Z",
+     "startDateTime": "2026-12-24T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 288,
+     "eventName": "Board of Directors Meeting",
+     "eventDate": "2026-12-16T09:00:00Z",
+     "startDateTime": "2026-12-16T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 301,
+     "eventName": "Finance Committee Meeting",
+     "eventDate": "2026-12-08T09:00:00Z",
+     "startDateTime": "2026-12-08T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1311,
+     "eventName": "Holiday: Day After Thanksgiving - Offices Closed (All Day)",
+     "eventDate": "2026-11-27T06:00:00Z",
+     "startDateTime": "2026-11-27T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 1310,
+     "eventName": "Holiday: Thanksgiving Day - Offices Closed (All Day)",
+     "eventDate": "2026-11-26T06:00:00Z",
+     "startDateTime": "2026-11-26T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 287,
+     "eventName": "Board of Directors Meeting",
+     "eventDate": "2026-11-18T09:00:00Z",
+     "startDateTime": "2026-11-18T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7737,
+       "name": "11-18-26 Agenda"
+      },
+      {
+       "type": "Agenda Packet",
+       "fileId": 7740,
+       "name": "11-18-26 Board Packet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "hasMore": false,
+   "items": [
+    {
+     "id": 1309,
+     "eventName": "Holiday - Veterans Day - Office Closed (All Day)",
+     "eventDate": "2026-11-11T06:00:00Z",
+     "startDateTime": "2026-11-11T06:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": []
+    },
+    {
+     "id": 300,
+     "eventName": "Finance Committee Meeting",
+     "eventDate": "2026-11-10T09:00:00Z",
+     "startDateTime": "2026-11-10T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7733,
+       "name": "11-10-26 FC Agenda"
+      }
+     ]
+    },
+    {
+     "id": 286,
+     "eventName": "Board of Directors Meeting",
+     "eventDate": "2026-10-21T09:00:00Z",
+     "startDateTime": "2026-10-21T09:00:00Z",
+     "hasMedia": true,
+     "externalMediaUrl": "https://www.youtube.com/watch?v=w2-ydb1D1tw",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7730,
+       "name": "10-21-26_Agenda"
+      },
+      {
+       "type": "Agenda Packet",
+       "fileId": 7731,
+       "name": "10-21-26_Board Packet"
+      }
+     ]
+    },
+    {
+     "id": 1317,
+     "eventName": "Special Finance Committee Meeting",
+     "eventDate": "2026-10-14T09:00:00Z",
+     "startDateTime": "2026-10-14T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7725,
+       "name": "10-14-26 SFC Agenda"
+      }
+     ]
+    },
+    {
+     "id": 299,
+     "eventName": "Finance Committee Meeting - Cancellation",
+     "eventDate": "2026-10-13T09:00:00Z",
+     "startDateTime": "2026-10-13T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7727,
+       "name": "10-13-26 Agenda - Cancellation"
+      }
+     ]
+    },
+    {
+     "id": 1300,
+     "eventName": "Special  Board of Directors Meeting - Board Workshop  09/24/26",
+     "eventDate": "2026-09-24T09:00:00Z",
+     "startDateTime": "2026-09-24T09:00:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7710,
+       "name": "09-24-26 Agenda"
+      },
+      {
+       "type": "Agenda Packet",
+       "fileId": 7716,
+       "name": "09-24-26 Special Meeting - Board Workshop Packet Slides"
+      }
+     ]
+    },
+    {
+     "id": 1302,
+     "eventName": "Finance Committee Special Meeting",
+     "eventDate": "2026-09-16T09:30:00Z",
+     "startDateTime": "2026-09-16T09:30:00Z",
+     "hasMedia": false,
+     "externalMediaUrl": "",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7706,
+       "name": "09-16-26 SFC Agenda"
+      }
+     ]
+    },
+    {
+     "id": 285,
+     "eventName": "Board of Directors Meeting",
+     "eventDate": "2026-09-16T09:00:00Z",
+     "startDateTime": "2026-09-16T09:00:00Z",
+     "hasMedia": true,
+     "externalMediaUrl": "https://www.youtube.com/watch?v=uZf4ZSh4akA",
+     "publishedFiles": [
+      {
+       "type": "Agenda",
+       "fileId": 7704,
+       "name": "09-16-26 Agenda"
+      },
+      {
+       "type": "Agenda Packet",
+       "fileId": 7705,
+       "name": "09-16-26 Board Packet"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

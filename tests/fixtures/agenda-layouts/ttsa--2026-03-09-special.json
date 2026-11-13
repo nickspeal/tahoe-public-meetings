@@ -1,0 +1,48 @@
+{
+ "agency": "ttsa",
+ "source": "https://ttsa.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=5635,plainText=false)",
+ "note": "Special meeting with numbered workshop topics under a Roman item; the teleconference and contact lines are omitted",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "Directors\n                                    TAHOE-TRUCKEE SANITATION AGENCY                                                      Scott Wilson, President\n                                                Mailing: P.O. Box 669, Truckee, CA 96160                                 Bert Clement, Vice President\n                                                                                                                         Dale Cox\n                                           Physical: 13720 Butterfield Drive, Truckee, CA 96161                          Dan Wilkins\n                                             Phone: (530) 587-2525 • Web: www.ttsa.ca.gov                                Catherine Hansford\n                                                                                                                         General Manager\n                                                                                                                         Jason Hays\n\n\n                                              BOARD OF DIRECTORS\n                                       SPECIAL MEETING NOTICE AND AGENDA\n                                           STRATEGIC PLAN WORKSHOP\n\n\nDate: March 9, 2026\nTime: 9:30 AM\nPlace: Board Room, Tahoe-Truckee Sanitation Agency, 13720 Butterfield Drive, Truckee, California\n\nThe Board will only accept public comments on the matter posted on the agenda until the close of the public comment\naccommodate members of the public and staff, some Agenda items may be considered in an order different from\nthose listed below.\n\nI.     Call to Order, Roll Call, and Pledge of Allegiance\n       At this time, please silence phones and other electronic devices so as not to disrupt the business\n       of the meeting.\n\nII.    Public Comment\n       Any member of the public may address the Board at this time on the matter posted on the agenda. No\n       other business shall be considered (GC §54956).\n\nIII.   Strategic Plan Workshop Agenda\n       1.      Introductions.\n       2.      Norms, Values, and Principles of Governance\n       3.      Break\n       4.      Strategic Plan\n\nIV.    Adjournment\n\n\n                                                     Emailed and Posted. 03/05/2026.\n\n\n\n                                                     Roshelle Chavez\n                                                     Executive Assistant/Board Clerk\n\nIn compliance with the Americans with Disabilities Act, if you are a disabled person and need a disability-related modification or accommodation to\nparticipate in this meeting, please email Roshelle Chavez or call 530-587-2525. Requests must be made as early as possible and at least one full\nbusiness day before the start of the meeting.\n\nDocuments and materials relating to an open session agenda item provided to the T-TSA Board of Directors less than 72 hours prior to a regular\nmeeting will be available for public inspection and copying at the Agency’s office, located at 13720 Butterfield Drive, Truckee, CA."
+  }
+ ],
+ "expected": [
+  [
+   "I",
+   null,
+   "Call to Order, Roll Call, and Pledge of Allegiance"
+  ],
+  [
+   "II",
+   null,
+   "Public Comment"
+  ],
+  [
+   "III.1",
+   "Strategic Plan Workshop Agenda",
+   "Introductions."
+  ],
+  [
+   "III.2",
+   "Strategic Plan Workshop Agenda",
+   "Norms, Values, and Principles of Governance"
+  ],
+  [
+   "III.3",
+   "Strategic Plan Workshop Agenda",
+   "Break"
+  ],
+  [
+   "III.4",
+   "Strategic Plan Workshop Agenda",
+   "Strategic Plan"
+  ],
+  [
+   "IV",
+   null,
+   "Adjournment"
+  ]
+ ]
+}

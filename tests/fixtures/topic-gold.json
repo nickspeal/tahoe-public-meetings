@@ -281,6 +281,65 @@
       ],
       "notes": "Energy is environment; the snowmelt system clears sidewalks.",
       "source": "Maintainer, 2026-10-20 review"
+    },
+    {
+      "id": "douglas-commissioners:2064:9.O",
+      "title": "Discussion regarding the adoption of Resolution 2026R-064, increasing the South Tahoe Refuse Company's trash disposal rates by the base year rate adjustment of 9.42% for the 2027 calendar year",
+      "gold": [],
+      "notes": "Trash pickup fees are not Wildlife.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "truckee:1796:7.2",
+      "title": "Solid Waste Collection Services Franchise Agreement Procurement Update.",
+      "gold": [],
+      "notes": "Hauler contract; trash is Wildlife only when it is about securing trash from animals.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "truckee:b04927c0-ef17-408c-95b2-8eab81ff9692:7.2",
+      "title": "Review of Solid Waste Franchise Agreement Assignment.",
+      "gold": [],
+      "notes": "Hauler contract; not Wildlife.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "ctc:2026-09-17:9",
+      "title": "South Tahoe Basin Wildlife Crossings Planning (action) (Resolution 26-09-02)",
+      "gold": [
+        "environment",
+        "wildlife"
+      ],
+      "notes": "Wildlife crossings; Environment kept from the published tags.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "ntpud:2026-09-09:F.4",
+      "title": "Authorize the General Manager to Execute a Right-of-Entry Agreement with the Pathways for Wildlife to Deploy Wildlife Cameras on NTPUD Property",
+      "gold": [
+        "environment",
+        "wildlife"
+      ],
+      "notes": "Wildlife connectivity monitoring; Environment kept from the published tags.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "trcd:2026-05-21:XI.3",
+      "title": "Resolution 2026-03 to Approve Application to for Grant Funds from the Wildlife Conservation Board for the Johnson Meadow, Upper Truckee River Middle Reaches 1&2, Restoration Implementation Project Phase 1",
+      "gold": [
+        "environment"
+      ],
+      "notes": "Meadow restoration funded by the Wildlife Conservation Board; not Wildlife.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
+    },
+    {
+      "id": "trcd:2026-08-04:XI.1",
+      "title": "Agreement Between Tahoe RCD and the Wildlife Conservation Board in the Amount of $4,000,000.00 for the Phase 1 implementation of the Johnson Meadow Restoration",
+      "gold": [
+        "environment"
+      ],
+      "notes": "Meadow restoration funded by the Wildlife Conservation Board; not Wildlife.",
+      "source": "Maintainer, 2026-11-13 Wildlife topic request"
     }
   ]
 }

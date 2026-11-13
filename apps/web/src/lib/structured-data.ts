@@ -141,6 +141,8 @@ export function meetingJsonLd(meeting: Meeting, ctx: { url: string; body: BodyRe
     ...(meeting.location ? [place(meeting.location)] : []),
     ...(onlineUrl ? [{ '@type': 'VirtualLocation', url: onlineUrl }] : []),
   ];
+  // Google requires an Event location and none is published to invent from, so the page keeps only its breadcrumb.
+  if (!locations.length) return [trail];
   const attendance = meeting.location && onlineUrl ? 'MixedEventAttendanceMode' : onlineUrl ? 'OnlineEventAttendanceMode' : 'OfflineEventAttendanceMode';
   const organizer = meeting.host ? organization(meeting.host) : organization(ctx.body.name, ctx.body.officialUrl);
 
@@ -152,7 +154,7 @@ export function meetingJsonLd(meeting: Meeting, ctx: { url: string; body: BodyRe
     startDate,
     eventStatus: eventStatus(meeting),
     eventAttendanceMode: `${SCHEMA}${attendance}`,
-    ...(locations.length ? { location: locations.length === 1 ? locations[0] : locations } : {}),
+    location: locations.length === 1 ? locations[0] : locations,
     organizer,
     description: description(meeting, `Public meeting of the ${meeting.host ?? ctx.body.name}.`),
     isAccessibleForFree: true,

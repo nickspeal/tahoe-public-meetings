@@ -70,8 +70,9 @@ test('attendance mode and location follow what the meeting states', () => {
   const inPerson = meetingJsonLd(meeting({ participation: { instructions: null, url: null, remoteUrl: null, deadline: null } }), ctx)[0];
   assert.equal(inPerson.eventAttendanceMode, 'https://schema.org/OfflineEventAttendanceMode');
   assert.equal(inPerson.location['@type'], 'Place');
-  const neither = meetingJsonLd(meeting({ location: null, participation: { instructions: null, url: null, remoteUrl: null, deadline: null } }), ctx)[0];
-  assert.equal(neither.location, undefined);
+  // Google requires a location, so a meeting that publishes neither a place nor a link gets no Event.
+  const neither = meetingJsonLd(meeting({ location: null, participation: { instructions: null, url: null, remoteUrl: null, deadline: null } }), ctx);
+  assert.deepEqual(neither.map((node) => node['@type']), ['BreadcrumbList']);
 });
 
 test('status maps to schema.org event status; planned meetings stay scheduled', () => {

@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
 import { shown } from './helpers/shown-items.mjs';
-import { meetingFile } from './helpers/meeting-paths.mjs';
+import { meetingFile, meetingPath } from './helpers/meeting-paths.mjs';
 import { data, dist, record } from './helpers/site.mjs';
 
 const topicRank = new Map(data.topics.map((topic, index) => [topic.id, index]));
@@ -113,4 +113,20 @@ test('the agenda history lists found and changed documents, with the source chec
   const empty = (await meetingDocument(record('truckee:3003'))).querySelector('.agenda-history');
   assert.equal(empty.querySelector('h2').textContent, 'No agenda found yet');
   assert.equal(empty.querySelector('.history-list'), null);
+});
+
+test('each agenda item offers a permalink to its own anchor on the meeting page', async () => {
+  const meeting = record('ttd:1001');
+  const document = await meetingDocument(meeting);
+  const items = [...document.querySelectorAll('details[data-agenda-item]')];
+  assert.ok(items.length > 0);
+  for (const row of items) {
+    const link = row.querySelector('a[data-item-permalink]');
+    assert.ok(link, `item ${row.dataset.itemId} has a permalink`);
+    const href = link.getAttribute('href');
+    const [path, fragment] = href.split('#');
+    assert.equal(path, await meetingPath(meeting));
+    assert.equal(document.getElementById(decodeURIComponent(fragment)), row, 'the fragment names the item itself');
+    assert.doesNotMatch(fragment, /%3A/i, 'colons stay readable');
+  }
 });

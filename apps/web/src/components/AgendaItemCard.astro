@@ -1,6 +1,6 @@
 ---
 import type { AgendaItem, Meeting } from '../../../../packages/domain/public';
-import { itemSourceLink, staffReportLink, timeCertainLabel, topicName } from '../lib/data';
+import { agendaItemHref, itemSourceLink, staffReportLink, timeCertainLabel, topicName } from '../lib/data';
 import { itemDetails, itemTitle } from '../lib/agenda-excerpt';
 import { SHORTENED_NOTE, detailsWithFullText, itemHeadline } from '../lib/short-title';
 import { sameHeading } from '../lib/agenda-sections';
@@ -26,10 +26,13 @@ const Heading = nested ? 'h4' : 'h3';
 const sectionName = !nested && item.section && !sameHeading(item.title, item.section) ? item.section : null;
 // A number the agenda skips: a muted line, left out of the topic filter's item counts.
 const placeholder = isPlaceholderItem(item);
+// A link to this item alone, to share (see scripts/open-agenda-item.ts, which copies it).
+const permalink = agendaItemHref(meeting, item);
 ---
 {placeholder ? <div class="agenda-item agenda-item-missing" id={`item-${item.id}`} data-item-id={item.id}><span class="agenda-order">{item.number && <span>{item.number}</span>}</span><p>{item.title}</p></div> : <details class="agenda-item" id={`item-${item.id}`} data-agenda-item data-item-id={item.id} data-topic-ids={JSON.stringify(orderedTopics)}><summary class="agenda-accordion-summary"><span class="agenda-order">{item.number && <span>{item.number}</span>}</span><div class="agenda-heading"><div class="agenda-item-title"><Heading>{headline.text}{headline.shortened && <> <span class="short-title-mark" title={SHORTENED_NOTE}>Shortened</span></>}</Heading></div>{item.timeCertain && <span class="time-certain-badge" title={item.timeCertain.quote}>◷ {timeCertainLabel(item)}</span>}{sectionName && <span class="agenda-section-name">{sectionName}</span>}{orderedTopics.length > 0 && <div class="agenda-summary-topics" aria-label="Agenda item topics">{orderedTopics.map((topicId) => <span class="tag">{topicName(topicId)}</span>)}</div>}</div><span class="agenda-disclosure" aria-hidden="true"></span></summary><div class="agenda-item-content">
   {item.timeCertain && <p class="time-certain-source"><strong>{timeCertainLabel(item)}.</strong> The agenda says: <q>{item.timeCertain.quote}</q>{item.timeCertain.page && ` (page ${item.timeCertain.page})`}</p>}
   {details.map((detail) => <div class="summary-block"><div class="summary-label"><span>{detail.label}</span></div><p>{detail.text}</p></div>)}
   {sourceLinks.length > 0 ? <div class="agenda-source-links">{sourceLinks.map((link) => <a class="agenda-source-link source-document" href={link.href} target="_blank" rel="noopener noreferrer" {...link.event}><span class="document-icon" aria-hidden="true">↗</span><span><strong>{link.label}</strong><small>{link.detail}</small></span></a>)}</div> : <p class="agenda-source-missing">See the official documents below.</p>}
   {attachments.length > 0 && <div class="agenda-attachments"><p class="agenda-attachments-label">Attachments listed in the agenda</p><ul>{attachments.map((file) => <li><a href={file.url} target="_blank" rel="noopener noreferrer" title={file.name} {...clickEvent('outbound-attachment', page, meeting.agencyId)}>{file.label}</a></li>)}</ul></div>}
+  <p class="agenda-item-permalink"><a href={permalink} data-item-permalink aria-label="Copy link to this item" title="Copy link to this item"><svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5" /></svg>Copy link</a><span class="agenda-item-permalink-status" role="status"></span></p>
 </div></details>}

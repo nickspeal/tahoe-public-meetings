@@ -122,6 +122,20 @@ export function meetingHref(meeting: Meeting) {
   return path;
 }
 
+/**
+ * The permalink to one agenda item: its meeting's page and the item's anchor (`#item-<id>`), which the meeting page
+ * scrolls to and opens. Item IDs are stable across re-captures (agency, source ID, and the item's source key), so a
+ * shared link keeps pointing at the same item. Colons stay readable; anything else unsafe in a fragment is encoded.
+ */
+export function agendaItemHref(meeting: Meeting, item: Pick<AgendaItem, 'id'>) {
+  return `${meetingHref(meeting)}#${agendaItemAnchor(item)}`;
+}
+
+/** An agenda item's URL fragment; browsers decode it to match the element ID, `item-<id>`. */
+export function agendaItemAnchor(item: Pick<AgendaItem, 'id'>) {
+  return `item-${encodeURIComponent(item.id).replace(/%3A/gi, ':')}`;
+}
+
 /** A body page's path; none for a host-per-record entry (Other), which is not a body and has no page. */
 export function bodyHref(agencyId: string) {
   const page = bodyPages.get(agencyId);

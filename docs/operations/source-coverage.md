@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **60 entries**. **53 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **45** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **62 entries**. **55 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **47** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -20,7 +20,9 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | Registry ID | Type | Index | Body filter | Agenda layouts |
 | --- | --- | --- | --- | --- |
 | `ivgid` | `civicclerk` | [ivgid.portal.civicclerk.com](https://ivgid.portal.civicclerk.com/) | `Trustees` | `ivgid-board` |
+| `tdpud` | `civicclerk` | [tdpud.portal.civicclerk.com](https://tdpud.portal.civicclerk.com/) | `Board Meeting` | `tdpud-board` |
 | `ttsa` | `civicclerk` | [ttsa.portal.civicclerk.com](https://ttsa.portal.civicclerk.com/) | `Board of Directors` | `ttsa-board`, `ttsa-special` |
+| `tdrpd` | `civicplus` | [www.tdrpd.org](https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2) | `^(?!.*(?:Committee\|\bFCA\b)).*(?:\bBoard\b\|\bWorkshop\b\|\bSpecial Meeting\b)` | `tdrpd-board` |
 | `ctc` | `dated-page-links` | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) | every row | `ctc-board` |
 | `truckee-fire` | `dated-paragraphs` | [www.truckeefire.org](https://www.truckeefire.org/board-meeting-archive) | every row | `truckee-fire-board` |
 | `california-state-parks` | `dated-sections` | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) | `Commission Meeting` | `ohmvr-commission`, `state-park-commission` |
@@ -78,6 +80,8 @@ Notes on particular sources:
 - `ntpud`: the category RSS feed, filtered to the Board of Directors. Special meetings get their own IDs.
 - `ttsa`: the Tahoe-Truckee Sanitation Agency's CivicClerk portal, linked from its Board of Directors page. The portal also lists Finance Committee meetings, office holidays, and placeholder board meetings a year ahead, so scheduled discovery asks the event API for its 60-days-back, 120-days-ahead window. Several events link their YouTube recording, which is used directly; the agency's YouTube channel (in `config/meeting-records.json`) covers the rest when its titles carry the date. The 2026 agendas changed format twice; `ttsa-board` reads Roman-numbered section lines as headings (one prints "Ill." for III) and `ttsa-special` the special meeting workshops.
 - `northstar-csd`: the Northstar Community Services District's EvoGov meeting dashboard (`evogov-meetings`). The dashboard's year headings load each year's rows from the site's `/meetings/year_events/` endpoint; the static "Board Meeting Agendas" page stopped in May 2026. Green-waste pickup days on the same calendar are left out by name. `ncsd.ca.gov` is the Nipomo Community Services District, not this one.
+- `tdpud`: the district's "current agenda" link opens its CivicClerk portal. The event API lists events newest first and already holds first- and third-Wednesday placeholders for all of 2027, so discovery reads only the scheduled window (60 days back, 120 ahead); calendared meetings inside that window, such as the December 16, 2026 third-Wednesday meeting, arrive as notices until their agendas post. The body filter keeps "Board Meeting" events and leaves out the Financing Corporation's. Each meeting's agenda and packet are captured (the agenda is read for items, `agendaBeforePacket`), and minutes come from the API. Recordings come from the district's YouTube channel.
+- `tdrpd`: one CivicPlus Agenda Center category holds the Truckee-Donner Recreation and Park District board and its Budget & Finance and Facility Condition Assessment ("FCA") committees; the body filter keeps rows whose title names the board, a workshop, or a special meeting and no committee. Each row's title link and its "Agenda" download link open the same file, which counts once. Special meetings and workshops get their own IDs (`qualifySpecial`, read from the row title). Regular meetings post the whole board packet as the agenda; the agenda's printed start time (4:00 PM in September and October 2026, though the board page says 6:00 PM) is used at export.
 - `ndep`: Board for Financing Water Projects meetings in a dated table (two-digit years). Dates are listed before agendas; placeholders more than 120 days ahead are ignored.
 - `truckee-tahoe-airport`: the district's calendar (`/administration/calendar`) lists upcoming board meetings; each entry opens an event page whose "Meeting Files" link is the meeting's file list (`/board_meetings/<n>/attachments`), from which the agenda is read. The file list's number stays the source ID, so meetings stored from the former meetings page keep their IDs. That page (`/administration/board/meetings`, which listed past meetings with minutes and recording links) has returned 404 since at least October 27, 2026, as have the site's other content pages ("Board of Directors", "Staff", "Airport Guide"); the home page, news, calendar, and file lists still answered on November 13, 2026. The calendar shows only meetings still to come, so a meeting and its agenda are collected while it is upcoming; it drops off the listing once it has passed. If the meetings page returns, its layout can be read again by dropping `eventLabel` and `filesLabel`. Recordings come from the Tahoe Truckee Media YouTube playlist (`config/meeting-records.json`).
 - `lahontan-board`, `california-fish-game`: annual dated tables (`indexUrlTemplate` with `{year}`).
@@ -144,8 +148,10 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `agenda-item-memo-links` | `north-tahoe-fire` |
 | `airport-tab-files` | `truckee-tahoe-airport` |
 | `civicclerk-packet` | `ivgid` |
+| `cover-sheet-packet` | `tdrpd` |
 | `douglas-packet` | `douglas-commissioners`, `douglas-planning` (extends `douglas-commissioners`), `douglas-transportation` |
 | `fish-game-staff-summaries` | `california-fish-game` |
+| `item-memo-packet` | `tdpud` |
 | `lahontan-item-files` | `lahontan-board` |
 | `legistar` | `el-dorado-supervisors`, `el-dorado-planning`, `washoe-commissioners`, `washoe-planning` |
 | `ndep-material-packet` | `ndep` |

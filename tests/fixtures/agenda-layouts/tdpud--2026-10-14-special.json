@@ -1,0 +1,67 @@
+{
+ "agency": "tdpud",
+ "source": "https://tdpud.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=1406,plainText=false)",
+ "note": "a special meeting (board workshop) at another location, with a one-line description under each item",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "Board of Directors                                                                        General Manager\nJeff Bender                                                                                  Brian C. Wright\nChrista Finn                                                                          Executive Leadership\nTony Laliotis                                                                                     Scott Crow\nCourtney Murrell                 SPECIAL BOARD MEETING                                        Chad J. Reed\nSteve Randall                LIFT WORKSPACE - PIPER BOARD                                    Mike Swanson\n                           ROOM, 10266 TRUCKEE AIRPORT RD,                                  Michael Salmon\n                                SUITE C, TRUCKEE, CA 96161                                 Steven Poncelet\n                           9:00 AM, Wednesday, October 14, 2026                              Jillian Steward\n                                          AGENDA                                          Martina Rochefort\n\n\n1.   Call to Order\n\n2.   Roll Call\n\n3.   Changes to the agenda\n\n4.   Public Comment – This is time set aside for the public to address the Board on\n     any matter not on the agenda. Testimony related to any agendized matter should\n     be addressed at the time that that item is considered.\n         (The public may comment on any subject that is not on the agenda. Each\n         speaker will be limited to three minutes, but speaker time may be reduced at\n         the discretion of the Board President if there are a large number of speakers\n         on any given subject.)\n\nITEMS FOR BOARD DISCUSSION\n\n5.   100 Year Anniversary Logo\n         The Board of Directors will review proposed 100 Year Anniversary logos and\n         provide feedback to staff.\n\n6.   Community Survey Results\n         The Board of Directors will review and discuss the 2026 Customer Survey\n         results and provide feedback to staff.\n\n7.   Facilities Master Plan\n         The Board of Directors will review and discuss the Facilities Master Plan.\n\n8.   2026-2027 Strategic Plan Projects\n         The Board of Directors will review and discuss 2026-2027 Strategic Plan\n         Projects.\n\n9.   2027 Strategic Plan Update\n\n\n\n            11570 Donner Pass Road, Truckee, CA 96161 Phone- 530-587-3896- www.tdpud.org"
+  },
+  {
+   "page_number": 2,
+   "text": "The Board of Directors will discuss plans for a 2027 Strategic Plan update and\n           provide feedback to staff.\n\nADJOURNMENT\n\nThe agenda is available for review at the TDPUD Administrative Office and the District’s\ninternet website. Posted on Friday, October 9, 2026.\n\nMartina Rochefort, District Clerk\nA copy of the agenda packet is available for public review, during normal business hours, at the District\nAdministrative Office located at 11570 Donner Pass Road. Public participation is encouraged. The\nmeeting location is accessible to people with disabilities. Every reasonable effort will be made to\naccommodate participation of the disabled in all of the Districts public meetings. If particular\naccommodations for the disabled are needed (i.e. disability-related aids, or other services), please\ncontact the District Clerk at (530) 582-3923 or martinar@tdpud.org, at least 24 hours in advance of the\nmeeting.\n\nAny person with a disability may submit a request for reasonable modification or accommodation to the\nabove-described means for accessing and offering comment at the meeting to Martina Rochefort, District\nClerk, or email at martinar@tdpud.org, who will swiftly resolve such a request."
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   null,
+   "Call to Order"
+  ],
+  [
+   "2",
+   null,
+   "Roll Call"
+  ],
+  [
+   "3",
+   null,
+   "Changes to the agenda"
+  ],
+  [
+   "4",
+   null,
+   "Public Comment"
+  ],
+  [
+   "5",
+   "Items For Board Discussion",
+   "100 Year Anniversary Logo"
+  ],
+  [
+   "6",
+   "Items For Board Discussion",
+   "Community Survey Results"
+  ],
+  [
+   "7",
+   "Items For Board Discussion",
+   "Facilities Master Plan"
+  ],
+  [
+   "8",
+   "Items For Board Discussion",
+   "2026-2027 Strategic Plan Projects"
+  ],
+  [
+   "9",
+   "Items For Board Discussion",
+   "2027 Strategic Plan Update"
+  ],
+  [
+   null,
+   null,
+   "ADJOURNMENT"
+  ]
+ ]
+}

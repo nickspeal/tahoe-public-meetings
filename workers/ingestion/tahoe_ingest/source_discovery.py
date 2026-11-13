@@ -27,7 +27,7 @@ from .records import granicus_links, listing_minutes, qualifiers, recording_link
 # `bodyPattern`; config/README.md describes them. Index pages fetched by the shared reader
 # below also take `indexUrlTemplate` and `horizonDays`.
 _PAGE = {'indexUrlTemplate','horizonDays'}
-TYPES={'civicplus':{'title','idPrefix'}|_PAGE,
+TYPES={'civicplus':{'title','idPrefix','qualifySpecial'}|_PAGE,
        'link-index':{'title','idPrefix','qualifySpecial','minutesLinks'}|_PAGE,
        'trpa':{'idPrefix','documentPattern'}|_PAGE,
        'dated-table':{'title','datePattern','sectionTitles'}|_PAGE,
@@ -426,8 +426,13 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
     elif kind in {'civicplus','link-index','trpa'}:
         # Each linked agenda is its own dated record. Body selection must be
         # scoped by the configured category index, not a whole-county RSS feed.
+        seen=set()
         for target,label in anchors(markup,url):
             if kind=='civicplus' and not re.search(r'/AgendaCenter/(?:ViewFile/Agenda|PreviousVersions)/',target,re.I):continue
+            if kind=='civicplus':
+                # A row's title link names the meeting; its "Agenda" download link repeats the URL and is passed over.
+                # A category can hold several bodies (a board and its committees), told apart by that title.
+                if target in seen or seen.add(target) or not body.search(label):continue
             if kind=='trpa' and not body.search(label):continue
             if kind=='link-index' and not (body.search(label+' '+target) or body.search(tree.text())):continue
             if not urllib.parse.urlparse(target).scheme=='https':continue
@@ -448,10 +453,12 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
                 title=config.get('title') or label
             if not docs and kind!='trpa':continue
             sid=config.get('idPrefix','')+day
-            if kind=='link-index' and config.get('qualifySpecial'):
+            if kind in {'link-index','civicplus'} and config.get('qualifySpecial'):
                 # Opt-in: a special meeting or workshop shares the index with regular
                 # meetings and may fall on the same date, so give it its own ID and title.
-                found=re.search(r'\b(special|workshop|joint)\b',urllib.parse.unquote_plus(target),re.I)
+                # A CivicPlus file URL carries no words, so its row title is read instead.
+                named=label if kind=='civicplus' else urllib.parse.unquote_plus(target)
+                found=re.search(r'\b(special|workshop|joint)\b',named,re.I)
                 if found:
                     sid+='-'+found[1].lower();title=title.replace(' Board ',f' {found[1].title()} Board ',1)
             rows.append({**candidate(agency,sid,title,day,target,docs,label),**links})

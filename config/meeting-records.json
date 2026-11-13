@@ -21,7 +21,8 @@
     {"agency": "california-fish-game", "channelId": "UCTrLyrErKM3UNqI-3gBWLSg", "include": "\\bcommittee\\b"},
     {"agency": "ltusd", "channelId": "UCHZeyuZYC9ZXKyTO2k-sJ5Q", "include": "\\bboard meeting\\b", "exclude": "\\bclosed session\\b"},
     {"agency": "ttusd", "playlistId": "PLr_DSJ6rtN1ayEf4SxdQhXVIim2QvY6Pe", "include": "^(?:tahoe truckee unified school district|ttusd) board\\b"},
-    {"agency": "ttsa", "channelId": "UCqCMhtjlwd1KDBdbWLlMm7A", "include": "\\bboard\\b"}
+    {"agency": "ttsa", "channelId": "UCqCMhtjlwd1KDBdbWLlMm7A", "include": "\\bboard\\b"},
+    {"agency": "tdpud", "channelId": "UCq_TT1lqvnHIiNkPHzaBD7Q", "include": "\\bboard of directors\\b"}
   ],
   "laserfiche": [
     {"agency": "truckee", "repo": "r-6a91ddbc", "folderId": 59909164}

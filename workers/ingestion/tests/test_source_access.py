@@ -344,6 +344,53 @@ def test_special_district_indexes_use_the_agenda_link_and_file_name_date():
     assert sstma[0]['title'].endswith('Board of Directors Meeting')
 
 
+def test_civicplus_category_keeps_the_board_and_not_its_committees():
+    # One "Board Meetings & Agendas" category lists the board, its special meetings and workshops, and two committees.
+    rows=discover_configured('tdrpd',_live_config('tdrpd'),limit=None,fetch=lambda _:_fixture('tdrpd-agenda-center-2026-11-13.html'))
+    board='Truckee-Donner Recreation and Park District Board of Directors Meeting'
+    special='Truckee-Donner Recreation and Park District Special Board of Directors Meeting'
+    assert [(r['source_id'],r['title'],r['status']) for r in rows]==[
+        ('2026-10-22',board,'unknown'),('2026-09-24',board,'unknown'),('2026-08-27',board,'unknown'),
+        ('2026-07-23',board,'unknown'),('2026-06-25',board,'unknown'),('2026-05-28',board,'unknown'),
+        ('2026-05-14',board,'unknown'),  # "Board Retreat May 2026": its agenda is a regular meeting notice
+        ('2026-04-23',board,'canceled'),  # "April Board Meeting Cancelled"
+        ('2026-04-09-special',special,'unknown'),('2026-03-26',board,'unknown'),('2026-02-26',board,'unknown'),
+        ('2026-02-18-special',special,'unknown'),  # "Special Meeting Notice - TDRPD Board Workshop"
+        ('2026-01-22',board,'unknown'),
+        ('2026-01-14-special',special,'unknown')]  # "TDRPD Special Master Plan Workshop"
+    # Budget & Finance and Facility Condition Assessment ("FCA") committee rows are left out.
+    assert not {'2026-10-20','2026-05-26','2026-04-30','2026-04-21','2026-03-24','2026-02-24','2026-02-20'} & {r['date'] for r in rows}
+    # The row's "Agenda" download link repeats the title link's URL; it is one document, not a second meeting.
+    assert rows[0]['documents']==[{'id':'tdrpd-agenda-packet','title':'October 2026 Board Packet',
+                                   'url':'https://www.tdrpd.org/AgendaCenter/ViewFile/Agenda/_10222026-290'}]
+    assert rows[-1]['documents'][0]['id']=='tdrpd-agenda'
+    # Without qualifySpecial a workshop keeps the plain date ID, and without a body filter every row qualifies.
+    plain={k:v for k,v in _live_config('tdrpd').items() if k not in {'qualifySpecial','bodyPattern'}}
+    every=discover_configured('tdrpd',plain,limit=None,fetch=lambda _:_fixture('tdrpd-agenda-center-2026-11-13.html'))
+    assert len(every)==21 and '2026-01-14' in {r['source_id'] for r in every}
+
+
+def test_civicclerk_window_skips_next_years_placeholders_and_names_the_board_events(monkeypatch):
+    from datetime import date
+    from tahoe_ingest import source_discovery
+    monkeypatch.setattr(source_discovery,'_local_today',lambda:date(2026,11,13))
+    events=json.dumps({**json.loads(_fixture('tdpud-civicclerk-events-2026-11-13.json')),'hasMore':False})
+    asked=[]
+    def fetch(url):
+        asked.append(url)
+        return '<html><body>CivicClerk portal</body></html>' if 'portal' in url else events
+    rows=discover_configured('tdpud',_live_config('tdpud'),limit=20,fetch=fetch)
+    # Newest first: unwindowed, the first page would hold only 2027 placeholder meetings.
+    assert asked[1]=="https://tdpud.api.civicclerk.com/v1/Events/GetEventsList(fromDate='2026-09-14',toDate='2027-03-13',categoryIds=[],skip=0,sortDescending=true,cursorId=0)"
+    by_id={r['source_id']:r for r in rows}
+    assert '1215' not in by_id  # the Financing Corporation is another body
+    assert len(rows)==14 and by_id['1202']['status']=='canceled'  # "CANCELLED Special Board Meeting"
+    assert (by_id['1216']['date'],by_id['1216']['start_time'],by_id['1216']['title'])==('2026-10-14','09:00','Special Board Meeting')
+    assert [d['id'] for d in by_id['179']['documents']]==['tdpud-agenda','tdpud-agenda-packet']
+    assert by_id['179']['official_url']=='https://tdpud.portal.civicclerk.com/event/179/overview'
+    assert by_id['172']['documents']==[]  # a calendared meeting whose agenda is not posted yet is a notice
+
+
 def test_ndep_table_reads_two_digit_years_and_the_second_table_of_abbreviated_dates_but_not_far_future_placeholders(monkeypatch):
     from datetime import datetime as real
     from tahoe_ingest import source_discovery

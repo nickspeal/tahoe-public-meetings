@@ -1,0 +1,349 @@
+{
+ "note": "Truckee Donner Public Utility District regular meeting of 2026-10-07 (CivicClerk). The agenda is stored whole; from the 119-page packet, the reprinted agenda pages, every \"AGENDA ITEM #N\" memo header page, and one department memo (page 5) are kept, other attachment pages trimmed (page_count is the real count). Items 4 and 6 have no memo; procedural items and the closed session are skipped.",
+ "meeting": {
+  "id": "tdpud:178",
+  "agency_id": "tdpud",
+  "title": "Regular Board Meeting- First",
+  "local_date": "2026-10-07",
+  "official_url": "https://tdpud.portal.civicclerk.com/event/178/overview"
+ },
+ "items": [
+  {
+   "id": "tdpud:178:1",
+   "number": "1",
+   "title": "Call to Order",
+   "section": null,
+   "fingerprint": "2406be11cf2ca768d4ea48140b1cf87b57c06304cd061dea9761e6e864ad8a4a",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Call to Order",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:2",
+   "number": "2",
+   "title": "Roll Call",
+   "section": null,
+   "fingerprint": "75466f0a646fc957c4c9959077d07114913f190f5a6e67d22bf391babf16966d",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Roll Call",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:3",
+   "number": "3",
+   "title": "Pledge of Allegiance",
+   "section": null,
+   "fingerprint": "67719c412786a384dba588d4f8679a694c21f81c5a3c16e379bf5cc0f6709b9a",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Pledge of Allegiance",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:4",
+   "number": "4",
+   "title": "Changes to the agenda",
+   "section": null,
+   "fingerprint": "97d98850e24efb741309198eef0785d7c3b37c5d63133fc38c5c8ccbdaf2b1b0",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Changes to the agenda",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:5",
+   "number": "5",
+   "title": "Public Comment",
+   "section": null,
+   "fingerprint": "f2529da9dd03b5b403cd710726bf2f4aaa391e8f4468dc13fc95d2471783249c",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "Public Comment – This is time set aside for the public to address the Board on\n     any matter not on the agenda. Testimony related to any agendized matter should\n     be addressed at the time that that item is considered.",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:6",
+   "number": "6",
+   "title": "This item provides time for Directors to comment on any item within the purview of the District.",
+   "section": "Director Update",
+   "fingerprint": "74f31df5d341648d2d3bb5000d1dacddf60dda3351f870af18310c8c3bf9cd08",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "This item provides time for Directors to comment on any item within the purview of\n     the District.",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:7",
+   "number": "7",
+   "title": "This item provides time for each Department to update the Board of Directors.",
+   "section": "Department Updates",
+   "fingerprint": "a401a83b72a0d664fdedf048e44e1fbb84e6447d96a9b8c9c84ce685615c396d",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "This item provides time for each Department to update the Board of Directors.",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:8",
+   "number": "8",
+   "title": "District's Workforce Vacancies, Recruitment, and Retention Efforts",
+   "section": "Public Hearing",
+   "fingerprint": "37d9b7a9fafd4eb8b527f27e98fbdf0534ba24431e5a3cca6d37373977b6ff83",
+   "citations": [
+    {
+     "page": 1,
+     "quote": "District's Workforce Vacancies, Recruitment, and Retention Efforts",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:9",
+   "number": "9",
+   "title": "Treasurer's Report, October 2026",
+   "section": "Consent Calendar",
+   "fingerprint": "1d33c2ec9a20339628b82a37ca3da87f6237d8900ef3cdd2f459dc808c9be53b",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Treasurer's Report, October 2026",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:10",
+   "number": "10",
+   "title": "Consideration for the Board to Reschedule the Electric System Master Plan CEQA Public Hearing to November 4, 2026",
+   "section": "Consent Calendar",
+   "fingerprint": "5855ea31e4e1313fec81da43469a9823dc7cc7e1205ced88659871875a884e3d",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Consideration for the Board to Reschedule the Electric System Master Plan CEQA\n    Public Hearing to November 4, 2026",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:11",
+   "number": "11",
+   "title": "Board Meeting Minutes",
+   "section": "Consent Calendar",
+   "fingerprint": "afbc21879d350ca2a815c6e02bf8bac789ab8fd79d1f0336f7047204fe436697",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Board Meeting Minutes",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:12",
+   "number": "12",
+   "title": "Consideration of a Recruiting Services Contract for Electrical Engineering Manager",
+   "section": "Consent Calendar",
+   "fingerprint": "b136c1bceb62fbeefb42ccb739a398b9d5a932873eb37d140488cc82b70e1b99",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Consideration of a Recruiting Services Contract for Electrical Engineering\n    Manager",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:13",
+   "number": "13",
+   "title": "Adopt Resolution 2026-16 approving the submission and attesting to the veracity of the 2025 Power Source Disclosure (PSD) Report and Power Content Label (PCL)",
+   "section": "Action Items",
+   "fingerprint": "9b7c74e93d6b19204f4722c4bd7417c3dcf97fd2751c4aa3daea488341522ef2",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Adopt Resolution 2026-16 approving the submission and attesting to the veracity of the 2025\n     Power Source Disclosure (PSD) Report and Power Content Label (PCL)",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:14",
+   "number": "14",
+   "title": "Consideration of Adoption of Resolution No. 2026-17 Approving the 2026 Physical Security Plan",
+   "section": "Action Items",
+   "fingerprint": "c5e4a052257c1d0000423ca31d20520d8658c71e93e43e2d965d7862258564ce",
+   "citations": [
+    {
+     "page": 2,
+     "quote": "Consideration of Adoption of Resolution No. 2026-17 Approving the 2026 Physical\n    Security Plan",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:15",
+   "number": "15",
+   "title": "Consideration for Designation of Labor Negotiators for the General Manager's Employment Contract",
+   "section": "Action Items",
+   "fingerprint": "197d7a311b0291b1e3cb68578a45d9a9f60c5ac5f029bd608ba88f9433b62076",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Consideration for Designation of Labor Negotiators for the General Manager's\n    Employment Contract",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:16",
+   "number": "16",
+   "title": "Martis Valley Groundwater Management Plan Water Year 2024 and 2025 Annual Reports",
+   "section": "Workshop",
+   "fingerprint": "5bfba970cf7680f7e9006e8c56b3e0b1a916e433991bce5fa3d3a9455fe1cc2d",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Martis Valley Groundwater Management Plan Water Year 2024 and 2025 Annual\n    Reports",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  },
+  {
+   "id": "tdpud:178:17",
+   "number": "17",
+   "title": "Closed session pursuant to Government Code Section 54957(a): Consultation with General Manager to Review Critical Infrastructure Information",
+   "section": "Closed Session",
+   "fingerprint": "c66e93a1b8a97f536aa5fed858e0c631704c6bc4ef8af22c7c51ca73496459bc",
+   "citations": [
+    {
+     "page": 3,
+     "quote": "Closed session pursuant to Government Code Section 54957(a): Consultation with\n    General Manager to Review Critical Infrastructure Information",
+     "documentId": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca"
+    }
+   ]
+  }
+ ],
+ "documents": [
+  {
+   "version_id": "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca",
+   "source_document_id": "tdpud-agenda",
+   "title": "Agenda 2026-10-07",
+   "url": "https://tdpud.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=1404,plainText=false)",
+   "sha256": "6a3a5824e03ab8cadeea85d134642191427f107d07b9f95999b324ab88836f89",
+   "page_count": 3,
+   "media_type": "application/pdf"
+  },
+  {
+   "version_id": "tdpud:178:tdpud-agenda-packet:136976e1b6f8f34a",
+   "source_document_id": "tdpud-agenda-packet",
+   "title": "Agenda Packet 2026-10-07",
+   "url": "https://tdpud.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=1405,plainText=false)",
+   "sha256": "136976e1b6f8f34abd6e8a4dd1eee682cf2d1c43462d6fe4f8c694541d224a6f",
+   "page_count": 119,
+   "media_type": "application/pdf"
+  }
+ ],
+ "stored": {
+  "tdpud:178:tdpud-agenda:6a3a5824e03ab8ca": {
+   "1": "Board of Directors                                                                        General Manager\nJeff Bender                                                                                  Brian C. Wright\nChrista Finn                                                                          Executive Leadership\nTony Laliotis                                                                                 Chad J. Reed\nCourtney Murrell               REGULAR BOARD MEETING                                         Mike Swanson\nSteve Randall             11570 DONNER PASS ROAD, TRUCKEE,                                  Michael Salmon\n                                       CA 96161                                            Steven Poncelet\n                           6:00 PM, Wednesday, October 7, 2026                                    Scott Crow\n                                        AGENDA                                               Jillian Steward\n                                                                                          Martina Rochefort\n\n1.   Call to Order\n\n2.   Roll Call\n\n3.   Pledge of Allegiance\n\n4.   Changes to the agenda\n\n5.   Public Comment – This is time set aside for the public to address the Board on\n     any matter not on the agenda. Testimony related to any agendized matter should\n     be addressed at the time that that item is considered.\n         (The public may comment on any subject that is not on the agenda. Each\n         speaker will be limited to three minutes, but speaker time may be reduced at\n         the discretion of the Board President if there are a large number of speakers\n         on any given subject.)\n\nDIRECTOR UPDATE\n\n6.   This item provides time for Directors to comment on any item within the purview of\n     the District.\n\nDEPARTMENT UPDATES\n\n7.   This item provides time for each Department to update the Board of Directors.\n\nPUBLIC HEARING\n\n8.   District's Workforce Vacancies, Recruitment, and Retention Efforts\n         a.) Conduct a Public Hearing regarding the District's Workforce Vacancies,\n         Recruitment, and Retention Efforts in compliance with AB 2561; and\n\n         b.) Provide feedback to staff\n\nCONSENT CALENDAR\n\n\n\n\n            11570 Donner Pass Road, Truckee, CA 96161 Phone- 530-587-3896- www.tdpud.org",
+   "2": "These items are generally interpreted as routine in nature or the subject matter has\nbeen previously presented to the Board for discussion. They are intended to be acted\nupon by the Board without additional discussion. Any Board Member may request an\nitem to be removed from the Consent Calendar for discussion prior to voting on the\nConsent Calendar.\n\n9.   Treasurer's Report, October 2026\n         Approve the Treasurer's Report for October 2026 which includes:\n\n              a. Fund Balances for the Month of July 2026\n              b. Disbursements for the Month of August 2026\n\n\n10. Consideration for the Board to Reschedule the Electric System Master Plan CEQA\n    Public Hearing to November 4, 2026\n\n\n\n\n         Reschedule the Electric System Master Plan CEQA Public Hearing from\n         October 7, 2026, to November 4, 2026, at 6:00pm, or as soon thereafter, to\n         receive public comment on the Proposed Negative Declaration.\n\n11. Board Meeting Minutes\n         Consider approval of the September 2, 2026 Regular Meeting and September\n         8, 2026 Special Meeting Minutes.\n\n12. Consideration of a Recruiting Services Contract for Electrical Engineering\n    Manager\n         Authorize the General Manager to execute a professional services contract for\n         executive recruitment services with Alliance Resource Consulting, Inc. in the\n         amount of $38,000, plus a 10% change order authorization, for a total not to\n         exceed $41,800.\n\nACTION ITEMS\n\n13. Adopt Resolution 2026-16 approving the submission and attesting to the veracity of the 2025\n     Power Source Disclosure (PSD) Report and Power Content Label (PCL)\n\n         Adopt Resolution 2026-16 approving the submission and attesting to the veracity of the\n         2025 Power Source Disclosure (PSD) Report and Power Content Label (PCL).\n\n14. Consideration of Adoption of Resolution No. 2026-17 Approving the 2026 Physical\n    Security Plan",
+   "3": "Adopt Resolution No. 2026-17 approving the 2026 Physical Security Plan and\n           authorize the General Manager or designee to provide the required notice of\n           adoption and program review documentation to the California Public Utilities\n           Commission Safety and Enforcement Division.\n\n15. Consideration for Designation of Labor Negotiators for the General Manager's\n    Employment Contract\n           Appoint two members of the District's Board of Directors to serve as\n           negotiators for the General Manager's Employment Contract\n\nWORKSHOP\n\n16. Martis Valley Groundwater Management Plan Water Year 2024 and 2025 Annual\n    Reports\n           Receive this report and provide input and direction to staff.\n\nCLOSED SESSION\n\n17. Closed session pursuant to Government Code Section 54957(a): Consultation with\n    General Manager to Review Critical Infrastructure Information\n\nADJOURNMENT\n\nThe agenda is available for review at the TDPUD Administrative Office and the District’s\ninternet website. Posted on Thursday, October 1, 2026.\n\nMartina Rochefort, District Clerk\nA copy of the agenda packet is available for public review, during normal business hours, at the District\nAdministrative Office located at 11570 Donner Pass Road. Public participation is encouraged. The\nmeeting location is accessible to people with disabilities. Every reasonable effort will be made to\naccommodate participation of the disabled in all of the Districts public meetings. If particular\naccommodations for the disabled are needed (i.e. disability-related aids, or other services), please\ncontact the District Clerk at (530) 582-3923 or martinar@tdpud.org, at least 24 hours in advance of the\nmeeting.\n\nAny person with a disability may submit a request for reasonable modification or accommodation to the\nabove-described means for accessing and offering comment at the meeting to Martina Rochefort, District\nClerk, or email at martinar@tdpud.org, who will swiftly resolve such a request."
+  },
+  "tdpud:178:tdpud-agenda-packet:136976e1b6f8f34a": {
+   "1": "Board of Directors                                                                        General Manager\nJeff Bender                                                                                  Brian C. Wright\nChrista Finn                                                                          Executive Leadership\nTony Laliotis                                                                                 Chad J. Reed\nCourtney Murrell               REGULAR BOARD MEETING                                         Mike Swanson\nSteve Randall             11570 DONNER PASS ROAD, TRUCKEE,                                  Michael Salmon\n                                       CA 96161                                            Steven Poncelet\n                           6:00 PM, Wednesday, October 7, 2026                                    Scott Crow\n                                        AGENDA                                               Jillian Steward\n                                                                                          Martina Rochefort\n\n1.   Call to Order\n\n2.   Roll Call\n\n3.   Pledge of Allegiance\n\n4.   Changes to the agenda\n\n5.   Public Comment – This is time set aside for the public to address the Board on\n     any matter not on the agenda. Testimony related to any agendized matter should\n     be addressed at the time that that item is considered.\n         (The public may comment on any subject that is not on the agenda. Each\n         speaker will be limited to three minutes, but speaker time may be reduced at\n         the discretion of the Board President if there are a large number of speakers\n         on any given subject.)\n\nDIRECTOR UPDATE\n\n6.   This item provides time for Directors to comment on any item within the purview of\n     the District.\n\nDEPARTMENT UPDATES\n\n7.   This item provides time for each Department to update the Board of Directors.\n\nPUBLIC HEARING\n\n8.   District's Workforce Vacancies, Recruitment, and Retention Efforts\n         a.) Conduct a Public Hearing regarding the District's Workforce Vacancies,\n         Recruitment, and Retention Efforts in compliance with AB 2561; and\n\n         b.) Provide feedback to staff\n\nCONSENT CALENDAR\n\n\n\n\n            11570 Donner Pass Road, Truckee, CA 96161 Phone- 530-587-3896- www.tdpud.org\n\n                                                                                                          Page 1 of 119",
+   "2": "These items are generally interpreted as routine in nature or the subject matter has\nbeen previously presented to the Board for discussion. They are intended to be acted\nupon by the Board without additional discussion. Any Board Member may request an\nitem to be removed from the Consent Calendar for discussion prior to voting on the\nConsent Calendar.\n\n9.   Treasurer's Report, October 2026\n         Approve the Treasurer's Report for October 2026 which includes:\n\n              a. Fund Balances for the Month of July 2026\n              b. Disbursements for the Month of August 2026\n\n\n10. Consideration for the Board to Reschedule the Electric System Master Plan CEQA\n    Public Hearing to November 4, 2026\n\n\n\n\n         Reschedule the Electric System Master Plan CEQA Public Hearing from\n         October 7, 2026, to November 4, 2026, at 6:00pm, or as soon thereafter, to\n         receive public comment on the Proposed Negative Declaration.\n\n11. Board Meeting Minutes\n         Consider approval of the September 2, 2026 Regular Meeting and September\n         8, 2026 Special Meeting Minutes.\n\n12. Consideration of a Recruiting Services Contract for Electrical Engineering\n    Manager\n         Authorize the General Manager to execute a professional services contract for\n         executive recruitment services with Alliance Resource Consulting, Inc. in the\n         amount of $38,000, plus a 10% change order authorization, for a total not to\n         exceed $41,800.\n\nACTION ITEMS\n\n13. Adopt Resolution 2026-16 approving the submission and attesting to the veracity of the 2025\n     Power Source Disclosure (PSD) Report and Power Content Label (PCL)\n\n         Adopt Resolution 2026-16 approving the submission and attesting to the veracity of the\n         2025 Power Source Disclosure (PSD) Report and Power Content Label (PCL).\n\n14. Consideration of Adoption of Resolution No. 2026-17 Approving the 2026 Physical\n    Security Plan\n\n\n\n\n                                                                                                  Page 2 of 119",
+   "3": "Adopt Resolution No. 2026-17 approving the 2026 Physical Security Plan and\n           authorize the General Manager or designee to provide the required notice of\n           adoption and program review documentation to the California Public Utilities\n           Commission Safety and Enforcement Division.\n\n15. Consideration for Designation of Labor Negotiators for the General Manager's\n    Employment Contract\n           Appoint two members of the District's Board of Directors to serve as\n           negotiators for the General Manager's Employment Contract\n\nWORKSHOP\n\n16. Martis Valley Groundwater Management Plan Water Year 2024 and 2025 Annual\n    Reports\n           Receive this report and provide input and direction to staff.\n\nCLOSED SESSION\n\n17. Closed session pursuant to Government Code Section 54957(a): Consultation with\n    General Manager to Review Critical Infrastructure Information\n\nADJOURNMENT\n\nThe agenda is available for review at the TDPUD Administrative Office and the District’s\ninternet website. Posted on Thursday, October 1, 2026.\n\nMartina Rochefort, District Clerk\nA copy of the agenda packet is available for public review, during normal business hours, at the District\nAdministrative Office located at 11570 Donner Pass Road. Public participation is encouraged. The\nmeeting location is accessible to people with disabilities. Every reasonable effort will be made to\naccommodate participation of the disabled in all of the Districts public meetings. If particular\naccommodations for the disabled are needed (i.e. disability-related aids, or other services), please\ncontact the District Clerk at (530) 582-3923 or martinar@tdpud.org, at least 24 hours in advance of the\nmeeting.\n\nAny person with a disability may submit a request for reasonable modification or accommodation to the\nabove-described means for accessing and offering comment at the meeting to Martina Rochefort, District\nClerk, or email at martinar@tdpud.org, who will swiftly resolve such a request.\n\n\n\n\n                                                                                                            Page 3 of 119",
+   "4": "AGENDA ITEM #7\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:\nSUBJECT:           This item provides time for each Department to update the Board of\n                   Directors.\n\n\n                                     APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\n\n\nBACKGROUND:\n\n\nANALYSIS AND BODY:\n\n\nGOALS AND OBJECTIVES:\nDistrict Code 1.05.020 Objectives:\n1. Responsibly serve the public.\n2. Provide a healthy and safe work environment for all District employees.\n3. Provide reliable and high quality water supply and distribution system to meet\ncurrent and future needs.\n4. Provide reliable and high quality electric supply and distribution system to meet\ncurrent and future needs.\n5. Manage the District in an environmentally sound manner.\n6. Manage the District in an effective, efficient and fiscally responsible manner.\n\nDistrict Code 1.05.030 Goals:\n1. Manage for Financial Stability and Resiliency\n2. Environmental Stewardship: Create a sustainable resilient environment for all our\ncommunities.\n3. Engage with our customers and communities in a welcoming and transparent way to\nidentify opportunities.\n4. Modernize the utility and add value to our communities through collaboration and\ninnovation.\n5. Developing an inclusive culture drives organizational integration and success.\n\nFISCAL IMPACT:\n\n                                                                              Page 1 of 2\n\n\n\n                                                                                       Page 4 of 119",
+   "5": "ATTACHMENTS:\n1.  Water - Department Update\n2.  Electric -Department Update\n3.  Administrative Services - Department Update\n4.  PIO & SA - Department Update\n5.  Human Resources & Risk Management - Department Update\n6.  District Clerk - Department Update\n\n\n\n\n                                                            Page 2 of 2\n\n\n\n                                                                     Page 5 of 119",
+   "23": "AGENDA ITEM #8\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:              Jillian Steward, Director of Human Resources & Risk Management\nSUBJECT:           District's Workforce Vacancies, Recruitment, and Retention Efforts\n\n\n                                     APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\na.) Conduct a Public Hearing regarding the District's Workforce Vacancies,\nRecruitment, and Retention Efforts in compliance with AB 2561; and\n\nb.) Provide feedback to staff\n\nBACKGROUND:\nTo address the widespread and significant problem job vacancies in the public sector\npose to the State of California, Governor Newsom signed Assembly Bill 2561 (AB 2561)\non September 22, 2024. AB 2561 creates new requirements for public agencies to\nreport before the governing board on vacant positions as well as recruitment and\nretention efforts through a public hearing at least once per fiscal year. If the governing\nboard will be adopting an annual or multiyear budget during the fiscal year, the\npresentation shall be made prior to the adoption of the final budget. As part of the\nhearing, public agencies, including the District, must identify any challenges and\npotential necessary changes to policies, procedures, and recruitment activities to\novercome these challenges. This was last presented to the Board through a Public\nHearing on October 1, 2025.\n\n If the number of budgeted job vacancies represented by a single bargaining unit meets\nor exceeds 20 percent of the total number of authorized full-time positions, the public\nagency shall, upon request of the recognized employee organization, include additional\ninformation during the public hearing. This information includes total number of job\nvacancies within a bargaining unit, total number of applicants, average number of days\nto complete the hiring process, and opportunities to improve compensation and other\nworking conditions. The recognized employee organization for a bargaining unit shall\nbe entitled to make a presentation at the public hearing.\n\n At the September 02, 2026, regularly scheduled Board Meeting, the Board approved\nthe scheduling of a Public Hearing to be held on October 7, 2026, in accordance with\nAB 2561 to present the District’s Workforce Vacancies, Recruitment and Retention\nefforts.\n\n\n                                                                              Page 1 of 3\n\n\n\n                                                                                       Page 23 of 119",
+   "26": "AGENDA ITEM #9\n\n\nMEETING DATE: October 7, 2026\nTO:                 Board of Directors\nFROM:               Melanie Rives, Finance & Accounting Manager\nSUBJECT:            Treasurer's Report, October 2026\n\n\n                                     APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nApprove the Treasurer's Report for October 2026 which includes:\n\n      a. Fund Balances for the Month of July 2026\n      b. Disbursements for the Month of August 2026\n\n\nBACKGROUND:\n\n\nANALYSIS AND BODY:\n\n\nGOALS AND OBJECTIVES:\n\n\n\nFISCAL IMPACT:\n\n\nATTACHMENTS:\n1.  2026-10 Treasurer's Report\n\n\n\n\n                                                                            Page 1 of 1\n\n\n\n                                                                                    Page 26 of 119",
+   "42": "AGENDA ITEM #10\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:              Mike Swanson, Director of Electric Engineering & Operations\nSUBJECT:           Consideration for the Board to Reschedule the Electric System\n                   Master Plan CEQA Public Hearing to November 4, 2026\n\n\n\n\n                                     APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nReschedule the Electric System Master Plan CEQA Public Hearing from October 7,\n2026, to November 4, 2026, at 6:00pm, or as soon thereafter, to receive public\ncomment on the Proposed Negative Declaration.\n\nBACKGROUND:\nThe Electric System Master Plan is the District's comprehensive long-range planning\ndocument for the electric utility and establishes the strategic framework for maintaining\nsafe, reliable, resilient, and financially sustainable electric service.\n\n\nAt the August 5, 2026, Board meeting, District staff and NV5 presented an overview of\nthe Draft Electric System Master Plan during a Board workshop. The Board received\nthe presentation and provided feedback prior to initiation of the California\nEnvironmental Quality Act (CEQA) review and adoption process.\n\nFollowing the workshop, NV5 completed the CEQA Initial Study for the Electric System\nMaster Plan. The Initial Study determined that adoption of the Master Plan would not\nresult in significant environmental impacts and supports a Proposed Negative\nDeclaration.\n\nAt the September 2, 2026, Board meeting, the Board approved the Electric System\nMaster Plan CEQA Initial Study, authorized circulation of the Proposed Negative\nDeclaration for public review, and scheduled a Public Hearing for October 7, 2026, at\n6:00pm, or as soon thereafter, to receive public comment on the Proposed Negative\nDeclaration.\n\n\nANALYSIS AND BODY:\n\n\n                                                                              Page 1 of 3\n\n\n\n                                                                                        Page 42 of 119",
+   "45": "AGENDA ITEM #11\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:              Martina Rochefort, District Clerk/Executive Assistant\nSUBJECT:           Board Meeting Minutes\n\n\n                                      APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nConsider approval of the September 2, 2026 Regular Meeting and September 8, 2026\nSpecial Meeting Minutes.\n\nBACKGROUND:\nDraft meeting minutes are attached for review.\n\nANALYSIS AND BODY:\n\n\nGOALS AND OBJECTIVES:\nDistrict Code 1.05.020 Objectives:\n1. Responsibly serve the public.\n6. Manage the District in an effective, efficient and fiscally responsible manner.\n\n\n\nFISCAL IMPACT:\nThere is no fiscal impact associated with this item.\n\nATTACHMENTS:\n1.  Minutes 2026-09-02 DRAFT\n2.  Minutes 2026-09-08 DRAFT\n\n\n\n\n                                                                               Page 1 of 1\n\n\n\n                                                                                       Page 45 of 119",
+   "55": "AGENDA ITEM #12\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:              Jillian Steward, Director of Human Resources & Risk Management\nSUBJECT:           Consideration of a Recruiting Services Contract for Electrical\n                   Engineering Manager\n\n\n                                     APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nAuthorize the General Manager to execute a professional services contract for\nexecutive recruitment services with Alliance Resource Consulting, Inc. in the amount of\n$38,000, plus a 10% change order authorization, for a total not to exceed $41,800.\n\nBACKGROUND:\nIn the spring of 2026, the District's Electrical Engineering Manager announced his\nanticipated resignation in the summer of 2026 to pursue personal opportunities. During\nthis transition, the Electrical Engineering Manager partnered with District Leadership to\noutline the status of critical projects and departmental priorities, essential job\nresponsibilities, as well as the key technical and leadership skills for someone to be\nsuccessful in the role.\n\nSuccessful recruitment for managerial or leadership positions takes significant time,\nresources, and industry contacts. Rapidly evolving energy landscapes, significant\nincrease in capital project development, particularly around data center and energy\ngeneration projects, and highly competitive labor markets have presented additional\nchallenges for the recruitment of electrical engineering and executive leadership across\nthe industry. To ensure the District has the opportunity to evaluate prospective\ncandidates from a robust recruitment pool, Staff is recommending the procurement of\nexecutive recruitment services with demonstrated experience and success within the\nelectric utility industry.\n\nANALYSIS AND BODY:\nOn September 11, 2026, the District advertised a request for proposals (RFP) for\nexecutive search firm services for the recruitment and placement of the Electrical\nEngineering Manager. On September 28, 2026, the District received four proposals.\nOne of the proposals did not meet all the requirements and was omitted from scoring.\n\nAn internal committee reviewed each of the proposals received based upon the\nfollowing criteria:\n\n\n                                                                              Page 1 of 3\n\n\n\n                                                                                       Page 55 of 119",
+   "58": "AGENDA ITEM #13\n\n\nMEETING DATE: October 7, 2026\nTO:                    Board of Directors\nFROM:                  Steven Keates, Utility Resource Strategies Manager\n                       Brian Wright, General Manager\nSUBJECT:               Adopt Resolution 2026-16 approving the submission and attesting to the\n                       veracity of the 2025 Power Source Disclosure (PSD) Report and Power\n                       Content Label (PCL)\n\n\n                                             APPROVED BY:\n                                                                  Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nAdopt Resolution 2026-16 approving the submission and attesting to the veracity of the 2025 Power\nSource Disclosure (PSD) Report and Power Content Label (PCL).\n\nBACKGROUND:\nIn 1997, Senate Bill (SB) 1305 established California’s Power Source Disclosure Program (codified\nin Public Utilities Code sections 398.1 to 398.5), directing retail electricity suppliers to disclose\nenergy source mix and environmental impact to consumers. California Energy Commission (CEC)\nregulations require retail suppliers to submit annual Power Source Disclosure reports and make the\nPower Content Label available to retail customers.\n\nWhile CEC regulations mandate an annual third-party Certified Public Accountant (CPA) audit to\nverify energy purchases, Publicly Owned Utilities (POUs) are exempt if their governing board\nformally approves the submission and attests to the veracity of the data. Adopting the proposed\nresolution satisfies state mandates while saving the District the expense of an external CPA\naudit. The District's Board has historically adopted resolutions to satisfy this State mandate.\n\n\nANALYSIS AND BODY:\nDistrict staff compiled procurement data for calendar year 2025 from verified supplier records\nprovided by Utah Associated Municipal Power Systems (UAMPS) and Western Area Power\nAdministration (WAPA). In addition, the board approved retaining Rincon in July 2026 to provide\nindependent third party verification of the District's electricity transactions for annual reporting to the\nCalifornia Air Resources Board (CARB) under state Greenhouse Gas (GHG) reporting rules. Staff\nhas verified the accuracy of these submissions. References to the Power Content Label will be\nabbreviated using “PCL”.\n\nRegulatory & Format Updates (AB 242 & SB 1158 Compliance)\nThe 2025 PCL introduces structural modifications mandated by recent CEC rulemakings\nimplementing Assembly Bill (AB) 242 and Senate Bill (SB) 1158:\n\n\n\n\n                                                                                              Page 1 of 3\n\n\n\n                                                                                                        Page 58 of 119",
+   "64": "AGENDA ITEM #14\n\n\nMEETING DATE: October 7, 2026\nTO:                 Board of Directors\nFROM:               Mike Swanson, Director of Electric Engineering & Operations\nSUBJECT:            Consideration of Adoption of Resolution No. 2026-17 Approving the\n                    2026 Physical Security Plan\n\n\n                                       APPROVED BY:\n                                                         Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nAdopt Resolution No. 2026-17 approving the 2026 Physical Security Plan and authorize\nthe General Manager or designee to provide the required notice of adoption and\nprogram review documentation to the California Public Utilities Commission Safety and\nEnforcement Division.\n\nBACKGROUND:\nCalifornia Public Utilities Commission (CPUC) Decision 19-01-018 establishes physical\nsecurity requirements for California electric utilities, including publicly owned utilities\n(POUs). The Decision requires utilities to identify electric distribution facilities that may\nmerit special protection, evaluate physical security risks, develop appropriate mitigation\nmeasures, and obtain an independent third-party review of the resulting Physical\nSecurity Plan (Plan).\n\n\nThe District’s previous Physical Security Plan was completed in 2021. CPUC Decision\n19-01-018 requires POUs to conduct a program review of their Security Plan and\nassociated physical security program every five years following initial approval by their\ngoverning body. Following Board adoption, notice of the Plan adoption must be\nprovided to the CPUC Safety and Enforcement Division within 30 days.\n\nCPUC Decision 19-01-018 provides that a POU’s notice of final Plan adoption may\nconsist of a copy of a signed resolution, ordinance, or letter by a responsible elected or\nappointed official or utility director. Staff recommends adoption by resolution to provide\na clear and formal record of the Board’s adoption of the Plan for transmittal to the\nCPUC.\n\nConsistent with the five-year review cycle, the District has completed its 2026 review\nand update of the Physical Security Plan. The updated Plan evaluates seven District\nfacilities against the CPUC criteria and identifies the Truckee Substation and Martis\nValley Substation as Covered Distribution Facilities. The Primary Control Center is also\nincluded because it will provide supervisory and operational control of the Covered\n\n                                                                                 Page 1 of 5\n\n\n\n                                                                                          Page 64 of 119",
+   "71": "AGENDA ITEM #15\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:              Jillian Steward, Director of Human Resources & Risk Management\nSUBJECT:           Consideration for Designation of Labor Negotiators for the General\n                   Manager's Employment Contract\n\n\n                                     APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nAppoint two members of the District's Board of Directors to serve as negotiators for the\nGeneral Manager's Employment Contract\n\nBACKGROUND:\nThe general manager's role and responsibilities are outlined in District Code, Title 2-\nAdministration. The general manager reports directly to the Board of Directors under\nthe terms of an employment contract requiring review in FY2026.\n\nANALYSIS AND BODY:\nGovernment Code Section 5497.6(a) outlines that prior to meeting on matters regarding\nemployment/labor agreements, the Board must identify and designate its\nnegotiators. In July, 2025 the District renewed and updated the general manager's\nemployment contract. Within the terms of the updated employment contract are\nprovisions for the evaluation and consideration by the Board of performance goals and\nincentives. In preparation for meetings with the Board and negotiation of updated terms\nassociated with the general manager's employment agreement, Staff is recommending\nthe Board designate its labor negotiators. Historically, the Board has designated its\nPresident and Vice President to serve as labor negotiators for the general manager's\nemployment agreements.\n\nGOALS AND OBJECTIVES:\nDistrict Code 1.05.020 Objectives:\n1. Responsibly serve the public.\n2. Provide a healthy and safe work environment for all District employees.\n3. Provide reliable and high quality water supply and distribution system to meet\ncurrent and future needs.\n4. Provide reliable and high quality electric supply and distribution system to meet\ncurrent and future needs.\n5. Manage the District in an environmentally sound manner.\n6. Manage the District in an effective, efficient and fiscally responsible manner.\n\n                                                                              Page 1 of 2\n\n\n\n                                                                                          Page 71 of 119",
+   "73": "AGENDA ITEM #16\n\n\nMEETING DATE: October 7, 2026\nTO:                Board of Directors\nFROM:              Steven Poncelet, Public Information Officer/Strategic Affairs Director\nSUBJECT:           Martis Valley Groundwater Management Plan Water Year 2024 and\n                   2025 Annual Reports\n\n\n                                      APPROVED BY:\n                                                       Brian C. Wright, General Manager\n\n\nRECOMMENDATION:\nReceive this report and provide input and direction to staff.\n\nBACKGROUND:\nThe District has a long history of stewardship and collaboration in managing water\nresources. A major tenant of local water resource management has been to use the\nbest available science to inform the decision-making process. This has resulted in\ndecades of monitoring and scientific study, including the Desert Research Institute’s\nMartis Valley groundwater model/report as part of the Federal Truckee River Basin\nStudy. This effort was supported by the District, Northstar Community Services District -\nNCSD, and Placer County Water Agency - PCWA (Local Water Agencies) and was a\nkey component of the collaboratively adopted 2013 Martis Valley Groundwater\nManagement Plan (GMP). This effort was temporarily halted when the Martis Valley\nGroundwater Basin was initially included in the Sustainable Groundwater Management\nAct (SGMA) in 2014 as a Medium Priority Basin, and then removed in 2019 when\nreclassified as Very Low Priority.\n\nThe three Local Water Agencies worked with our local partners to develop a plan to go\nback to the GMP framework in 2019. This included updating the Stakeholder Working\nGroup list to reflect the local agencies or groups with a direct interest in Martis Valley\ngroundwater resources. In general, the stakeholders fall into three categories: local\npublic agencies; major water users/pumpers; and local non-profits/interest groups.\n\nA GMP Stakeholder Working Group kick-off meeting was held in October 2019, where\nthe three Local Water Agencies reviewed the 2013 Martis Valley GMP and the key\nmeetings and actions that would occur going forward. This includes an annual report\ntracking the performance and long-term sustainability of the groundwater basin, along\nwith an update to the GMP to occur during 2024. It was agreed that the start of the\nGMP would now be in 2019. It was also agreed that the first GMP annual report would\ncover the past two water years (October - September 2017/2018 and 2018/2019) which\nwould provide continuity from the last SGMA annual report. This GMP annual report\nwas conducted over the winter months with the annual Stakeholder Working Group\n\n                                                                               Page 1 of 3\n\n\n\n                                                                                        Page 73 of 119"
+  }
+ },
+ "downloads": {},
+ "expected": {
+  "1": null,
+  "2": null,
+  "3": null,
+  "4": null,
+  "5": null,
+  "6": null,
+  "7": {
+   "page_start": 4,
+   "page_end": 22,
+   "heading": "AGENDA ITEM #7"
+  },
+  "8": {
+   "page_start": 23,
+   "page_end": 25,
+   "heading": "AGENDA ITEM #8"
+  },
+  "9": {
+   "page_start": 26,
+   "page_end": 41,
+   "heading": "AGENDA ITEM #9"
+  },
+  "10": {
+   "page_start": 42,
+   "page_end": 44,
+   "heading": "AGENDA ITEM #10"
+  },
+  "11": null,
+  "12": {
+   "page_start": 55,
+   "page_end": 57,
+   "heading": "AGENDA ITEM #12"
+  },
+  "13": {
+   "page_start": 58,
+   "page_end": 63,
+   "heading": "AGENDA ITEM #13"
+  },
+  "14": {
+   "page_start": 64,
+   "page_end": 70,
+   "heading": "AGENDA ITEM #14"
+  },
+  "15": {
+   "page_start": 71,
+   "page_end": 72,
+   "heading": "AGENDA ITEM #15"
+  },
+  "16": {
+   "page_start": 73,
+   "page_end": 119,
+   "heading": "AGENDA ITEM #16"
+  },
+  "17": null
+ }
+}

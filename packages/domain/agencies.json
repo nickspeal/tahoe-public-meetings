@@ -2777,6 +2777,125 @@
     }
   },
   {
+    "id": "tdpud",
+    "name": "TDPUD — Board of Directors",
+    "shortName": "TDPUD",
+    "page": {
+      "slug": "truckee-donner-public-utility-district-board",
+      "name": "Truckee Donner Public Utility District Board"
+    },
+    "aliases": [
+      "Truckee Donner Public Utility District",
+      "Truckee Donner PUD",
+      "Truckee-Donner PUD",
+      "TDPUD Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.tdpud.org/",
+    "sourceUrl": "https://tdpud.portal.civicclerk.com/",
+    "participation": {
+      "watchUrl": "https://www.youtube.com/channel/UCq_TT1lqvnHIiNkPHzaBD7Q/live",
+      "url": "https://www.tdpud.org/public-board-comments",
+      "instructions": "Attend at 11570 Donner Pass Road, Truckee, or watch the livestream on YouTube. Public comment on any matter not on the agenda is taken at the beginning of the meeting, and comment on an agenda item when the Board considers it. Written comments can be sent with the district's public comment form.",
+      "sourceUrl": "https://www.tdpud.org/board-meetings",
+      "checkedOn": "2026-11-13"
+    },
+    "discovery": {
+      "type": "civicclerk",
+      "indexUrl": "https://tdpud.portal.civicclerk.com/",
+      "bodyPattern": "Board Meeting",
+      "apiUrl": "https://tdpud.api.civicclerk.com/v1",
+      "portalUrl": "https://tdpud.portal.civicclerk.com"
+    },
+    "agenda": {
+      "layouts": [
+        "tdpud-board"
+      ],
+      "agendaBeforePacket": true
+    },
+    "staffReports": {
+      "rule": "item-memo-packet"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's CivicClerk calendar (checked 2026-11-13): every 2026 regular meeting from February to November was on the first Wednesday at 6:00 PM, as the Board Meetings page says (\"the first Wednesday of the month, or as approved by the Board\"). Third-Wednesday regular meetings were held on January 21, 2026 (after the January 7 meeting was canceled) and are calendared for December 16, 2026, and the portal lists first- and third-Wednesday placeholders for every month of 2027, so the older \"first and third Wednesday\" wording on the Board of Directors page is not forecast; calendared third-Wednesday meetings arrive through discovery instead. Recheck in 2027.",
+      "rules": [
+        {
+          "ordinal": 1,
+          "weekday": "wednesday",
+          "time": "18:00",
+          "timezone": "America/Los_Angeles",
+          "label": "TDPUD Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
+    "id": "tdrpd",
+    "name": "TDRPD — Board of Directors",
+    "shortName": "TDRPD",
+    "page": {
+      "slug": "truckee-donner-recreation-and-park-district-board",
+      "name": "Truckee-Donner Recreation and Park District Board"
+    },
+    "aliases": [
+      "Truckee-Donner Recreation and Park District",
+      "Truckee Donner Recreation and Park District",
+      "Truckee-Donner Recreation & Park District",
+      "Truckee Donner Rec and Park",
+      "TDRPD Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.tdrpd.org/",
+    "sourceUrl": "https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2",
+    "coverageNote": "The district does not post meeting recordings, and its Agenda Center lists no minutes; approved minutes appear in the next meeting's packet.",
+    "participation": {
+      "email": "board@tdrpd.org",
+      "instructions": "Board meetings are open to the public. Questions or comments can be emailed to the Board of Directors.",
+      "sourceUrl": "https://www.tdrpd.org/154/Board-of-Directors",
+      "checkedOn": "2026-11-13"
+    },
+    "discovery": {
+      "type": "civicplus",
+      "indexUrl": "https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2",
+      "bodyPattern": "^(?!.*(?:Committee|\\bFCA\\b)).*(?:\\bBoard\\b|\\bWorkshop\\b|\\bSpecial Meeting\\b)",
+      "title": "Truckee-Donner Recreation and Park District Board of Directors Meeting",
+      "qualifySpecial": true
+    },
+    "agenda": {
+      "layouts": [
+        "tdrpd-board"
+      ]
+    },
+    "staffReports": {
+      "rule": "cover-sheet-packet"
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's Board of Directors page (checked 2026-11-13): \"4th Thursday of every month, 6:00 pm, Community Recreation Center\". Every 2026 regular meeting through October fell on the fourth Thursday, but the September and October agendas start at 4:00 PM, so no time is set. November and December are left out: the January 22, 2026 agenda approves minutes of a December 11, 2025 regular meeting (the second Thursday), and November's fourth Thursday is Thanksgiving.",
+      "rules": [
+        {
+          "ordinal": 4,
+          "weekday": "thursday",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "timezone": "America/Los_Angeles",
+          "label": "Truckee-Donner Recreation and Park District Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "other",
     "name": "Other",
     "shortName": "Other",

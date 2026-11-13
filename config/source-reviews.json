@@ -1423,6 +1423,72 @@
         "note": "Added at the maintainer's request. The dashboard and its endpoint answered on 2026-11-13; live captures of the September 16 and October 21, 2026 agendas read 18 and 17 items, and all thirteen 2026 agendas posted so far parse with the layout. The November 18 agenda was not posted yet."
       },
       "implementation": "A new `evogov-meetings` discovery type (tahoe_ingest/file_discovery.py) reads the dashboard's calendar years and each year's event rows. The `northstar-csd-board` layout reads numbered items under capitalized headings, with lettered sub-items."
+    },
+    {
+      "id": "SR-052",
+      "agencyId": "tdrpd",
+      "name": "Truckee-Donner Recreation and Park District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The district (parks, trails, recreation, and Quimby park fees in Truckee) posts agendas in one CivicPlus Agenda Center category, \"Board Meetings & Agendas\", which also holds its Budget & Finance and Facility Condition Assessment committees. Regular meetings post the whole board packet as the agenda; special meetings and workshops post a one-page notice. No minutes are listed beside the agendas, and the district's YouTube channel carries promotional videos, not meetings.",
+      "nextStep": "Keep live discovery. Committee meetings are left out; add them as their own bodies if the maintainer wants them.",
+      "links": [
+        {
+          "label": "Agenda Center category",
+          "url": "https://www.tdrpd.org/AgendaCenter/Board-Meetings-Agendas-2"
+        },
+        {
+          "label": "Board of Directors page",
+          "url": "https://www.tdrpd.org/154/Board-of-Directors"
+        },
+        {
+          "label": "October 22, 2026 board packet",
+          "url": "https://www.tdrpd.org/AgendaCenter/ViewFile/Agenda/_10222026-290"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The Agenda Center answered the project's fetcher on 2026-11-13. Discovery listed 14 board meetings in 2026 (three special meetings and workshops among them, and the canceled April 23 meeting) and left out 7 committee rows. Live captures of the August 27, September 24, and October 22, 2026 packets read 27, 29, and 32 items, and the cover sheet rule mapped 36 of their items to their reports."
+      },
+      "implementation": "The existing `civicplus` discovery type now applies `bodyPattern` to each row's title link (one row per agenda URL) and takes `qualifySpecial`, read from that title. The `tdrpd-board` layout reads the numbered agenda; a new `cover-sheet-packet` staff report rule maps items to the packet's \"BOARD AGENDA ITEM COVER SHEET\" pages."
+    },
+    {
+      "id": "SR-053",
+      "agencyId": "tdpud",
+      "name": "Truckee Donner Public Utility District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The district's website (tdpud.org) has no agenda list: its \"current agenda\" link redirects to the district's CivicClerk portal, where each meeting's agenda, packet, and minutes are published. The portal's event API lists the board's meetings (\"Regular Board Meeting- First\", \"Regular Board Meeting - Third Wednesday\", \"Special Board Meeting\", \"CANCELLED ...\") beside the separate Financing Corporation's, newest first, and already holds first- and third-Wednesday placeholders for all of 2027. The district's YouTube channel carries a livestream of each 2026 board meeting.",
+      "nextStep": "Keep live discovery. Recheck the schedule when 2027 shows whether the third-Wednesday placeholders are held. The Financing Corporation is left out; add it as its own body if the maintainer wants it.",
+      "links": [
+        {
+          "label": "Board meetings page",
+          "url": "https://www.tdpud.org/board-meetings"
+        },
+        {
+          "label": "CivicClerk portal",
+          "url": "https://tdpud.portal.civicclerk.com/"
+        },
+        {
+          "label": "November 4, 2026 meeting",
+          "url": "https://tdpud.portal.civicclerk.com/event/179/overview"
+        },
+        {
+          "label": "Meeting videos (YouTube channel)",
+          "url": "https://www.youtube.com/channel/UCq_TT1lqvnHIiNkPHzaBD7Q"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The portal and its event API answered the project's fetcher on 2026-11-13. Discovery, bounded 120 days ahead, listed 14 board events from August 5, 2026 to March 3, 2027 (the canceled September 16 special meeting among them) and left out the Financing Corporation. Live captures of the September 2, October 7, and November 4 regular meetings and the October 14 special meeting read 23, 18, 17, and 10 items, and the item memo rule mapped 31 items of the three packets to their memos. Every 2026 regular meeting from February to November was on the first Wednesday at 6:00 PM."
+      },
+      "implementation": "The existing `civicclerk` discovery type reads only events in the scheduled window (60 days back, 120 ahead), because the portal lists 2027 placeholders first. The `tdpud-board` layout reads the agenda; a new `item-memo-packet` staff report rule maps items to the packet's \"AGENDA ITEM #N\" memos (the IVGID `civicclerk-packet` rule reads a different memo stamp)."
     }
   ]
 }

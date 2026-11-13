@@ -169,6 +169,66 @@ def test_truckee_item_interrupted_by_another_item_is_uncertain():
     assert found["7.1"] is None and found["7.2"] is None
 
 
+def _cover_sheet_pages(data):
+    return data["stored"][data["documents"][0]["version_id"]]
+
+
+def test_cover_sheet_report_ends_at_the_next_cover_sheet_even_one_without_a_readable_number():
+    data = load("tdrpd")
+    pages = _cover_sheet_pages(data)
+    # Older packets print some cover sheet numbers unreadably ("Item #:  .2 – AP Check Registers").
+    pages["8"] = pages["8"].replace("6.2 –", ".2 –", 1)
+    found, ctx, _ = run_rule(data)
+    assert (found["6.1"].page_start, found["6.1"].page_end) == (3, 7)  # still stops before page 8
+    assert found["6.2"] is None and ctx.skipped["tdrpd:2026-10-22:6.2"] == "no cover sheet names item 6.2"
+
+
+def test_cover_sheet_for_another_subject_or_named_twice_is_not_stored():
+    data = load("tdrpd")
+    pages = _cover_sheet_pages(data)
+    pages["8"] = pages["8"].replace("Adoption Policy #248 - Bereavement Leave and", "Approval of Snow Removal Contract and", 1)
+    pages["8"] = pages["8"].replace("Reproductive Loss Leave", "Equipment Purchase", 1)
+    pages["81"] = pages["81"].replace("9.2 –", "9.1 –", 1)  # two cover sheets now name 9.1
+    found, ctx, _ = run_rule(data)
+    assert found["6.2"] is None and ctx.skipped["tdrpd:2026-10-22:6.2"] == "cover sheet title differs from the agenda item"
+    assert found["9.1"] is None and ctx.skipped["tdrpd:2026-10-22:9.1"] == "2 cover sheets name item 9.1"
+    assert found["9.3"] is not None
+
+
+def test_cover_sheet_numbers_read_8_0_as_item_8_and_titles_run_to_the_blank_line():
+    from tahoe_ingest.staff_report_rules.cover_sheet import cover_label
+    assert cover_label("BOARD AGENDA ITEM COVER SHEET\n\nItem #:          8.0 – Financial Reports\n\nPresenter:") == ("8", "Financial Reports")
+    assert cover_label("Item #: 6.3 – Discussion / Possible Action Adopting an update to the\nDistrict Wage Schedule\n"
+                       "Presenter:    Staff") == ("6.3", "Discussion / Possible Action Adopting an update to the District Wage Schedule")
+    assert cover_label("Item #:           .2 – AP Check Registers") is None
+
+
+def _memo_pages(data):
+    return data["stored"][data["documents"][1]["version_id"]]
+
+
+def test_item_memo_dated_another_meeting_is_neither_a_start_nor_an_end():
+    data = load("tdpud")
+    pages = _memo_pages(data)
+    # An earlier meeting's memo for item 9, kept as an attachment inside item 8's memo.
+    pages["24"] = pages["26"].replace("October 7, 2026", "August 5, 2026")
+    found, _, _ = run_rule(data)
+    assert (found["8"].page_start, found["8"].page_end) == (23, 25)
+    assert (found["9"].page_start, found["9"].page_end) == (26, 41)
+    assert found["8"].evidence["meetingDate"] == "2026-10-07"
+
+
+def test_item_memo_for_another_subject_or_without_a_date_is_not_stored():
+    data = load("tdpud")
+    pages = _memo_pages(data)
+    pages["55"] = pages["55"].replace("Recruiting Services Contract for", "Snow Removal Equipment Purchase for", 1)
+    pages["58"] = pages["58"].replace("MEETING DATE: October 7, 2026", "MEETING DATE:")
+    found, ctx, _ = run_rule(data)
+    assert found["12"] is None and ctx.skipped["tdpud:178:12"] == "memo subject differs from the agenda item"
+    assert found["13"] is None and ctx.skipped["tdpud:178:13"] == "memo prints no meeting date"
+    assert (found["10"].page_start, found["10"].page_end) == (42, 44)  # the undated header still ends item 12's run
+
+
 def test_lahontan_report_for_another_meeting_is_not_stored():
     data = load("lahontan-board")
     url = next(u for u in data["downloads"] if u.endswith("item6.pdf"))

@@ -22,9 +22,19 @@ PDF and Word links in the event's description are its documents (agenda, then pa
 An event titled "CANCELLED - ..." is a canceled meeting. Scheduled discovery asks for
 events from 60 days back to `horizonDays` (default 120) ahead.
 
-A file name or title with "special", "workshop", or "joint" gives that meeting its own
-`<date>-<word>` ID, so it never merges with a regular meeting on the same day. All three
-types are registered by format name in `source_discovery.TYPES`; no code here names an agency.
+`evogov-meetings`: an EvoGov site's meeting dashboard (`indexUrl`, ``.../meetingdashboard``),
+whose year headings load each calendar's meetings from the site's ``/meetings/year_events/``
+endpoint, one table row per event. An event whose name matches `bodyPattern` is a meeting,
+its source ID the event ID and its official URL the event's page. The row's sort key is the
+start in UTC, read as a local date and time. Files under the row's "Agendas" heading are
+agendas, a "packet" under "Attachments" is the packet, and a file under "Minutes" is the
+minutes; other attachments are left out. A name ending "- Cancelled" is a canceled meeting.
+Scheduled discovery reads the listed years that meet the window of 60 days back to 120 ahead.
+
+In the first three types, a file name or title with "special", "workshop", or "joint" gives that
+meeting its own `<date>-<word>` ID, so it never merges with a regular meeting on the same day.
+All four types are registered by format name in `source_discovery.TYPES`; no code here names
+an agency.
 """
 from __future__ import annotations
 
@@ -38,6 +48,7 @@ from zoneinfo import ZoneInfo
 
 from .discovery import anchors
 from .html_dom import document
+from .records import listing_minutes
 from .source_discovery import _QUALIFIER, agenda_then_packet, candidate, date_in
 
 FILE_TYPES = ('.pdf', '.docx')
@@ -250,3 +261,94 @@ def tribe_events_range(agency: str, config: dict, since: date, until: date, fetc
     """Every matching event dated since..until (the API takes a date range)."""
     rows = _event_rows(agency, config, _events(config, since, until, fetch))
     return sorted(rows, key=lambda r: r['date'], reverse=True), min((r['date'] for r in rows), default=None)
+
+
+# ---------------------------------------------------------------- evogov-meetings
+
+EVOGOV_YEAR_EVENTS = '/meetings/year_events/'
+_EVOGOV_HEADING = re.compile(r'<div class="event_details_heading">(.*?)</div>', re.S)
+_EVOGOV_CANCELED = re.compile(r'\s*[–—-]\s*Cancell?ed\s*$', re.I)
+_FILE_SIZE = re.compile(r'\s*\(\d[\d.,]*\s*[KMG]?B\)\s*$', re.I)
+
+
+def evogov_calendars(markup: str) -> dict[str, list[int]]:
+    """Calendar ID -> the years the dashboard lists for it, read from its year headings."""
+    found: dict[str, list[int]] = {}
+    for node in document(markup).find():
+        calendar, year = node.attrs.get('data-calendar-id', ''), node.attrs.get('data-year', '')
+        if calendar.isdigit() and year.isdigit():
+            found.setdefault(calendar, []).append(int(year))
+    if not found:
+        raise ValueError('the EvoGov meeting dashboard lists no calendar years')
+    return found
+
+
+def _evogov_files(agency: str, cell: str, base: str) -> tuple[list[dict], dict]:
+    """A row's documents (agendas, then the packet) and minutes link, by the heading each file is listed under."""
+    files, minutes = [], {}
+    parts = _EVOGOV_HEADING.split(cell)
+    for heading, section in zip(parts[1::2], parts[2::2]):
+        kind = ' '.join(html.unescape(re.sub(r'<[^>]+>', ' ', heading)).split()).lower()
+        for url, label in anchors(section, base):
+            label = _FILE_SIZE.sub('', ' '.join(label.split()))
+            if urllib.parse.urlparse(url).scheme != 'https':
+                continue
+            if kind == 'agendas' or (kind == 'attachments' and re.search(r'\bpacket\b', label, re.I)):
+                files.append((url, label))
+            elif kind == 'minutes':
+                minutes = listing_minutes(url, label)
+    return _documents(agency, files), minutes
+
+
+def evogov_rows(agency: str, config: dict, markup: str, base: str) -> list[dict]:
+    """Meetings in one ``year_events`` answer: table rows of the start, the linked event name, and its files."""
+    body = re.compile(config.get('bodyPattern', '.'), re.I)
+    local = ZoneInfo('America/Los_Angeles')
+    rows = []
+    for tr in re.findall(r'<tr\b.*?</tr>', markup, re.S):
+        cells = re.findall(r'<td\b(.*?)</td>', tr, re.S)
+        key = re.search(r'data-evo_sort_key="(\d{14})"', cells[0]) if cells else None
+        link = re.search(r'<a[^>]*class="evo_meeting_name_link"[^>]*href="([^"]*/events/(\d+)/?)"[^>]*>(.*?)</a>', tr, re.S)
+        if not key or not link:
+            continue
+        name = ' '.join(html.unescape(re.sub(r'<[^>]+>', ' ', link[3])).split())
+        if not body.search(name):
+            continue
+        start = datetime.strptime(key[1], '%Y%m%d%H%M%S').replace(tzinfo=ZoneInfo('UTC')).astimezone(local)
+        docs, minutes = _evogov_files(agency, cells[2] if len(cells) > 2 else '', base)
+        title = config.get('title') or _EVOGOV_CANCELED.sub('', name)
+        row = candidate(agency, link[2], title, start.date().isoformat(), urllib.parse.urljoin(base, link[1]), docs, name)
+        row['start_time'] = start.strftime('%H:%M')
+        row.update(minutes)
+        rows.append(row)
+    return rows
+
+
+def _evogov_years(agency: str, config: dict, years: set[int], fetch) -> tuple[list[dict], str | None]:
+    """Matching meetings of the given years (those the dashboard lists), newest first, and the earliest date read."""
+    base = config['indexUrl']
+    rows = []
+    for calendar, listed in evogov_calendars(fetch(base)).items():
+        for year in sorted(years & set(listed)):
+            query = urllib.parse.urlencode({'calendar_id': calendar, 'year': year})
+            data = _json(fetch, urllib.parse.urljoin(base, EVOGOV_YEAR_EVENTS) + '?' + query)
+            rows += evogov_rows(agency, config, (data.get('html') if isinstance(data, dict) else None) or '', base)
+    unique = {}
+    for row in rows:
+        unique.setdefault(row['source_id'], row)
+    rows = sorted(unique.values(), key=lambda r: (r['date'], r['source_id']), reverse=True)
+    return rows, min((r['date'] for r in rows), default=None)
+
+
+def evogov_meetings(agency: str, config: dict, limit: int | None, fetch) -> list[dict]:
+    """Matching meetings from 60 days back to 120 ahead, newest first."""
+    today = _today()
+    since, until = today - timedelta(days=EVENTS_BACK_DAYS), today + timedelta(days=EVENTS_AHEAD_DAYS)
+    rows, _ = _evogov_years(agency, config, set(range(since.year, until.year + 1)), fetch)
+    return [r for r in rows if since.isoformat() <= r['date'] <= until.isoformat()][:limit]
+
+
+def evogov_meetings_range(agency: str, config: dict, since: date, until: date, fetch) -> tuple[list[dict], str | None]:
+    """Every matching meeting dated since..until, reading each listed year in the range."""
+    rows, earliest = _evogov_years(agency, config, set(range(since.year, until.year + 1)), fetch)
+    return [r for r in rows if since.isoformat() <= r['date'] <= until.isoformat()], earliest

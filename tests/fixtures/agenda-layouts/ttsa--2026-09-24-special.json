@@ -1,0 +1,33 @@
+{
+ "agency": "ttsa",
+ "source": "https://ttsa.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=7710,plainText=false)",
+ "note": "Special meeting workshop agenda: Roman-numbered items with descriptions; the contact lines are omitted",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "TAHOE-TRUCKEE SANITATION AGENCY                                               Board Directors\n                                                                                                                    Scott Wilson - President\n                                                 Mailing: P.O. Box 669, Truckee, CA 96160                           Albert Clement - Vice President\n                                            Physical: 13720 Butterfield Drive, Truckee, CA 96161                    Dale Cox\n                                               Phone: (530) 587-2525 • Web: www.ttsa.ca.gov                         Dan Wilkins\n                                                                                                                    Catherine Hansford\n                                                                                                                    General Manager\n                                                                                                                    Jason Hays\n\n\n\n\n                              BOARD OF DIRECTORS SPECIAL MEETING\n                       BOARD WORKSHOP: CLEAN WATER REVITALIZATION PROJECT\n                                      NOTICE AND AGENDA\n\n\nDate: September 24, 2026\nTime: 9:00 AM\nPlace: Board Room, Tahoe-Truckee Sanitation Agency, 13720 Butterfield Drive, Truckee, California\n The Board will accept public comments on agenda discussion items only until the close of the public comment period.\n 669, Truckee, CA 96160. The final mail collection will be on Monday, prior to the meeting, at 3:00 p.m.\nMembers of the public will have the opportunity to directly address the Agency Board of Directors concerning any item\nlisted on the agenda below before or during consideration of that item. To better accommodate members of the public\nand staff, some Agenda items may be considered in a different order from those listed below.\n\nI.   Call to Order, Roll Call, and Pledge of Allegiance\n\nII. Public Comment Discussion items only; no action to be taken. Any person may address the Board at this time upon any\n     subject listed on the Agenda that is within the jurisdiction of the Tahoe-Truckee Sanitation Agency. Any matter that requires action\n     may be referred to staff for a report and action at a subsequent Board meeting. Please note that there is a five (5) minute limit\n     per person. In addition to or in lieu of public comment, any person may submit a written statement concerning Agency business\n     to be included in the record of proceedings and filed with the meeting minutes. Any such statement must be provided to the Board\n     Clerk at the meeting.\n\nIII. Discussion and Review of the Clean Water Revitalization Project Preliminary Design Report\n     T-TSA Staff and Agency consultant Carollo Engineers will provide T-TSA Board members with a review of the\n     Preliminary Design Report and associated recommendations for the design of the Clean Water Revitalization\n     Project. The presentation will include key preliminary design phase decisions, schedule review, project preliminary\n     cost estimate for construction, project funding strategy, and project delivery methods.\n     The Board may ask questions, although they will not take any formal action on matters discussed.\n\nIV. Adjournment\n\n\n     The agenda is available for review at the T-TSA Administrative Office and the Agency website.\n     Emailed and Posted: September 17, 2026.\n\n\n     Roshelle Chavez\n     Executive Assistant/Board Clerk\n\n     In compliance with the Americans with Disabilities Act, if you are a disabled person and need a disability-related modification\n     or accommodation to participate in this meeting, please email Roshelle Chavez or call 530-587-2525. Requests must be made\n     as early as possible and at least one full business day before the start of the meeting.\n     Documents and materials relating to an open session agenda item provided to the T-TSA Board of Directors less than 72 hours\n     prior to a regular meeting will be available for public inspection and copying at the Agency’s office, located at 13720 Butterfield\n     Drive, Truckee, CA.\n\n\n\n\n              NORTH TAHOE • TAHOE CITY • ALPINE SPRINGS • OLYMPIC VALLEY • TRUCKEE"
+  }
+ ],
+ "expected": [
+  [
+   "I",
+   null,
+   "Call to Order, Roll Call, and Pledge of Allegiance"
+  ],
+  [
+   "II",
+   null,
+   "Public Comment"
+  ],
+  [
+   "III",
+   null,
+   "Discussion and Review of the Clean Water Revitalization Project Preliminary Design Report"
+  ],
+  [
+   "IV",
+   null,
+   "Adjournment"
+  ]
+ ]
+}

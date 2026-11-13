@@ -1361,6 +1361,68 @@
         "note": "The site answered the project's fetcher on 2026-11-13 (curl from the same sandbox got HTTP 403 from its Cloudflare edge). Live discovery found all 11 board meetings of 2026 (10 regular, the January 15 special); all 11 agenda pages were captured with 5 to 50 items each, and the October 27 meeting's linked reports mapped 12 items (seven action items and five status reports). The meetings page gives the schedule: the last Tuesday at 8:30 a.m., in the third week in November and December 2026. The site mentions no livestream or recording."
       },
       "implementation": "The `meeting-post-feed` type reads the post type's WordPress REST collection (100 posts) as well as an RSS feed; each post's page is the meeting's one HTML document. A new structured HTML reader (`tahoe_ingest/html_ordered_list.py`) gives the list's parts and nested items with their printed labels, with no agenda layout. A new staff report rule, `ordered-list-item-reports`, maps an item to the PDF its entry links when the PDF is a board report naming the item's exhibit number and the meeting date."
+    },
+    {
+      "id": "SR-050",
+      "agencyId": "ttsa",
+      "name": "Tahoe-Truckee Sanitation Agency Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The regional wastewater agency for North Tahoe and Truckee moved its website to CivicPlus; its old Drupal agenda paths (ttsa.ca.gov/sites/g/files/...) stop in April 2024. The Board of Directors page links a CivicClerk portal for agendas, packets, and minutes, and a YouTube channel for recordings. The portal's calendar also holds Finance Committee meetings, office holidays, and placeholder board meetings through May 2027.",
+      "nextStep": "Keep live discovery. Staff memos in the packet name their item (\"Item: VI.1.\"), so a packet rule could attach them; none reads them yet. The Finance Committee is not followed.",
+      "links": [
+        {
+          "label": "Board of Directors page",
+          "url": "https://www.ttsa.ca.gov/1204/Board-of-Directors"
+        },
+        {
+          "label": "CivicClerk portal",
+          "url": "https://ttsa.portal.civicclerk.com/"
+        },
+        {
+          "label": "October 21, 2026 agenda",
+          "url": "https://ttsa.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=7730,plainText=false)"
+        },
+        {
+          "label": "Board meeting videos",
+          "url": "https://www.youtube.com/@TTSABoardVideos"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "Added at the maintainer's request. The portal's event API answered on 2026-11-13; live captures of the September 16, September 24 (special workshop), October 21, and November 18, 2026 agendas read 10, 4, 13, and 14 items. Agenda layouts changed during 2026 (mixed-case sections until July, capitals since August, and two special meeting formats); the fixtures cover each. The YouTube channel's titles carry the meeting date in most cases; the event list links several recordings directly."
+      },
+      "implementation": "The existing `civicclerk` type, now windowed for scheduled runs (the unwindowed list starts at the portal's furthest-future placeholder) and taking a YouTube `externalMediaUrl` as the recording. Layouts `ttsa-board` (Roman-numbered section lines as headings, numbering restarting in each) and `ttsa-special`. The YouTube channel is in meeting-records.json."
+    },
+    {
+      "id": "SR-051",
+      "agencyId": "northstar-csd",
+      "name": "Northstar Community Services District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The district (fire, water, sewer, roads, and trails for Northstar) publishes on an EvoGov site. Its static \"Board Meeting Agendas\" page stops at May 20, 2026; the meeting dashboard loads each year's meetings, with agenda and packet links, from the site's /meetings/year_events/ endpoint. ncsd.ca.gov is the Nipomo Community Services District, not this one.",
+      "nextStep": "Keep live discovery. The packet opens each item with an \"AGENDA ITEM #5\" cover page, so a packet rule could attach staff reports; none reads them yet. No meeting recordings were found on the district's site.",
+      "links": [
+        {
+          "label": "Meeting dashboard",
+          "url": "https://www.northstarcsd.org/meetingdashboard"
+        },
+        {
+          "label": "October 21, 2026 meeting",
+          "url": "https://www.northstarcsd.org/events/98334/"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "Added at the maintainer's request. The dashboard and its endpoint answered on 2026-11-13; live captures of the September 16 and October 21, 2026 agendas read 18 and 17 items, and all thirteen 2026 agendas posted so far parse with the layout. The November 18 agenda was not posted yet."
+      },
+      "implementation": "A new `evogov-meetings` discovery type (tahoe_ingest/file_discovery.py) reads the dashboard's calendar years and each year's event rows. The `northstar-csd-board` layout reads numbered items under capitalized headings, with lettered sub-items."
     }
   ]
 }

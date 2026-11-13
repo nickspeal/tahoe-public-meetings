@@ -565,7 +565,7 @@ class Parser:
                     started = True
                 else:
                     if self.is_heading(stripped):
-                        heading = section_name(stripped if self.headings.search(stripped) else _without_note(stripped))
+                        heading = self.heading_name(stripped)  # named as after the first item, with titleCleanup
                     continue
             if self.end.search(stripped):
                 if layout.end_item:

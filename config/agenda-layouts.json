@@ -126,6 +126,19 @@
       "wrap": "lowercase",
       "maxTitleLines": 2
     },
+    "northstar-csd-board": {
+      "label": "Northstar CSD Board agenda",
+      "cover": ["NORTHSTAR COMMUNITY SERVICES DISTRICT", "NOTICE OF (?:THE|A)\\b", "OF THE BOARD OF DIRECTORS"],
+      "coverPages": 1,
+      "levels": ["NUM", "LOWER"],
+      "firstPages": 4,
+      "start": "^CALL TO ORDER",
+      "skip": "^NORTHSTAR COMMUNITY SERVICES DISTRICT •",
+      "headings": ["@CAPS_HEADING", "^[A-Z][A-Z0-9 &/,'’()\\-–]{3,}\\.$"],
+      "maxTitleLines": 4,
+      "minItems": 2,
+      "indentTolerance": 8
+    },
     "ntcd-board": {
       "label": "NTCD agenda",
       "cover": ["Board Meeting Agenda", "Agenda Item"],
@@ -373,6 +386,30 @@
       "stop": "^\\d+-",
       "maxTitleLines": 2,
       "minItems": 2
+    },
+    "ttsa-board": {
+      "label": "T-TSA Board agenda",
+      "cover": ["(?i)Tahoe-Truckee Sanitation Agency", "BOARD OF DIRECTORS MEETING", "NOTICE AND AGENDA"],
+      "coverPages": 1,
+      "levels": ["NUM", "LOWER"],
+      "firstPages": 4,
+      "start": "(?i)^I\\.\\s+Call to Order",
+      "skip": "^Page \\d+ of \\d+$|^[A-Z][a-z]+ \\d{1,2}, \\d{4}$|^T-TSA Board Meeting Agenda$|^T-TSA Meeting Agenda\\s+Page \\d+ of \\d+",
+      "headings": "^(?:[IVX]{1,5}|I?l{1,3}I?)\\.\\s+[A-Z]",
+      "end": "(?i)^(?:[IVX]{1,5}\\.\\s+)?Adjourn",
+      "titleCleanup": [["^(?:[IVX]{1,5}|I?l{1,3}I?)\\.\\s+", ""]],
+      "sectionRestart": true,
+      "maxTitleLines": 4
+    },
+    "ttsa-special": {
+      "label": "T-TSA Board special meeting agenda",
+      "cover": ["(?i)Tahoe-Truckee Sanitation Agency", "BOARD OF DIRECTORS\\s+SPECIAL MEETING", "NOTICE AND AGENDA"],
+      "coverPages": 1,
+      "levels": ["ROMAN_LEVEL", "NUM"],
+      "firstPages": 2,
+      "start": "^Place:",
+      "wrap": "none",
+      "titleCleanup": [["^(Public Comment)\\b.*$", "\\1"]]
     },
     "ttd": {
       "label": "TTD agenda",

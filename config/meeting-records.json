@@ -20,7 +20,8 @@
     {"agency": "stpud", "channelId": "UCCTZ5fNgs42NvLIseQd7OIw", "include": "\\bboard meeting\\b", "exclude": "\\bforum\\b"},
     {"agency": "california-fish-game", "channelId": "UCTrLyrErKM3UNqI-3gBWLSg", "include": "\\bcommittee\\b"},
     {"agency": "ltusd", "channelId": "UCHZeyuZYC9ZXKyTO2k-sJ5Q", "include": "\\bboard meeting\\b", "exclude": "\\bclosed session\\b"},
-    {"agency": "ttusd", "playlistId": "PLr_DSJ6rtN1ayEf4SxdQhXVIim2QvY6Pe", "include": "^(?:tahoe truckee unified school district|ttusd) board\\b"}
+    {"agency": "ttusd", "playlistId": "PLr_DSJ6rtN1ayEf4SxdQhXVIim2QvY6Pe", "include": "^(?:tahoe truckee unified school district|ttusd) board\\b"},
+    {"agency": "ttsa", "channelId": "UCqCMhtjlwd1KDBdbWLlMm7A", "include": "\\bboard\\b"}
   ],
   "laserfiche": [
     {"agency": "truckee", "repo": "r-6a91ddbc", "folderId": 59909164}

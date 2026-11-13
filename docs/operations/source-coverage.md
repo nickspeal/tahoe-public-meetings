@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **58 entries**. **51 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **43** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **60 entries**. **53 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **45** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -20,12 +20,14 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | Registry ID | Type | Index | Body filter | Agenda layouts |
 | --- | --- | --- | --- | --- |
 | `ivgid` | `civicclerk` | [ivgid.portal.civicclerk.com](https://ivgid.portal.civicclerk.com/) | `Trustees` | `ivgid-board` |
+| `ttsa` | `civicclerk` | [ttsa.portal.civicclerk.com](https://ttsa.portal.civicclerk.com/) | `Board of Directors` | `ttsa-board`, `ttsa-special` |
 | `ctc` | `dated-page-links` | [tahoe.ca.gov](https://tahoe.ca.gov/board-meetings-agendas/) | every row | `ctc-board` |
 | `truckee-fire` | `dated-paragraphs` | [www.truckeefire.org](https://www.truckeefire.org/board-meeting-archive) | every row | `truckee-fire-board` |
 | `california-state-parks` | `dated-sections` | [ohv.parks.ca.gov](https://ohv.parks.ca.gov/?page_id=27160) | `Commission Meeting` | `ohmvr-commission`, `state-park-commission` |
 | `california-fish-game` | `dated-table` | [fgc.ca.gov](https://fgc.ca.gov/Meetings/2026) | `Commission\|Committee` | `fish-game-commission` |
 | `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | `lahontan-board` |
 | `ndep` | `dated-table` | [ndep.nv.gov](https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/) | `.` | `ndep-board` |
+| `northstar-csd` | `evogov-meetings` | [www.northstarcsd.org](https://www.northstarcsd.org/meetingdashboard) | `\b(?:Board\|Special Meeting\|Workshop)\b` | `northstar-csd-board` |
 | `slttid` | `file-links` | [southtahoetourism.com](https://southtahoetourism.com/agendas%2Fminutes%2Fnotices) | `^TID (?:Agenda\|Special meeting)\b` | `slttid-special`, `slttid-board` |
 | `tfhd` | `file-links` | [www.tfhd.com](https://www.tfhd.com/about/minutes-agendas/) | `^(?:Regular\|Special) Meeting of the Board of Directors\b(?!.*\bMinutes?$)` | `tfhd-board` |
 | `douglas-commissioners` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Board of County Commissioners` | `douglas-county-board` |
@@ -74,6 +76,8 @@ Notes on particular sources:
 - Legistar (El Dorado, Washoe): only meetings the county has made public appear (unpublished future rows are "not viewable"). Cancellations are read from the calendar.
 - Link indexes (`south-shore-tma`, `stpud`, `placer-transportation`, `truckee-north-shore-tma`, `trcd`, `ntcd`): cancelled meetings and meetings without a posted agenda are not discovered. NTCD's index is a published Google Sheet.
 - `ntpud`: the category RSS feed, filtered to the Board of Directors. Special meetings get their own IDs.
+- `ttsa`: the Tahoe-Truckee Sanitation Agency's CivicClerk portal, linked from its Board of Directors page. The portal also lists Finance Committee meetings, office holidays, and placeholder board meetings a year ahead, so scheduled discovery asks the event API for its 60-days-back, 120-days-ahead window. Several events link their YouTube recording, which is used directly; the agency's YouTube channel (in `config/meeting-records.json`) covers the rest when its titles carry the date. The 2026 agendas changed format twice; `ttsa-board` reads Roman-numbered section lines as headings (one prints "Ill." for III) and `ttsa-special` the special meeting workshops.
+- `northstar-csd`: the Northstar Community Services District's EvoGov meeting dashboard (`evogov-meetings`). The dashboard's year headings load each year's rows from the site's `/meetings/year_events/` endpoint; the static "Board Meeting Agendas" page stopped in May 2026. Green-waste pickup days on the same calendar are left out by name. `ncsd.ca.gov` is the Nipomo Community Services District, not this one.
 - `ndep`: Board for Financing Water Projects meetings in a dated table (two-digit years). Dates are listed before agendas; placeholders more than 120 days ahead are ignored.
 - `truckee-tahoe-airport`: the district's calendar (`/administration/calendar`) lists upcoming board meetings; each entry opens an event page whose "Meeting Files" link is the meeting's file list (`/board_meetings/<n>/attachments`), from which the agenda is read. The file list's number stays the source ID, so meetings stored from the former meetings page keep their IDs. That page (`/administration/board/meetings`, which listed past meetings with minutes and recording links) has returned 404 since at least October 27, 2026, as have the site's other content pages ("Board of Directors", "Staff", "Airport Guide"); the home page, news, calendar, and file lists still answered on November 13, 2026. The calendar shows only meetings still to come, so a meeting and its agenda are collected while it is upcoming; it drops off the listing once it has passed. If the meetings page returns, its layout can be read again by dropping `eventLabel` and `filesLabel`. Recordings come from the Tahoe Truckee Media YouTube playlist (`config/meeting-records.json`).
 - `lahontan-board`, `california-fish-game`: annual dated tables (`indexUrlTemplate` with `{year}`).
@@ -175,9 +179,11 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `ctc` | published, not attached yet | Staff recommendations are listed on a separate meeting documents page, not beside the agenda items, and no rule reads that page yet. |
 | `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |
 | `ltva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
+| `northstar-csd` | published, not attached yet | The complete board packet opens each item with an "AGENDA ITEM #5" cover page; no rule reads it yet. |
 | `tdva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
 | `tfhd` | published, not attached yet | The agenda packet is a 200-page meeting book that opens each item's materials with an agenda item cover sheet; no rule reads it yet. |
 | `truckee-fire` | published, not attached yet | Staff reports are attachments in the single agenda packet, headed by their agenda title without an item number; no rule reads them yet. |
+| `ttsa` | published, not attached yet | Staff memos in the board packet name their agenda item ("Item: VI.1."); no rule reads them yet. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

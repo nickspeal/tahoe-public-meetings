@@ -1,0 +1,107 @@
+{
+ "agency": "ttsa",
+ "source": "https://ttsa.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=3636,plainText=false)",
+ "note": "Earlier 2026 format: mixed-case Roman sections and lettered department reports; the teleconference and contact lines are omitted",
+ "pages": [
+  {
+   "page_number": 1,
+   "text": "TAHOE-TRUCKEE SANITATION AGENCY                                            Directors\n                                                                                                           Scott Wilson, President\n                                           Mailing: P.O. Box 669, Truckee, CA 96160                        Bert Clement, Vice President\n                                      Physical: 13720 Butterfield Drive, Truckee, CA 96161                 Dale Cox\n                                        Phone: (530) 587-2525 • Web: www.ttsa.ca.gov                       Dan Wilkins\n                                                                                                           Catherine Hansford\n                                                                                                           General Manager\n                                                                                                           Jason Hays\n\n                                           BOARD OF DIRECTORS MEETING\n                                               NOTICE AND AGENDA\n\nDate: February 18, 2026\nTime: 9:00 AM\nPlace: Board Room, Tahoe-Truckee Sanitation Agency, 13720 Butterfield Drive, Truckee, California\n\n\nThe Board will accept public comments on any item on the agenda until the close of the public comment period. These comments\nfinal mail collection before the meeting will be the Monday before the meeting at 3:00 p.m.). Members of the public will have the\nopportunity to directly address the Agency Board of Directors concerning any item listed on the Agenda below before or during\nconsideration of that item. To better accommodate members of the public and staff, some Agenda items may be considered in an\norder different from those listed below.\n\n\nI.     Call to Order, Roll Call, and Pledge of Allegiance\n       At this time, please silence phones and other electronic devices so as not to disrupt the business of the\n       meeting.\nII.    Public Comment\n       This time is reserved for members of the public to address the Board on items not listed on the agenda.\n       Speakers must state their name for the record and are limited to five (5) minutes. The Board cannot take\n       action on non-agenda items but may acknowledge comments, provide brief responses, refer matters to staff,\n       or schedule them for future consideration. Written statements may be submitted to the Board Clerk for\n       inclusion in the official record.\nIII.   Review and Adopt Agenda\n       1.    Review and Approval to Adopt the Agenda.\nIV.    Professional Achievements, Awards, Anniversaries, and Staff Acknowledgments\n       1.    Professional Achievements, Anniversaries, and Promotions.\n\nV.     Consent Agenda\n       The Consent Agenda consists of routine items for which Board approval can be taken with a single motion\n       and vote. A Board Member may request that any item be placed on the Regular Agenda for separate\n       consideration.\n       1.    Review and Approval of the Regular Board Meeting Minutes from December 17, 2025.\n       2.    Ratification of the Approval of the General Fund Warrants paid in December 2025 and January 2026.\n\nVI.    Regular Agenda\n       1.    Informational Update on the Agency Bond Issuance.\n       2.    Information and Discussion on the Agency Quarterly Financial Plan Update.\n       3.    Approval of the Network Upgrades Project Engineering Design Contract\n       4.    Information and Discussion on Capital Improvement Plan\n       5.    Placer County LAFCO Commission \"Call for Nominations\" to Fill One Regular Special District\n             Representative Seat for the 2026-2030 Term."
+  },
+  {
+   "page_number": 2,
+   "text": "6.     Department Reports: Informational Updates for the Board of Directors\n              a.    Operations Department Report\n              b.    Maintenance Department Report\n              c.    Technical Services Department Report\n              d.    Administration Department Report\n       7.     General Manager Report: Informational Updates for the Board of Directors.\n\nVII.   Board of Directors Comment\n       1.     Board of Directors Comment.\n\nVIII. Closed Session\n       1.     Closed Session for (a) Public Employee Performance Evaluation of the General Manager (Government\n              Code §54954.5).\n       2.     Report from Closed Session.\n\nIX.    Adjournment\n\n\n                                                Posted and Mailed: February 12, 2026.\n\n\n                                                Roshelle Chavez\n                                                Executive Assistant/Board Clerk\n\nIn compliance with the Americans with Disabilities Act, if you are a disabled person and need a disability-related modification or\naccommodation to participate in this meeting, please email Roshelle Chavez or call 530-587-2525. Requests must be made as early\nas possible and at least one full business day before the start of the meeting.\n\nDocuments and materials relating to an open session agenda item provided to the T-TSA Board of Directors less than 72 hours prior to\na regular meeting will be available for public inspection and copying at the Agency’s office, located at 13720 Butterfield Drive, Truckee,\nCA."
+  }
+ ],
+ "expected": [
+  [
+   "1",
+   "Review and Adopt Agenda",
+   "Review and Approval to Adopt the Agenda."
+  ],
+  [
+   "1",
+   "Professional Achievements, Awards, Anniversaries, and Staff Acknowledgments",
+   "Professional Achievements, Anniversaries, and Promotions."
+  ],
+  [
+   "1",
+   "Consent Agenda",
+   "Review and Approval of the Regular Board Meeting Minutes from December 17, 2025."
+  ],
+  [
+   "2",
+   "Consent Agenda",
+   "Ratification of the Approval of the General Fund Warrants paid in December 2025 and January 2026."
+  ],
+  [
+   "1",
+   "Regular Agenda",
+   "Informational Update on the Agency Bond Issuance."
+  ],
+  [
+   "2",
+   "Regular Agenda",
+   "Information and Discussion on the Agency Quarterly Financial Plan Update."
+  ],
+  [
+   "3",
+   "Regular Agenda",
+   "Approval of the Network Upgrades Project Engineering Design Contract"
+  ],
+  [
+   "4",
+   "Regular Agenda",
+   "Information and Discussion on Capital Improvement Plan"
+  ],
+  [
+   "5",
+   "Regular Agenda",
+   "Placer County LAFCO Commission \"Call for Nominations\" to Fill One Regular Special District Representative Seat for the 2026-2030 Term."
+  ],
+  [
+   "6.a",
+   "Department Reports: Informational Updates for the Board of Directors",
+   "Operations Department Report"
+  ],
+  [
+   "6.b",
+   "Department Reports: Informational Updates for the Board of Directors",
+   "Maintenance Department Report"
+  ],
+  [
+   "6.c",
+   "Department Reports: Informational Updates for the Board of Directors",
+   "Technical Services Department Report"
+  ],
+  [
+   "6.d",
+   "Department Reports: Informational Updates for the Board of Directors",
+   "Administration Department Report"
+  ],
+  [
+   "7",
+   "Regular Agenda",
+   "General Manager Report: Informational Updates for the Board of Directors."
+  ],
+  [
+   "1",
+   "Board of Directors Comment",
+   "Board of Directors Comment."
+  ],
+  [
+   "1",
+   "Closed Session",
+   "Closed Session for (a) Public Employee Performance Evaluation of the General Manager (Government Code §54954.5)."
+  ],
+  [
+   "2",
+   "Closed Session",
+   "Report from Closed Session."
+  ],
+  [
+   null,
+   null,
+   "Adjournment"
+  ]
+ ]
+}

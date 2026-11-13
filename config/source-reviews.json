@@ -1264,6 +1264,36 @@
         "note": "The Agenda Center answered the project's fetcher on 2026-11-13. Discovery listed 14 board meetings in 2026 (three special meetings and workshops among them, and the canceled April 23 meeting) and left out 7 committee rows. Live captures of the August 27, September 24, and October 22, 2026 packets read 27, 29, and 32 items, and the cover sheet rule mapped 36 of their items to their reports."
       },
       "implementation": "The existing `civicplus` discovery type now applies `bodyPattern` to each row's title link (one row per agenda URL) and takes `qualifySpecial`, read from that title. The `tdrpd-board` layout reads the numbered agenda; a new `cover-sheet-packet` staff report rule maps items to the packet's \"BOARD AGENDA ITEM COVER SHEET\" pages."
+    },
+    {
+      "id": "SR-047",
+      "agencyId": "tdpud",
+      "name": "Truckee Donner Public Utility District Board of Directors",
+      "status": "deferred",
+      "group": "Added meeting body",
+      "flags": [],
+      "owner": "Maintainer",
+      "issue": "The district's website (tdpud.org) has no agenda list: its \"current agenda\" link redirects to the district's CivicClerk portal (tdpud.portal.civicclerk.com), where agendas, packets, and minutes are published. That portal and its public event API (tdpud.api.civicclerk.com) could not be reached from the sandbox where this entry was added (the sandbox's network proxy refused both hosts; this is not a block by the district), so discovery, the agenda format, and the CivicClerk event names were not checked. The district's YouTube channel carries a livestream of each 2026 board meeting, titled \"TDPUD Board of Directors | <date>\".",
+      "nextStep": "From a network that reaches CivicClerk, run `worker discover tdpud` with a `civicclerk` discovery block on https://tdpud.portal.civicclerk.com/ (apiUrl https://tdpud.api.civicclerk.com/v1, as for IVGID), confirm the board's event names for `bodyPattern`, then add an agenda layout and check whether the `civicclerk-packet` staff report rule fits.",
+      "links": [
+        {
+          "label": "Board meetings page",
+          "url": "https://www.tdpud.org/board-meetings"
+        },
+        {
+          "label": "Current agenda (redirects to CivicClerk)",
+          "url": "https://www.tdpud.org/current-agenda"
+        },
+        {
+          "label": "Meeting videos (YouTube channel)",
+          "url": "https://www.youtube.com/channel/UCq_TT1lqvnHIiNkPHzaBD7Q"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow; discovery pending",
+        "resolvedAt": "2026-11-13",
+        "note": "The entry carries the board's page, standing participation details from tdpud.org, a configured first-Wednesday schedule, and the YouTube channel in meeting-records.json, but no discovery block, so no meetings arrive until one is added and verified."
+      }
     }
   ]
 }

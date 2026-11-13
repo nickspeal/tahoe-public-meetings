@@ -2404,6 +2404,47 @@
     }
   },
   {
+    "id": "tdpud",
+    "name": "TDPUD — Board of Directors",
+    "shortName": "TDPUD",
+    "page": {
+      "slug": "truckee-donner-public-utility-district-board",
+      "name": "Truckee Donner Public Utility District Board"
+    },
+    "aliases": [
+      "Truckee Donner Public Utility District",
+      "Truckee Donner PUD",
+      "Truckee-Donner PUD",
+      "TDPUD Board of Directors"
+    ],
+    "follow": true,
+    "officialUrl": "https://www.tdpud.org/",
+    "sourceUrl": "https://www.tdpud.org/board-meetings",
+    "participation": {
+      "watchUrl": "https://www.youtube.com/channel/UCq_TT1lqvnHIiNkPHzaBD7Q/live",
+      "url": "https://www.tdpud.org/public-board-comments",
+      "instructions": "Attend at 11570 Donner Pass Road, Truckee, or watch the livestream on YouTube. Public comment on any matter not on the agenda is taken at the beginning of the meeting, and comment on an agenda item when the Board considers it. Written comments can be sent with the district's public comment form.",
+      "sourceUrl": "https://www.tdpud.org/board-meetings",
+      "checkedOn": "2026-11-13"
+    },
+    "staffReports": {
+      "note": "Not checked: the district's agendas are on its CivicClerk portal, which was not reachable when this entry was added."
+    },
+    "schedule": {
+      "source": "configured",
+      "note": "From the district's Board Meetings page (checked 2026-11-13): the Board meets on the first Wednesday of the month, or as approved by the Board, at 6:00 PM at 11570 Donner Pass Road. The Board of Directors page still says the first and third Wednesdays; the district's 2026 YouTube livestreams were all first Wednesdays from February to November (January's was the 21st).",
+      "rules": [
+        {
+          "ordinal": 1,
+          "weekday": "wednesday",
+          "time": "18:00",
+          "timezone": "America/Los_Angeles",
+          "label": "TDPUD Board of Directors Meeting"
+        }
+      ]
+    }
+  },
+  {
     "id": "tdrpd",
     "name": "TDRPD — Board of Directors",
     "shortName": "TDRPD",

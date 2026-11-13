@@ -386,6 +386,30 @@
       "firstPages": 12,
       "titleCleanup": ["@ACTION_TAGS"],
       "titleEnd": "(?i)\\[(?:non-action item|for possible action)\\]$"
+    },
+    "truckee-fire-board": {
+      "label": "Truckee Fire Protection District Board agenda",
+      "cover": ["Truckee Fire Protection District", "(?i)will meet in (?:Regular|Special) Session"],
+      "coverPages": 1,
+      "levels": ["NUM", "UPPER", {"level": "NUM", "item": false}],
+      "firstPages": 4,
+      "start": "^AGENDA$",
+      "skip": "^(?:Truckee Fire Protection District|Agenda, (?:Regular|Special) (?:Board )?Meeting|[A-Z][a-z]+ \\d{1,2}, \\d{4}|Page \\d+ of \\d+)$",
+      "indentTolerance": 8,
+      "suffix": "\\s+Attachments?\\s+\\d+(?:\\s*(?:[-–&,]|and)\\s*\\d+)*\\s*$",
+      "capsColon": true
+    },
+    "north-tahoe-fire-board": {
+      "label": "North Tahoe Fire Protection District Board agenda",
+      "cover": ["NORTH TAHOE FIRE PROTECTION DISTRICT", "(?m)^\\s*AGENDA\\s*$"],
+      "coverPages": 1,
+      "levels": ["NUM", {"kind": "free", "pattern": "(?:(?P<p>\\d{1,2})\\.)?(?P<v>(?<=\\.)\\d{1,2}|[a-z](?=\\.))\\.?(?=\\s)"}],
+      "firstPages": 4,
+      "start": "^AGENDA$",
+      "skip": "^Page \\d+ of \\d+$",
+      "stop": ["^Public Participation is encouraged", "^Se fomenta"],
+      "maxTitleLines": 4,
+      "titleCleanup": [["^(Public Comment)\\s*[-–]\\s+Members of the public\\b.*$", "\\1"]]
     }
   }
 }

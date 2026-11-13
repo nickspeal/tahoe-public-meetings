@@ -3,11 +3,13 @@
 `wordpress-media`: the Tahoe Douglas Visitors Authority's media library searched for
 "agenda" (the board) and "stakeholder" (the Tahoe Blue Event Center stakeholder meetings),
 with the meetings page's cancellation notice. `file-links`: the South Lake Tahoe Tourism
-Improvement District's GoDaddy page of Word and PDF downloads. `tribe-events`: the Lake
+Improvement District's GoDaddy page of Word and PDF downloads, and (read by link label) the
+Tahoe Forest Hospital District's minutes and agendas page. `tribe-events`: the Lake
 Tahoe Visitors Authority's events calendar API (the board and its marketing committee).
 """
 import datetime as real
 import json
+import re
 import urllib.parse
 from datetime import date
 from pathlib import Path
@@ -24,6 +26,7 @@ MEDIA = {"agenda": json.loads((FIXTURES / "tdva-media-agenda-2026-11-09.json").r
          "stakeholder": json.loads((FIXTURES / "tdva-media-stakeholder-2026-11-09.json").read_text())}
 TDVA_PAGE = (FIXTURES / "tdva-meetings-2026-11-09.html").read_text()
 SLTTID_PAGE = (FIXTURES / "slttid-agendas-minutes-notices-2026-11-09.html").read_text()
+TFHD_PAGE = (FIXTURES / "tfhd-minutes-agendas-2026-11-13.html").read_text()
 EVENTS = json.loads((FIXTURES / "ltva-tribe-events-2026.json").read_text())
 TDVA_UPLOADS = "https://tahoedouglasva.org/wp-content/uploads/"
 
@@ -122,6 +125,32 @@ def test_download_links_on_a_page_become_meetings_and_word_files_qualify():
     every = discover_configured("slttid", agency("slttid")["discovery"], limit=None, fetch=lambda u: SLTTID_PAGE)
     names = [d["title"] for r in every for d in r["documents"]]
     assert not any("Minutes" in n or "SLTLA" in n or "Joint" in n or "Board" in n for n in names)  # minutes and other bodies stay out
+
+
+def test_link_labels_name_the_meeting_when_file_names_are_loose():
+    # Tahoe Forest Hospital District: "2026-4-23-...pdf" and "Thursday-Nov-21-agendas.pdf" name no readable date,
+    # but every link is labeled "Regular Meeting of the Board of Directors – 04/23/2026 – Agenda".
+    url = agency("tfhd")["discovery"]["indexUrl"]
+    rows = discover_configured("tfhd", agency("tfhd")["discovery"], limit=None, fetch=lambda u: TFHD_PAGE if u == url else 1 / 0)
+    assert [(r["source_id"], r["title"]) for r in rows][:5] == [
+        ("2026-10-22", "TFHD Board of Directors Meeting"),
+        ("2026-09-24-special", "Special TFHD Board of Directors Meeting"),
+        ("2026-09-24", "TFHD Board of Directors Meeting"),
+        ("2026-08-27", "TFHD Board of Directors Meeting"),
+        ("2026-07-23", "TFHD Board of Directors Meeting")]
+    assert len(rows) == 14 and all(r["official_url"] == url for r in rows)
+    april = next(r for r in rows if r["source_id"] == "2026-04-23")
+    assert [(d["id"], d["url"].rsplit("/", 1)[1]) for d in april["documents"]] == [
+        ("tfhd-agenda", "2026-4-23-Regular-Meeting-of-the-Board-of-Directors_FINAL-Agenda.pdf"),
+        ("tfhd-agenda-packet", "2026-04-23-Regular-Meeting-of-the-Board-of-Directors_Agenda-Packet-rev.pdf")]
+    names = [d["url"] for r in rows for d in r["documents"]]
+    # Minutes, Spanish agendas, committees, the joint meeting with the Town, and the surgery center stay out.
+    assert not any(re.search(r"Minutes|SPANISH|Committee|Joint|Surgery", n) for n in names)
+    by_name = discover_configured("tfhd", {**agency("tfhd")["discovery"], "matchLabels": False}, limit=None,
+                                  fetch=lambda u: TFHD_PAGE)
+    assert by_name == []  # "2026 10 22 Regular Meeting ..." states no date the reader takes
+    with pytest.raises(ValueError, match="matchLabels is true or false"):
+        validate_discovery({"id": "x", "discovery": {"type": "file-links", "indexUrl": url, "matchLabels": "yes"}})
 
 
 def events_fetch(requested):

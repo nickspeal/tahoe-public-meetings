@@ -3,7 +3,7 @@
 This is the per-agency answer to "how does each followed body get into the site?" The tables between `generated` markers restate the registry, [`packages/domain/agencies.json`](../../packages/domain/agencies.json), and [`config/skipped-endpoints.json`](../../config/skipped-endpoints.json). `python3 scripts/project.py worker coverage-doc` rewrites them, and a test fails when they are out of date, so edit the configuration rather than the tables. The notes around them are written by hand.
 
 <!-- generated: summary -->
-The registry has **54 entries**. **47 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **39** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
+The registry has **56 entries**. **49 are followed**; the 6 entries disabled by the [source review](source-review.md) (`cal-epa`, `douglas-newsletter`, `fows`, `lahontan-office`, `tahoe-fund`, `usace`) stay in the file for provenance and are left out below. Of the followed entries, **41** have live discovery, **3** are blocked by a skipped endpoint, and **5** have no live discovery. 4 entries extend a sibling body's entry: `ttd-rtcpc` (`ttd`), `trpa-advisory` (`trpa-governing`), `douglas-planning` (`douglas-commissioners`), `tbec-stakeholders` (`tdva`). 1 entry (`other`) is not a body: it holds one-off meetings whose host is named per record.
 <!-- /generated: summary -->
 
 ## How meetings arrive
@@ -26,6 +26,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | `lahontan-board` | `dated-table` | [www.waterboards.ca.gov](https://www.waterboards.ca.gov/lahontan/board_info/agenda/2026_schedule.html) | `Board` | `lahontan-board` |
 | `ndep` | `dated-table` | [ndep.nv.gov](https://ndep.nv.gov/water/financing-infrastructure/board-for-financing-water-projects/meeting-agendas-minutes/) | `.` | `ndep-board` |
 | `slttid` | `file-links` | [southtahoetourism.com](https://southtahoetourism.com/agendas%2Fminutes%2Fnotices) | `^TID (?:Agenda\|Special meeting)\b` | `slttid-special`, `slttid-board` |
+| `tfhd` | `file-links` | [www.tfhd.com](https://www.tfhd.com/about/minutes-agendas/) | `^(?:Regular\|Special) Meeting of the Board of Directors\b(?!.*\bMinutes?$)` | `tfhd-board` |
 | `douglas-commissioners` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Board of County Commissioners` | `douglas-county-board` |
 | `douglas-planning` (extends `douglas-commissioners`) | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `(?s)^(?!.*Supplement)\s*Planning Commission` | `douglas-county-planning` |
 | `douglas-transportation` | `granicus` | [douglascountynv.granicus.com](https://douglascountynv.granicus.com/ViewPublisher.php?view_id=1) | `Regional Transportation Commission` | `douglas-county-joint-board-rtc` |
@@ -46,6 +47,7 @@ An entry's coverage is therefore one of: **automatic**, **no live discovery**, o
 | `trcd` | `link-index` | [tahoercd.specialdistrict.org](https://tahoercd.specialdistrict.org/board-meetings) | `Board Meeting` | `tahoe-rcd-board` |
 | `truckee-north-shore-tma` | `link-index` | [tnttma.com](https://tnttma.com/tma-board-agenda/) | `Board Meeting\|TNT.?TMA` | `tnt-tma-board` |
 | `truckee-tahoe-airport` | `meeting-files` | [truckeetahoeairport.com](https://truckeetahoeairport.com/administration/board/meetings) | every row | `truckee-tahoe-airport-board` |
+| `ovpsd` | `meeting-post-feed` | [ovpsd.org](https://ovpsd.org/wp-json/wp/v2/agenda?per_page=100&_fields=id,date,link,title) | `\bBoard Meeting\b` | — |
 | `state-lands` | `meeting-post-feed` | [www.slc.ca.gov](https://www.slc.ca.gov/category/meeting/feed/) | `Commission Meeting` | — |
 | `truckee` | `municode` | [meetings.municode.com](https://meetings.municode.com/MeetingsPage/index?clientCode=TRUCKEECA) | `Town Council` | `truckee-council` |
 | `ntpud` | `rss` | [ntpud.org](https://ntpud.org/category/meetings/feed/) | `Board of Directors` | `ntpud-board` |
@@ -74,6 +76,8 @@ Notes on particular sources:
 - `truckee-tahoe-airport`: a dated table plus the "next meeting" block, each linking to a per-meeting file list from which the agenda is read.
 - `lahontan-board`, `california-fish-game`: annual dated tables (`indexUrlTemplate` with `{year}`).
 - `ctc`: the Tahoe Conservancy's board meetings page lists the year's meetings under "Conservancy Meetings 2026", each date linking the meeting's own page, which is the HTML agenda (items read by the `ctc-board` layout; the start time comes from the agenda heading). The next meeting is listed as a bare date before its page exists ("December 10, 2026"), which becomes a notice. The meeting pages are WordPress pages with no feed, and the site's REST API requires a login, so the index page is the source. The Board meets "as needed, four to six times a year", so the learned quarterly schedule was removed: it forecast the third Thursday (December 17) while the Conservancy lists December 10. Staff recommendations are on a separate "meeting documents" page per meeting; no rule reads it yet.
+- `tfhd`: the Tahoe Forest Hospital District's minutes and agendas page links every board, committee, joint, and surgery center file. Its file names are loose ("2026-4-23-...", "Thursday-Nov-21-agendas.pdf"), but each link is labeled with the body, the date, and the document, so `file-links` reads the labels (`matchLabels`): regular and special board meetings, agenda then packet, without minutes, Spanish agendas, committees, joint meetings with the Town of Truckee, or the Truckee Surgery Center's board. Packets are 200-page meeting books of about 35 MB. The site's Cloudflare edge answered curl from the build sandbox with HTTP 403 while the project's fetcher (Python's urllib) was served (November 13, 2026).
+- `ovpsd`: each Olympic Valley PSD agenda is a WordPress post of the "agenda" type whose page is the agenda, an ordered list lettered by the page's style (no agenda layout; `html_ordered_list.py` reads the list, and each item's linked board report is mapped by `ordered-list-item-reports`). Discovery reads the post type's REST collection, because its RSS feed holds ten posts and the district re-published 2023 agendas in 2026; old posts are dated by their titles and fall outside the scheduled window. The site's Cloudflare edge answered curl from the build sandbox with HTTP 403 while the project's fetcher was served (November 13, 2026).
 - `california-state-parks`: two statewide commission pages in the same State Parks layout, one accordion panel per meeting. The Off-Highway Motor Vehicle Recreation Commission (`indexUrl`) and the State Park and Recreation Commission (`pages`) keep the `ohmvr-` and `sprc-` source IDs of the earlier records. Within a panel, the "Commission Meeting" line's "Date:", "Time:", "Location:", and "Address:" lines give the meeting (not the tour or workshop on the neighbouring day), and the "Meeting Agenda" link is its document. A panel appears only once a meeting's details are posted, so the schedule's later dates ("November 18 and 19") are not shown until then.
 
 Item parsing is separate from discovery. An entry without agenda layouts (`—` above) keeps its meetings' text and official links, without itemized, topic-tagged agenda items ([agenda layouts](../../config/README.md#agenda-layouts)).
@@ -140,6 +144,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `ndep-material-packet` | `ndep` |
 | `ntpud-packet` | `ntpud` |
 | `order-of-business-item-files` | `state-lands` |
+| `ordered-list-item-reports` | `ovpsd` |
 | `pctpa-packet` | `placer-transportation` |
 | `slt-commission-report` | `slt-planning`, `slt-parks-recreation-commission`, `slt-transit-jpa` |
 | `slt-executive-summary` | `slt` |
@@ -168,6 +173,7 @@ Items get a "Read the staff report" link and a verbatim summary only where the e
 | `ltusd` | published, not attached yet | Supporting documents are attached to items inside Simbli and open through the portal's own viewer; no rule reads them yet. |
 | `ltva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
 | `tdva` | published, not attached yet | The board packet reprints financial statements and presentations without numbered staff reports; no rule reads it yet. |
+| `tfhd` | published, not attached yet | The agenda packet is a 200-page meeting book that opens each item's materials with an agenda item cover sheet; no rule reads it yet. |
 | `ltbmu` | — | No `staffReports` entry. |
 | `tahoe-usfs` | — | No `staffReports` entry. |
 | `usfws` | — | No `staffReports` entry. |

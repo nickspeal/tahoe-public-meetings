@@ -1233,6 +1233,72 @@
         "resolvedAt": "2026-11-09",
         "note": "The maintainer chose to list the board with a note, as for Placer County, rather than leave it out."
       }
+    },
+    {
+      "id": "SR-046",
+      "agencyId": "tfhd",
+      "name": "Tahoe Forest Hospital District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "Requested on 2026-11-13: the hospital district's elected board, which meets in Truckee and is livestreamed by Tahoe Truckee Media. Its minutes and agendas page (WordPress) links every board, committee, joint, and Truckee Surgery Center document; each link is labeled with the body, the date, and the document (\"Regular Meeting of the Board of Directors – 10/22/2026 – Agenda Packet\"), while the uploaded file names are loose (\"2026-4-23-...\", \"Thursday-Nov-21-agendas.pdf\").",
+      "nextStep": "Keep live discovery of the board's regular and special meetings. Board committees (Finance, Governance, Quality, Community Engagement, Executive Compensation) publish agendas in the same format and could be added as sibling entries if the maintainer asks; joint meetings with the Town of Truckee and the surgery center's board of managers are left out. No staff report rule reads the packet yet.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "Minutes and agendas",
+          "url": "https://www.tfhd.com/about/minutes-agendas/"
+        },
+        {
+          "label": "Board meetings page",
+          "url": "https://www.tfhd.com/board-of-directors/board-meetings/"
+        },
+        {
+          "label": "October 22, 2026 agenda",
+          "url": "https://www.tfhd.com/wp-content/uploads/2026/10/2026-10-22-Regular-Meeting-of-the-Board-of-Directors_FINAL-Agenda.pdf"
+        },
+        {
+          "label": "Tahoe Truckee Media playlist",
+          "url": "https://www.youtube.com/playlist?list=PLr_DSJ6rtN1ZhLFh9EOu-oyKQBRZQGyd-"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The page and its PDFs answered the project's fetcher on 2026-11-13 (curl from the same sandbox got HTTP 403 from the site's Cloudflare edge, so a curl fallback would not help if urllib ever fails). Live discovery found 14 board meetings in 2026 (10 regular, 4 special); captures of the October 22 and September 24 regular and the September 24 and June 25 special agendas read 36, 33, 8, and 8 items. The board meets on the fourth Thursday at 4:00 PM, on the third in November and December."
+      },
+      "implementation": "The `file-links` type with `matchLabels`: links whose label matches the board's regular or special meeting (and not its minutes) are grouped by the label's date, agenda then packet. The `tfhd-board` layout reads the decimal outline (5.1, 14.2) from the agenda rather than the packet (`agendaBeforePacket`). Recordings come from the Tahoe Truckee Media playlist; the board meetings page gives the comment form and the schedule."
+    },
+    {
+      "id": "SR-047",
+      "agencyId": "ovpsd",
+      "name": "Olympic Valley Public Service District Board of Directors",
+      "status": "resolved",
+      "group": "Added meeting body",
+      "flags": [],
+      "issue": "Requested on 2026-11-13: the district provides water, sewer, garbage, and fire service in Olympic Valley. Each meeting's agenda is a WordPress post of the custom type \"agenda\" (\"Regular Board Meeting – Tuesday, October 27, 2026, 8:30 a.m.\"), whose page is the agenda: an ordered list lettered by the page's style, with nested items labeled B-1, D-1 ... and each item's board report PDF linked from it. The RSS feed of the post type carries only ten posts, and the district re-published several 2023 agendas in 2026.",
+      "nextStep": "Keep live discovery from the REST collection. The Finance Committee meets before each board meeting on the board's own agenda; other committees (Personnel, Water and Sewer, Fire) post calendar entries without agendas and are not followed.",
+      "owner": "Maintainer",
+      "links": [
+        {
+          "label": "Board + Committee Meetings",
+          "url": "https://ovpsd.org/your-district/board/board-committee-meetings/"
+        },
+        {
+          "label": "Agenda posts (REST collection)",
+          "url": "https://ovpsd.org/wp-json/wp/v2/agenda?per_page=100&_fields=id,date,link,title"
+        },
+        {
+          "label": "October 27, 2026 agenda",
+          "url": "https://ovpsd.org/agenda/regular-board-meeting-tuesday-october-27-2026-830-a-m/"
+        }
+      ],
+      "resolution": {
+        "decision": "add and follow",
+        "resolvedAt": "2026-11-13",
+        "note": "The site answered the project's fetcher on 2026-11-13 (curl from the same sandbox got HTTP 403 from its Cloudflare edge). Live discovery found all 11 board meetings of 2026 (10 regular, the January 15 special); all 11 agenda pages were captured with 5 to 50 items each, and the October 27 meeting's linked reports mapped 12 items (seven action items and five status reports). The meetings page gives the schedule: the last Tuesday at 8:30 a.m., in the third week in November and December 2026. The site mentions no livestream or recording."
+      },
+      "implementation": "The `meeting-post-feed` type reads the post type's WordPress REST collection (100 posts) as well as an RSS feed; each post's page is the meeting's one HTML document. A new structured HTML reader (`tahoe_ingest/html_ordered_list.py`) gives the list's parts and nested items with their printed labels, with no agenda layout. A new staff report rule, `ordered-list-item-reports`, maps an item to the PDF its entry links when the PDF is a board report naming the item's exhibit number and the meeting date."
     }
   ]
 }

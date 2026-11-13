@@ -1,6 +1,6 @@
-"""Exact source-backed headings from explicit Granicus, Municode, and "Order of Business" agenda structures."""
+"""Exact source-backed headings from explicit Granicus, Municode, "Order of Business", and ordered-list agenda structures."""
 import re
-from . import html_order_of_business
+from . import html_order_of_business, html_ordered_list
 from .html_dom import document, Node
 from .outline import section_name
 
@@ -21,6 +21,8 @@ def parse_html_agenda(markup, text):
     tree=document(markup)
     if html_order_of_business.recognizes(tree):
         return html_order_of_business.parse(markup, text)
+    if html_ordered_list.recognizes(tree):
+        return html_ordered_list.parse(markup, text)
     entries=[]
     top=[]
     section='Agenda'

@@ -14,10 +14,18 @@ line that names the session (`bodyPattern`, matched against the whole line, for 
 commissions). The page itself stays the official URL, because staff reports are listed
 there beside the agenda.
 
-Both are registered by format name in `source_discovery.TYPES`; no code here names an agency.
+`dated-paragraphs`: a page with one paragraph per meeting that opens with the meeting's
+date ("October 20, 2026 • Agenda • Minutes", "February 20, 2026 (Special Session) •
+Agenda"). The paragraph's links labeled `documentPattern` (default "Agenda") are its
+documents and a link labeled "Minutes" its minutes; a paragraph that says the meeting
+was canceled ("May 19, 2026 - Cancelled", linked to the notice) is a canceled meeting
+whose official URL is that notice (Truckee Fire Protection District).
+
+All three are registered by format name in `source_discovery.TYPES`; no code here names an agency.
 """
 from __future__ import annotations
 
+import hashlib
 import re
 import urllib.parse
 from datetime import datetime
@@ -25,7 +33,8 @@ from html.parser import HTMLParser
 from zoneinfo import ZoneInfo
 
 from .html_dom import document
-from .source_discovery import _MONTH, candidate, date_in, multi_day_note, time_in
+from .records import listing_minutes
+from .source_discovery import _MONTH, _QUALIFIER, agenda_then_packet, candidate, date_in, multi_day_note, time_in
 
 _WEEKDAY = r'(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,?\s+)?'
 # "June 18, 2026", "Thursday, June 18, 2026", "March 19 and 20, 2026", "March 19-20, 2026".
@@ -211,3 +220,62 @@ def _section_meetings(agency, config, fetch):
         row['location'] = location or None
         rows.append(row)
     return rows
+
+
+# "October 20, 2026", "Tuesday, October 20, 2026", and "March18, 2025" (a missing space) at the start of a paragraph.
+_LEADING_DATE = re.compile(rf'^{_WEEKDAY}({_MONTH})\.?\s*(\d{{1,2}}),?\s+(20\d{{2}})\b', re.I)
+_MINUTES_LABEL = re.compile(r'(?:Draft\s+)?Minutes', re.I)
+_CANCELED = re.compile(r'\bcancel(?:l?ed|l?ation)\b', re.I)
+
+
+def dated_paragraphs(agency, config, limit, fetch):
+    """One meeting per paragraph that opens with a full date, newest first.
+
+    Only links whose label matches `documentPattern` become documents, so empty or
+    stray links inside a paragraph (a page editor's leftovers) are ignored. A
+    "(Special Session)", workshop, or joint meeting gets its own `<date>-special` ID
+    and title, so it never merges with a regular meeting on the same day.
+    """
+    url = config['indexUrl']
+    wanted = re.compile(config.get('documentPattern', 'Agenda'), re.I)
+    body = re.compile(config.get('bodyPattern', '.'), re.I)
+    title = config.get('title') or agency.replace('-', ' ').title() + ' Meeting'
+    prefix = config.get('idPrefix', '')
+    rows = []
+    for node in document(fetch(url)).find():
+        if node.tag not in ('p', 'li') or any(n.tag in ('p', 'li') for n in node.find()):
+            continue
+        text = node.text()
+        found = _LEADING_DATE.match(text)
+        if not found or not body.search(text):
+            continue
+        day = date_in(f'{found[1]} {found[2]} {found[3]}')
+        if not day:
+            continue
+        links = [(urllib.parse.urljoin(url, a.attrs.get('href', '')), a.text()) for a in node.find('a') if a.attrs.get('href')]
+        links = [(target, label) for target, label in links if urllib.parse.urlparse(target).scheme == 'https']
+        docs, seen = [], set()
+        for target, label in links:
+            if wanted.fullmatch(label) and target not in seen:
+                seen.add(target)
+                role = 'agenda-packet' if re.search(r'packet', urllib.parse.unquote(target) + ' ' + label, re.I) else 'agenda'
+                docs.append({'id': f'{agency}-{role}', 'title': label, 'url': target})
+        docs = agenda_then_packet(docs)
+        roles = [d['id'] for d in docs]
+        for doc in docs:  # two files of one role keep distinct IDs
+            if roles.count(doc['id']) > 1:
+                doc['id'] += '-' + hashlib.sha256(doc['url'].encode()).hexdigest()[:10]
+        qualifier = _QUALIFIER.search(text[found.end():])
+        sid = prefix + day + ('-' + qualifier[1].lower() if qualifier else '')
+        shown = f'{qualifier[1].title()} {title}' if qualifier and not title.lower().startswith(qualifier[1].lower()) else title
+        notice = next((target for target, label in links if _CANCELED.search(label)), None)
+        row = candidate(agency, sid, shown, day, notice if notice and _CANCELED.search(text) else url, docs, text)
+        row['start_time'] = None  # a time in the paragraph is not the meeting's; the agenda prints it
+        minutes = next((target for target, label in links if _MINUTES_LABEL.fullmatch(label)), None)
+        if minutes:
+            row.update(listing_minutes(minutes, 'Minutes'))
+        rows.append(row)
+    unique = {}
+    for row in rows:
+        unique.setdefault(row['source_id'], row)
+    return sorted(unique.values(), key=lambda r: r['date'], reverse=True)[:limit]

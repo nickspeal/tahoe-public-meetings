@@ -8,7 +8,7 @@ The registry has **62 entries**. **55 are followed**; the 6 entries disabled by 
 
 ## How meetings arrive
 
-The scheduled job (`tahoe-ingest run-scheduled`, [decision 0018](../decisions/0018-scheduled-publication.md)) gets meetings from **live discovery** only ([decision 0033](../decisions/0033-production-data-only-from-live-pipeline.md)): each run reads the index named by the `discovery` block of every followed entry that has one ([configuration guide](../../config/README.md#reviewed-source-configuration-and-repeatable-acquisition)). Besides meetings, it reads `config/public-comment-periods.json` (each notice fetched and verified) and the one-off notices in `config/one-off-meetings.json` (currently none).
+The scheduled job (`tahoe-ingest run-scheduled`, [decision 0018](../decisions/0018-scheduled-publication.md)) gets meetings from **live discovery** only ([decision 0033](../decisions/0033-production-data-only-from-live-pipeline.md)): each run reads the index named by the `discovery` block of every followed entry that has one ([configuration guide](../../config/README.md#reviewed-source-configuration-and-repeatable-acquisition)). Besides meetings, it reads `config/public-comment-periods.json` (each notice fetched and verified) and the one-off notices in `config/one-off-meetings.json`.
 
 Until November 2026 the job also loaded hand-built meeting records: a proof-of-concept bundle and the dated candidate lists of the October 20, 2026 source review (now [`docs/research/verified-agency-meetings/`](../research/verified-agency-meetings/)). Meetings they created stay stored until `clean-hand-built` removes the empty ones, but nothing adds to them.
 

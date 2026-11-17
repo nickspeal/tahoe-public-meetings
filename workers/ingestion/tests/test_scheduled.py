@@ -115,9 +115,10 @@ def test_run_scheduled_populates_empty_database_and_publishes(db, monkeypatch, t
     assert any(f.startswith("discover:tcpud: index down") for f in summary["failures"])
     assert hook.calls == ["https://hooks.example/secret-token"]
     assert "secret-token" not in json.dumps(summary)
-    # Meetings come only from live discovery: nothing hand-built is loaded (decision 0033).
-    assert db.execute("SELECT array_agg(id) AS ids FROM meetings").fetchone()["ids"] == ["slt-planning:9001"]
-    assert summary["counts"]["meetings"] == 1
+    # Meetings come only from live discovery and the tracked one-off notices: nothing hand-built is loaded (decision 0033).
+    one_offs = sorted(f"{m['agency']}:{m['id']}" for m in json.loads((ROOT / scheduled.ONE_OFFS).read_text())["meetings"])
+    assert sorted(db.execute("SELECT array_agg(id) AS ids FROM meetings").fetchone()["ids"]) == sorted(["slt-planning:9001", *one_offs])
+    assert steps["one-offs"]["detail"]["processed"] == len(one_offs)
     stored = db.execute("SELECT schema_version, payload FROM public_exports").fetchall()
     assert len(stored) == 1 and stored[0]["schema_version"] == 2
     assert stored[0]["payload"] == json.loads((tmp_path / "public.json").read_text())

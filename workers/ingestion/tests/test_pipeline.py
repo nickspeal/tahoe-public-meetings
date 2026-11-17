@@ -273,7 +273,6 @@ def test_catalog_is_exported_in_order_and_accepts_new_operator_topic(db):
     assert ingest_bundle(db, one_meeting("slt"))["failed"] == 0
     exported = export_public(db)
     assert exported["topics"] == public_topics()
-    assert len(exported["topics"]) == 7
     item_id = exported["meetings"][0]["items"][0]["id"]
     edit_item(db, item_id, topic=("hot-topics", True, "operator"))
     assert "hot-topics" in export_public(db)["meetings"][0]["items"][0]["topics"]

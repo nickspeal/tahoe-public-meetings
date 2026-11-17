@@ -1,1 +1,46 @@
-{"meetings": []}
+{
+  "meetings": [
+    {
+      "agency": "ctc",
+      "id": "one-off-marsh-south-restoration-virtual",
+      "title": "Marsh South Restoration Project virtual public meeting",
+      "source_meeting_url": "https://tahoe.ca.gov/tahoe-conservancy-to-host-public-meetings-on-marsh-south-restoration-project/",
+      "date": "2026-11-19",
+      "start_time": "15:00",
+      "timezone": "America/Los_Angeles",
+      "status": "scheduled",
+      "location": "Online (Zoom)",
+      "host": "California Tahoe Conservancy",
+      "topics": ["biking", "environment"],
+      "participation": {
+        "instructions": "Join on Zoom. Spanish interpretation will be available.",
+        "url": null,
+        "remoteUrl": "https://us06web.zoom.us/j/89905768939",
+        "deadline": null
+      },
+      "items_complete": false,
+      "documents_complete": false
+    },
+    {
+      "agency": "ctc",
+      "id": "one-off-marsh-south-restoration-in-person",
+      "title": "Marsh South Restoration Project in-person public meeting",
+      "source_meeting_url": "https://tahoe.ca.gov/tahoe-conservancy-to-host-public-meetings-on-marsh-south-restoration-project/",
+      "date": "2026-12-02",
+      "start_time": "16:00",
+      "timezone": "America/Los_Angeles",
+      "status": "rescheduled",
+      "location": "Lake Tahoe Community College, Board Room (L104), Roberta Mason Library building",
+      "host": "California Tahoe Conservancy",
+      "topics": ["biking", "environment"],
+      "participation": {
+        "instructions": "Moved from November 18 because of a winter storm warning. Runs 4:00–6:30 p.m. Spanish interpretation will be available.",
+        "url": null,
+        "remoteUrl": null,
+        "deadline": null
+      },
+      "items_complete": false,
+      "documents_complete": false
+    }
+  ]
+}

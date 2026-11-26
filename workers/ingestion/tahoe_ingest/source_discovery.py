@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from .http import fetch_bytes
-from .discovery import (anchors, fetch_text, _pdf_links, granicus_row_ids, granicus_row_ids_range,
+from .discovery import (anchors, fetch_text, _pdf_links, granicus_row_ids, granicus_row_ids_range, without_hidden_labels,
                         wordpress_meetings, wordpress_meetings_range)
 from .html_dom import document
 from .records import granicus_links, listing_minutes, qualifiers, recording_link, records_entry
@@ -331,6 +331,7 @@ def discover_configured(agency, config, *, limit=5, fetch=fetch_text):
             markup=fetch(sheet);url=sheet
         if '/pubhtml/sheet' in url:
             return sheet_meetings(agency,markup,url,limit)
+    if kind=='granicus':markup=without_hidden_labels(markup)
     tree=document(markup)
     rows,extras=[],[]
     if kind=='dated-table':

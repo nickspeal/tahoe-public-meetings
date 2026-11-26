@@ -213,14 +213,23 @@ def wordpress_meetings_range(agency: str, config: dict, *, since, until, fetch=f
 # its agenda link names an event, so the source ID is `event-<id>` until the clip
 # row appears, when `capture.source_identity` bridges it by date and title. A row
 # with no agenda link at all is skipped. (The `granicus` type reads rows by their
-# text instead, and also captures the HTML agenda.)
+# text instead, and also captures the HTML agenda.) Since November 2026 each cell
+# opens with a screen-reader label ("Name, ", "Date, "); both types remove these
+# labels before reading a row.
 
 GRANICUS_ROW_ID = re.compile(r'<td\b[^>]*\bid="(?P<key>\d{2}-\d{2}-\d{4}-[^"]+)"', re.I)
+GRANICUS_HIDDEN_LABEL = re.compile(r'<span\b[^>]*\bclass="[^"]*\bvisuallyHidden\b[^"]*"[^>]*>[^<]*</span>', re.I)
 GRANICUS_UPCOMING_ROW = re.compile(r'<td\b(?![^>]*\bid=)[^>]*\bheaders="Name"[^>]*>\s*(?P<key>\d{2} \d{2} \d{4} [^<]*?)\s*</td>', re.I)
+
+
+def without_hidden_labels(markup: str) -> str:
+    """A Granicus publisher page without its screen-reader cell labels, so a cell's text is its value."""
+    return GRANICUS_HIDDEN_LABEL.sub("", markup)
 
 
 def _granicus_id_rows(agency: str, config: dict, markup: str):
     """(date, candidate) for each matching row; the candidate is None when the row links no agenda."""
+    markup = without_hidden_labels(markup)
     index = config["indexUrl"]
     body = re.compile(config.get("bodyPattern", "."), re.I)
     matches = [(m, m.group("key").replace("-", " ")) for m in GRANICUS_ROW_ID.finditer(markup)]

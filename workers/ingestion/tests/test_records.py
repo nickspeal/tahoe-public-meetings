@@ -218,7 +218,32 @@ def test_slt_upcoming_row_is_found_by_event_until_its_clip_exists():
     assert [d["id"] for d in found["documents"]] == ["slt-agenda", "slt-agenda-packet"]
 
 
-LEGISTAR = """<table><tr class="rgRow"><td>10/22/2026</td><td>
+# Since November 2026 the publisher opens each cell with a screen-reader label.
+LABELED_GRANICUS = """<table><tr class="listingRow">
+<td class="listItem" tabindex="0" headers="Name" scope="row"><span class="visuallyHidden">Name, </span>12 01 2026 City Council</td>
+<td class="listItem" headers="Date"><span class="visuallyHidden">Date, </span>December&nbsp; 1,&nbsp;2026 - 9:00&nbsp;AM</td>
+<td class="listItem" headers="AgendaLink"><a href="//slt.granicus.com/AgendaViewer.php?view_id=6&event_id=1525">Agenda</a></td>
+<td class="listItem" headers="AgendaPacketLink"><a href="https://d3n.example/slt/packet.pdf">Agenda Packet</a></td></tr>
+<tr class="listingRow">
+<td class="listItem" headers="Name" scope="row"><span class="visuallyHidden">Name, </span>11 18 2026 Parks and Recreation Commission</td>
+<td class="listItem" headers="Date"><span class="visuallyHidden">Date, </span>Nov 18, 2026 - 07:34 AM</td>
+<td class="listItem" headers="AgendaLink"><a href="//slt.granicus.com/AgendaViewer.php?view_id=6&clip_id=2508">Agenda</a></td></tr></table>"""
+
+
+def test_slt_upcoming_row_is_found_behind_a_screen_reader_label():
+    config = {"type": "granicus-row-ids", "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6", "bodyPattern": "City Council"}
+    [found] = granicus_row_ids("slt", config, limit=5, fetch=lambda url: LABELED_GRANICUS)
+    assert (found["source_id"], found["date"], found["title"]) == ("event-1525", "2026-12-01", "12 01 2026 City Council")
+    assert [d["id"] for d in found["documents"]] == ["slt-agenda", "slt-agenda-packet"]
+
+
+def test_granicus_title_leaves_out_the_screen_reader_label():
+    config = {"type": "granicus", "indexUrl": "https://slt.granicus.com/ViewPublisher.php?view_id=6", "bodyPattern": "Parks and Recreation"}
+    [found] = discover_configured("slt-parks-recreation-commission", config, fetch=lambda url: LABELED_GRANICUS)
+    assert (found["source_id"], found["date"], found["title"]) == ("2508", "2026-11-18", "11 18 2026 Parks and Recreation Commission")
+
+
+LEGISTAR ="""<table><tr class="rgRow"><td>10/22/2026</td><td>
 <a href="MeetingDetail.aspx?ID=1452289&amp;GUID=9404">Meeting&nbsp;details</a></td>
 <td><a href="View.ashx?M=A&amp;ID=1452289&amp;GUID=9404">Agenda</a></td>
 <td><a href="View.ashx?M=M&amp;ID=1452289&amp;GUID=9404">Minutes</a></td>

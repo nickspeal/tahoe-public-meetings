@@ -146,7 +146,8 @@ class YearCursor:
 _NOT_NAMES = frozenset({"consent", "resolution", "action", "informational", "information", "discussion", "presentation",
                         "report", "update", "ordinance", "proclamation", "workshop", "draft", "final", "revised",
                         "continued", "tentative", "pending", "deleted", "moved", "postponed", "cancelled", "canceled",
-                        "tbd", "virtual", "hybrid"}) | frozenset(MONTHS)
+                        "tbd", "virtual", "hybrid",
+                        "solutions"})  # TTD's software vendor: "Transit Software Agreement Amendment (Solutions)" | frozenset(MONTHS)
 _TRAILING_NAME = re.compile(r"\s*\(([A-Z][a-z]+)\)\s*$")
 
 

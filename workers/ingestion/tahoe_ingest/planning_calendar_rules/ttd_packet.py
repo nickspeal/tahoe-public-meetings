@@ -1,5 +1,8 @@
 """Format ``ttd-packet-pages``: the Tahoe Transportation District's tentative agenda calendar in its board packet.
 
+TTD used this layout through its November 4, 2026 packet and replaced it with ``ttd-packet-grid`` from December 2,
+2026; no agency points at it now, and it stays for re-reading older packets.
+
 The calendar is the run of consecutive packet pages headed "2026 TTD/C Board/Committees Tentative Agenda Calendar",
 already stored as the packet's page text, so nothing is downloaded. Each block has two columns. A month-day heading
 ("November 4") starts a board block, whose next line is its column header ("TTD ... TTC"); "RTCPC <month day>" starts

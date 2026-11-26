@@ -25,15 +25,15 @@
       "rule": "ttd-packet"
     },
     "planningCalendar": {
-      "format": "ttd-packet-pages",
-      "heading": "Tentative Agenda Calendar",
-      "title": "TTD/C Board/Committees Tentative Agenda Calendar",
+      "format": "ttd-packet-grid",
+      "heading": "Tentative Agenda Planning Calendar",
+      "title": "Tentative Agenda Planning Calendar",
       "bodies": {
-        "TTD": {
+        "Board of Directors": {
           "id": "ttd",
           "meetingTitle": "TTD Board of Directors Meeting"
         },
-        "RTCPC": {
+        "RTCP Committee": {
           "id": "ttd-rtcpc",
           "meetingTitle": "TTD Regional Transit and Capital Programs Committee Meeting"
         }

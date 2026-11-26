@@ -12,10 +12,10 @@ reads a calendar, and nothing here touches the network or the database.
 Add a `planningCalendar` entry to the agency whose agenda carries the calendar:
 
 ```json
-"planningCalendar": {"format": "ttd-packet-pages", "heading": "Tentative Agenda Calendar",
-                     "title": "TTD/C Board/Committees Tentative Agenda Calendar",
-                     "bodies": {"TTD": {"id": "ttd", "meetingTitle": "TTD Board of Directors Meeting"},
-                                "RTCPC": {"id": "ttd-rtcpc", "meetingTitle": "TTD Regional Transit and Capital Programs Committee Meeting"}}}
+"planningCalendar": {"format": "ttd-packet-grid", "heading": "Tentative Agenda Planning Calendar",
+                     "title": "Tentative Agenda Planning Calendar",
+                     "bodies": {"Board of Directors": {"id": "ttd", "meetingTitle": "TTD Board of Directors Meeting"},
+                                "RTCP Committee": {"id": "ttd-rtcpc", "meetingTitle": "TTD Regional Transit and Capital Programs Committee Meeting"}}}
 ```
 
 - `format` names a format below.
@@ -34,7 +34,8 @@ that is not a followed registry entry, a missing or unknown parameter, or a regu
 | Format | Calendar | Parameters |
 | --- | --- | --- |
 | `slt-apc-attachment` | South Lake Tahoe City Council: the "APC MM DD YYYY.pdf" attachment of the "Agenda Planning Calendar" item, an Excel table | `itemTitle`, `attachmentPattern` |
-| `ttd-packet-pages` | TTD: the run of packet pages headed "Tentative Agenda Calendar", two columns per block | `heading` |
+| `ttd-packet-grid` | TTD from its December 2, 2026 packet: the packet pages titled "Tentative Agenda Planning Calendar", a grid of one numbered column per body with a section ("Agenda") column | `heading` |
+| `ttd-packet-pages` | TTD through its November 4, 2026 packet (no agency uses it now): the run of packet pages headed "Tentative Agenda Calendar", two columns per block | `heading` |
 
 ## What a format provides
 
@@ -44,8 +45,8 @@ loads, and two modules that register the same name raise an error. Modules whose
 - `locate(source, *, params...) -> list[dict]` says where a meeting's calendar is. `slt-apc-attachment` takes the
   agenda's items with their attachments, as the staff report rule lists them
   (`[{"title", "attachments": [{"url", "name", "label"}]}]`). It returns `[{"url", "name"}]`, the stable Granicus
-  download URLs, which the caller downloads once per new URL. `ttd-packet-pages` takes the stored packet pages
-  (`[{"page_number", "text"}]`) and returns the calendar's pages.
+  download URLs, which the caller downloads once per new URL. The TTD formats take the stored packet pages
+  (`[{"page_number", "text"}]`) and return the calendar's pages.
 - The caller (`tahoe_ingest/planning_calendars.py`, the `planning-calendars` step) tells the two sources apart by
   `locate`'s first parameter name, which must be `items` or `pages`.
 - `parse(pages, *, config, carried_by) -> dict` reads the whole calendar and returns
@@ -83,8 +84,9 @@ Shared rules (`__init__.py`):
 - **Not published:** requester or sponsor initials, motion numbers, conditional notes, and a trailing parenthetical
   that names a person. A person is one capitalised word, such as "(Kira)", that is not an agenda term or a month, so
   "(Consent)" and "(Nov)" stay. Formats drop initials and notes by column. `entry()` removes the parenthetical.
-- **Sections.** A section is only what the calendar states: South Lake Tahoe's NB/PH/UB/Consent codes. TTD's inline
-  "(Consent)" and "Action Item" stay in the subject as published.
+- **Sections.** A section is only what the calendar states: South Lake Tahoe's NB/PH/UB/Consent codes, and the
+  grid's "Agenda" column ("Business", "Consent", "Report", "Proclamation"), kept as printed. In the older TTD layout,
+  inline "(Consent)" and "Action Item" stay in the subject as published.
 
 ## Adding a format
 

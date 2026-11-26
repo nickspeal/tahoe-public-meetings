@@ -96,7 +96,7 @@ Some agencies publish a tentative calendar of the subjects planned for their nex
                      "bodies": {"*": {"id": "slt", "meetingTitle": "City Council Meeting"}}}
 ```
 
-- `format` names a format in [`planning_calendar_rules/`](../workers/ingestion/tahoe_ingest/planning_calendar_rules/README.md); the other keys are its parameters. `slt-apc-attachment` reads the PDF attached to an agenda item (South Lake Tahoe), downloading each new calendar once. `ttd-packet-pages` reads the pages of the stored agenda packet headed `heading` (TTD), with no download.
+- `format` names a format in [`planning_calendar_rules/`](../workers/ingestion/tahoe_ingest/planning_calendar_rules/README.md); the other keys are its parameters. `slt-apc-attachment` reads the PDF attached to an agenda item (South Lake Tahoe), downloading each new calendar once. `ttd-packet-grid` reads the pages of the stored agenda packet titled `heading` (TTD), with no download; `ttd-packet-pages` reads TTD's layout before December 2026, which no agency uses now.
 - `title` is text the calendar's title must contain.
 - `bodies` maps each body label the calendar prints to a followed entry and the title its planned meetings get; `"*"` maps a calendar that covers one body. Labels not listed are skipped, so TTD's TTC and Finance & Personnel columns are never read.
 - The block is never inherited through `extends`: it belongs to the body whose agenda carries the calendar, and its `bodies` map covers the siblings.

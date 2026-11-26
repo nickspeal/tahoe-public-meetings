@@ -193,11 +193,17 @@ def test_a_calendar_that_fails_validation_is_rejected_and_the_previous_one_stays
 
 
 def ttd_bundle():
-    """The October 7 board packet with its calendar pages, and the stored November 4 board meeting."""
+    """The December 2, 2026 board meeting with its packet's calendar page (TTD's grid layout), and the stored November 4
+    board meeting. The December record is built from the October one, whose agenda pages and items it does not keep."""
     bundle = bundle_of("ttd:7110", "ttd:7172")
-    data = load("ttd-packet-2026-10-07")
-    october = next(m for m in bundle["meetings"] if m["id"] == "7110")
-    october["pages"] += [{"document_id": "ttd-agenda-packet", "page_number": p["page_number"], "text": p["text"]}
+    data = load("ttd-packet-2026-12-02")
+    december = next(m for m in bundle["meetings"] if m["id"] == "7110")
+    december.update(id=data["meeting_id"].split(":")[1], date=data["meeting_date"], agenda_items=[],
+                    title="TTD Board of Directors Meeting – December 2, 2026",
+                    source_meeting_url="https://tahoetransportation.org/meeting/ttd-board-of-directors-meeting-december-2-2026/")
+    december["documents"] = [{**december["documents"][0], "url": data["url"], "sha256": data["sha256"],
+                              "page_count": data["page_count"], "text_scope": "The calendar page only (test excerpt)."}]
+    december["pages"] = [{"document_id": "ttd-agenda-packet", "page_number": p["page_number"], "text": p["text"]}
                          for p in data["pages"]]
     return bundle
 
@@ -206,22 +212,25 @@ def test_packet_calendar_is_read_from_stored_pages(db, monkeypatch):
     assert ingest_bundle(db, ttd_bundle())["failed"] == 0
     def no_downloads(url, **_):
         raise AssertionError("packet calendars are read from stored pages")
-    today = date(2026, 10, 8)
+    today = date(2026, 11, 26)
     report = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)
     assert report["rejected"] == [] and report["byAgency"]["ttd"]["read"] == 1
-    assert report["plannedMeetings"] == ["ttd-rtcpc:planned-2026-11-02"]
+    assert sorted(report["plannedMeetings"]) == ["ttd-rtcpc:planned-2027-03-01", "ttd:planned-2027-01-06",
+                                                 "ttd:planned-2027-02-03", "ttd:planned-2027-03-03"]
     source = db.execute("SELECT url,sha256,published_on,pages FROM preview_sources").fetchone()
-    assert source["published_on"] == date(2026, 10, 7) and [p["page_number"] for p in source["pages"]] == [193, 194, 195, 196, 197]
+    assert source["published_on"] == date(2026, 12, 2) and [p["page_number"] for p in source["pages"]] == [199]
     payload, meetings = export(db, today)
-    november = meetings["ttd:7172"]
-    assert "planned" not in november and "Ratification of Strategic Priorities – Action Item (Resolution)" in {
-        p["subject"] for p in november["previews"]}
-    committee = meetings["ttd-rtcpc:planned-2026-11-02"]
+    january = meetings["ttd:planned-2027-01-06"]
+    assert january["title"] == "TTD Board of Directors Meeting"
+    assert {"Annual Work Program", "Transit Software Agreement Amendment (Solutions)"} <= {
+        p["subject"] for p in january["previews"]}
+    assert {p["section"] for p in january["previews"]} == {"Business", "Consent", "Report", "Proclamation"}
+    committee = meetings["ttd-rtcpc:planned-2027-03-01"]
     assert committee["title"] == "TTD Regional Transit and Capital Programs Committee Meeting"
-    assert {"Quarterly Parking Report", "Project Spotlight"} <= {p["subject"] for p in committee["previews"]}
-    shown = [(m["agencyId"], m["date"]) for m in payload["meetings"] if m.get("previews")]
-    assert sorted(shown) == [("ttd", "2026-11-04"), ("ttd-rtcpc", "2026-11-02")]  # nothing for TTC, F&P, or December 2
-    assert not any(m.get("planned") for m in payload["meetings"] if m["date"] == "2026-12-02")
+    assert [p["subject"] for p in committee["previews"]] == ["Park Tahoe Quarterly Report"]
+    shown = sorted((m["agencyId"], m["date"]) for m in payload["meetings"] if m.get("previews"))
+    # Nothing for the Finance & Personnel Committee, and the RTCP meetings with only empty rows are not planned.
+    assert shown == [("ttd", "2027-01-06"), ("ttd", "2027-02-03"), ("ttd", "2027-03-03"), ("ttd-rtcpc", "2027-03-01")]
 
     with statements(monkeypatch) as sent:
         again = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)
@@ -313,19 +322,20 @@ def test_force_reads_a_stored_packet_calendar_again_after_a_format_fix(db, monke
     assert ingest_bundle(db, ttd_bundle())["failed"] == 0
     def no_downloads(url, **_):
         raise AssertionError("forced calendars are read from stored text")
-    today = date(2026, 10, 8)
+    today = date(2026, 11, 26)
     with buggy_parse(monkeypatch, "ttd", lambda e: e["agency_id"] == "ttd-rtcpc"):
-        assert planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)["plannedMeetings"] == []
+        planned = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)["plannedMeetings"]
+        assert planned and not [m for m in planned if m.startswith("ttd-rtcpc:")]
     # The fixed format alone does not touch a stored calendar.
     assert planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today)["calendarsUnchanged"] == 1
-    assert "ttd-rtcpc:planned-2026-11-02" not in export(db, today)[1]
+    assert "ttd-rtcpc:planned-2027-03-01" not in export(db, today)[1]
 
     dry = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True, dry_run=True)
-    assert dry["wouldRead"] == [load("ttd-packet-2026-10-07")["url"]]
+    assert dry["wouldRead"] == [load("ttd-packet-2026-12-02")["url"]]
     report = planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
-    assert report["byAgency"]["ttd"]["read"] == 1 and report["plannedMeetings"] == ["ttd-rtcpc:planned-2026-11-02"]
-    assert {"Quarterly Parking Report", "Project Spotlight"} <= {
-        p["subject"] for p in export(db, today)[1]["ttd-rtcpc:planned-2026-11-02"]["previews"]}
+    assert report["byAgency"]["ttd"]["read"] == 1 and report["plannedMeetings"] == ["ttd-rtcpc:planned-2027-03-01"]
+    assert [p["subject"] for p in export(db, today)[1]["ttd-rtcpc:planned-2027-03-01"]["previews"]] == [
+        "Park Tahoe Quarterly Report"]
     count = "SELECT count(*) AS n FROM meeting_previews"
     before = db.execute(count).fetchone()["n"]
     planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
@@ -335,7 +345,7 @@ def test_force_reads_a_stored_packet_calendar_again_after_a_format_fix(db, monke
     with buggy_parse(monkeypatch, "ttd", lambda e: e["agency_id"] == "ttd-rtcpc"):
         planning_calendars.read_planning_calendars(db, reader=no_downloads, today=today, force=True)
     payload, meetings = export(db, today)
-    assert "ttd-rtcpc:planned-2026-11-02" not in meetings
+    assert "ttd-rtcpc:planned-2027-03-01" not in meetings
     payload["generatedAt"] = f"{today.isoformat()}T19:00:00Z"  # validate against the test's day, not the wall clock
     assert validate_export(payload)[0] == []
 

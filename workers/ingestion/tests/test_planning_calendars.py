@@ -28,10 +28,23 @@ def parse_slt(name="slt-apc-2026-09-30", pages=None):
     return REGISTRY["slt-apc-attachment"].parse(pages or data["pages"], config=config("slt"), carried_by=date(2026, 10, 6))
 
 
+# TTD's layout through its November 4, 2026 packet; the registry now points TTD at ttd-packet-grid.
+TTD_PAGES = {"format": "ttd-packet-pages", "heading": "Tentative Agenda Calendar",
+             "title": "TTD/C Board/Committees Tentative Agenda Calendar",
+             "bodies": {"TTD": {"id": "ttd", "meetingTitle": "TTD Board of Directors Meeting"},
+                        "RTCPC": {"id": "ttd-rtcpc", "meetingTitle": "TTD Regional Transit and Capital Programs Committee Meeting"}}}
+
+
 def parse_ttd(pages=None):
     data = load("ttd-packet-2026-10-07")
-    return REGISTRY["ttd-packet-pages"].parse(pages or data["pages"], config=config("ttd"),
+    return REGISTRY["ttd-packet-pages"].parse(pages or data["pages"], config=TTD_PAGES,
                                               carried_by=date.fromisoformat(data["meeting_date"]))
+
+
+def parse_ttd_grid(pages=None):
+    data = load("ttd-packet-2026-12-02")
+    return REGISTRY["ttd-packet-grid"].parse(pages or data["pages"], config=config("ttd"),
+                                             carried_by=date.fromisoformat(data["meeting_date"]))
 
 
 def subjects(result, **where):
@@ -125,12 +138,95 @@ def test_ttd_calendar_follows_mapped_bodies_only():
 
 def test_ttd_next_year_calendar_and_staff_report_footer_are_not_items():
     data = load("ttd-packet-2026-11-04")
-    result = REGISTRY["ttd-packet-pages"].parse(data["pages"], config=config("ttd"), carried_by=date(2026, 11, 4))
+    result = REGISTRY["ttd-packet-pages"].parse(data["pages"], config=TTD_PAGES, carried_by=date(2026, 11, 4))
     assert subjects(result, agency_id="ttd", local_date=date(2026, 12, 2))[-2:] == ["Financial Audit", "Financials"]
     # "2027 ... Tentative Agenda Calendar" is a title, not an RTCPC item; "JM/lr" is the report author's initials.
     assert not subjects(result, agency_id="ttd-rtcpc")
     assert not [e for e in result["entries"] if e["local_date"].year == 2027]
     assert {(b["label"], b["local_date"]) for b in result["blocks"]} >= {("TTD", date(2027, 1, 6)), ("RTCPC", date(2027, 1, 4))}
+
+
+def test_ttd_grid_calendar_rows_sections_and_bodies():
+    result = parse_ttd_grid()
+    assert (result["title"], result["year"], result["published_on"]) == (
+        "TAHOE TRANSPORTATION DISTRICT - TENTATIVE AGENDA PLANNING CALENDAR - 2027", 2027, date(2026, 12, 2))
+    jan6, feb3, mar3 = date(2027, 1, 6), date(2027, 2, 3), date(2027, 3, 3)
+    board = [(e["subject"], e["section"]) for e in result["entries"] if e["agency_id"] == "ttd" and e["local_date"] == jan6]
+    assert board == [
+        ("Final and Balancing Change Orders - North Parking Project", "Business"),  # wraps, its section on the 2nd line
+        ("MAF Feasibility Study Consultant Amendment", "Consent"),
+        ("Award - Shop Street A&E Design Services", "Consent"),
+        ("Transit Ridership Report", "Report"),
+        ("Executive Director & Agenda Planning", "Report"),
+        ("Transit Software Agreement Amendment (Solutions)", "Consent"),  # printed on the line below its number
+        ("Steve Teshara Retirement", "Proclamation"),
+        ("IVGID Proposal for 771 Southwood", "Business"),
+        ("Vehicle Purchase - Mechanic's Truck", "Consent"),
+        ("Annual Work Program", "Business")]
+    wrapped = result["entries"][0]
+    assert wrapped["quote"] == "Final and Balancing Change Orders - North Parking\nProject" and wrapped["page"] == 199
+    assert subjects(result, agency_id="ttd", local_date=feb3) == [
+        "Award - CMAR Preconstruction Support", "Award - Spooner HUB / AIS", "Award - CMAR ICE Services",
+        "Award - CMAR Preconstruction Services", "Transit Ridership", "Executive Director & Agenda Planning"]
+    assert subjects(result, agency_id="ttd", local_date=mar3) == [
+        "Award - Ponderosa Transit Improvements", "Award - Park Tahoe Business Plan", "Transit Ridership",
+        "Executive Director & Agenda Planning"]
+    # Numbered rows with no subject are empty; the RTCP Committee has one item, with no section printed.
+    committee = [(e["local_date"], e["subject"], e["section"]) for e in result["entries"] if e["agency_id"] == "ttd-rtcpc"]
+    assert committee == [(date(2027, 3, 1), "Park Tahoe Quarterly Report", None)]
+    # The Finance & Personnel Committee is not followed, so its column (same dates as the board) is skipped.
+    assert {b["label"] for b in result["blocks"]} == {"Board of Directors", "RTCP Committee"}
+    assert [(b["label"], b["local_date"], b["entries"]) for b in result["blocks"]] == [
+        ("RTCP Committee", date(2027, 1, 4), 0), ("Board of Directors", jan6, 10),
+        ("RTCP Committee", date(2027, 2, 1), 0), ("Board of Directors", feb3, 6),
+        ("RTCP Committee", date(2027, 3, 1), 1), ("Board of Directors", mar3, 4)]
+    assert len(result["entries"]) == 21 and all(list(e) == list(FIELDS) for e in result["entries"])
+    assert not any("AGENDA ITEM" in e["quote"] or "Page 192" in e["quote"] for e in result["entries"])
+    meeting_titles = {e["agency_id"]: e["meeting_title"] for e in result["entries"]}
+    assert meeting_titles == {"ttd": "TTD Board of Directors Meeting",
+                              "ttd-rtcpc": "TTD Regional Transit and Capital Programs Committee Meeting"}
+
+
+def test_ttd_grid_canceled_columns_have_no_entries():
+    pages = load("ttd-packet-2026-12-02")["pages"]
+    header = "February 3, 2027 - Board of Directors"
+    result = parse_ttd_grid(pages=tampered(pages, header, header + " - Canceled"))
+    feb = next(b for b in result["blocks"] if b["label"] == "Board of Directors" and b["local_date"] == date(2027, 2, 3))
+    assert feb["state"] == "canceled" and feb["entries"] == 0
+    assert not subjects(result, agency_id="ttd", local_date=date(2027, 2, 3))
+    assert subjects(result, agency_id="ttd", local_date=date(2027, 3, 3))
+
+
+def test_locate_ttd_grid_calendar_pages_in_the_packet():
+    page = load("ttd-packet-2026-12-02")["pages"][0]
+    locate = rules.agency_rules()["ttd"].locate
+    packet = [{"page_number": 197, "text": "Standing Transit Report\nTTD October On-Time Performance"},
+              {"page_number": 198, "text": "Memo\nThe Tentative Agenda Planning Calendar follows."}, page]
+    assert [p["page_number"] for p in locate(packet)] == [199]
+    # A following page continues the calendar when it starts with a fiscal quarter or a block header.
+    later = {"page_number": 200, "text": "FY QUARTER 4\n" + page["text"].split("\n", 2)[2]}
+    after = {"page_number": 201, "text": "Tahoe Transportation District Board ~ Page 194 ~"}
+    assert [p["page_number"] for p in locate(packet + [later, after])] == [199, 200]
+    result = parse_ttd_grid(pages=[page, later])
+    assert len(result["entries"]) == 42 and result["blocks"][-1]["local_date"] == date(2027, 3, 3)
+
+
+@pytest.mark.parametrize("old, new, reason", [
+    ("TAHOE TRANSPORTATION DISTRICT - TENTATIVE AGENDA PLANNING CALENDAR - 2027",
+     "TAHOE TRANSPORTATION DISTRICT - AGENDA PLANNING CALENDAR - 2027", "title"),
+    ("TENTATIVE AGENDA PLANNING CALENDAR - 2027", "TENTATIVE AGENDA PLANNING CALENDAR", "states no year"),
+    ("January 6, 2027 - Board of Directors", "January 36, 2027 - Board of Directors", "date heading"),
+    ("FY QUARTER 3", "Draft for discussion", "outside any date block"),
+    ("Steve Teshara Retirement                          Proclamation",
+     "Steve Teshara Retirement                          Proclamation of note", "not an agenda section"),
+    ("Annual Work Program                               Business",
+     "Annual Work Program                               Business, Consent", "not an agenda section"),
+    ("\n\n    February 1, 2027", "\n\n                                                                                                                     Stray note\n    February 1, 2027", "no numbered row"),
+])
+def test_ttd_grid_calendar_that_fails_validation_publishes_nothing(old, new, reason):
+    pages = load("ttd-packet-2026-12-02")["pages"]
+    with pytest.raises(CalendarInvalid, match=reason):
+        parse_ttd_grid(pages=tampered(pages, old, new))
 
 
 def test_locate_slt_attachment_under_the_calendar_item():
@@ -149,10 +245,14 @@ def test_locate_ttd_calendar_pages_in_the_packet():
     pages = load("ttd-packet-2026-10-07")["pages"]
     packet = [{"page_number": 191, "text": "VII. Executive Director Report\nAgenda Calendar Check"},
               {"page_number": 192, "text": "\n\nMemo\nThe Tentative Agenda Calendar follows."}] + pages
-    found = rules.agency_rules()["ttd"].locate(packet)
+    locate = rules.bind("ttd", TTD_PAGES).locate
+    found = locate(packet)
     assert [p["page_number"] for p in found] == [193, 194, 195, 196, 197]
     lone = [{"page_number": 5, "text": pages[0]["text"]}, {"page_number": 7, "text": pages[0]["text"]}]
-    assert len(rules.agency_rules()["ttd"].locate(lone + packet)) == 5  # the longest consecutive run wins
+    assert len(locate(lone + packet)) == 5  # the longest consecutive run wins
+    # The grid layout's title does not contain the old heading, and the old title is not the grid's.
+    assert locate(load("ttd-packet-2026-12-02")["pages"]) == []
+    assert rules.agency_rules()["ttd"].locate(packet) == []
 
 
 @pytest.mark.parametrize("old, new, reason", [
@@ -203,7 +303,8 @@ def test_ttd_text_before_the_first_block_fails():
 
 
 def test_a_subject_that_is_not_a_quote_of_its_page_fails():
-    for result, data in ((parse_slt(), load("slt-apc-2026-09-30")), (parse_ttd(), load("ttd-packet-2026-10-07"))):
+    for result, data in ((parse_slt(), load("slt-apc-2026-09-30")), (parse_ttd(), load("ttd-packet-2026-10-07")),
+                         (parse_ttd_grid(), load("ttd-packet-2026-12-02"))):
         check_quotes(result["entries"], data["pages"])
         changed = copy.deepcopy(result["entries"])
         changed[3]["subject"] += " and More"
@@ -243,12 +344,13 @@ def test_check_config_rejects_bad_entries(entry, message):
 def test_check_config_accepts_the_registry_entries():
     for agency_id in ("slt", "ttd"):
         check_config({"id": agency_id, "planningCalendar": config(agency_id)})
+    check_config({"id": "ttd", "planningCalendar": TTD_PAGES})
     check_config({"id": "trpa-governing"})
 
 
 def test_agency_rules_bind_own_calendars_only():
     bound = rules.agency_rules()
     assert {"slt", "ttd"} <= set(bound) and "ttd-rtcpc" not in bound  # planningCalendar is an own key, not inherited
-    assert bound["slt"].format == "slt-apc-attachment" and bound["ttd"].format == "ttd-packet-pages"
-    data = load("ttd-packet-2026-10-07")
-    assert bound["ttd"].parse(data["pages"], carried_by=date(2026, 10, 7)) == parse_ttd()
+    assert bound["slt"].format == "slt-apc-attachment" and bound["ttd"].format == "ttd-packet-grid"
+    data = load("ttd-packet-2026-12-02")
+    assert bound["ttd"].parse(data["pages"], carried_by=date(2026, 12, 2)) == parse_ttd_grid()
